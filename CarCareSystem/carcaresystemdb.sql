@@ -52,7 +52,7 @@ CREATE TABLE Service (
     partId      INT           NULL,
     description NVARCHAR(500) NULL,
     price       FLOAT NOT NULL
-);
+);  
 GO
 
 -- 7. Bảng Attendance
