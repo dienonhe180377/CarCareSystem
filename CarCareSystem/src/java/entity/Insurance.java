@@ -6,17 +6,26 @@ import java.util.Date;
 
 public class Insurance {
     private int id;
-    private User user;
-    private CarType carType;
+    private int userId;
+    private int carTypeId;
     private Date startDate;
     private Date endDate;
     private double price;
     private String description;
 
-    public Insurance(int id, User user, CarType carType, Date startDate, Date endDate, double price, String description) {
+    public Insurance(int id, int userId, int carTypeId, Date startDate, Date endDate, double price, String description) {
         this.id = id;
-        this.user = user;
-        this.carType = carType;
+        this.userId = userId;
+        this.carTypeId = carTypeId;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.price = price;
+        this.description = description;
+    }
+
+    public Insurance(int userId, int carTypeId, Date startDate, Date endDate, double price, String description) {
+        this.userId = userId;
+        this.carTypeId = carTypeId;
         this.startDate = startDate;
         this.endDate = endDate;
         this.price = price;
@@ -31,20 +40,20 @@ public class Insurance {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
-    public CarType getCarType() {
-        return carType;
+    public int getCarTypeId() {
+        return carTypeId;
     }
 
-    public void setCarType(CarType carType) {
-        this.carType = carType;
+    public void setCarTypeId(int carTypeId) {
+        this.carTypeId = carTypeId;
     }
 
     public Date getStartDate() {
@@ -78,5 +87,6 @@ public class Insurance {
     public void setDescription(String description) {
         this.description = description;
     }
+
     
 }

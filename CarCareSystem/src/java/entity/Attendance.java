@@ -12,13 +12,19 @@ import java.util.Date;
  */
 public class Attendance {
     private int id;
-    private User user;
+    private int userId;
     private Date date;
     private boolean status;
 
-    public Attendance(int id, User user, Date date, boolean status) {
+    public Attendance(int id, int userId, Date date, boolean status) {
         this.id = id;
-        this.user = user;
+        this.userId = userId;
+        this.date = date;
+        this.status = status;
+    }
+
+    public Attendance(int userId, Date date, boolean status) {
+        this.userId = userId;
         this.date = date;
         this.status = status;
     }
@@ -31,12 +37,12 @@ public class Attendance {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public Date getDate() {
@@ -54,5 +60,7 @@ public class Attendance {
     public void setStatus(boolean status) {
         this.status = status;
     }
+
+    
     
 }
