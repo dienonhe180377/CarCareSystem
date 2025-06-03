@@ -40,8 +40,12 @@ GO
 -- 5. Bảng Supplier
 CREATE TABLE Supplier (
     id     INT          IDENTITY(1,1) PRIMARY KEY,
-    name   NVARCHAR(150) NOT NULL,
-    status BIT          NOT NULL DEFAULT 1
+    [name]   NVARCHAR(150) NOT NULL,
+    logo NVARCHAR(255),
+    [description] NVARCHAR(255),
+    email NVARCHAR(150) not null,
+    phone NVARCHAR(20) not null,
+    [address] NVARCHAR(255)
 );
 GO
 
@@ -204,5 +208,15 @@ CREATE TABLE PartsSupplier (
 );
 GO
 
+ALTER TABLE Category
+ADD description nvarchar(255) 
+
+
+
 -- 19. Kiểm tra toàn bộ
 -- SELECT * FROM sys.tables;
+
+
+--INSERT
+
+
