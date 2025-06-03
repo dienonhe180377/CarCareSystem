@@ -20,6 +20,9 @@ public class User {
     private Date createdDate;
     private String userRole;
 
+    public User() {
+    }
+
     public User(int id, String username, String password, String email, String phone, String address, Date createdDate, String userRole) {
         this.id = id;
         this.username = username;
@@ -87,8 +90,12 @@ public class User {
         this.createdDate = createdDate;
     }
 
-    public String getUserRole() {
-        return userRole;
+    public int getUserRole() {
+        try {
+            return Integer.parseInt(this.userRole);
+        } catch (Exception e) {
+            return -1; // default invalid
+        }
     }
 
     public void setUserRole(String userRole) {
