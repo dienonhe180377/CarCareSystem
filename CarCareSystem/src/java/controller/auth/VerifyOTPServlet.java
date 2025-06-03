@@ -51,7 +51,7 @@ public class VerifyOTPServlet extends HttpServlet {
             request.getRequestDispatcher("/views/auth/login.jsp").forward(request, response);
         } else {
             request.setAttribute("error", "OTP không chính xác. Vui lòng thử lại.");
-            request.getRequestDispatcher("/views/auth/verify-otp.jsp").forward(request, response);
+            request.getRequestDispatcher("/views/auth/verify-register-otp.jsp").forward(request, response);
         }
     } 
 

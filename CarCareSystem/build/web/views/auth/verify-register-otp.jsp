@@ -1,6 +1,6 @@
 <%-- 
-    Document   : login
-    Created on : Jun 3, 2025, 5:35:41 PM
+    Document   : verify-otp
+    Created on : Jun 3, 2025, 7:57:16 PM
     Author     : TRAN ANH HAI
 --%>
 
@@ -9,7 +9,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Login Page</title>
+        <title>OTP Register</title>
         <style>
             * {
                 margin: 0;
@@ -187,33 +187,18 @@
             </div>
             <div class="right-section">
                 <div class="login-form">
-                    <h1>Đăng nhập</h1>
-
-                    <p class="subtitle">Cung cấp thông tin đăng nhập hợp lệ của bạn</p>
-                    <form action="login" method="post">
-                        <div class="form-group">
-                            <label for="username">Username</label>
-                            <input type="text" id="username" name="username" placeholder="Tài khoản" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Password</label>
-                            <input type="password" id="password" name="password" placeholder="Mật khẩu" required>
-                            <a href="requestpassword" class="forgot-password">Quên mật khẩu?</a>
-                        </div>
-
-                        <!-- Hiển thị thông báo lỗi nếu có -->
-                        <% String errorMessage = (String) request.getAttribute("error"); %>
-                        <% if (errorMessage != null && !errorMessage.isEmpty()) { %>
-                        <div class="alert alert-danger">
-                            <i class="fa fa-exclamation-circle"></i> <%= request.getAttribute("error") %>
-                        </div>
-                        <% } %>
-
-                        <button type="submit" class="login-button">Đăng nhập</button>
-                        <p class="register">
-                            Chưa có tài khoản? <a href="register">Đăng ký</a>
-                        </p>
+                    <h1>Xác minh OTP</h1>
+                    <p class="subtitle">Nhập mã xác nhận hợp lệ</p>
+                    <form action="verifyOTP" method="post">
+                        <input type="text" name="otp" placeholder="Nhập mã OTP" required />
+                        <button type="submit">Xác minh</button>
                     </form>
+                    <% if (request.getAttribute("error") != null) { %>
+                        <p style="color:red"><%= request.getAttribute("error") %></p>
+                    <% } %>
+                    <% if (request.getAttribute("message") != null) { %>
+                        <p style="color:green"><%= request.getAttribute("message") %></p>
+                    <% } %>
                 </div>
             </div>
         </div>

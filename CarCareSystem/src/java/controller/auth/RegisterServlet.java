@@ -75,7 +75,7 @@ public class RegisterServlet extends HttpServlet {
         boolean sent = SendMailService.sendOTP(email, otp);
         if (sent) {
             request.setAttribute("message", "Mã OTP đã được gửi đến email của bạn.");
-            request.getRequestDispatcher("/views/auth/verify-otp.jsp").forward(request, response);
+            request.getRequestDispatcher("/views/auth/verify-register-otp.jsp").forward(request, response);
         } else {
             request.setAttribute("error", "Không thể gửi OTP đến email của bạn.");
             request.getRequestDispatcher("/views/auth/register.jsp").forward(request, response);

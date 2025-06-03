@@ -71,4 +71,40 @@ public class UserDAO extends DBConnection {
             System.out.println(e);
         }
     }
+    
+    public User getUserByEmail(String email) {
+        String sql = "SELECT *\n"
+                + "FROM [User]\n"
+                + "WHERE email = ?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, email);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                User u = new User();
+                u.setId(rs.getInt("id"));
+                u.setUsername(rs.getString("username"));
+                u.setEmail(rs.getString("email"));
+                u.setUserRole(rs.getString("role"));
+                return u;
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return null;
+    }
+    
+    public void updatePassword(String email, String password) {
+        String sql = "UPDATE [User]\n"
+                + "SET password = ?\n"
+                + "WHERE Email = ?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, password);
+            st.setString(2, email);
+            st.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
 }

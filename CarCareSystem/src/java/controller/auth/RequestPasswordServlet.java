@@ -14,13 +14,15 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.Random;
+import util.SendMailService;
 
 /**
  *
  * @author TRAN ANH HAI
  */
-@WebServlet(name="LoginServlet", urlPatterns={"/login"})
-public class LoginServlet extends HttpServlet {
+@WebServlet(name="RequestPasswordServlet", urlPatterns={"/requestpassword"})
+public class RequestPasswordServlet extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -32,43 +34,30 @@ public class LoginServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        // Lấy username & password từ request
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        
-        // Kiểm tra nếu không nhập username/password (truy cập lần đầu)
-        if (username == null || password == null || username.trim().isEmpty() || password.trim().isEmpty()) {
-            request.getRequestDispatcher("/views/auth/login.jsp").forward(request, response);
+        String email = request.getParameter("email");
+        UserDAO dao = new UserDAO();
+        User user = dao.getUserByEmail(email);
+
+        if (user == null) {
+            request.setAttribute("error", "Email không tồn tại!");
+            request.getRequestDispatcher("/views/auth/request-password.jsp").forward(request, response);
             return;
         }
-        
-        UserDAO userDAO = new UserDAO();
-        User userA = userDAO.authenticationUserLogin(username, password);
-        
-        if (userA == null) {
-            // Đăng nhập thất bại, hiển thị lỗi
-            request.setAttribute("error", "Thông tin đăng nhập không hợp lệ!");
-            request.getRequestDispatcher("/views/auth/login.jsp").forward(request, response);
+
+        String otp = String.valueOf(new Random().nextInt(900000) + 100000);
+        HttpSession session = request.getSession();
+        session.setAttribute("otp", otp);
+        session.setAttribute("email", email);
+
+        boolean sent = SendMailService.sendOTP(email, otp);
+        if (!sent) {
+            request.setAttribute("error", "Không thể gửi OTP đến email của bạn.");
         } else {
-            // Đăng nhập thành công -> Xử lý session
-            HttpSession session = request.getSession(false); // Không tạo mới session nếu chưa có
-            if (session != null) {
-                session.invalidate(); // Xóa session cũ để tránh lỗi session trước đó
-            }
-            session = request.getSession(true); // Tạo session mới
-
-            // Lưu thông tin user vào session
-            session.setAttribute("user", userA);
-            session.setAttribute("roleID", userA.getUserRole()); // Lưu role vào session để Filter kiểm tra
-
-            // Điều hướng theo quyền
-            if (userA.getUserRole() == 6) {
-                response.sendRedirect("home"); // User               
-            } else {
-                response.sendRedirect("admin"); // Admin
-            }
+            request.setAttribute("message", "Mã OTP đã được gửi. Vui lòng kiểm tra email.");
         }
-    }
+        request.getRequestDispatcher("/views/auth/verify-request-otp.jsp").forward(request, response);
+        
+    } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 
@@ -95,7 +84,6 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         processRequest(request, response);
-        
     }
 
     /** 

@@ -1,6 +1,6 @@
 <%-- 
-    Document   : login
-    Created on : Jun 3, 2025, 5:35:41 PM
+    Document   : request-password
+    Created on : Jun 3, 2025, 11:49:21 PM
     Author     : TRAN ANH HAI
 --%>
 
@@ -9,7 +9,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Login Page</title>
+        <title>Forgot Password</title>
         <style>
             * {
                 margin: 0;
@@ -187,29 +187,25 @@
             </div>
             <div class="right-section">
                 <div class="login-form">
-                    <h1>Đăng nhập</h1>
+                    <h1>Quên Mật Khẩu</h1>
 
-                    <p class="subtitle">Cung cấp thông tin đăng nhập hợp lệ của bạn</p>
-                    <form action="login" method="post">
+                    <p class="subtitle">Cung cấp địa chỉ email hợp lệ của bạn</p>
+                    <form action="requestpassword" method="post">
                         <div class="form-group">
-                            <label for="username">Username</label>
-                            <input type="text" id="username" name="username" placeholder="Tài khoản" required>
+                            <label for="email">Email của bạn</label>
+                            <input type="email" id="email" name="email" placeholder="Email" required>
                         </div>
-                        <div class="form-group">
-                            <label for="password">Password</label>
-                            <input type="password" id="password" name="password" placeholder="Mật khẩu" required>
-                            <a href="requestpassword" class="forgot-password">Quên mật khẩu?</a>
-                        </div>
+                       
 
                         <!-- Hiển thị thông báo lỗi nếu có -->
-                        <% String errorMessage = (String) request.getAttribute("error"); %>
+                        <% String errorMessage = (String) request.getAttribute("mess"); %>
                         <% if (errorMessage != null && !errorMessage.isEmpty()) { %>
                         <div class="alert alert-danger">
-                            <i class="fa fa-exclamation-circle"></i> <%= request.getAttribute("error") %>
+                            <i class="fa fa-exclamation-circle"></i> <%= request.getAttribute("mess") %>
                         </div>
                         <% } %>
 
-                        <button type="submit" class="login-button">Đăng nhập</button>
+                        <button type="submit" class="login-button">Gửi yêu cầu</button>
                         <p class="register">
                             Chưa có tài khoản? <a href="register">Đăng ký</a>
                         </p>
