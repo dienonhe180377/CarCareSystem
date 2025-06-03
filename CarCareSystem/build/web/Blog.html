@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Blog</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .form-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
+        }
+
+        .form-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .form-section h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .form-group-full {
+            flex: 1 1 100%;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .content-editor {
+            min-height: 200px;
+            font-family: inherit;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #667eea;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5a6fd8, #6a4190);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            margin-left: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+            transform: translateY(-1px);
+        }
+
+        .btn-edit {
+            background: #28a745;
+            color: white;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            margin-right: 5px;
+        }
+
+        .btn-edit:hover {
+            background: #218838;
+            transform: translateY(-1px);
+        }
+
+        .btn-view {
+            background: #17a2b8;
+            color: white;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            margin-right: 5px;
+        }
+
+        .btn-view:hover {
+            background: #138496;
+            transform: translateY(-1px);
+        }
+
+        .table-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 10px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        th:first-child {
+            border-top-left-radius: 10px;
+        }
+
+        th:last-child {
+            border-top-right-radius: 10px;
+        }
+
+        td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #e0e0e0;
+            vertical-align: middle;
+        }
+
+        tr:hover {
+            background: #f8f9ff;
+            transform: scale(1.01);
+            transition: all 0.2s ease;
+        }
+
+        .status-active {
+            background: #28a745;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-inactive {
+            background: #dc3545;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .campaign-tag {
+            background: #667eea;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .search-filter-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            flex: 1;
+            min-width: 250px;
+            background: #fafafa;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .filter-select {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            min-width: 180px;
+            background: #fafafa;
+        }
+
+        .actions {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .content-preview {
+            max-width: 200px;
+            max-height: 60px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .modal-header h3 {
+            color: #333;
+            font-size: 1.5rem;
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #667eea;
+        }
+
+        .modal-body {
+            line-height: 1.6;
+        }
+
+        .modal-body h4 {
+            color: #667eea;
+            margin: 15px 0 10px 0;
+        }
+
+        .meta-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8f9ff;
+            border-radius: 10px;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .meta-label {
+            font-weight: 600;
+            color: #666;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        .meta-value {
+            color: #333;
+            margin-top: 2px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+            }
+            
+            .search-filter-row {
+                flex-direction: column;
+            }
+            
+            .search-box, .filter-select {
+                width: 100%;
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                margin: 2px 0;
+            }
+
+            .modal-content {
+                margin: 10% auto;
+                width: 95%;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📝 Quản lý Blog</h1>
+            
+        </div>
+
+        <div class="content">
+            <!-- Form thêm/sửa Blog -->
+            <div class="form-section">
+                <h2 id="form-title">➕ Thêm Blog Mới</h2>
+                <form id="blog-form">
+                    <input type="hidden" id="blog-id">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="blog-title">Tiêu đề Blog *</label>
+                            <input type="text" id="blog-title" required placeholder="Nhập tiêu đề bài viết">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="blog-campaign">Campaign</label>
+                            <select id="blog-campaign">
+                                <option value="">-- Chọn Campaign --</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group form-group-full">
+                        <label for="blog-content">Nội dung *</label>
+                        <textarea id="blog-content" class="content-editor" required placeholder="Nhập nội dung chi tiết của bài viết..."></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="create-date">Ngày tạo *</label>
+                            <input type="date" id="create-date" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="updated-date">Ngày cập nhật</label>
+                            <input type="date" id="updated-date">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="blog-status">Trạng thái</label>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="blog-status" checked>
+                                <label for="blog-status">Xuất bản</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary" id="submit-btn">
+                            ✨ Thêm Blog
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="cancel-btn" onclick="cancelEdit()">
+                            ❌ Hủy
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Danh sách Blog -->
+            <div class="table-section">
+                <h2>📋 Danh sách Blog</h2>
+                
+                <div class="search-filter-row">
+                    <input type="text" class="search-box" id="search-input" placeholder="🔍 Tìm kiếm blog...">
+                    <select class="filter-select" id="campaign-filter">
+                        <option value="">Tất cả Campaign</option>
+                    </select>
+                    <select class="filter-select" id="status-filter">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="true">Đã xuất bản</option>
+                        <option value="false">Chưa xuất bản</option>
+                    </select>
+                </div>
+                
+                <div class="table-container">
+                    <table id="blog-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tiêu đề</th>
+                                <th>Campaign</th>
+                                <th>Nội dung</th>
+                                <th>Ngày tạo</th>
+                                <th>Ngày cập nhật</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="blog-tbody">
+                            <tr class="no-data">
+                                <td colspan="8">Chưa có blog nào được tạo</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal xem chi tiết -->
+    <div id="blog-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Chi tiết Blog</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let blogs = [];
+        let campaigns = [];
+        let editingId = null;
+        let nextId = 1;
+
+        // Khởi tạo
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSampleData();
+            setupEventListeners();
+            loadCampaignOptions();
+            setDefaultDate();
+        });
+
+        function setupEventListeners() {
+            document.getElementById('blog-form').addEventListener('submit', handleSubmit);
+            document.getElementById('search-input').addEventListener('input', handleFilter);
+            document.getElementById('campaign-filter').addEventListener('change', handleFilter);
+            document.getElementById('status-filter').addEventListener('change', handleFilter);
+            
+            // Modal events
+            const modal = document.getElementById('blog-modal');
+            const closeBtn = document.querySelector('.close');
+            
+            closeBtn.onclick = function() {
+                modal.style.display = "none";
+            }
+            
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+        }
+
+        function setDefaultDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('create-date').value = today;
+        }
+
+        function handleSubmit(e) {
+            e.preventDefault();
+            
+            const formData = {
+                id: editingId || nextId++,
+                title: document.getElementById('blog-title').value,
+                campaign: getCampaignById(parseInt(document.getElementById('blog-campaign').value)),
+                content: document.getElementById('blog-content').value,
+                createDate: document.getElementById('create-date').value,
+                updatedDate: document.getElementById('updated-date').value || new Date().toISOString().split('T')[0],
+                status: document.getElementById('blog-status').checked
+            };
+
+            // Validate dates
+            if (formData.updatedDate && new Date(formData.createDate) > new Date(formData.updatedDate)) {
+                alert('Ngày tạo không thể sau ngày cập nhật!');
+                return;
+            }
+
+            if (editingId) {
+                updateBlog(formData);
+            } else {
+                createBlog(formData);
+            }
+
+            resetForm();
+            renderTable();
+        }
+
+        function createBlog(blog) {
+            blogs.push(blog);
+            showNotification('Thêm blog thành công!', 'success');
+        }
+
+        function updateBlog(updatedBlog) {
+            const index = blogs.findIndex(b => b.id === editingId);
+            if (index !== -1) {
+                blogs[index] = updatedBlog;
+                showNotification('Cập nhật blog thành công!', 'success');
+            }
+        }
+
+        function deleteBlog(id) {
+            if (confirm('Bạn có chắc chắn muốn xóa blog này?')) {
+                blogs = blogs.filter(b => b.id !== id);
+                renderTable();
+                showNotification('Xóa blog thành công!', 'success');
+            }
+        }
+
+        function editBlog(id) {
+            const blog = blogs.find(b => b.id === id);
+            if (blog) {
+                editingId = id;
+                
+                document.getElementById('blog-id').value = blog.id;
+                document.getElementById('blog-title').value = blog.title;
+                document.getElementById('blog-campaign').value = blog.campaign ? blog.campaign.id : '';
+                document.getElementById('blog-content').value = blog.content;
+                document.getElementById('create-date').value = blog.createDate;
+                document.getElementById('updated-date').value = blog.updatedDate;
+                document.getElementById('blog-status').checked = blog.status;
+                
+                document.getElementById('form-title').textContent = '✏️ Sửa Blog';
+                document.getElementById('submit-btn').textContent = '💾 Cập nhật';
+                
+                // Scroll to form
+                document.querySelector('.form-section').scrollIntoView({behavior: 'smooth'});
+            }
+        }
+
+        function viewBlog(id) {
+            const blog = blogs.find(b => b.id === id);
+            if (blog) {
+                document.getElementById('modal-title').textContent = blog.title;
+                
+                const modalBody = document.getElementById('modal-body');
+                modalBody.innerHTML = `
+                    <div class="meta-info">
+                        <div class="meta-item">
+                            <span class="meta-label">ID</span>
+                            <span class="meta-value">#${blog.id}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Campaign</span>
+                            <span class="meta-value">${blog.campaign ? blog.campaign.name : 'Không có'}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Ngày tạo</span>
+                            <span class="meta-value">${formatDate(blog.createDate)}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Ngày cập nhật</span>
+                            <span class="meta-value">${formatDate(blog.updatedDate)}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Trạng thái</span>
+                            <span class="meta-value">
+                                <span class="${blog.status ? 'status-active' : 'status-inactive'}">
+                                    ${blog.status ? '✅ Đã xuất bản' : '❌ Chưa xuất bản'}
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                    <h4>📝 Nội dung:</h4>
+                    <div style="background: #f8f9ff; padding: 20px; border-radius: 10px; border-left: 4px solid #667eea; white-space: pre-wrap; line-height: 1.6;">${blog.content}</div>
+                `;
+                
+                document.getElementById('blog-modal').style.display = 'block';
+            }
+        }
+
+        function cancelEdit() {
+            resetForm();
+        }
+
+        function resetForm() {
+            document.getElementById('blog-form').reset();
+            editingId = null;
+            document.getElementById('form-title').textContent = '➕ Thêm Blog Mới';
+            document.getElementById('submit-btn').textContent = '✨ Thêm Blog';
+            setDefaultDate();
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('blog-tbody');
+            
+            if (blogs.length === 0) {
+                tbody.innerHTML = '<tr class="no-data"><td colspan="8">Chưa có blog nào được tạo</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = blogs.map(blog => `
+                <tr>
+                    <td>${blog.id}</td>
+                    <td><strong>${blog.title}</strong></td>
+                    <td>
+                        ${blog.campaign ? `<span class="campaign-tag">${blog.campaign.name}</span>` : '<em>Không có</em>'}
+                    </td>
+                    <td>
+                        <div class="content-preview">${blog.content}</div>
+                    </td>
+                    <td>${formatDate(blog.createDate)}</td>
+                    <td>${formatDate(blog.updatedDate)}</td>
+                    <td>
+                        <span class="${blog.status ? 'status-active' : 'status-inactive'}">
+                            ${blog.status ? '✅ Xuất bản' : '❌ Nháp'}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="actions">
+                            <button class="btn btn-view" onclick="viewBlog(${blog.id})">
+                                👁️ Xem
+                            </button>
+                            <button class="btn btn-edit" onclick="editBlog(${blog.id})">
+                                ✏️ Sửa
+                            </button>
+                            <button class="btn btn-danger" onclick="deleteBlog(${blog.id})">
+                                🗑️ Xóa
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function handleFilter() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const campaignFilter = document.getElementById('campaign-filter').value;
+            const statusFilter = document.getElementById('status-filter').value;
+            
+            let filteredBlogs = blogs.filter(blog => {
+                const matchesSearch = blog.title.toLowerCase().includes(searchTerm) ||
+                                    blog.content.toLowerCase().includes(searchTerm);
+                
+                const matchesCampaign = !campaignFilter || 
+                                      (blog.campaign && blog.campaign.id.toString() === campaignFilter);
+                
+                const matchesStatus = statusFilter === '' || 
+                                    blog.status.toString() === statusFilter;
+                
+                return matchesSearch && matchesCampaign && matchesStatus;
+            });
+            
+            const tbody = document.getElementById('blog-tbody');
+            if (filteredBlogs.length === 0) {
+                tbody.innerHTML = '<tr class="no-data"><td colspan="8">Không tìm thấy blog nào</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = filteredBlogs.map(blog => `
+                <tr>
+                    <td>${blog.id}</td>
+                    <td><strong>${blog.title}</strong></td>
+                    <td>
+                        ${blog.campaign ? `<span class="campaign-tag">${blog.campaign.name}</span>` : '<em>Không có</em>'}
+                    </td>
+                    <td>
+                        <div class="content-preview">${blog.content}</div>
+                    </td>
+                    <td>${formatDate(blog.createDate)}</td>
+                    <td>${formatDate(blog.updatedDate)}</td>
+                    <td>
+                        <span class="${blog.status ? 'status-active' : 'status-inactive'}">
+                            ${blog.status ? '✅ Xuất bản' : '❌ Nháp'}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="actions">
+                            <button class="btn btn-view" onclick="viewBlog(${blog.id})">
+                                👁️ Xem
+                            </button>
+                            <button class="btn btn-edit" onclick="editBlog(${blog.id})">
+                                ✏️ Sửa
+                            </button>
+                            <button class="btn btn-danger" onclick="deleteBlog(${blog.id})">
+                                🗑️ Xóa
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function loadCampaignOptions() {
+            const campaignSelect = document.getElementById('blog-campaign');
+            const campaignFilter = document.getElementById('campaign-filter');
+            
+            // Clear existing options (except first one)
+            campaignSelect.innerHTML = '<option value="">-- Chọn Campaign --</option>';
+            campaignFilter.innerHTML = '<option value="">Tất cả Campaign</option>';
+            
+            campaigns.forEach(campaign => {
+                const option1 = new Option(campaign.name, campaign.id.toString());
+                const option2 = new Option(campaign.name, campaign.id.toString());
+                campaignSelect.add(option1);
+                campaignFilter.add(option2);
+            });
+        }
+
+        function getCampaignById(id) {
+            return campaigns.find(c => c.id === id) || null;
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('vi-VN');
+        }
+
+        function loadSampleData() {
+            // Sample campaigns
+            campaigns = [
+                {
+                    id: 1,
+                    name: "Summer Sale 2025",
+                    status: true,
+                    description: "Chiến dịch khuyến mãi mùa hè",
+                    startDate: "2025-06-01",
+                    endDate: "2025-08-31"
+                },
+                {
+                    id: 2,
+                    name: "Back to School",
+                    status: false,
+                    description: "Chiến dịch quay trở lại trường học",
+                    startDate: "2025-08-15",
+                    endDate: "2025-09-30"
+                },
+                {
+                    id: 3,
+                    name: "Holiday Campaign",
+                    status: true,
+                    description: "Chiến dịch lễ hội cuối năm",
+                    startDate: "2025-12-01",
+                    endDate: "2025-12-31"
+                }
+            ];
+
+            // Sample blogs
+            blogs = [
+                {
+                    id: 1,
+                    title: "Xu hướng thời trang hè 2025",
+                    campaign: getCampaignById(1),
+                    content: "Mùa hè 2025 đang đến gần và cùng với đó là những xu hướng thời trang mới nhất. Trong bài viết này, chúng ta sẽ khám phá những màu sắc, kiểu dáng và phong cách được yêu thích nhất trong mùa hè năm nay.\n\nMàu sắc nổi bật:\n- Xanh coral tươi sáng\n- Vàng sunshine rực rỡ\n- Hồng pastel nhẹ nhàng\n\nKiểu dáng thịnh hành:\n- Đầm maxi với họa tiết hoa\n- Quần short cạp cao\n- Áo crop top phong cách boho\n\nPhụ kiện hot trend:\n- Túi cói handmade\n- Kính mát oversized\n- Giày sandal đế xuồng",
+                    createDate: "2025-05-15",
+                    updatedDate: "2025-05-20",
+                    status: true
+                },
+                {
+                    id: 2,
+                    title: "Cách chọn đồ dùng học tập chất lượng",
+                    campaign: getCampaignById(2),
+                    content: "Việc lựa chọn đồ dùng học tập phù hợp không chỉ giúp con bạn học tập hiệu quả mà còn bảo vệ sức khỏe và phát triển sự sáng tạo.\n\nCác tiêu chí quan trọng:\n\n1. An toàn sức khỏe:\n- Không chứa chất độc hại\n- Có chứng nhận chất lượng\n- Thiết kế ergonomic\n\n2. Chất lượng bền vững:\n- Vật liệu cao cấp\n- Gia công tỉ mỉ\n- Khả năng chịu lực tốt\n\n3. Tính thẩm mỹ:\n- Màu sắc tươi sáng\n- Thiết kế đẹp mắt\n- Phù hợp độ tuổi\n\nMột số sản phẩm nên ưu tiên:\n- Balo có đệm lưng\n- Hộp bút nhiều ngăn\n- Sách vở giấy tái chế",
+                    createDate: "2025-05-10",
+                    updatedDate: "2025-05-18",
+                    status: true
+                },
+                {
+                    id: 3,
+                    title: "Ý tưởng trang trí nhà cửa mùa lễ hội",
+                    campaign: getCampaignById(3),
+                    content: "Mùa lễ hội cuối năm đang đến gần! Đây là thời điểm tuyệt vời để biến ngôi nhà của bạn thành một không gian ấm cúng và tràn đầy niềm vui.\n\nGợi ý trang trí theo từng khu vực:\n\nPhòng khách:\n- Cây thông Noel với đèn LED\n- Vòng hoa treo cửa\n- Tất treo lò sưởi\n- Nến thơm hương quế\n\nBếp và phòng ăn:\n- Khăn trải bàn họa tiết\n- Ly cốc màu đỏ vàng\n- Đèn dây trang trí\n- Bình hoa khô\n\nPhòng ngủ:\n- Gối ôm hình người tuyết\n- Chăn len ấm áp\n- Đèn ngủ hình ngôi sao\n\nSân vườn:\n- Đèn LED ngoài trời\n- Người tuyết trang trí\n- Bảng chào mừng\n\nMẹo tiết kiệm:\n- Tự làm đồ trang trí từ giấy màu\n- Sử dụng lại đồ trang trí năm trước\n- Mua đồ giảm giá sau lễ",
+                    createDate: "2025-05-01",
+                    updatedDate: "2025-05-25",
+                    status: false
+                },
+                {
+                    id: 4,
+                    title: "Review sản phẩm công nghệ hot nhất tháng 6",
+                    campaign: null,
+                    content: "Tháng 6/2025 chứng kiến sự ra mắt của nhiều sản phẩm công nghệ đáng chú ý. Hãy cùng tìm hiểu những sản phẩm nào đáng đồng tiền bát gạo nhất!\n\nSmartphone nổi bật:\n- iPhone 16 Pro: Chip A18 Bionic mạnh mẽ\n- Samsung Galaxy S25: Camera AI thông minh\n- Google Pixel 9: Tích hợp Gemini AI\n\nLaptop đáng mua:\n- MacBook Air M4: Pin 20 giờ\n- Dell XPS 15: Màn hình OLED 4K\n- Asus ROG Zephyrus: Gaming performance cao\n\nPhụ kiện hot:\n- AirPods Pro 3: Noise cancelling cải tiến\n- Apple Watch Series 10: Theo dõi sức khỏe\n- iPad Pro M4: Chip xử lý đồ họa mạnh\n\nKết luận:\nMỗi sản phẩm đều có ưu điểm riêng, lựa chọn phù hợp với nhu cầu và ngân sách của bạn là quan trọng nhất.",
+                    createDate: "2025-06-01",
+                    updatedDate: "2025-06-02",
+                    status: true
+                }
+            ];
+            
+            nextId = 5;
+            renderTable();
+        }
+
+        function showNotification(message, type) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                background: ${type === 'success' ? '#28a745' : '#dc3545'};
+                color: white;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                z-index: 1000;
+                font-weight: 600;
+                animation: slideIn 0.3s ease;
+                max-width: 300px;
+            `;
+            notification.textContent = message;
+            
+            // Add animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(notification);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.remove();
+                style.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

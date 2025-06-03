@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Campaign</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .form-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
+        }
+
+        .form-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .form-section h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #667eea;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5a6fd8, #6a4190);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            margin-left: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+            transform: translateY(-1px);
+        }
+
+        .btn-edit {
+            background: #28a745;
+            color: white;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            margin-right: 5px;
+        }
+
+        .btn-edit:hover {
+            background: #218838;
+            transform: translateY(-1px);
+        }
+
+        .table-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 10px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        th:first-child {
+            border-top-left-radius: 10px;
+        }
+
+        th:last-child {
+            border-top-right-radius: 10px;
+        }
+
+        td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #e0e0e0;
+            vertical-align: middle;
+        }
+
+        tr:hover {
+            background: #f8f9ff;
+            transform: scale(1.01);
+            transition: all 0.2s ease;
+        }
+
+        .status-active {
+            background: #28a745;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-inactive {
+            background: #dc3545;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            width: 300px;
+            background: #fafafa;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+            }
+            
+            .search-box {
+                width: 100%;
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                margin: 2px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Quản lý Campaign</h1>
+            
+        </div>
+
+        <div class="content">
+            <!-- Form thêm/sửa Campaign -->
+            <div class="form-section">
+                <h2 id="form-title">➕ Thêm Campaign Mới</h2>
+                <form id="campaign-form">
+                    <input type="hidden" id="campaign-id">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="campaign-name">Tên Campaign *</label>
+                            <input type="text" id="campaign-name" required placeholder="Nhập tên campaign">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="campaign-status">Trạng thái</label>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="campaign-status">
+                                <label for="campaign-status">Kích hoạt</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="campaign-description">Mô tả</label>
+                        <textarea id="campaign-description" placeholder="Nhập mô tả chi tiết về campaign"></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="start-date">Ngày bắt đầu *</label>
+                            <input type="date" id="start-date" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="end-date">Ngày kết thúc *</label>
+                            <input type="date" id="end-date" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary" id="submit-btn">
+                            ✨ Thêm Campaign
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="cancel-btn" onclick="cancelEdit()">
+                            ❌ Hủy
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Danh sách Campaign -->
+            <div class="table-section">
+                <h2>📋 Danh sách Campaign</h2>
+                <input type="text" class="search-box" id="search-input" placeholder="🔍 Tìm kiếm campaign...">
+                
+                <div class="table-container">
+                    <table id="campaign-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tên Campaign</th>
+                                <th>Trạng thái</th>
+                                <th>Mô tả</th>
+                                <th>Ngày bắt đầu</th>
+                                <th>Ngày kết thúc</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="campaign-tbody">
+                            <tr class="no-data">
+                                <td colspan="7">Chưa có campaign nào được tạo</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let campaigns = [];
+        let editingId = null;
+        let nextId = 1;
+
+        // Khởi tạo
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCampaigns();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            document.getElementById('campaign-form').addEventListener('submit', handleSubmit);
+            document.getElementById('search-input').addEventListener('input', handleSearch);
+        }
+
+        function handleSubmit(e) {
+            e.preventDefault();
+            
+            const formData = {
+                id: editingId || nextId++,
+                name: document.getElementById('campaign-name').value,
+                status: document.getElementById('campaign-status').checked,
+                description: document.getElementById('campaign-description').value,
+                startDate: document.getElementById('start-date').value,
+                endDate: document.getElementById('end-date').value
+            };
+
+            // Validate dates
+            if (new Date(formData.startDate) > new Date(formData.endDate)) {
+                alert('Ngày bắt đầu không thể sau ngày kết thúc!');
+                return;
+            }
+
+            if (editingId) {
+                updateCampaign(formData);
+            } else {
+                createCampaign(formData);
+            }
+
+            resetForm();
+            renderTable();
+        }
+
+        function createCampaign(campaign) {
+            campaigns.push(campaign);
+            showNotification('Thêm campaign thành công!', 'success');
+        }
+
+        function updateCampaign(updatedCampaign) {
+            const index = campaigns.findIndex(c => c.id === editingId);
+            if (index !== -1) {
+                campaigns[index] = updatedCampaign;
+                showNotification('Cập nhật campaign thành công!', 'success');
+            }
+        }
+
+        function deleteCampaign(id) {
+            if (confirm('Bạn có chắc chắn muốn xóa campaign này?')) {
+                campaigns = campaigns.filter(c => c.id !== id);
+                renderTable();
+                showNotification('Xóa campaign thành công!', 'success');
+            }
+        }
+
+        function editCampaign(id) {
+            const campaign = campaigns.find(c => c.id === id);
+            if (campaign) {
+                editingId = id;
+                
+                document.getElementById('campaign-id').value = campaign.id;
+                document.getElementById('campaign-name').value = campaign.name;
+                document.getElementById('campaign-status').checked = campaign.status;
+                document.getElementById('campaign-description').value = campaign.description;
+                document.getElementById('start-date').value = campaign.startDate;
+                document.getElementById('end-date').value = campaign.endDate;
+                
+                document.getElementById('form-title').textContent = '✏️ Sửa Campaign';
+                document.getElementById('submit-btn').textContent = '💾 Cập nhật';
+                
+                // Scroll to form
+                document.querySelector('.form-section').scrollIntoView({behavior: 'smooth'});
+            }
+        }
+
+        function cancelEdit() {
+            resetForm();
+        }
+
+        function resetForm() {
+            document.getElementById('campaign-form').reset();
+            editingId = null;
+            document.getElementById('form-title').textContent = '➕ Thêm Campaign Mới';
+            document.getElementById('submit-btn').textContent = '✨ Thêm Campaign';
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('campaign-tbody');
+            
+            if (campaigns.length === 0) {
+                tbody.innerHTML = '<tr class="no-data"><td colspan="7">Chưa có campaign nào được tạo</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = campaigns.map(campaign => `
+                <tr>
+                    <td>${campaign.id}</td>
+                    <td><strong>${campaign.name}</strong></td>
+                    <td>
+                        <span class="${campaign.status ? 'status-active' : 'status-inactive'}">
+                            ${campaign.status ? '✅ Kích hoạt' : '❌ Tạm dừng'}
+                        </span>
+                    </td>
+                    <td>${campaign.description || 'Không có mô tả'}</td>
+                    <td>${formatDate(campaign.startDate)}</td>
+                    <td>${formatDate(campaign.endDate)}</td>
+                    <td>
+                        <div class="actions">
+                            <button class="btn btn-edit" onclick="editCampaign(${campaign.id})">
+                                ✏️ Sửa
+                            </button>
+                            <button class="btn btn-danger" onclick="deleteCampaign(${campaign.id})">
+                                🗑️ Xóa
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function handleSearch(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredCampaigns = campaigns.filter(campaign => 
+                campaign.name.toLowerCase().includes(searchTerm) ||
+                campaign.description.toLowerCase().includes(searchTerm)
+            );
+            
+            const tbody = document.getElementById('campaign-tbody');
+            if (filteredCampaigns.length === 0) {
+                tbody.innerHTML = '<tr class="no-data"><td colspan="7">Không tìm thấy campaign nào</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = filteredCampaigns.map(campaign => `
+                <tr>
+                    <td>${campaign.id}</td>
+                    <td><strong>${campaign.name}</strong></td>
+                    <td>
+                        <span class="${campaign.status ? 'status-active' : 'status-inactive'}">
+                            ${campaign.status ? '✅ Kích hoạt' : '❌ Tạm dừng'}
+                        </span>
+                    </td>
+                    <td>${campaign.description || 'Không có mô tả'}</td>
+                    <td>${formatDate(campaign.startDate)}</td>
+                    <td>${formatDate(campaign.endDate)}</td>
+                    <td>
+                        <div class="actions">
+                            <button class="btn btn-edit" onclick="editCampaign(${campaign.id})">
+                                ✏️ Sửa
+                            </button>
+                            <button class="btn btn-danger" onclick="deleteCampaign(${campaign.id})">
+                                🗑️ Xóa
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('vi-VN');
+        }
+
+        function loadCampaigns() {
+            // Load sample data
+            campaigns = [
+                {
+                    id: 1,
+                    name: "Summer Sale 2025",
+                    status: true,
+                    description: "Chiến dịch khuyến mãi mùa hè với giảm giá lên đến 50%",
+                    startDate: "2025-06-01",
+                    endDate: "2025-08-31"
+                },
+                {
+                    id: 2,
+                    name: "Back to School",
+                    status: false,
+                    description: "Chiến dịch quay trở lại trường học",
+                    startDate: "2025-08-15",
+                    endDate: "2025-09-30"
+                }
+            ];
+            nextId = 3;
+            renderTable();
+        }
+
+        function showNotification(message, type) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                background: ${type === 'success' ? '#28a745' : '#dc3545'};
+                color: white;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                z-index: 1000;
+                font-weight: 600;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+            
+            // Add animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(notification);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.remove();
+                style.remove();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
