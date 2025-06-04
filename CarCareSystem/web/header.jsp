@@ -206,7 +206,7 @@
 
             <!-- Logo -->
             <div class="logo">
-                <a href="home.jsp"><img src="img/img.jpg " alt="CAR CARE Centre"></a>
+                <a href="home.jsp"><img src="img/logo.png " alt="CAR CARE Centre"></a>
             </div>
 
             <!-- Navigation menu right -->
