@@ -4,18 +4,23 @@
  */
 package controller;
 
+import dao.SupplierDAO;
+import entity.Supplier;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author Admin
  */
-public class CategoryServlet extends HttpServlet {
+public class SupplierController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -27,19 +32,34 @@ public class CategoryServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, Exception {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet CategoryServlet</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet CategoryServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+            
+            String service = request.getParameter("service");
+            SupplierDAO supplierDAO = new SupplierDAO();
+            
+            if(service.equals("list")){
+                ArrayList<Supplier> suppliers = supplierDAO.getAllSupplier();
+                request.setAttribute("supplierList", suppliers);
+                request.getRequestDispatcher("supplierList.jsp").forward(request, response);
+            }
+            
+            if(service.equals("search")){
+                String text = request.getParameter("search");
+                ArrayList<Supplier> suppliers = supplierDAO.getAllSupplierByText(text);
+                request.setAttribute("supplierList", suppliers);
+                request.setAttribute("searchedValue", text);
+                request.getRequestDispatcher("supplierList.jsp").forward(request, response);
+            }
+            
+            
+            if(service.equals("delete")){
+                int id = Integer.parseInt(request.getParameter("id"));
+                int successDelete = supplierDAO.deleteSupplier(id);
+                request.setAttribute("successDelete", successDelete);
+                request.getRequestDispatcher("supplierList.jsp").forward(request, response);
+            }
         }
     }
 
@@ -55,7 +75,11 @@ public class CategoryServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(SupplierController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -69,7 +93,11 @@ public class CategoryServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(SupplierController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**

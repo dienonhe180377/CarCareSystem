@@ -92,9 +92,5 @@ public class DBConnection {
         }
     }
     
-    public static void main(String[] args) {
-        DBConnection connection = new DBConnection();
-        System.out.println(connection.getConnection());
-    }
   
 }
