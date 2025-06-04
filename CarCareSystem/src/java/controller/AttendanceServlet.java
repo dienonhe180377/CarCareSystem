@@ -36,7 +36,7 @@ public class AttendanceServlet extends HttpServlet {
 //            currentUser = new User(1, "testuser", "repairer");
 //            request.getSession().setAttribute("user", currentUser);
         }
-        String role = currentUser.getUserRole();
+        String role = currentUser.getUserRoleStr();
 
         String method = request.getMethod();
         if (method.equalsIgnoreCase("GET")) {
