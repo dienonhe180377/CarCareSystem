@@ -34,6 +34,19 @@ public class User {
         this.userRole = userRole;
     }
 
+    public User(int id, String username) {
+        this.id = id;
+        this.username = username;
+    }
+
+    public User(int id, String username, String userRole) {
+        this.id = id;
+        this.username = username;
+        this.userRole = userRole;
+    }
+    
+    
+
     public int getId() {
         return id;
     }
