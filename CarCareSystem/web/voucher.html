@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Voucher</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .form-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input, select, textarea {
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #56ab2f, #a8e6cf);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(45deg, #f7971e, #ffd200);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            color: white;
+        }
+
+        .btn-success:hover, .btn-warning:hover, .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e1e5e9;
+        }
+
+        th {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+            transform: scale(1.01);
+            transition: all 0.2s ease;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-inactive {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .search-box {
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 20px;
+            padding: 12px 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 25px;
+            font-size: 14px;
+            background: white;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+            
+            table {
+                font-size: 12px;
+            }
+            
+            th, td {
+                padding: 10px 5px;
+            }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #ff416c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎫 Quản lý Voucher</h1>
+        
+        <!-- Form thêm/sửa voucher -->
+        <div class="form-section">
+            <h2 id="formTitle">➕ Thêm Voucher Mới</h2>
+            <form id="voucherForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="voucherId">ID:</label>
+                        <input type="number" id="voucherId" name="id" readonly style="background-color: #f8f9fa;">
+                    </div>
+                    <div class="form-group">
+                        <label for="voucherName">Tên Voucher:</label>
+                        <input type="text" id="voucherName" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="campaign">Campaign:</label>
+                        <select id="campaign" name="campaign" required>
+                            <option value="">Chọn campaign</option>
+                            <option value="Summer Sale 2025">Summer Sale 2025</option>
+                            <option value="Black Friday">Black Friday</option>
+                            <option value="New Year Promotion">New Year Promotion</option>
+                            <option value="Flash Sale">Flash Sale</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="service">Service:</label>
+                        <select id="service" name="service" required>
+                            <option value="">Chọn dịch vụ</option>
+                            <option value="Food Delivery">Food Delivery</option>
+                            <option value="Transportation">Transportation</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Travel">Travel</option>
+                            <option value="Entertainment">Entertainment</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="startDate">Ngày Bắt Đầu:</label>
+                        <input type="date" id="startDate" name="startDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="endDate">Ngày Kết Thúc:</label>
+                        <input type="date" id="endDate" name="endDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="discount">Giảm Giá (%):</label>
+                        <input type="number" id="discount" name="discount" min="1" max="100" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="status">Trạng Thái:</label>
+                        <select id="status" name="status" required>
+                            <option value="true">Kích hoạt</option>
+                            <option value="false">Không kích hoạt</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top: 20px;">
+                    <label for="description">Mô Tả:</label>
+                    <textarea id="description" name="description" placeholder="Nhập mô tả chi tiết về voucher..."></textarea>
+                </div>
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary" id="submitBtn">Thêm Voucher</button>
+                    <button type="button" class="btn btn-secondary" id="cancelBtn" onclick="resetForm()">Hủy</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Danh sách voucher -->
+        <div class="table-container">
+            <h2>📋 Danh Sách Voucher</h2>
+            <input type="text" class="search-box" id="searchBox" placeholder="🔍 Tìm kiếm voucher...">
+            <table id="voucherTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tên</th>
+                        <th>Campaign</th>
+                        <th>Service</th>
+                        <th>Ngày BĐ</th>
+                        <th>Ngày KT</th>
+                        <th>Giảm giá</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody id="voucherTableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal xác nhận xóa -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>⚠️ Xác Nhận Xóa</h2>
+            <p>Bạn có chắc chắn muốn xóa voucher này không?</p>
+            <div class="btn-group">
+                <button class="btn btn-danger" id="confirmDelete">Xóa</button>
+                <button class="btn btn-secondary" id="cancelDelete">Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let vouchers = [];
+        let currentEditId = null;
+        let deleteId = null;
+
+        // Khởi tạo dữ liệu mẫu
+        function initSampleData() {
+            vouchers = [
+                {
+                    id: 1,
+                    name: "Giảm giá mùa hè",
+                    campaign: "Summer Sale 2025",
+                    service: "Food Delivery",
+                    startDate: "2025-06-01",
+                    endDate: "2025-08-31",
+                    description: "Voucher giảm giá đặc biệt cho mùa hè",
+                    discount: 20,
+                    status: true
+                },
+                {
+                    id: 2,
+                    name: "Black Friday Sale",
+                    campaign: "Black Friday",
+                    service: "Shopping",
+                    startDate: "2025-11-25",
+                    endDate: "2025-11-30",
+                    description: "Giảm giá lớn trong ngày Black Friday",
+                    discount: 50,
+                    status: true
+                }
+            ];
+            displayVouchers();
+        }
+
+        // Hiển thị danh sách vouchers
+        function displayVouchers(vouchersToShow = vouchers) {
+            const tbody = document.getElementById('voucherTableBody');
+            tbody.innerHTML = '';
+
+            vouchersToShow.forEach(voucher => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${voucher.id}</td>
+                    <td>${voucher.name}</td>
+                    <td>${voucher.campaign}</td>
+                    <td>${voucher.service}</td>
+                    <td>${formatDate(voucher.startDate)}</td>
+                    <td>${formatDate(voucher.endDate)}</td>
+                    <td>${voucher.discount}%</td>
+                    <td>
+                        <span class="${voucher.status ? 'status-active' : 'status-inactive'}">
+                            ${voucher.status ? 'Kích hoạt' : 'Không kích hoạt'}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-warning" onclick="editVoucher(${voucher.id})" style="margin-right: 5px; padding: 8px 12px;">✏️ Sửa</button>
+                        <button class="btn btn-danger" onclick="showDeleteModal(${voucher.id})" style="padding: 8px 12px;">🗑️ Xóa</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Format ngày tháng
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('vi-VN');
+        }
+
+        // Thêm hoặc cập nhật voucher
+        document.getElementById('voucherForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const voucherData = {
+                name: formData.get('name'),
+                campaign: formData.get('campaign'),
+                service: formData.get('service'),
+                startDate: formData.get('startDate'),
+                endDate: formData.get('endDate'),
+                description: formData.get('description'),
+                discount: parseInt(formData.get('discount')),
+                status: formData.get('status') === 'true'
+            };
+
+            // Validate dates
+            if (new Date(voucherData.startDate) >= new Date(voucherData.endDate)) {
+                alert('Ngày kết thúc phải sau ngày bắt đầu!');
+                return;
+            }
+
+            if (currentEditId === null) {
+                // Thêm mới
+                voucherData.id = vouchers.length > 0 ? Math.max(...vouchers.map(v => v.id)) + 1 : 1;
+                vouchers.push(voucherData);
+                alert('✅ Thêm voucher thành công!');
+            } else {
+                // Cập nhật
+                const index = vouchers.findIndex(v => v.id === currentEditId);
+                if (index !== -1) {
+                    vouchers[index] = { ...voucherData, id: currentEditId };
+                    alert('✅ Cập nhật voucher thành công!');
+                }
+            }
+
+            resetForm();
+            displayVouchers();
+        });
+
+        // Sửa voucher
+        function editVoucher(id) {
+            const voucher = vouchers.find(v => v.id === id);
+            if (voucher) {
+                currentEditId = id;
+                
+                document.getElementById('voucherId').value = voucher.id;
+                document.getElementById('voucherName').value = voucher.name;
+                document.getElementById('campaign').value = voucher.campaign;
+                document.getElementById('service').value = voucher.service;
+                document.getElementById('startDate').value = voucher.startDate;
+                document.getElementById('endDate').value = voucher.endDate;
+                document.getElementById('description').value = voucher.description;
+                document.getElementById('discount').value = voucher.discount;
+                document.getElementById('status').value = voucher.status.toString();
+                
+                document.getElementById('formTitle').textContent = '✏️ Sửa Voucher';
+                document.getElementById('submitBtn').textContent = 'Cập Nhật';
+                
+                // Scroll to form
+                document.querySelector('.form-section').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Reset form
+        function resetForm() {
+            document.getElementById('voucherForm').reset();
+            currentEditId = null;
+            document.getElementById('voucherId').value = '';
+            document.getElementById('formTitle').textContent = '➕ Thêm Voucher Mới';
+            document.getElementById('submitBtn').textContent = 'Thêm Voucher';
+        }
+
+        // Hiển thị modal xóa
+        function showDeleteModal(id) {
+            deleteId = id;
+            document.getElementById('deleteModal').style.display = 'block';
+        }
+
+        // Xóa voucher
+        function deleteVoucher() {
+            vouchers = vouchers.filter(v => v.id !== deleteId);
+            displayVouchers();
+            document.getElementById('deleteModal').style.display = 'none';
+            alert('✅ Xóa voucher thành công!');
+        }
+
+        // Tìm kiếm voucher
+        document.getElementById('searchBox').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredVouchers = vouchers.filter(voucher => 
+                voucher.name.toLowerCase().includes(searchTerm) ||
+                voucher.campaign.toLowerCase().includes(searchTerm) ||
+                voucher.service.toLowerCase().includes(searchTerm)
+            );
+            displayVouchers(filteredVouchers);
+        });
+
+        // Event listeners cho modal
+        document.querySelector('.close').addEventListener('click', function() {
+            document.getElementById('deleteModal').style.display = 'none';
+        });
+
+        document.getElementById('confirmDelete').addEventListener('click', deleteVoucher);
+        document.getElementById('cancelDelete').addEventListener('click', function() {
+            document.getElementById('deleteModal').style.display = 'none';
+        });
+
+        // Đóng modal khi click bên ngoài
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('deleteModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // Khởi tạo ứng dụng
+        document.addEventListener('DOMContentLoaded', function() {
+            initSampleData();
+        });
+    </script>
+</body>
+</html>
