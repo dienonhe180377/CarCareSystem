@@ -33,8 +33,8 @@ public class AttendanceServlet extends HttpServlet {
 //            return;
 //            currentUser = new User(1, "admin", "admin"); 
 //            request.getSession().setAttribute("user", currentUser);
-            currentUser = new User(1, "testuser", "repairer");
-            request.getSession().setAttribute("user", currentUser);
+//            currentUser = new User(1, "testuser", "repairer");
+//            request.getSession().setAttribute("user", currentUser);
         }
         String role = currentUser.getUserRole();
 

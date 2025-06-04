@@ -33,7 +33,7 @@ protected void processRequest(HttpServletRequest request, HttpServletResponse re
         currentUser = new User(1, "testuser", "repairer");
             request.getSession().setAttribute("user", currentUser);
     }
-    String role = currentUser.getUserRole();
+    String role = currentUser.getUserRoleStr();
 
     boolean canEdit = "admin".equals(role) || "manager".equals(role) || "maketing".equals(role);
 
