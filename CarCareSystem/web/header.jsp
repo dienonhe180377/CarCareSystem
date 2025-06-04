@@ -218,7 +218,7 @@
 
             <!-- Login button and search -->
             <div class="menu-right">
-                <a href="login.jsp"><button class="login-button">Login</button></a>
+                <a href="login"><button class="login-button">Login</button></a>
             </div>
         </header>
         <div style="height: 120px;"></div>
