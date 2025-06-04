@@ -80,14 +80,14 @@ public class AuthorizationServlet extends HttpServlet {
         
         if(user == null){
             request.setAttribute("errorMessage", "Wrong username or password.");
-            request.getRequestDispatcher(request.getContextPath() + "/auth/login.jsp").forward(request, response);
+            request.getRequestDispatcher(request.getContextPath() + "/views/auth/login.jsp").forward(request, response);
             return;
         }
         
         HttpSession session = request.getSession();
         session.setAttribute("currentUser", user);
         
-        String role = user.getUserRoleStr().toLowerCase();
+        String role = user.getUserRole().toLowerCase();
         
         switch(role){
             case "admin":
@@ -111,7 +111,7 @@ public class AuthorizationServlet extends HttpServlet {
             default:
                 session.invalidate();
                 request.setAttribute("errorMessage", "You do not have permission to access.");
-                request.getRequestDispatcher("/login.jsp").forward(request, response);
+                request.getRequestDispatcher("/views/auth/login.jsp").forward(request, response);
                 break;
         }
     }

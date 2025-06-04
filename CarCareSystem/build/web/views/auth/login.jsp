@@ -190,7 +190,7 @@
                     <h1>Đăng nhập</h1>
 
                     <p class="subtitle">Cung cấp thông tin đăng nhập hợp lệ của bạn</p>
-                    <form action="authorization" method="post">
+                    <form action="login" method="post">
                         <div class="form-group">
                             <label for="username">Username</label>
                             <input type="text" id="username" name="username" placeholder="Tài khoản" required>

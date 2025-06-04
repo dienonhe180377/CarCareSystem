@@ -103,15 +103,7 @@ public class User {
         this.createdDate = createdDate;
     }
 
-    public int getUserRole() {
-        try {
-            return Integer.parseInt(this.userRole);
-        } catch (Exception e) {
-            return -1; // default invalid
-        }
-    }
-
-    public String getUserRoleStr() {
+    public String getUserRole() {
         return this.userRole;
     }
 

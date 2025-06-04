@@ -62,10 +62,10 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("roleID", userA.getUserRole()); // Lưu role vào session để Filter kiểm tra
 
             // Điều hướng theo quyền
-            if (userA.getUserRole() == 6) {
+            if ("customer".equals(userA.getUserRole())) {
                 response.sendRedirect("home"); // User               
             } else {
-                response.sendRedirect("admin"); // Admin
+                response.sendRedirect("authorization"); // Admin
             }
         }
     }

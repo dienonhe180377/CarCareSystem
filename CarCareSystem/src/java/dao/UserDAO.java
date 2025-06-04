@@ -58,7 +58,7 @@ public class UserDAO extends DBConnection {
     }
     
     public void registerUser(String username, String password, String email, String phone, String address) {
-        String sql = "INSERT INTO [User](username, password, email, phone, address, role) VALUES (?, ?, ?, ?, ?, 6)";
+        String sql = "INSERT INTO [User](username, password, email, phone, address, role) VALUES (?, ?, ?, ?, ?, customer)";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setString(1, username);
@@ -144,6 +144,7 @@ public class UserDAO extends DBConnection {
         if (user == null || requiredRole == null) {
             return false;
         }
-        return user.getUserRoleStr().equalsIgnoreCase(requiredRole);
+        return user.getUserRole().equalsIgnoreCase(requiredRole);
     }
+    
 }
