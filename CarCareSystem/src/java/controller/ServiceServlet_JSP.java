@@ -68,9 +68,8 @@ public class ServiceServlet_JSP extends HttpServlet {
                 }
                 case "listService": {
                     Vector<Service> list;
-                    String submit = request.getParameter("submit");
                     String searchName = request.getParameter("name");
-                    if (submit == null || searchName == null || searchName.isEmpty()) {
+                    if (searchName == null || searchName.isEmpty()) {
                         list = dao.getAllService();
                     } else {
                         list = dao.searchServiceByName(searchName);

@@ -1,4 +1,3 @@
-
 <%-- 
     Document   : InsertService
     Created on : Jun 1, 2025, 9:04:03 PM
@@ -123,10 +122,7 @@
             <div class="form-title">${pageTitle}</div>
             <form action="ServiceServlet_JSP" method="POST" autocomplete="off">
                 <table>
-                    <tr>
-                        <td class="form-label">ID</td>
-                        <td><input class="form-input" type="text" name="id" required autocomplete="off"></td>
-                    </tr>
+                    <%-- Đã bỏ trường ID --%>
                     <tr>
                         <td class="form-label">Tên dịch vụ</td>
                         <td><input class="form-input" type="text" name="name" required autocomplete="off"></td>

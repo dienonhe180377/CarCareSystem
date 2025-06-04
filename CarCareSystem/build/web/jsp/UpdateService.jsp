@@ -1,4 +1,3 @@
-
 <%-- 
     Document   : UpdateService
     Created on : Jun 1, 2025, 10:22:51 PM
@@ -122,11 +121,9 @@
         <div class="form-container">
             <div class="form-title">${pageTitle}</div>
             <form action="ServiceServlet_JSP" method="POST" autocomplete="off">
+                <!-- Hidden ID field to use for update but not show to user -->
+                <input type="hidden" name="id" value="${service.id}">
                 <table>
-                    <tr>
-                        <td class="form-label">ID</td>
-                        <td><input class="form-input" type="text" name="id" required autocomplete="off"></td>
-                    </tr>
                     <tr>
                         <td class="form-label">Tên dịch vụ</td>
                         <td><input class="form-input" type="text" name="name" required autocomplete="off"></td>
@@ -143,7 +140,6 @@
                         <td class="form-label">Giá dịch vụ</td>
                         <td><input class="form-input" type="text" name="price" required autocomplete="off"></td>
                     </tr>
-                    <tr>
                         <td colspan="2" class="form-actions">
                             <input class="btn btn-submit" type="submit" name="submit" value="Cập nhật dịch vụ">
                             <input class="btn btn-reset" type="reset" value="Làm lại">

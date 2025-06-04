@@ -33,7 +33,7 @@ public class ServiceDAO extends DBConnection {
     // Tìm kiếm theo name (an toàn, tránh SQL injection)
     public Vector<Service> searchServiceByName(String name) {
         Vector<Service> listService = new Vector<>();
-        String sql = "SELECT id, name, partId, description, price FROM Service WHERE name LIKE ?";
+        String sql = "SELECT * FROM Service WHERE name LIKE ?";
         try (PreparedStatement ptm = connection.prepareStatement(sql)) {
             ptm.setString(1, "%" + name + "%");
             ResultSet rs = ptm.executeQuery();
