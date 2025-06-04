@@ -217,6 +217,4 @@ ADD description nvarchar(255)
 -- SELECT * FROM sys.tables;
 
 
---INSERT
-
 

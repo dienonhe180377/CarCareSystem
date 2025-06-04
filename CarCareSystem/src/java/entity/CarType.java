@@ -19,6 +19,11 @@ public class CarType {
         this.status = status;
     }
 
+    public CarType(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public int getId() {
         return id;
     }
