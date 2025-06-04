@@ -107,4 +107,43 @@ public class UserDAO extends DBConnection {
             System.out.println(e);
         }
     }
+    
+    public User findByUsername(String username) {
+        String sql = "SELECT * FROM [User] WHERE username = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                int id = rs.getInt("id");
+                String user = rs.getString("username");
+                String pass = rs.getString("password");
+                String email = rs.getString("email");
+                String phone = rs.getString("phone");
+                String address = rs.getString("address");
+                java.util.Date createdDate = rs.getDate("createDate");
+                String userRole = rs.getString("role");
+
+                return new User(id, user, pass, email, phone, address, createdDate, userRole);
+            }
+        } catch (Exception e) {
+            System.out.println("Error in findByUsername: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public User authenticate(String username, String password) {
+        User user = findByUsername(username);
+        if (user != null && user.getPassword().equals(password)) {
+            return user;
+        }
+        return null;
+    }
+
+    public boolean authorize(User user, String requiredRole) {
+        if (user == null || requiredRole == null) {
+            return false;
+        }
+        return user.getUserRoleStr().equalsIgnoreCase(requiredRole);
+    }
 }
