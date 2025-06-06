@@ -6,6 +6,7 @@
 package controller;
 
 import dao.UserDAO;
+import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,14 +15,14 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import entity.User;
+import java.util.Date;
 
 /**
  *
  * @author GIGABYTE
  */
-@WebServlet(name="AuthorizationServlet", urlPatterns={"/authorization"})
-public class AuthorizationServlet extends HttpServlet {
+@WebServlet(name="AddUserServlet", urlPatterns={"/admin/addUser"})
+public class AddUserServlet extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -38,10 +39,10 @@ public class AuthorizationServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet AuthorizationServlet</title>");  
+            out.println("<title>Servlet AddUserServlet</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet AuthorizationServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet AddUserServlet at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -55,10 +56,18 @@ public class AuthorizationServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    private UserDAO uDao = new UserDAO();
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        HttpSession session = request.getSession(false);
+        User currentUser = (User) (session != null ? session.getAttribute("currentUser") : null);
+        if(currentUser == null || !currentUser.getUserRoleStr().equalsIgnoreCase("admin")){
+            response.sendRedirect(request.getContextPath() + "/accessDenied.jsp");
+            return;
+        }
+        request.getRequestDispatcher("/admin/addUser.jsp").forward(request, response);
     } 
 
     /** 
@@ -68,51 +77,32 @@ public class AuthorizationServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    private UserDAO uDao = new UserDAO();
-    
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        
-        User user = uDao.authenticate(username, password);
-        
-        if(user == null){
-            request.setAttribute("error", "Wrong username or password.");
-            request.getRequestDispatcher("views/auth/login.jsp").forward(request, response);
+        HttpSession session = request.getSession(false);
+        User currentUser = (User) (session != null ? session.getAttribute("currentUser") : null);
+        if(currentUser == null || !currentUser.getUserRoleStr().equalsIgnoreCase("admin")){
+            response.sendRedirect(request.getContextPath() + "/accessDenied.jsp");
             return;
         }
         
-        HttpSession session = request.getSession();
-        session.setAttribute("currentUser", user);
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+        String email = request.getParameter("email");
+        String phone = request.getParameter("phone");
+        String address = request.getParameter("address");       
+        Date createDate = new Date();
+        String role = request.getParameter("userRole");
         
-        String role = user.getUserRoleStr().toLowerCase();
+        User newUser = new User(0, username, password, email, phone, address, createDate, role);
         
-        switch(role){
-            case "admin":
-                response.sendRedirect(request.getContextPath() + "/admin/userList");
-                break;
-            case "manager":
-                response.sendRedirect(request.getContextPath() + "/dashboard.jsp");
-                break;
-            case "repairer":
-                response.sendRedirect(request.getContextPath() + "/dashboard.jsp");
-                break;
-            case "customer":
-                response.sendRedirect(request.getContextPath() + "/home.jsp");
-                break;
-            case "warehouse_manager":
-                response.sendRedirect(request.getContextPath() + "/dashboard.jsp");
-                break;
-            case "marketing":
-                response.sendRedirect(request.getContextPath() + "/dashboard.jsp");
-                break;
-            default:
-                session.invalidate();
-                request.setAttribute("error", "You do not have permission to access.");
-                request.getRequestDispatcher("views/auth/login.jsp").forward(request, response);
-                break;
+        boolean success = uDao.addUser(newUser);
+        if(success){
+            response.sendRedirect(request.getContextPath() + "/admin/userList");
+        } else{
+            request.setAttribute("errorMessage", "Thêm user thất bại!");
+            request.getRequestDispatcher("admin/addUser.jsp").forward(request, response);
         }
     }
 

@@ -31,8 +31,12 @@
                 flex: 1;
             }
 
+            a {
+                text-decoration: none;
+            }
+
             footer {
-                background-color: gold;
+                background-color: lightblue;
                 padding: 50px 30px 20px;
             }
 
@@ -112,7 +116,7 @@
                     <div class="footer-column">
                         <h4>SITE INFORMATION</h4>
                         <ul>
-                            <li>Home</li>
+                            <a href="home.jsp"><li>Home</li></a>
                             <li>Shop</li>
                             <li>Cart</li>
                         </ul>
@@ -124,7 +128,7 @@
                             <li>Terms & Conditions</li>
                             <li>Delivery & Returns</li>
                             <li>Training Academy</li>
-                            <li>Car Care Services</li>
+                            <a href="ServiceServlet_JSP"><li>Car Care Services</li></a>
                         </ul>
                     </div>
 
@@ -132,9 +136,9 @@
                         <h4>CONTACT</h4>
                         <ul>
                             <li><span>A.</span> Car Care Centre</li>
-                            <li><span>T.</span> Service Booking:</li>
-                            <li><span>T.</span> Product Order:</li>
-                            <li><span>E.</span> HotLine:0328728197</li>
+                            <li><span>T.</span> Service Booking</li>
+                            <li><span>T.</span> Product Order</li>
+                            <li><span>E.</span> Hotline:0328728197</li>
                         </ul>
                     </div>
                 </div>

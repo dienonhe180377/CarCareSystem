@@ -13,15 +13,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import entity.User;
 
 /**
  *
  * @author GIGABYTE
  */
-@WebServlet(name="AuthorizationServlet", urlPatterns={"/authorization"})
-public class AuthorizationServlet extends HttpServlet {
+@WebServlet(name="DeleteUserServlet", urlPatterns={"/admin/deleteUser"})
+public class DeleteUserServlet extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -38,10 +36,10 @@ public class AuthorizationServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet AuthorizationServlet</title>");  
+            out.println("<title>Servlet DeleteUserServlet</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet AuthorizationServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet DeleteUserServlet at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -73,47 +71,9 @@ public class AuthorizationServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        
-        User user = uDao.authenticate(username, password);
-        
-        if(user == null){
-            request.setAttribute("error", "Wrong username or password.");
-            request.getRequestDispatcher("views/auth/login.jsp").forward(request, response);
-            return;
-        }
-        
-        HttpSession session = request.getSession();
-        session.setAttribute("currentUser", user);
-        
-        String role = user.getUserRoleStr().toLowerCase();
-        
-        switch(role){
-            case "admin":
-                response.sendRedirect(request.getContextPath() + "/admin/userList");
-                break;
-            case "manager":
-                response.sendRedirect(request.getContextPath() + "/dashboard.jsp");
-                break;
-            case "repairer":
-                response.sendRedirect(request.getContextPath() + "/dashboard.jsp");
-                break;
-            case "customer":
-                response.sendRedirect(request.getContextPath() + "/home.jsp");
-                break;
-            case "warehouse_manager":
-                response.sendRedirect(request.getContextPath() + "/dashboard.jsp");
-                break;
-            case "marketing":
-                response.sendRedirect(request.getContextPath() + "/dashboard.jsp");
-                break;
-            default:
-                session.invalidate();
-                request.setAttribute("error", "You do not have permission to access.");
-                request.getRequestDispatcher("views/auth/login.jsp").forward(request, response);
-                break;
-        }
+        int id = Integer.parseInt(request.getParameter("id"));
+        uDao.deleteUser(id);
+        response.sendRedirect(request.getContextPath() + "/admin/userList");
     }
 
     /** 
