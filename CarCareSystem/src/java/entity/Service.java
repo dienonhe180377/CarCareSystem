@@ -4,6 +4,8 @@
  */
 package entity;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author Admin
@@ -12,17 +14,14 @@ public class Service {
 
     private int id;
     private String name;
-    private int partId;
+    private ArrayList<Part> parts;
     private String description;
     private double price;
 
-    public Service() {
-    }
-
-    public Service(int id, String name, int partId, String description, double price) {
+    public Service(int id, String name, ArrayList<Part> parts, String description, double price) {
         this.id = id;
         this.name = name;
-        this.partId = partId;
+        this.parts = parts;
         this.description = description;
         this.price = price;
     }
@@ -43,12 +42,12 @@ public class Service {
         this.name = name;
     }
 
-    public int getPartId() {
-        return partId;
+    public ArrayList<Part> getParts() {
+        return parts;
     }
 
-    public void setPartId(int partId) {
-        this.partId = partId;
+    public void setParts(ArrayList<Part> parts) {
+        this.parts = parts;
     }
 
     public String getDescription() {
@@ -69,7 +68,8 @@ public class Service {
 
     @Override
     public String toString() {
-        return "Service{" + "id=" + id + ", name=" + name + ", partId=" + partId + ", description=" + description + ", price=" + price + '}';
+        return "Service{" + "id=" + id + ", name=" + name + ", parts=" + parts + ", description=" + description + ", price=" + price + '}';
     }
+
     
 }
