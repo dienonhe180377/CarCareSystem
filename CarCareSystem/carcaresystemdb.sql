@@ -53,7 +53,6 @@ GO
 CREATE TABLE Service (
     id          INT           IDENTITY(1,1) PRIMARY KEY,
     name        NVARCHAR(150) NOT NULL,
-    partId      INT           NULL,
     description NVARCHAR(500) NULL,
     price       FLOAT NOT NULL
 );  
@@ -116,20 +115,11 @@ GO
 CREATE TABLE Parts (
     id         INT           IDENTITY(1,1) PRIMARY KEY,
     name       NVARCHAR(150) NOT NULL,
-    serviceId  INT           NOT NULL,
     categoryId INT           NOT NULL,
-    supplierId INT           NOT NULL,
     price      FLOAT NOT NULL,
 
-    CONSTRAINT FK_Parts_Service  FOREIGN KEY(serviceId)  REFERENCES Service(id),
-    CONSTRAINT FK_Parts_Category FOREIGN KEY(categoryId) REFERENCES Category(id),
-    CONSTRAINT FK_Parts_Supplier FOREIGN KEY(supplierId) REFERENCES Supplier(id)
+    CONSTRAINT FK_Parts_Category FOREIGN KEY(categoryId) REFERENCES Category(id)
 );
-GO
-
--- 12. Thêm FK partId vào Service (circular reference)
-ALTER TABLE Service
-ADD CONSTRAINT FK_Service_Parts FOREIGN KEY(partId) REFERENCES Parts(id);
 GO
 
 -- 13. Bảng Size
@@ -205,6 +195,16 @@ CREATE TABLE PartsSupplier (
 
     CONSTRAINT FK_PartsSupplier_Part     FOREIGN KEY(partId)     REFERENCES Parts(id),
     CONSTRAINT FK_PartsSupplier_Supplier FOREIGN KEY(supplierId) REFERENCES Supplier(id)
+);
+GO
+
+CREATE TABLE PartsService (
+    id         INT IDENTITY(1,1) PRIMARY KEY,
+    serviceId  INT NOT NULL,
+    partId     INT NOT NULL,
+
+    CONSTRAINT FK_PartsService_Service FOREIGN KEY(serviceId) REFERENCES Service(id),
+    CONSTRAINT FK_PartsService_Part FOREIGN KEY(partId) REFERENCES Parts(id)
 );
 GO
 
