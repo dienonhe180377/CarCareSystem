@@ -189,9 +189,13 @@
                 <div class="login-form">
                     <h1>Xác minh OTP</h1>
                     <p class="subtitle">Nhập mã xác nhận hợp lệ</p>
+                    </br>
                     <form action="verifyOTP" method="post">
-                        <input type="text" name="otp" placeholder="Nhập mã OTP" required />
-                        <button type="submit">Xác minh</button>
+                        <div class="form-group">
+                            <label>Mã OTP</label>
+                            <input type="text" name="otp" required />
+                        </div>
+                        <button type="submit" class="login-button">Xác minh</button>
                     </form>
                     <% if (request.getAttribute("error") != null) { %>
                         <p style="color:red"><%= request.getAttribute("error") %></p>
