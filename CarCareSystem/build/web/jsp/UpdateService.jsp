@@ -104,6 +104,10 @@
                 background: #b02a37;
                 color: #fff;
             }
+             .tieu-de{
+                text-align: center;
+                
+            }
             @media (max-width: 600px) {
                 .form-container {
                     padding: 22px 10px;
@@ -122,16 +126,14 @@
             <div class="form-title">${pageTitle}</div>
             <form action="ServiceServlet_JSP" method="POST" autocomplete="off">
                 <!-- Hidden ID field to use for update but not show to user -->
+                  <h2 class="tieu-de">Thêm dịch vụ</h2>
                 <input type="hidden" name="id" value="${service.id}">
                 <table>
                     <tr>
                         <td class="form-label">Tên dịch vụ</td>
                         <td><input class="form-input" type="text" name="name" required autocomplete="off"></td>
                     </tr>
-                    <tr>
-                        <td class="form-label">Mã bộ phận (partId)</td>
-                        <td><input class="form-input" type="number" name="partId" min="1" required autocomplete="off"></td>
-                    </tr>
+                
                     <tr>
                         <td class="form-label">Mô tả</td>
                         <td><input class="form-input" type="text" name="description" autocomplete="off"></td>
