@@ -1,6 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -92,6 +93,15 @@
                 background: #b0bec5;
                 color: #222f3e;
             }
+            .btn-preview {
+                background: linear-gradient(90deg,#c3e0f7,#94c6eb);
+                color: #2563eb;
+                border: none;
+            }
+            .btn-preview:hover {
+                background: linear-gradient(90deg,#47b5ff,#94c6eb);
+                color: #fff;
+            }
             .form-inline .form-control {
                 width: 260px;
                 border-radius: 18px;
@@ -151,8 +161,8 @@
             }
         </style>
     </head>
-    <a href="home.jsp" class="btn btn-secondary">Quay về trang chủ</a>
     <body>
+        <a href="home.jsp" class="btn btn-secondary mt-3 ms-3">Quay về trang chủ</a>
         <div class="container">
             <h2>Service Management</h2>
             <form class="form-inline row g-2 mb-4 align-items-center" action="ServiceServlet_JSP" method="get">
@@ -181,6 +191,8 @@
                             <th>Name</th>
                             <th>Description</th>
                             <th>Price</th>
+                            <th>Preview</th>
+                            <th>Detail</th>
                             <th>Update</th>
                             <th>Delete</th>
                         </tr>
@@ -200,6 +212,16 @@
                                                     <span class="price-vnd">VND</span>
                                                 </td>
                                                 <td>
+                                                    <a class="btn btn-preview btn-sm btn-custom" href="ServiceServlet_JSP?service=previewService&id=${se.id}">
+                                                        <i class="bi bi-eye"></i> Xem nhanh
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <a class="btn btn-info btn-sm btn-custom" href="ServiceServlet_JSP?service=detailService&id=${se.id}">
+                                                        <i class="bi bi-info-circle"></i> Chi tiết
+                                                    </a>
+                                                </td>
+                                                <td>
                                                     <a class="btn btn-warning btn-sm btn-custom" href="ServiceServlet_JSP?service=updateService&id=${se.id}">
                                                         <i class="bi bi-pencil-square"></i> Update
                                                     </a>
@@ -214,7 +236,7 @@
                                     </c:when>
                                     <c:otherwise>
                                         <tr>
-                                            <td colspan="6" class="empty-message">No service found for "<b>${param.name}</b>".</td>
+                                            <td colspan="8" class="empty-message">No service found for "<b>${param.name}</b>".</td>
                                         </tr>
                                     </c:otherwise>
                                 </c:choose>
@@ -230,6 +252,16 @@
                                             <span class="price-vnd">VND</span>
                                         </td>
                                         <td>
+                                            <a class="btn btn-preview btn-sm btn-custom" href="ServiceServlet_JSP?service=previewService&id=${se.id}">
+                                                <i class="bi bi-eye"></i> Xem nhanh
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-info btn-sm btn-custom" href="ServiceServlet_JSP?service=detailService&id=${se.id}">
+                                                <i class="bi bi-info-circle"></i> Chi tiết
+                                            </a>
+                                        </td>
+                                        <td>
                                             <a class="btn btn-warning btn-sm btn-custom" href="ServiceServlet_JSP?service=updateService&id=${se.id}">
                                                 <i class="bi bi-pencil-square"></i> Update
                                             </a>
@@ -243,7 +275,7 @@
                                 </c:forEach>
                                 <c:if test="${empty data}">
                                     <tr>
-                                        <td colspan="6" class="empty-message">No service found.</td>
+                                        <td colspan="8" class="empty-message">No service found.</td>
                                     </tr>
                                 </c:if>
                             </c:otherwise>
