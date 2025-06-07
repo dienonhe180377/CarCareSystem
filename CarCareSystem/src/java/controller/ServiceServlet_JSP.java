@@ -62,6 +62,20 @@ public class ServiceServlet_JSP extends HttpServlet {
                     }
                     break;
                 }
+                case "detailService": {
+                    int id = Integer.parseInt(request.getParameter("id"));
+                    Service se = dao.searchService(id);
+                    request.setAttribute("service", se);
+                    request.getRequestDispatcher("jsp/ServiceDetail.jsp").forward(request, response);
+                    break;
+                }
+                case "previewService": {
+                    int id = Integer.parseInt(request.getParameter("id"));
+                    Service se = dao.searchService(id);
+                    request.setAttribute("service", se);
+                    request.getRequestDispatcher("jsp/ServicePreview.jsp").forward(request, response);
+                    break;
+                }
                 case "listService": {
                     Vector<Service> list;
                     String searchName = request.getParameter("name");
