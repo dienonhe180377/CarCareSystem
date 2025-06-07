@@ -40,10 +40,9 @@ public class ServiceServlet_JSP extends HttpServlet {
                     } else {
                         int id = Integer.parseInt(request.getParameter("id"));
                         String name = request.getParameter("name");
-                        int partId = Integer.parseInt(request.getParameter("partId"));
                         String description = request.getParameter("description");
                         double price = Double.parseDouble(request.getParameter("price"));
-                        Service se = new Service(id, name, partId, description, price);
+                        Service se = new Service(id, name, description, price);
                         dao.updateService(se);
                         response.sendRedirect("ServiceServlet_JSP?service=listService");
                     }
@@ -54,13 +53,10 @@ public class ServiceServlet_JSP extends HttpServlet {
                     if (submit == null) {
                         request.getRequestDispatcher("jsp/InsertService.jsp").forward(request, response);
                     } else {
-                        // Không lấy id khi insert mới
                         String name = request.getParameter("name");
-                        int partId = Integer.parseInt(request.getParameter("partId"));
                         String description = request.getParameter("description");
                         double price = Double.parseDouble(request.getParameter("price"));
-
-                        Service se = new Service(0, name, partId, description, price);
+                        Service se = new Service(0, name, description, price);
                         dao.insertService(se);
                         response.sendRedirect("ServiceServlet_JSP?service=listService");
                     }
