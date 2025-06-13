@@ -18,6 +18,9 @@ public class Campaign {
     private Date startDate;
     private Date endDate;
 
+    public Campaign() {
+    }
+    
     public Campaign(int id, String name, boolean status, String description, Date startDate, Date endDate) {
         this.id = id;
         this.name = name;
