@@ -198,10 +198,10 @@
                        
 
                         <!-- Hiển thị thông báo lỗi nếu có -->
-                        <% String errorMessage = (String) request.getAttribute("mess"); %>
+                        <% String errorMessage = (String) request.getAttribute("error"); %>
                         <% if (errorMessage != null && !errorMessage.isEmpty()) { %>
                         <div class="alert alert-danger">
-                            <i class="fa fa-exclamation-circle"></i> <%= request.getAttribute("mess") %>
+                            <i class="fa fa-exclamation-circle"></i> <%= request.getAttribute("error") %>
                         </div>
                         <% } %>
 

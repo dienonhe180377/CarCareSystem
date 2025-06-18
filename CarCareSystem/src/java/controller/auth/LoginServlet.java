@@ -63,7 +63,7 @@ public class LoginServlet extends HttpServlet {
 
             // Điều hướng theo quyền
             if ("customer".equals(userA.getUserRole())) {
-                response.sendRedirect("home"); // User               
+                response.sendRedirect("home"); // User              
             } else {
                 response.sendRedirect("authorization"); // Admin
             }

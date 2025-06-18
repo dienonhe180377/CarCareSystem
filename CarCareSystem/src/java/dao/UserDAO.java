@@ -58,7 +58,7 @@ public class UserDAO extends DBConnection {
     }
     
     public void registerUser(String username, String password, String email, String phone, String address) {
-        String sql = "INSERT INTO [User](username, password, email, phone, address, role) VALUES (?, ?, ?, ?, ?, customer)";
+        String sql = "INSERT INTO [User](username, password, email, phone, address, role) VALUES (?, ?, ?, ?, ?, 'customer')";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setString(1, username);
