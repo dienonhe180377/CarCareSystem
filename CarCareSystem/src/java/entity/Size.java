@@ -14,7 +14,7 @@ public class Size {
     private Part part;
     private boolean status;
     private int quantity;
-
+    
     public Size(int id, String name, Part part, boolean status, int quantity) {
         this.id = id;
         this.name = name;

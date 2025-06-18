@@ -1,155 +1,114 @@
-<%-- 
-    Document   : UpdateService
-    Created on : Jun 1, 2025, 10:22:51 PM
-    Author     : ADMIN
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>${pageTitle}</title>
-        <style>
-            body {
-                background: linear-gradient(120deg, #e0eafc, #cfdef3 100%);
-                min-height: 100vh;
-                margin: 0;
-                font-family: 'Segoe UI', Arial, sans-serif;
-            }
-            .form-container {
-                background: #fff;
-                max-width: 450px;
-                margin: 50px auto;
-                padding: 36px 40px 28px 40px;
-                border-radius: 20px;
-                box-shadow: 0 6px 32px rgba(0,0,0,0.12);
-                position: relative;
-                animation: floatIn 0.9s cubic-bezier(.55,.06,.68,.19);
-            }
-            @keyframes floatIn {
-                from { transform: translateY(60px) scale(0.95); opacity: 0; }
-                to { transform: translateY(0) scale(1); opacity: 1; }
-            }
-            .form-title {
-                text-align: center;
-                font-size: 2rem;
-                font-weight: 600;
-                color: #276678;
-                letter-spacing: 1px;
-                margin-bottom: 22px;
-            }
-            table {
-                width: 100%;
-                border-collapse: separate;
-                border-spacing: 0 12px;
-            }
-            td {
-                padding: 0;
-            }
-            .form-label {
-                font-size: 1.06rem;
-                color: #1e3c72;
-                font-weight: 500;
-                padding-bottom: 4px;
-                width: 32%;
-                vertical-align: top;
-            }
-            .form-input {
-                width: 99%;
-                padding: 9px 12px;
-                border: 1.5px solid #dbe2ef;
-                border-radius: 8px;
-                font-size: 1.04rem;
-                color: #333;
-                background: #f7fbff;
-                transition: border-color 0.2s;
-                outline: none;
-                box-sizing: border-box;
-            }
-            .form-input:focus {
-                border-color: #3895d3;
-                background: #ecf6fc;
-            }
-            .form-actions {
-                text-align: right;
-                padding-top: 12px;
-            }
-            .btn {
-                padding: 9px 30px;
-                border-radius: 8px;
-                border: none;
-                font-size: 1.06rem;
-                font-weight: 500;
-                margin-left: 12px;
-                margin-top: 5px;
-                cursor: pointer;
-                transition: box-shadow 0.16s, background 0.16s, color 0.16s;
-                box-shadow: 0 2px 6px rgba(56,149,211,0.09);
-            }
-            .btn-submit {
-                background: linear-gradient(90deg, #3895d3, #47b5ff);
-                color: #fff;
-            }
-            .btn-submit:hover {
-                background: linear-gradient(90deg,#47b5ff,#3895d3);
-                box-shadow: 0 4px 16px rgba(56,149,211,0.16);
-            }
-            .btn-reset {
-                background: #e84545;
-                color: #fff;
-            }
-            .btn-reset:hover {
-                background: #b02a37;
-                color: #fff;
-            }
-             .tieu-de{
-                text-align: center;
-                
-            }
-            @media (max-width: 600px) {
-                .form-container {
-                    padding: 22px 10px;
-                }
-                .form-title {
-                    font-size: 1.3rem;
-                }
-                .btn {
-                    padding: 8px 16px;
-                }
-            }
-        </style>
-    </head>
-    <body>
-        <div class="form-container">
-            <div class="form-title">${pageTitle}</div>
-            <form action="ServiceServlet_JSP" method="POST" autocomplete="off">
-                <!-- Hidden ID field to use for update but not show to user -->
-                  <h2 class="tieu-de">Thêm dịch vụ</h2>
-                <input type="hidden" name="id" value="${service.id}">
-                <table>
-                    <tr>
-                        <td class="form-label">Tên dịch vụ</td>
-                        <td><input class="form-input" type="text" name="name" required autocomplete="off"></td>
-                    </tr>
-                
-                    <tr>
-                        <td class="form-label">Mô tả</td>
-                        <td><input class="form-input" type="text" name="description" autocomplete="off"></td>
-                    </tr>
-                    <tr>
-                        <td class="form-label">Giá dịch vụ</td>
-                        <td><input class="form-input" type="text" name="price" required autocomplete="off"></td>
-                    </tr>
-                        <td colspan="2" class="form-actions">
-                            <input class="btn btn-submit" type="submit" name="submit" value="Cập nhật dịch vụ">
-                            <input class="btn btn-reset" type="reset" value="Làm lại">
-                            <input type="hidden" name="service" value="updateService">
-                        </td>
-                    </tr>
-                </table>
-            </form>
-        </div>
-    </body>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>${pageTitle}</title>
+    <style>
+        body { background: #f4f7fb; font-family: Arial, sans-serif; }
+        .form-container {
+            background: #fff;
+            max-width: 520px;
+            margin: 44px auto;
+            border-radius: 14px;
+            padding: 36px 34px 22px 34px;
+            box-shadow: 0 8px 32px 0 rgba(31,38,135,0.11);
+        }
+        .form-title { font-size: 2rem; color: #2563eb; font-weight: 700; text-align: center; margin-bottom: 18px; }
+        .tieu-de { font-size: 1.3rem; color: #166bb3; font-weight: 600; text-align: center; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 13px;}
+        .form-label { width: 120px; color: #333; font-weight: 500; vertical-align: top; }
+        .form-input[type="text"], .form-input[type="number"] {
+            width: 100%; padding: 8px 10px; border-radius: 7px;
+            border: 1.3px solid #b7c7d7; font-size: 1.1rem;
+        }
+        .form-input[type="file"] { font-size: 1rem; }
+        .form-actions { text-align: right; }
+        .btn { padding: 8px 22px; border-radius: 6px; border: none; font-size: 1rem; font-weight: 600; }
+        .btn-submit { background: #2563eb; color: #fff; }
+        .btn-submit:hover { background: #1746a2; }
+        .btn-reset { background: #888; color: #fff; margin-left: 8px; }
+        .alert { text-align: center; margin-bottom: 12px;}
+        .alert-error { color: #e74c3c; }
+        .alert-success { color: #27ae60; }
+        @media (max-width: 600px) {
+            .form-container { padding: 12px 3vw; max-width: 97vw;}
+            table { font-size: 0.98rem;}
+            .form-title { font-size: 1.2rem;}
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <div class="form-title">${pageTitle}</div>
+        <c:if test="${not empty error}">
+            <div class="alert alert-error">${error}</div>
+        </c:if>
+        <c:if test="${not empty message}">
+            <div class="alert alert-success">${message}</div>
+        </c:if>
+        <h2 class="tieu-de">Cập nhật dịch vụ</h2>
+        <c:choose>
+            <c:when test="${role == 'admin' || role == 'manager' || role == 'maketing'}">
+                <form action="ServiceServlet_JSP" method="POST" enctype="multipart/form-data" autocomplete="off">
+                    <input type="hidden" name="id" value="${service.id}">
+                    <table>
+                        <tr>
+                            <td class="form-label">Tên dịch vụ</td>
+                            <td>
+                                <input class="form-input" type="text" name="name" required minlength="3" maxlength="29"
+                                       pattern="^[\p{L} ]+$"
+                                       title="Chỉ nhập chữ cái, không số, không ký tự đặc biệt"
+                                       value="${service != null ? service.name : ''}" autocomplete="off">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="form-label">Mô tả</td>
+                            <td>
+                                <input class="form-input" type="text" name="description" required minlength="3" maxlength="29"
+                                       pattern="^[\p{L} ]+$"
+                                       title="Chỉ nhập chữ cái, không số, không ký tự đặc biệt"
+                                       value="${service != null ? service.description : ''}" autocomplete="off">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="form-label">Giá dịch vụ</td>
+                            <td>
+                                <input class="form-input" type="number" name="price" required 
+                                       min="1" max="99999999" step="1"
+                                       value="${service.price}" autocomplete="off">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="form-label">Ảnh dịch vụ</td>
+                            <td>
+                                <input class="form-input" type="file" name="img" accept="image/*">
+                                <c:if test="${not empty service.img}">
+                                    <div style="margin-top:10px">
+                                        <img src="${pageContext.request.contextPath}/${service.img}" width="120" alt="Ảnh dịch vụ hiện tại">
+                                        <div style="font-size:12px;color:#888;">Ảnh hiện tại</div>
+                                    </div>
+                                </c:if>
+                                <input type="hidden" name="imgOld" value="${service.img}" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="form-actions">
+                                <input class="btn btn-submit" type="submit" name="submit" value="Cập nhật dịch vụ">
+                                <input class="btn btn-reset" type="reset" value="Làm lại">
+                                <input type="hidden" name="service" value="updateService">
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </c:when>
+            <c:otherwise>
+                <div style="color:red;text-align:center;margin-top:16px">
+                    Bạn không có quyền truy cập chức năng này.
+                </div>
+            </c:otherwise>
+        </c:choose>
+    </div>
+</body>
 </html>

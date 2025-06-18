@@ -12,6 +12,40 @@ import java.sql.*;
  */
 public class UserDAO extends DBConnection {
     
+    public User getUserById(int id) {
+    String sql = "SELECT * FROM [User] WHERE id = ?";
+    try (PreparedStatement st = connection.prepareStatement(sql)) {
+        st.setInt(1, id);
+        ResultSet rs = st.executeQuery();
+        if (rs.next()) {
+            int userId = rs.getInt("id");
+            String username = rs.getString("username");
+            String password = rs.getString("password");
+            String email = rs.getString("email");
+            String phone = rs.getString("phone");
+            String address = rs.getString("address");
+            java.util.Date createdDate = rs.getDate("createDate");
+            String userRole = rs.getString("role");
+            return new User(userId, username, password, email, phone, address, createdDate, userRole);
+        }
+    } catch (SQLException e) {
+        System.out.println("Error in getUserById: " + e.getMessage());
+    }
+    return null;
+}
+  public void updateUser(User user) {
+    String sql = "UPDATE [User] SET username = ?, email = ?, phone = ?, address = ? WHERE id = ?";
+    try (PreparedStatement st = connection.prepareStatement(sql)) {
+        st.setString(1, user.getUsername());
+        st.setString(2, user.getEmail());
+        st.setString(3, user.getPhone());
+        st.setString(4, user.getAddress());
+        st.setInt(5, user.getId());
+        st.executeUpdate();
+    } catch (SQLException e) {
+        System.out.println("Error in updateUser: " + e.getMessage());
+    }
+}
     public User authenticationUserLogin(String username, String password) {
         String sql = "SELECT *\n"
                 + "FROM [User]\n"
@@ -146,5 +180,6 @@ public class UserDAO extends DBConnection {
         }
         return user.getUserRole().equalsIgnoreCase(requiredRole);
     }
+    
     
 }
