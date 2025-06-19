@@ -180,6 +180,45 @@ public class InsuranceDAO extends DBConnection {
     }
     return list;
 }
+    // Đếm tổng số bản ghi
+public int getTotalInsuranceCount() {
+    String sql = "SELECT COUNT(*) FROM [dbo].[Insurance]";
+    try {
+        PreparedStatement ptm = connection.prepareStatement(sql);
+        ResultSet rs = ptm.executeQuery();
+        if (rs.next()) return rs.getInt(1);
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+    return 0;
+}
+
+// Lấy danh sách theo trang
+public Vector<Insurance> getInsuranceByPage(int page, int pageSize) {
+    Vector<Insurance> list = new Vector<>();
+    String sql = "SELECT * FROM [dbo].[Insurance] ORDER BY id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+    try {
+        PreparedStatement ptm = connection.prepareStatement(sql);
+        ptm.setInt(1, (page - 1) * pageSize);
+        ptm.setInt(2, pageSize);
+        ResultSet rs = ptm.executeQuery();
+        while (rs.next()) {
+            Insurance i = new Insurance(
+                rs.getInt(1),
+                rs.getInt(2),
+                rs.getInt(3),
+                rs.getDate(4),
+                rs.getDate(5),
+                rs.getDouble(6),
+                rs.getString(7)
+            );
+            list.add(i);
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+    return list;
+}
 
     public static void main(String[] args) {
         InsuranceDAO iDAO = new InsuranceDAO();

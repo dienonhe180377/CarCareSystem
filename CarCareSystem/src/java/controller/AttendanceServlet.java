@@ -29,10 +29,11 @@ public class AttendanceServlet extends HttpServlet {
         AttendanceDAO dao = new AttendanceDAO();
         User currentUser = (User) request.getSession().getAttribute("user");
         if (currentUser == null) {
-//            response.sendRedirect("login.jsp");
+//            response.sendRedirect("views/auth/login.jsp");
 //            return;
-//            currentUser = new User(1, "admin", "admin"); 
-//            request.getSession().setAttribute("user", currentUser);
+            currentUser = new User(1, "admin", "admin"); 
+            request.getSession().setAttribute("user", currentUser);
+
 //            currentUser = new User(1, "testuser", "repairer");
 //            request.getSession().setAttribute("user", currentUser);
         }

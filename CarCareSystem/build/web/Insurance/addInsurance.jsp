@@ -119,6 +119,9 @@
     </div>
     <div class="form-container">
         <div class="form-title">Add Insurance</div>
+        <c:if test="${not empty error}">
+        <div style="color:red; text-align:center; margin-bottom:10px;">${error}</div>
+    </c:if>
         <form action="insurance" method="POST" autocomplete="off">
             <table>
                 <tr>
@@ -151,7 +154,9 @@
                 </tr>
                 <tr>
                     <td class="form-label">Price</td>
-                    <td><input class="form-input" type="text" name="price" required></td>
+                    <td>
+                    <input class="form-input" type="number" name="price" min="0" step="any" required>
+                </td>
                 </tr>
                 <tr>
                     <td class="form-label">Description</td>
