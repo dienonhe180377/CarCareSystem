@@ -181,5 +181,44 @@ public class UserDAO extends DBConnection {
         return user.getUserRole().equalsIgnoreCase(requiredRole);
     }
     
-    
+    public boolean isUsernameExists(String username, int excludeUserId) {
+        String sql = "SELECT id FROM [User] WHERE username = ? AND id <> ?";
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
+            st.setString(1, username);
+            st.setInt(2, excludeUserId);
+            ResultSet rs = st.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            System.out.println("Error in isUsernameExists: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public boolean isEmailExists(String email, int excludeUserId) {
+        String sql = "SELECT id FROM [User] WHERE email = ? AND id <> ?";
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
+            st.setString(1, email);
+            st.setInt(2, excludeUserId);
+            ResultSet rs = st.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            System.out.println("Error in isEmailExists: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public boolean isPhoneExists(String phone, int excludeUserId) {
+        String sql = "SELECT id FROM [User] WHERE phone = ? AND id <> ?";
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
+            st.setString(1, phone);
+            st.setInt(2, excludeUserId);
+            ResultSet rs = st.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            System.out.println("Error in isPhoneExists: " + e.getMessage());
+        }
+        return false;
+    }
 }
+    
+
