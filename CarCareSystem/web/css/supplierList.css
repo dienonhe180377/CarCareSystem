@@ -1,4 +1,6 @@
+/* supplierList.css */
 
+/* Reset cơ bản */
 * {
     margin: 0;
     padding: 0;
@@ -35,10 +37,18 @@ body {
     color: #2c3e50;
     margin-bottom: 8px;
 }
+
+/* Search Box */
 .search-box {
-    position: relative;
+    display: flex;
+    align-items: center;
     width: 100%;
-    max-width: 300px;
+    max-width: 400px;
+}
+.search-box form {
+    display: flex;
+    align-items: center;
+    flex: 1;
 }
 .search-box input {
     width: 100%;
@@ -53,12 +63,38 @@ body {
     outline: none;
 }
 .search-box .icon {
+    font-size: 1rem;
+    color: #888;
+}
+.search-box .btn-search {
+    background: none;
+    border: none;
     position: absolute;
     right: 12px;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 1rem;
+    cursor: pointer;
+    font-size: 1.1rem;
     color: #888;
+    transition: color 0.2s;
+}
+.search-box .btn-search:hover {
+    color: #555;
+}
+
+/* Nút Thêm (xanh lá) */
+.search-box .btn-add {
+    margin-left: 12px;
+    padding: 8px 14px;
+    background-color: #4caf50;
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.95rem;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+.search-box .btn-add:hover {
+    background-color: #388e3c;
 }
 
 /* Bảng dữ liệu */
@@ -134,9 +170,9 @@ table tbody tr:hover {
     background-color: #d32f2f;
 }
 
-/* Modal (popup) */
+/* Modal */
 .modal {
-    display: none; /* Ẩn ban đầu */
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
@@ -162,12 +198,11 @@ table tbody tr:hover {
         opacity: 0;
         transform: translateY(-10px);
     }
-    to {
+    to   {
         opacity: 1;
         transform: translateY(0);
     }
 }
-/* Nút đóng */
 .modal .close {
     position: absolute;
     top: 12px;
@@ -180,13 +215,11 @@ table tbody tr:hover {
 .modal .close:hover {
     color: #000;
 }
-/* Tiêu đề modal */
 .modal h2 {
     text-align: center;
     margin-bottom: 16px;
     color: #2c3e50;
 }
-/* Nội dung modal: chia 2 cột */
 .modal-body {
     display: flex;
     align-items: flex-start;
@@ -230,7 +263,6 @@ table tbody tr:hover {
     background-color: #f9f9f9;
     color: #333;
 }
-/* Nút Edit trong modal */
 #modalEdit {
     display: block;
     margin: 20px auto 0;
@@ -247,7 +279,7 @@ table tbody tr:hover {
     background-color: #388e3c;
 }
 
-/* Responsive cho modal */
+/* Responsive */
 @media (max-width: 600px) {
     .modal-body {
         flex-direction: column;
@@ -260,8 +292,6 @@ table tbody tr:hover {
         width: 70px;
     }
 }
-
-/* Responsive: Khi màn hình nhỏ */
 @media (max-width: 768px) {
     .header {
         flex-direction: column;
@@ -271,9 +301,9 @@ table tbody tr:hover {
         font-size: 1.5rem;
     }
     .search-box {
-        margin-top: 12px;
         width: 100%;
         max-width: none;
+        margin-top: 12px;
     }
     table {
         font-size: 0.9rem;

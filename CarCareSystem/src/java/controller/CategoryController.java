@@ -37,7 +37,6 @@ public class CategoryController extends HttpServlet {
             throws ServletException, IOException, Exception {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
 
             String service = request.getParameter("service");
             CategoryDAO categoryDAO = new CategoryDAO();
@@ -79,7 +78,6 @@ public class CategoryController extends HttpServlet {
                 ArrayList<Category> categoryList = (ArrayList<Category>) session.getAttribute("mainCategoryList");
                 ArrayList<Category> filteredList = new ArrayList<>(categoryList);
                 if (value.equals("all")) {
-                    categoryList = categoryDAO.getAllCategory();
                     request.setAttribute("all", "all");
                     request.setAttribute("categoryList", filteredList);
                     request.getRequestDispatcher("categoryList.jsp").forward(request, response);
@@ -114,7 +112,6 @@ public class CategoryController extends HttpServlet {
                     request.setAttribute("oldest", "oldest");
                     request.setAttribute("categoryList", filteredList);
                     request.getRequestDispatcher("categoryList.jsp").forward(request, response);
-
                 }
             }
 

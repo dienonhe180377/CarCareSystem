@@ -35,7 +35,7 @@ public class DBConnection {
 
     public Connection getConnection() {
         try {
-            connection = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=CarCareSystem", "sa", "123456");
+            connection = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=CarCareSystem", "sa", "123");
         } catch (SQLException ex) {
             Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
