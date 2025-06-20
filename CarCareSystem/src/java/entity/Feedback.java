@@ -4,7 +4,7 @@
  */
 package entity;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 /**
  *
@@ -12,15 +12,18 @@ import java.util.Date;
  */
 public class Feedback {
     private int id;
-    private User user;
+    private int userId;
     private String description;
-    private Date createdDate;
+    private Timestamp createDate;
 
-    public Feedback(int id, User user, String description, Date createdDate) {
+    public Feedback() {
+    }
+
+    public Feedback(int id, int userId, String description, Timestamp createDate) {
         this.id = id;
-        this.user = user;
+        this.userId = userId;
         this.description = description;
-        this.createdDate = createdDate;
+        this.createDate = createDate;
     }
 
     public int getId() {
@@ -31,12 +34,12 @@ public class Feedback {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getDescription() {
@@ -47,12 +50,16 @@ public class Feedback {
         this.description = description;
     }
 
-    public Date getCreatedDate() {
-        return createdDate;
+    public Timestamp getCreateDate() {
+        return createDate;
     }
 
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
+    public void setCreateDate(Timestamp createdDate) {
+        this.createDate = createDate;
     }
+
+    
+
+
     
 }

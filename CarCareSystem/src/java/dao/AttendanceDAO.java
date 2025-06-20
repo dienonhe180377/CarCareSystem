@@ -95,7 +95,7 @@ public class AttendanceDAO extends DBConnection {
 
     public Vector<User> getAllUsers() {
         Vector<User> list = new Vector<>();
-        String sql = "SELECT id, username FROM [dbo].[User]";
+        String sql = "SELECT id, username FROM [dbo].[User] WHERE role = 'customer'";
         try {
             PreparedStatement ptm = connection.prepareStatement(sql);
             ResultSet rs = ptm.executeQuery();
