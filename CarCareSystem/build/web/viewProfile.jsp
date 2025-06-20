@@ -201,10 +201,10 @@
                 </div>
                 <div class="sidebar-menu">
                     <a class="active" href="#">Thông tin tài khoản</a>
-                    <a href="#"><i class="fa fa-history"></i> Đọc gần đây</a>
+                    <a href="#"><i class="fa fa-history"></i> My Order</a>
                     <a href="#"><i class="fa fa-bookmark"></i> Tin đã lưu</a>
-                    <a href="#"><i class="fa fa-key"></i> Đổi mật khẩu</a>
-                    <a href="login"><i class="fa fa-sign-out-alt"></i> Đăng xuất</a>
+                    <a href="changepass"><i class="fa fa-key"></i> Đổi mật khẩu</a>
+                    <a href="logout"><i class="fa fa-sign-out-alt"></i> Đăng xuất</a>
                 </div>
             </div>
 

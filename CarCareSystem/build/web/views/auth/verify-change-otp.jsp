@@ -62,7 +62,7 @@
     </style>
     </head>
     <body>
-        <%@include file="header.jsp" %>
+        <%--<%@ include file="/header.jsp" %>--%>
         <div class="container">
             <!-- Sidebar -->
             <div class="sidebar">
@@ -99,6 +99,6 @@
                 </form>
             </div>
         </div>
-        <%@include file="footer.jsp" %>       
+        <%--<%@ include file="/footer.jsp" %>--%>       
     </body>
 </html>

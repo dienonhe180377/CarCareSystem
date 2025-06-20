@@ -146,17 +146,17 @@ public class ServiceDAO extends DBConnection {
         try (PreparedStatement ptm = connection.prepareStatement(sql)) {
             ptm.setInt(1, serviceId);
             ResultSet rs = ptm.executeQuery();
-            while (rs.next()) {
-                Part part = new Part(
-                        rs.getInt("id"),
-                        rs.getString("name"),
-                        null,
-                        null,
-                        null,
-                        rs.getDouble("price")
-                );
-                parts.add(part);
-            }
+//            while (rs.next()) {
+//                Part part = new Part(
+//                        rs.getInt("id"),
+//                        rs.getString("name"),
+//                        null,
+//                        null,
+//                        null,
+//                        rs.getDouble("price")
+//                );
+//                parts.add(part);
+//            }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

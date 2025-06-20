@@ -46,8 +46,10 @@ public class ChangePassServlet extends HttpServlet {
         String oldPassword = request.getParameter("oldPassword");
         String newPassword = request.getParameter("newPassword");
         String confirmPassword = request.getParameter("confirmPassword");
+        
+        
 
-        if (!user.getPassword().equals(oldPassword)) {
+        if (user.getPassword() == null || !user.getPassword().equals(oldPassword)) {
             request.setAttribute("error", "Mật khẩu cũ không đúng.");
             request.getRequestDispatcher("/views/auth/change-password.jsp").forward(request, response);
             return;

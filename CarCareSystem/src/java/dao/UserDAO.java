@@ -205,27 +205,6 @@ public class UserDAO extends DBConnection {
             System.out.println("Error in isPhoneExists: " + e.getMessage());
         }
         return false;
-
-    public User getUserById(int id) {
-        String sql = "SELECT * FROM [User] WHERE id = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return new User(
-                    rs.getInt("id"),
-                    rs.getString("username"),
-                    rs.getString("password"),
-                    rs.getString("email"),    
-                    rs.getString("phone"),
-                    rs.getString("address"),
-                    rs.getDate("createDate"),
-                    rs.getString("role"));
-            }
-        } catch (Exception e) {
-            System.out.println("Error in getUserById: " + e.getMessage());
-        }
-        return null;
     }
     
     public boolean addUser(User user){
@@ -246,22 +225,7 @@ public class UserDAO extends DBConnection {
         }
         return false;
     }
-    
-    public void updateUser(User user) {
-        String sql = "UPDATE [User] SET username=?, email=?, phone=?, address=?, role=? WHERE id=?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, user.getUsername());
-            ps.setString(2, user.getEmail());
-            ps.setString(3, user.getPhone());
-            ps.setString(4, user.getAddress());
-            ps.setString(5, user.getUserRole());
-            ps.setInt(6, user.getId());
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println("Error in updateUser: " + e.getMessage());
-        }
-    }
-    
+        
     public void deleteUser(int id){
         String sql = "DELETE FROM [User] WHERE id = ?";
         try(PreparedStatement ps = connection.prepareStatement(sql)){

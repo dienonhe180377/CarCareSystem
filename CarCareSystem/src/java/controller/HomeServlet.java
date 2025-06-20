@@ -1,6 +1,6 @@
 package controller;
 
-import dao.HomeDAO;
+
 import entity.Service;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -28,9 +28,9 @@ public class HomeServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         // Lấy top 3 dịch vụ nổi bật
-        HomeDAO homeDAO = new HomeDAO();
-        Vector<Service> top3Services = homeDAO.getTop3BestServices();
-        request.setAttribute("top3Services", top3Services);
+//        HomeDAO homeDAO = new HomeDAO();
+//       Vector<Service> top3Services = homeDAO.getTop3BestServices();
+//        request.setAttribute("top3Services", top3Services);
 
         // Forward đến trang home.jsp
         request.getRequestDispatcher("jsp/home.jsp").forward(request, response);

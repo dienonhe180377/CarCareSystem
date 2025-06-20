@@ -5,7 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ page import="model.User" %>
+<%@ page import="entity.User" %>
 <%
     User user = (User) session.getAttribute("user");
     String username = user.getUsername();
@@ -114,18 +114,18 @@
     </style>
     </head>
     <body>
-        <%@include file="header.jsp" %>
+        <%--<%@include file="/header.jsp" %>--%>
         <div class="container">
             <!-- Sidebar -->
             <div class="sidebar">
                 <div class="avatar"><%= firstLetter %></div>
                 <h3><%= username %> <span style="color: red;">✔</span></h3>
                 <ul>
-                    <li>Thông tin tài khoản</li>
-                    <li>Order gần đây</li>
+                    <a href="viewProfile"><li>Thông tin tài khoản</li></a>
+                    <li>My Order</li>
                     <li>Đánh giá dịch vụ</li>
                     <li class="active">Đổi mật khẩu</li>
-                    <li><a href="logout">Đăng xuất</a></li>
+                    <a href="logout"><li>Đăng xuất</li></a>
                 </ul>
             </div>
 
@@ -164,6 +164,6 @@
                 </form>
             </div>
         </div>
-        <%@include file="footer.jsp" %>
+        <%--<%@ include file="/footer.jsp" %>--%>
     </body>
 </html>
