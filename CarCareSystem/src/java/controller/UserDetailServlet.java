@@ -1,13 +1,15 @@
+package controller;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package controller.auth;
 
 import dao.UserDAO;
 import entity.User;
 import java.io.IOException;
+import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -17,10 +19,10 @@ import jakarta.servlet.http.HttpSession;
 
 /**
  *
- * @author TRAN ANH HAI
+ * @author GIGABYTE
  */
-@WebServlet(name="LoginServlet", urlPatterns={"/login"})
-public class LoginServlet extends HttpServlet {
+@WebServlet(urlPatterns={"/admin/userDetail"})
+public class UserDetailServlet extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -32,43 +34,19 @@ public class LoginServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        // Lấy username & password từ request
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        
-        // Kiểm tra nếu không nhập username/password (truy cập lần đầu)
-        if (username == null || password == null || username.trim().isEmpty() || password.trim().isEmpty()) {
-            request.getRequestDispatcher("/views/auth/login.jsp").forward(request, response);
-            return;
+        try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet UserDetailServlet</title>");  
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet UserDetailServlet at " + request.getContextPath () + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
         }
-        
-        UserDAO userDAO = new UserDAO();
-        User userA = userDAO.authenticationUserLogin(username, password);
-        
-        if (userA == null) {
-            // Đăng nhập thất bại, hiển thị lỗi
-            request.setAttribute("error", "Thông tin đăng nhập không hợp lệ!");
-            request.getRequestDispatcher("/views/auth/login.jsp").forward(request, response);
-        } else {
-            // Đăng nhập thành công -> Xử lý session
-            HttpSession session = request.getSession(false); // Không tạo mới session nếu chưa có
-            if (session != null) {
-                session.invalidate(); // Xóa session cũ để tránh lỗi session trước đó
-            }
-            session = request.getSession(true); // Tạo session mới
-
-            // Lưu thông tin user vào session
-            session.setAttribute("user", userA);
-            session.setAttribute("roleID", userA.getUserRole()); // Lưu role vào session để Filter kiểm tra
-
-            // Điều hướng theo quyền
-            if ("customer".equals(userA.getUserRole())) {
-                response.sendRedirect("home.jsp"); // User               
-            } else {
-                response.sendRedirect("authorization"); // Admin
-            }
-        }
-    }
+    } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 
@@ -78,10 +56,34 @@ public class LoginServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    private UserDAO uDao = new UserDAO();
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        // Kiểm tra quyền Admin
+        HttpSession session = request.getSession(false);
+        User currentUser = (User) (session != null ? session.getAttribute("user") : null);
+        if (currentUser == null || !currentUser.getUserRole().equalsIgnoreCase("admin")) {
+            response.sendRedirect(request.getContextPath() + "/accessDenied.jsp");
+            return;
+        }
+
+        String idStr = request.getParameter("id");
+        if (idStr == null) {
+            response.sendRedirect(request.getContextPath() + "/admin/userList");
+            return;
+        }
+
+        int id = Integer.parseInt(idStr);
+        User user = uDao.getUserById(id);
+        if (user == null) {
+            response.sendRedirect(request.getContextPath() + "/admin/userList");
+            return;
+        }
+
+        request.setAttribute("user", user);
+        request.getRequestDispatcher("/admin/userDetail.jsp").forward(request, response);
     } 
 
     /** 
@@ -95,7 +97,6 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         processRequest(request, response);
-        
     }
 
     /** 

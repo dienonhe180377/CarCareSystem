@@ -11,6 +11,10 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Dashboard</title>
+
+        <!-- Font Awesome cho icon avatar -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
         <style>
             * {
                 margin: 0;
@@ -113,16 +117,41 @@
                 align-items: center;
             }
 
-            header .profile {
-                display: flex;
-                align-items: center;
+            /* Avatar Dropdown */
+            .avatar-icon {
+                font-size: 36px;
+                color: black;
+                cursor: pointer;
             }
 
-            header .profile img {
-                width: 40px;
-                height: 40px;
-                border-radius: 50%;
-                margin-left: 15px;
+            .dropdown {
+                position: relative;
+                display: inline-block;
+            }
+
+            .dropdown-content {
+                display: none;
+                position: absolute;
+                right: 0;
+                background-color: lightcyan;
+                min-width: 160px;
+                box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+                z-index: 1000;
+            }
+
+            .dropdown-content a {
+                color: black;
+                padding: 10px 16px;
+                text-decoration: none;
+                display: block;
+            }
+
+            .dropdown-content a:hover {
+                background-color: #ddd;
+            }
+
+            .show {
+                display: block;
             }
 
             .dashboard {
@@ -171,8 +200,7 @@
     </head>
     <body>       
         <div id="sidebar" class="sidebar">
-            <h2>Adminator</h2>
-            <a href="#">Dashboard</a>
+            <h2>Dashboard</h2>
             <a href="#">Email</a>
             <a href="#">Compose</a>
             <a href="#">Calendar</a>
@@ -192,11 +220,16 @@
             <header>
                 <div class="title">
                     <button class="menu-button" onclick="toggleSidebar()">☰</button>
-                    Dashboard
                 </div>
                 <div class="profile">
-                    <span>John Doe</span>
-                    <img src="https://via.placeholder.com/40" alt="Profile">
+                    <div class="dropdown">
+                        <i class="fas fa-user-circle avatar-icon" onclick="toggleDropdown()"></i>
+                        <div id="userDropdown" class="dropdown-content">
+                            <a href="profile.jsp">Profile</a>
+                            <a href="orders.jsp">My Orders</a>
+                            <a href="logout.jsp">Logout</a>
+                        </div>
+                    </div>
                 </div>
             </header>
 
@@ -236,6 +269,20 @@
                     mainContent.classList.add('shifted');
                 }
             }
+
+            function toggleDropdown() {
+                var dropdown = document.getElementById("userDropdown");
+                dropdown.classList.toggle("show");
+            }
+
+            window.onclick = function (event) {
+                if (!event.target.matches('.avatar-icon')) {
+                    var dropdown = document.getElementById("userDropdown");
+                    if (dropdown && dropdown.classList.contains('show')) {
+                        dropdown.classList.remove('show');
+                    }
+                }
+            };
         </script>
     </body>
 </html>

@@ -6,6 +6,8 @@ package dao;
 
 import entity.User;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 /**
  *
  * @author TRAN ANH HAI
@@ -142,43 +144,28 @@ public class UserDAO extends DBConnection {
         }
     }
     
-    public User findByUsername(String username) {
-        String sql = "SELECT * FROM [User] WHERE username = ?";
+    public List<User> getAllUser() {
+        List<User> userList = new ArrayList<>();
+        String sql = "SELECT * FROM [User]";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, username);
             ResultSet rs = ps.executeQuery();
 
-            if (rs.next()) {
+            while (rs.next()) {
                 int id = rs.getInt("id");
-                String user = rs.getString("username");
-                String pass = rs.getString("password");
+                String username = rs.getString("username");
+                String password = rs.getString("password");
                 String email = rs.getString("email");
                 String phone = rs.getString("phone");
                 String address = rs.getString("address");
-                java.util.Date createdDate = rs.getDate("createDate");
-                String userRole = rs.getString("role");
+                java.util.Date createDate = rs.getDate("createDate");
+                String role = rs.getString("role");
 
-                return new User(id, user, pass, email, phone, address, createdDate, userRole);
+                userList.add(new User(id, username, password, email, phone, address, createDate, role));
             }
         } catch (Exception e) {
-            System.out.println("Error in findByUsername: " + e.getMessage());
+            System.out.println("Error in getAllUser: " + e.getMessage());
         }
-        return null;
-    }
-
-    public User authenticate(String username, String password) {
-        User user = findByUsername(username);
-        if (user != null && user.getPassword().equals(password)) {
-            return user;
-        }
-        return null;
-    }
-
-    public boolean authorize(User user, String requiredRole) {
-        if (user == null || requiredRole == null) {
-            return false;
-        }
-        return user.getUserRole().equalsIgnoreCase(requiredRole);
+        return userList;
     }
     
     public boolean isUsernameExists(String username, int excludeUserId) {
@@ -218,6 +205,71 @@ public class UserDAO extends DBConnection {
             System.out.println("Error in isPhoneExists: " + e.getMessage());
         }
         return false;
+
+    public User getUserById(int id) {
+        String sql = "SELECT * FROM [User] WHERE id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new User(
+                    rs.getInt("id"),
+                    rs.getString("username"),
+                    rs.getString("password"),
+                    rs.getString("email"),    
+                    rs.getString("phone"),
+                    rs.getString("address"),
+                    rs.getDate("createDate"),
+                    rs.getString("role"));
+            }
+        } catch (Exception e) {
+            System.out.println("Error in getUserById: " + e.getMessage());
+        }
+        return null;
+    }
+    
+    public boolean addUser(User user){
+        String sql = "INSERT INTO [User] (username, password, email, phone,"
+                + " address, createDate, role) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        try(PreparedStatement ps = connection.prepareStatement(sql)){
+            ps.setString(1, user.getUsername());
+            ps.setString(2, user.getPassword());
+            ps.setString(3, user.getEmail());
+            ps.setString(4, user.getPhone());
+            ps.setString(5, user.getAddress());
+            ps.setDate(6, new java.sql.Date(user.getCreatedDate().getTime()));
+            ps.setString(7, user.getUserRole());
+            int rows = ps.executeUpdate();
+            return rows > 0;
+        } catch (Exception e) {
+            System.out.println("Error in addUser: " + e.getMessage());
+        }
+        return false;
+    }
+    
+    public void updateUser(User user) {
+        String sql = "UPDATE [User] SET username=?, email=?, phone=?, address=?, role=? WHERE id=?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, user.getUsername());
+            ps.setString(2, user.getEmail());
+            ps.setString(3, user.getPhone());
+            ps.setString(4, user.getAddress());
+            ps.setString(5, user.getUserRole());
+            ps.setInt(6, user.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Error in updateUser: " + e.getMessage());
+        }
+    }
+    
+    public void deleteUser(int id){
+        String sql = "DELETE FROM [User] WHERE id = ?";
+        try(PreparedStatement ps = connection.prepareStatement(sql)){
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        } catch(SQLException e){
+            System.out.println("Error in deleteUser: " + e.getMessage());
+        }
     }
 }
     
