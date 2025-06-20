@@ -5,22 +5,24 @@
 
 package controller.auth;
 
-import dao.UserDAO;
 import entity.User;
 import java.io.IOException;
+import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.Random;
+import util.SendMailService;
 
 /**
  *
  * @author TRAN ANH HAI
  */
-@WebServlet(name="LoginServlet", urlPatterns={"/login"})
-public class LoginServlet extends HttpServlet {
+@WebServlet(name="ChangePassServlet", urlPatterns={"/changepass"})
+public class ChangePassServlet extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -32,43 +34,45 @@ public class LoginServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        // Lấy username & password từ request
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        
-        // Kiểm tra nếu không nhập username/password (truy cập lần đầu)
-        if (username == null || password == null || username.trim().isEmpty() || password.trim().isEmpty()) {
-            request.getRequestDispatcher("/views/auth/login.jsp").forward(request, response);
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            response.sendRedirect("login");
             return;
         }
         
-        UserDAO userDAO = new UserDAO();
-        User userA = userDAO.authenticationUserLogin(username, password);
-        
-        if (userA == null) {
-            // Đăng nhập thất bại, hiển thị lỗi
-            request.setAttribute("error", "Thông tin đăng nhập không hợp lệ!");
-            request.getRequestDispatcher("/views/auth/login.jsp").forward(request, response);
-        } else {
-            // Đăng nhập thành công -> Xử lý session
-            HttpSession session = request.getSession(false); // Không tạo mới session nếu chưa có
-            if (session != null) {
-                session.invalidate(); // Xóa session cũ để tránh lỗi session trước đó
-            }
-            session = request.getSession(true); // Tạo session mới
+        String email = user.getEmail();
+        String oldPassword = request.getParameter("oldPassword");
+        String newPassword = request.getParameter("newPassword");
+        String confirmPassword = request.getParameter("confirmPassword");
 
-            // Lưu thông tin user vào session
-            session.setAttribute("user", userA);
-            session.setAttribute("roleID", userA.getUserRole()); // Lưu role vào session để Filter kiểm tra
-
-            // Điều hướng theo quyền
-            if ("customer".equals(userA.getUserRole())) {
-                response.sendRedirect("home"); // User              
-            } else {
-                response.sendRedirect("authorization"); // Admin
-            }
+        if (!user.getPassword().equals(oldPassword)) {
+            request.setAttribute("error", "Mật khẩu cũ không đúng.");
+            request.getRequestDispatcher("/views/auth/change-password.jsp").forward(request, response);
+            return;
         }
-    }
+        
+        if (!newPassword.equals(confirmPassword)) {
+            request.setAttribute("error", "Mật khẩu mới không khớp.");
+            request.getRequestDispatcher("/views/auth/change-password.jsp").forward(request, response);
+            return;
+        }
+        
+        String otp = String.valueOf(new Random().nextInt(900000) + 100000);
+        session.setAttribute("otp", otp);
+        session.setAttribute("email", email);
+        session.setAttribute("newPassword", newPassword);
+        boolean sent = SendMailService.sendOTP(email, otp);
+        if (!sent) {
+            request.setAttribute("error", "Không thể gửi OTP đến email của bạn.");
+            request.getRequestDispatcher("/views/auth/change-password.jsp").forward(request, response);
+        } else {
+            request.setAttribute("message", "Mã OTP đã được gửi. Vui lòng kiểm tra email.");
+            request.getRequestDispatcher("/views/auth/verify-change-otp.jsp").forward(request, response);
+        }
+        
+    } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 
@@ -95,7 +99,6 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         processRequest(request, response);
-        
     }
 
     /** 

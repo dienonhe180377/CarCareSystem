@@ -35,6 +35,11 @@ public class RequestPasswordServlet extends HttpServlet {
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         String email = request.getParameter("email");
+        if (email == null || email.trim().isEmpty()) {
+            request.getRequestDispatcher("/views/auth/request-password.jsp").forward(request, response);
+            return;
+        }
+        
         UserDAO dao = new UserDAO();
         User user = dao.getUserByEmail(email);
 
