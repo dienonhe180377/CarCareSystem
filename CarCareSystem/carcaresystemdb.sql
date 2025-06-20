@@ -211,9 +211,11 @@ GO
 
 ALTER TABLE Category
 ADD description nvarchar(255) 
+GO
 
-
-
+ALTER TABLE Service
+ALTER COLUMN img NVARCHAR(255) NOT NULL;
+GO
 -- 19. Kiểm tra toàn bộ
 -- SELECT * FROM sys.tables;
 

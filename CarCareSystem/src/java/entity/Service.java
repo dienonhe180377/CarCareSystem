@@ -1,32 +1,45 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package entity;
 
 import java.util.ArrayList;
 
-/**
- *
- * @author Admin
- */
 public class Service {
-
     private int id;
     private String name;
     private String description;
     private double price;
+    private String img; // Thêm dòng này
+    private ArrayList<Part> parts;
 
     public Service() {
+        this.parts = new ArrayList<>();
     }
 
-    public Service(int id, String name, String description, double price) {
+    // Constructor có img
+    public Service(int id, String name, String description, double price, String img) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.img = img;
+        this.parts = new ArrayList<>();
+    }
+      public Service(int id, String name, String description, double price) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
     }
 
+    // Constructor đầy đủ
+    public Service(int id, String name, String description, double price, String img, ArrayList<Part> parts) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.img = img;
+        this.parts = parts;
+    }
+   
     public int getId() {
         return id;
     }
@@ -59,10 +72,25 @@ public class Service {
         this.price = price;
     }
 
-    @Override
-    public String toString() {
-        return "Service{" + "id=" + id + ", name=" + name + ", description=" + description + ", price=" + price + '}';
+    public String getImg() {
+        return img;
     }
 
-   
+    public void setImg(String img) {
+        this.img = img;
+    }
+
+    public ArrayList<Part> getParts() {
+        return parts;
+    }
+
+    public void setParts(ArrayList<Part> parts) {
+        this.parts = parts;
+    }
+
+    @Override
+    public String toString() {
+        return "Service{" + "id=" + id + ", name=" + name + ", description=" + description + ", price=" + price + ", img=" + img + ", parts=" + parts + '}';
+    }
+  
 }

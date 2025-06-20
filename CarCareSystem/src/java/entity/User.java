@@ -11,6 +11,7 @@ import java.util.Date;
  * @author Admin
  */
 public class User {
+
     private int id;
     private String username;
     private String password;
@@ -21,6 +22,16 @@ public class User {
     private String userRole;
 
     public User() {
+    }
+
+    public User(int id, String username, String email, String phone, String address, Date createdDate, String userRole) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.phone = phone;
+        this.address = address;
+        this.createdDate = createdDate;
+        this.userRole = userRole;
     }
 
     public User(int id, String username, String password, String email, String phone, String address, Date createdDate, String userRole) {
@@ -44,8 +55,6 @@ public class User {
         this.username = username;
         this.userRole = userRole;
     }
-    
-    
 
     public int getId() {
         return id;
@@ -107,10 +116,8 @@ public class User {
         return this.userRole;
     }
 
-
     public void setUserRole(String userRole) {
         this.userRole = userRole;
     }
-    
-    
+
 }

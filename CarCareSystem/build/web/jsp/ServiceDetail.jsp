@@ -1,149 +1,166 @@
-<%-- 
-    Document   : ServiceDetail
-    Created on : Jun 7, 2025, 9:32:13 AM
-    Author     : ADMIN
---%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="entity.Service"%>
+<%@page import="entity.Service, entity.Part, java.util.ArrayList" %>
 <%
     Service se = (Service) request.getAttribute("service");
+    ArrayList<Part> parts = (se != null && se.getParts() != null) ? se.getParts() : new ArrayList<>();
+    double totalPartPrice = 0;
+    for (Part part : parts) {
+        totalPartPrice += part.getPrice();
+    }
+    double totalPrice = (se != null ? se.getPrice() : 0) + totalPartPrice;
 %>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>${pageTitle}</title>
+    <title>Chi tiết dịch vụ</title>
     <style>
-        body {
-            background: linear-gradient(120deg, #e0eafc, #cfdef3 100%);
-            min-height: 100vh;
-            margin: 0;
-            font-family: 'Segoe UI', Arial, sans-serif;
-        }
+        body { font-family: Arial, sans-serif; background: #f5f6fa; }
         .form-container {
             background: #fff;
-            max-width: 450px;
-            margin: 50px auto;
-            padding: 36px 40px 28px 40px;
-            border-radius: 20px;
-            box-shadow: 0 6px 32px rgba(0,0,0,0.12);
-            position: relative;
-            animation: floatIn 0.9s cubic-bezier(.55,.06,.68,.19);
-        }
-        @keyframes floatIn {
-            from { transform: translateY(60px) scale(0.95); opacity: 0; }
-            to { transform: translateY(0) scale(1); opacity: 1; }
+            width: 600px;
+            margin: 40px auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+            padding: 32px 40px 32px 40px;
         }
         .form-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
             text-align: center;
-            font-size: 2rem;
-            font-weight: 600;
-            color: #276678;
-            letter-spacing: 1px;
-            margin-bottom: 22px;
+            color: #003366;
+        }
+        .tieu-de {
+            margin-top: 18px;
+            margin-bottom: 12px;
+            color: #15518d;
         }
         table {
+            border-collapse: collapse;
             width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 12px;
+            margin-bottom: 16px;
         }
-        td, th {
-            padding: 0;
+        th, td {
+            border: 1px solid #dde5eb;
+            padding: 8px 12px;
+        }
+        th {
+            background: #e6f0fb;
+            color: #003366;
+            font-weight: 600;
+            text-align: center;
         }
         .form-label {
-            font-size: 1.06rem;
-            color: #1e3c72;
+            background: #f0f6fb;
+            width: 180px;
             font-weight: 500;
-            padding-bottom: 4px;
-            width: 36%;
-            vertical-align: top;
         }
         .form-value {
-            font-size: 1.05rem;
-            color: #2563eb;
-            background: #f7fbff;
-            border-radius: 8px;
-            padding: 8px 12px;
-            font-weight: 600;
+            background: #fff;
+        }
+        .no-parts {
+            text-align: center;
+            color: #999;
         }
         .form-actions {
+            margin-top: 24px;
             text-align: right;
-            padding-top: 12px;
-        }
-        .btn {
-            padding: 9px 30px;
-            border-radius: 8px;
-            border: none;
-            font-size: 1.06rem;
-            font-weight: 500;
-            margin-left: 12px;
-            margin-top: 5px;
-            cursor: pointer;
-            transition: box-shadow 0.16s, background 0.16s, color 0.16s;
-            box-shadow: 0 2px 6px rgba(56,149,211,0.09);
-            text-decoration: none;
-            display: inline-block;
         }
         .btn-back {
-            background: linear-gradient(90deg, #3895d3, #47b5ff);
+            background: #2471a3;
             color: #fff;
+            padding: 8px 18px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.2s;
         }
         .btn-back:hover {
-            background: linear-gradient(90deg,#47b5ff,#3895d3);
-            color: #fff;
-            box-shadow: 0 4px 16px rgba(56,149,211,0.16);
+            background: #15518d;
         }
-        .tieu-de{
-            text-align: center;
-            margin-bottom: 20px;
-            color: #2563eb;
-            font-size: 1.35rem;
-            font-weight: 700;
-            letter-spacing: 1px;
+        .service-img {
+            max-width: 180px;
+            max-height: 120px;
+            border-radius: 6px;
+            border: 1px solid #ececec;
+            margin: 3px 0 3px 0;
         }
-        @media (max-width: 600px) {
-            .form-container {
-                padding: 22px 10px;
-            }
-            .form-title {
-                font-size: 1.3rem;
-            }
-            .btn {
-                padding: 8px 16px;
-            }
-            .tieu-de {
-                font-size: 1.12rem;
-            }
+        .img-note {
+            color: #999; font-size: 12px; font-style: italic;
         }
     </style>
 </head>
 <body>
     <div class="form-container">
-        <div class="form-title">${pageTitle}</div>
-        <h2 class="tieu-de">Chi tiết dịch vụ</h2>
+        <div class="form-title">Chi tiết dịch vụ</div>
+        <h2 class="tieu-de">Thông tin dịch vụ</h2>
         <table>
             <tr>
                 <td class="form-label">ID</td>
-                <td class="form-value"><%= se.getId() %></td>
+                <td class="form-value"><%= se != null ? se.getId() : "" %></td>
             </tr>
             <tr>
                 <td class="form-label">Tên dịch vụ</td>
-                <td class="form-value"><%= se.getName() %></td>
+                <td class="form-value"><%= se != null ? se.getName() : "" %></td>
             </tr>
             <tr>
                 <td class="form-label">Mô tả</td>
-                <td class="form-value"><%= se.getDescription() %></td>
+                <td class="form-value"><%= se != null ? se.getDescription() : "" %></td>
             </tr>
             <tr>
-                <td class="form-label">Giá dịch vụ</td>
-                <td class="form-value"><%= String.format("%,.0f", se.getPrice()) %> VND</td>
-            </tr>
-            <tr>
-                <td colspan="2" class="form-actions">
-                    <a href="ServiceServlet_JSP?service=listService" class="btn btn-back">Quay lại danh sách</a>
+                <td class="form-label">Ảnh dịch vụ</td>
+                <td class="form-value">
+                    <% if (se != null && se.getImg() != null && !se.getImg().isEmpty()) { %>
+                        <img src="<%= request.getContextPath() + "/" + se.getImg() %>" alt="Ảnh dịch vụ" class="service-img">
+                    <% } else { %>
+                        <span class="img-note">Chưa có ảnh</span>
+                    <% } %>
                 </td>
             </tr>
+            <tr>
+                <td class="form-label">Giá gốc dịch vụ</td>
+                <td class="form-value"><%= se != null ? String.format("%,.0f", se.getPrice()) : "" %> VND</td>
+            </tr>
+            <tr>
+                <td class="form-label">Tổng giá phụ tùng</td>
+                <td class="form-value"><%= String.format("%,.0f", totalPartPrice) %> VND</td>
+            </tr>
+            <tr>
+                <td class="form-label"><b>Giá dịch vụ (gồm phụ tùng)</b></td>
+                <td class="form-value"><b><%= String.format("%,.0f", totalPrice) %> VND</b></td>
+            </tr>
         </table>
+        <h2 class="tieu-de" style="margin-top:32px;">Phụ tùng liên quan</h2>
+        <table class="table-parts">
+            <tr>
+                <th>ID</th>
+                <th>Tên phụ tùng</th>
+                <th>Giá</th>
+            </tr>
+            <%
+                if (parts != null && !parts.isEmpty()) {
+                    for (Part part : parts) {
+            %>
+            <tr>
+                <td><%= part.getId() %></td>
+                <td><%= part.getName() %></td>
+                <td><%= String.format("%,.0f", part.getPrice()) %> VND</td>
+            </tr>
+            <%
+                    }
+                } else {
+            %>
+            <tr>
+                <td colspan="3" class="no-parts">Không có phụ tùng liên quan</td>
+            </tr>
+            <%
+                }
+            %>
+        </table>
+        <div class="form-actions">
+            <a href="ServiceServlet_JSP?service=listService" class="btn-back">Quay lại danh sách</a>
+        </div>
     </div>
 </body>
 </html>
