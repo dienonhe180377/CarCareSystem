@@ -182,7 +182,7 @@
         <div class="split-container">
             <div class="left-section">
                 <div class="illustration-wrapper">
-                    <img src="${pageContext.request.contextPath}/assets/images" alt="Logo"/>
+                    <img src="${pageContext.request.contextPath}/img/logo.png" alt="Logo"/>
                 </div>
             </div>
             <div class="right-section">

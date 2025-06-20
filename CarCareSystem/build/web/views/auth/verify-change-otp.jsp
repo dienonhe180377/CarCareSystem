@@ -5,6 +5,12 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="entity.User" %>
+<%
+    User user = (User) session.getAttribute("user");
+    String username = user.getUsername();
+    String firstLetter = username.substring(0, 1).toUpperCase();
+%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -14,28 +20,75 @@
         body {
             font-family: Arial, sans-serif;
             background: #f8f9fa;
-            padding: 50px;
+            margin: 0;
+            padding: 0;
         }
 
-        .form-container {
-            width: 400px;
-            margin: auto;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px #ccc;
+        .container {
+            display: flex;
+            padding: 40px;
         }
 
-        .form-container h2 {
+        .sidebar {
+            width: 250px;
+            background: #fff;
+            border-right: 1px solid #ccc;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+        }
+
+        .avatar {
+            width: 60px;
+            height: 60px;
+            background: #c62828;
+            color: #fff;
+            font-size: 30px;
+            font-weight: bold;
+            border-radius: 50%;
             text-align: center;
-            margin-bottom: 20px;
+            line-height: 60px;
+            margin-bottom: 10px;
         }
 
-        input[type="text"] {
+        .sidebar h3 {
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 5px;
+        }
+
+        .sidebar ul li.active, .sidebar ul li:hover {
+            background: #e0e0e0;
+            cursor: pointer;
+        }
+
+        .content {
+            flex: 1;
+            padding: 20px 40px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
             width: 100%;
             padding: 10px;
-            margin-top: 10px;
-            margin-bottom: 20px;
             border: 1px solid #ccc;
             border-radius: 6px;
         }
@@ -47,17 +100,16 @@
             border: none;
             border-radius: 6px;
             cursor: pointer;
-            width: 100%;
         }
 
         .error {
             color: red;
-            text-align: center;
+            margin-top: 10px;
         }
 
         .success {
             color: green;
-            text-align: center;
+            margin-top: 10px;
         }
     </style>
     </head>
@@ -81,7 +133,10 @@
             <div class="form-container">
                 <h2>Nhập mã OTP đã gửi tới email</h2>
                 <form action="confirmchangepass" method="post">
-                    <input type="text" name="otpInput" placeholder="Nhập mã OTP" required/>
+                    <div class="form-group">
+                        <label>Mã OTP</label>
+                        <input type="text" name="otpInput" placeholder="Nhập mã OTP" required/>
+                    </div>
                     <!-- Hiển thị thông báo -->
                     <% String errorMessage = (String) request.getAttribute("error"); %>
                         <% if (errorMessage != null && !errorMessage.isEmpty()) { %>

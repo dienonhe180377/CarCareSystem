@@ -133,10 +133,6 @@
             <div class="content">
                 <h2>THAY ĐỔI MẬT KHẨU</h2>
                 <form action="changepass" method="post">
-                    <div class="form-group">
-                        <label>Mật khẩu cũ <span style="color:red">*</span></label>
-                        <input type="password" name="currentPassword" placeholder="Nhập mật khẩu cũ" required>
-                    </div>
 
                     <div class="form-group">
                         <label>Mật khẩu mới <span style="color:red">*</span></label>

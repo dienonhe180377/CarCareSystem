@@ -267,7 +267,7 @@
             <div class="menu-right">
                 <% if (user == null) { %>
                 <!-- Nếu chưa login -->
-                <a href="authorization"><button class="login-button">Login</button></a>
+                <a href="login"><button class="login-button">Login</button></a>
                 <% } else { %>
                 <!-- Nếu đã login -->
                 <div class="dropdown">

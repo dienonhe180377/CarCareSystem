@@ -42,7 +42,7 @@ public class ConfirmChangePasswordServlet extends HttpServlet {
         
          if (!otpInput.equals(sessionOtp)) {
             request.setAttribute("error", "OTP không chính xác. Vui lòng thử lại.");
-            request.getRequestDispatcher("/views/auth/verify_otp.jsp").forward(request, response);
+            request.getRequestDispatcher("/views/auth/verify-change-otp.jsp").forward(request, response);
             return;
         }
          
@@ -53,7 +53,7 @@ public class ConfirmChangePasswordServlet extends HttpServlet {
         request.setAttribute("message", "Mật khẩu đã được thay đổi thành công!");
         session.removeAttribute("otp");
         session.removeAttribute("newPassword");
-        request.getRequestDispatcher("/views/auth/change_password.jsp").forward(request, response);
+        request.getRequestDispatcher("/home.jsp").forward(request, response);
     } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
