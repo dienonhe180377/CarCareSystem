@@ -41,6 +41,35 @@ public class CategoryDAO extends DBConnection{
         }
     }
     
+    //Get All Active Category
+    public ArrayList<Category> getAllActiveCategory() throws Exception{
+        Connection conn = null;
+        PreparedStatement pre = null;
+        ResultSet rs = null;
+        String sql = "SELECT * FROM Category where status = 1";
+        ArrayList<Category> categoryList = new ArrayList<>();
+        try {
+            conn = getConnection();
+            pre = conn.prepareStatement(sql);
+            rs = pre.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                boolean status = rs.getBoolean("status");
+                String description = rs.getString("description");
+                Category newCategory = new Category(id, name, description, status);
+                categoryList.add(newCategory);
+            }
+            return categoryList;
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            closeResultSet(rs);
+            closePreparedStatement(pre);
+            closeConnection(conn);
+        }
+    }
+    
     //Add New Category
     public void addCategory(String name,String description , boolean status) throws Exception {
         Connection conn = null;
@@ -141,8 +170,37 @@ public class CategoryDAO extends DBConnection{
         }
     }
     
+    //Get Category By ID
+    public Category getCategoryById(int id) throws Exception {
+        Connection conn = null;
+        ResultSet rs = null;
+        /* Result set returned by the sqlserver */
+        PreparedStatement pre = null;
+        /* Prepared statement for executing sql queries */
+        String sql = "SELECT * FROM Category where id = " + id;
+        Category category = null;
+        try {
+            conn = getConnection();
+            pre = conn.prepareStatement(sql);
+            rs = pre.executeQuery();
+            if (rs.next()) {
+                String name = rs.getString("name");
+                boolean status = rs.getBoolean("status");
+                String description = rs.getString("description");
+                category = new Category(id, name, description, status);
+            }
+            return category;
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            closeResultSet(rs);
+            closePreparedStatement(pre);
+            closeConnection(conn);
+        }
+    }
+    
     public static void main(String[] args) throws Exception {
         CategoryDAO dao = new CategoryDAO();
-        System.out.println(dao.getAllCategoryByText("eng"));
+        System.out.println(dao.getCategoryById(1));
     }
 }

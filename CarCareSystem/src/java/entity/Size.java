@@ -9,16 +9,15 @@ package entity;
  * @author Admin
  */
 public class Size {
+
     private int id;
     private String name;
-    private Part part;
     private boolean status;
     private int quantity;
 
-    public Size(int id, String name, Part part, boolean status, int quantity) {
+    public Size(int id, String name, boolean status, int quantity) {
         this.id = id;
         this.name = name;
-        this.part = part;
         this.status = status;
         this.quantity = quantity;
     }
@@ -39,14 +38,6 @@ public class Size {
         this.name = name;
     }
 
-    public Part getPart() {
-        return part;
-    }
-
-    public void setPart(Part part) {
-        this.part = part;
-    }
-
     public boolean isStatus() {
         return status;
     }
@@ -63,6 +54,9 @@ public class Size {
         this.quantity = quantity;
     }
 
-    
-    
+    @Override
+    public String toString() {
+        return "Size{" + "id=" + id + ", name=" + name + ", status=" + status + ", quantity=" + quantity + '}';
+    }
+
 }
