@@ -40,7 +40,7 @@ GO
 -- 5. Bảng Supplier
 CREATE TABLE Supplier (
     id     INT          IDENTITY(1,1) PRIMARY KEY,
-    [name]   NVARCHAR(150) NOT NULL UNIQUE,
+    [name]   NVARCHAR(150) NOT NULL,
     logo NVARCHAR(255),
     [description] NVARCHAR(255),
     email NVARCHAR(150) not null,
@@ -89,14 +89,12 @@ CREATE TABLE [Order] (
     id              INT           IDENTITY(1,1) PRIMARY KEY,
     userId          INT           NOT NULL,
     carTypeId       INT           NOT NULL,
-    serviceId       INT           NOT NULL,
     createDate      DATETIME      NOT NULL DEFAULT GETDATE(),
     appointmentDate DATETIME      NOT NULL,
     price           FLOAT NOT NULL,
 
     CONSTRAINT FK_Order_User    FOREIGN KEY(userId)    REFERENCES [User](id),
     CONSTRAINT FK_Order_CarType FOREIGN KEY(carTypeId) REFERENCES CarType(id),
-    CONSTRAINT FK_Order_Service FOREIGN KEY(serviceId) REFERENCES Service(id)
 );
 GO
 
@@ -114,8 +112,7 @@ GO
 -- 11. Bảng Parts
 CREATE TABLE Parts (
     id         INT           IDENTITY(1,1) PRIMARY KEY,
-    name       NVARCHAR(150) NOT NULL UNIQUE,
-    image      NVARCHAR(150),
+    name       NVARCHAR(150) NOT NULL,
     categoryId INT           NOT NULL,
     price      FLOAT NOT NULL,
 
@@ -210,12 +207,25 @@ CREATE TABLE PartsService (
 GO
 
 ALTER TABLE Category
-ADD description nvarchar(255) 
+ADD description nvarchar(255)
+
+ALTER TABLE [Order]
+DROP CONSTRAINT FK_Order_Service;
+
+ALTER TABLE [Order]
+DROP COLUMN serviceId;
+
+CREATE TABLE OrderService (
+    id         INT IDENTITY(1,1) PRIMARY KEY,
+    orderId    INT NOT NULL,
+    serviceId  INT NOT NULL,
+
+    CONSTRAINT FK_OrderService_Order   FOREIGN KEY(orderId) REFERENCES [Order](id),
+    CONSTRAINT FK_OrderService_Service FOREIGN KEY(serviceId) REFERENCES Service(id)
+);
 GO
 
-ALTER TABLE Service
-ALTER COLUMN img NVARCHAR(255) NOT NULL;
-GO
+
 -- 19. Kiểm tra toàn bộ
 -- SELECT * FROM sys.tables;
 
