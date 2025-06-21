@@ -1,7 +1,9 @@
 package controller;
 
 import dao.ServiceDAO;
+import dao.PartDAO;
 import entity.Service;
+import entity.Part;
 import entity.User;
 import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
@@ -11,34 +13,36 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.Part;
 import java.io.File;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Vector;
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 @WebServlet(name = "ServiceServlet_JSP", urlPatterns = {"/ServiceServlet_JSP"})
 @MultipartConfig
 public class ServiceServlet_JSP extends HttpServlet {
 
-    // Regex chỉ cho phép chữ cái, số và khoảng trắng, không ký tự đặc biệt
     private static final Pattern VALID_DESC_PATTERN = Pattern.compile("^[\\p{L}0-9 ]+$");
 
     private boolean isValidName(String name) {
         return name != null && name.trim().length() >= 3 && name.trim().length() < 30;
     }
 
- 
-private boolean isValidDescription(String desc) {
-    return desc != null
-        && desc.trim().length() >= 3
-        && desc.trim().length() < 30
-        && VALID_DESC_PATTERN.matcher(desc.trim()).matches();
-}
+    private boolean isValidDescription(String desc) {
+        return desc != null
+            && desc.trim().length() >= 3
+            && desc.trim().length() < 30
+            && VALID_DESC_PATTERN.matcher(desc.trim()).matches();
+    }
+
     private boolean isValidPrice(String priceStr) {
         try {
-            int price = Integer.parseInt(priceStr);
-            return price > 0 && price < 100_000_000;
+            // Sử dụng Double để chấp nhận cả số thực và nguyên
+            double price = Double.parseDouble(priceStr);
+            // Chỉ nhận giá trị nguyên dương nhỏ hơn 1 tỷ
+            return price > 0 && price < 1_000_000_000 && price == Math.floor(price);
         } catch (NumberFormatException ex) {
             return false;
         }
@@ -48,6 +52,7 @@ private boolean isValidDescription(String desc) {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         ServiceDAO dao = new ServiceDAO();
+        PartDAO partDAO = new PartDAO();
         String service = request.getParameter("service");
         if (service == null) {
             service = "listService";
@@ -56,7 +61,6 @@ private boolean isValidDescription(String desc) {
         // Lấy user từ session
         User currentUser = (User) request.getSession().getAttribute("user");
         if (currentUser == null) {
-            // Nếu chưa đăng nhập, chuyển hướng về trang đăng nhập
             response.sendRedirect("login.jsp");
             return;
         }
@@ -81,10 +85,14 @@ private boolean isValidDescription(String desc) {
                         return;
                     }
                     String submit = request.getParameter("submit");
+                    List<Part> allParts = partDAO.getAllParts();
                     if (submit == null) {
                         int id = Integer.parseInt(request.getParameter("id"));
                         Service ser = dao.searchService(id);
+                        List<Integer> selectedPartIds = dao.getPartIdsByServiceId(id);
                         request.setAttribute("service", ser);
+                        request.setAttribute("allParts", allParts);
+                        request.setAttribute("selectedPartIds", selectedPartIds);
                         request.setAttribute("role", role);
                         request.getRequestDispatcher("jsp/UpdateService.jsp").forward(request, response);
                     } else {
@@ -94,6 +102,11 @@ private boolean isValidDescription(String desc) {
                         String priceStr = request.getParameter("price");
                         String oldImg = request.getParameter("imgOld");
 
+                        // Xử lý dấu phẩy thành dấu chấm để parse được số thực
+                        if (priceStr != null) {
+                            priceStr = priceStr.replace(",", ".").trim();
+                        }
+
                         // Validate
                         String errorMsg = null;
                         if (!isValidName(name)) {
@@ -101,12 +114,22 @@ private boolean isValidDescription(String desc) {
                         } else if (!isValidDescription(description)) {
                             errorMsg = "Mô tả phải từ 3 đến 29 ký tự và không chứa ký tự đặc biệt!";
                         } else if (!isValidPrice(priceStr)) {
-                            errorMsg = "Giá dịch vụ phải là số nguyên dương nhỏ hơn 100.000.000!";
+                            errorMsg = "Giá dịch vụ phải là số nguyên dương nhỏ hơn 1.000.000.000!";
                         }
                         if (errorMsg != null) {
-                            Service ser = new Service(id, name, description, 0, oldImg);
+                            double price;
+                            try {
+                                price = Double.parseDouble(priceStr);
+                            } catch (Exception ex) {
+                                Service oldService = dao.searchService(id);
+                                price = oldService.getPrice();
+                            }
+                            Service ser = new Service(id, name, description, price, oldImg);
+                            List<Integer> selectedPartIds = dao.getPartIdsByServiceId(id);
                             request.setAttribute("error", errorMsg);
                             request.setAttribute("service", ser);
+                            request.setAttribute("allParts", allParts);
+                            request.setAttribute("selectedPartIds", selectedPartIds);
                             request.setAttribute("role", role);
                             request.getRequestDispatcher("jsp/UpdateService.jsp").forward(request, response);
                             return;
@@ -114,7 +137,7 @@ private boolean isValidDescription(String desc) {
 
                         double price = Double.parseDouble(priceStr);
 
-                        Part filePart = request.getPart("img");
+                        jakarta.servlet.http.Part filePart = request.getPart("img");
                         String imgPath = oldImg;
                         if (filePart != null && filePart.getSize() > 0 && filePart.getSubmittedFileName() != null && !filePart.getSubmittedFileName().isEmpty()) {
                             String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
@@ -130,6 +153,15 @@ private boolean isValidDescription(String desc) {
 
                         Service se = new Service(id, name, description, price, imgPath);
                         dao.updateService(se);
+
+                        // Xử lý cập nhật phụ tùng liên quan
+                        String[] partIdsParam = request.getParameterValues("partIds");
+                        List<Integer> partIds = new ArrayList<>();
+                        if (partIdsParam != null) {
+                            for (String pid : partIdsParam) partIds.add(Integer.parseInt(pid));
+                        }
+                        dao.updatePartsForService(id, partIds);
+
                         response.sendRedirect("ServiceServlet_JSP?service=listService");
                     }
                     break;
@@ -140,7 +172,9 @@ private boolean isValidDescription(String desc) {
                         return;
                     }
                     String submit = request.getParameter("submit");
+                    List<Part> allParts = partDAO.getAllParts();
                     if (submit == null) {
+                        request.setAttribute("allParts", allParts);
                         request.setAttribute("role", role);
                         request.getRequestDispatcher("jsp/InsertService.jsp").forward(request, response);
                     } else {
@@ -148,19 +182,29 @@ private boolean isValidDescription(String desc) {
                         String description = request.getParameter("description");
                         String priceStr = request.getParameter("price");
 
-                        // Validate
+                        if (priceStr != null) {
+                            priceStr = priceStr.replace(",", ".").trim();
+                        }
+
                         String errorMsg = null;
                         if (!isValidName(name)) {
                             errorMsg = "Tên dịch vụ phải từ 3 đến 29 ký tự!";
                         } else if (!isValidDescription(description)) {
                             errorMsg = "Mô tả phải từ 3 đến 29 ký tự và không chứa ký tự đặc biệt!";
                         } else if (!isValidPrice(priceStr)) {
-                            errorMsg = "Giá dịch vụ phải là số nguyên dương nhỏ hơn 100.000.000!";
+                            errorMsg = "Giá dịch vụ phải là số nguyên dương nhỏ hơn 1.000.000.000!";
                         }
                         if (errorMsg != null) {
-                            Service ser = new Service(0, name, description, 0, "");
+                            double price;
+                            try {
+                                price = Double.parseDouble(priceStr);
+                            } catch (Exception ex) {
+                                price = 0;
+                            }
+                            Service ser = new Service(0, name, description, price, "");
                             request.setAttribute("error", errorMsg);
                             request.setAttribute("service", ser);
+                            request.setAttribute("allParts", allParts);
                             request.setAttribute("role", role);
                             request.getRequestDispatcher("jsp/InsertService.jsp").forward(request, response);
                             return;
@@ -168,7 +212,7 @@ private boolean isValidDescription(String desc) {
 
                         double price = Double.parseDouble(priceStr);
 
-                        Part filePart = request.getPart("img");
+                        jakarta.servlet.http.Part filePart = request.getPart("img");
                         String imgPath = "";
                         if (filePart != null && filePart.getSize() > 0 && filePart.getSubmittedFileName() != null && !filePart.getSubmittedFileName().isEmpty()) {
                             String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
@@ -183,7 +227,16 @@ private boolean isValidDescription(String desc) {
                         }
 
                         Service se = new Service(0, name, description, price, imgPath);
-                        dao.insertService(se);
+                        int newServiceId = dao.insertServiceAndReturnId(se);
+
+                        // Xử lý thêm phụ tùng liên quan
+                        String[] partIdsParam = request.getParameterValues("partIds");
+                        List<Integer> partIds = new ArrayList<>();
+                        if (partIdsParam != null) {
+                            for (String pid : partIdsParam) partIds.add(Integer.parseInt(pid));
+                        }
+                        dao.insertPartsForService(newServiceId, partIds);
+
                         response.sendRedirect("ServiceServlet_JSP?service=listService");
                     }
                     break;
@@ -204,7 +257,6 @@ private boolean isValidDescription(String desc) {
                     String[] selectedIds = request.getParameterValues("selectedServiceIds");
                     if (selectedIds == null || selectedIds.length == 0) {
                         request.setAttribute("error", "Vui lòng chọn ít nhất một dịch vụ để mua.");
-                        // load lại danh sách dịch vụ
                         Vector<Service> list = dao.getAllService();
                         request.setAttribute("data", list);
                         request.setAttribute("role", role);
@@ -212,9 +264,6 @@ private boolean isValidDescription(String desc) {
                         request.getRequestDispatcher("jsp/ServiceJSP.jsp").forward(request, response);
                         return;
                     }
-                    // Xử lý mua dịch vụ tại đây: ví dụ lưu vào bảng order, lịch sử mua, ...
-                    // Bạn có thể tạo một bảng Order gồm các trường: userId, serviceId, date, v.v.
-                    // Ở đây chỉ demo thông báo thành công:
                     request.setAttribute("message", "Bạn đã mua thành công " + selectedIds.length + " dịch vụ.");
                     Vector<Service> list = dao.getAllService();
                     request.setAttribute("data", list);

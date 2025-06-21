@@ -558,4 +558,30 @@ public class PartDAO extends DBConnection {
             parts.addPartSize(sizeNames[i], 3, status, sizeQuantity);
         }
     }
+        // Lấy danh sách phụ tùng đơn giản (chỉ id, name, image, price)
+    public ArrayList<Part> getAllParts() throws Exception {
+        Connection conn = null;
+        PreparedStatement pre = null;
+        ResultSet rs = null;
+        String sql = "SELECT id, name, image, price FROM Parts";
+        ArrayList<Part> partList = new ArrayList<>();
+        try {
+            conn = getConnection();
+            pre = conn.prepareStatement(sql);
+            rs = pre.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                String image = rs.getString("image");
+                double price = rs.getDouble("price");
+                // Các trường khác để null
+                partList.add(new Part(id, name, image, null, null, null, null, price));
+            }
+            return partList;
+        } finally {
+            closeResultSet(rs);
+            closePreparedStatement(pre);
+            closeConnection(conn);
+        }
+    }
 }

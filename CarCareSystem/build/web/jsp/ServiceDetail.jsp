@@ -86,6 +86,12 @@
             border: 1px solid #ececec;
             margin: 3px 0 3px 0;
         }
+        .part-img {
+            max-width: 60px;
+            max-height: 40px;
+            border-radius: 4px;
+            border: 1px solid #ececec;
+        }
         .img-note {
             color: #999; font-size: 12px; font-style: italic;
         }
@@ -136,6 +142,7 @@
             <tr>
                 <th>ID</th>
                 <th>Tên phụ tùng</th>
+                <th>Ảnh</th>
                 <th>Giá</th>
             </tr>
             <%
@@ -145,6 +152,13 @@
             <tr>
                 <td><%= part.getId() %></td>
                 <td><%= part.getName() %></td>
+                <td>
+                    <% if (part.getImage() != null && !part.getImage().isEmpty()) { %>
+                        <img src="<%= request.getContextPath() + "/" + part.getImage() %>" class="part-img" alt="Ảnh phụ tùng"/>
+                    <% } else { %>
+                        <span class="img-note">Chưa có ảnh</span>
+                    <% } %>
+                </td>
                 <td><%= String.format("%,.0f", part.getPrice()) %> VND</td>
             </tr>
             <%
@@ -152,7 +166,7 @@
                 } else {
             %>
             <tr>
-                <td colspan="3" class="no-parts">Không có phụ tùng liên quan</td>
+                <td colspan="4" class="no-parts">Không có phụ tùng liên quan</td>
             </tr>
             <%
                 }

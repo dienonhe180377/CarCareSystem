@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 public class ServiceDAO extends DBConnection {
@@ -50,6 +51,59 @@ public class ServiceDAO extends DBConnection {
             ex.printStackTrace();
         }
         return listService;
+    }
+
+    public int insertServiceAndReturnId(Service se) {
+        String sql = "INSERT INTO [dbo].[Service] ([name],[description],[price],[img]) OUTPUT INSERTED.id VALUES (?,?,?,?)";
+        try (PreparedStatement ptm = connection.prepareStatement(sql)) {
+            ptm.setString(1, se.getName());
+            ptm.setString(2, se.getDescription());
+            ptm.setDouble(3, se.getPrice());
+            ptm.setString(4, se.getImg());
+            ResultSet rs = ptm.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return -1;
+    }
+
+    public void insertPartsForService(int serviceId, List<Integer> partIds) {
+        String sql = "INSERT INTO PartsService (serviceId, partId) VALUES (?, ?)";
+        try (PreparedStatement ptm = connection.prepareStatement(sql)) {
+            for (Integer pid : partIds) {
+                ptm.setInt(1, serviceId);
+                ptm.setInt(2, pid);
+                ptm.addBatch();
+            }
+            ptm.executeBatch();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void updatePartsForService(int serviceId, List<Integer> partIds) {
+        String deleteSql = "DELETE FROM PartsService WHERE serviceId = ?";
+        try (PreparedStatement ptm = connection.prepareStatement(deleteSql)) {
+            ptm.setInt(1, serviceId);
+            ptm.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        insertPartsForService(serviceId, partIds);
+    }
+
+    public List<Integer> getPartIdsByServiceId(int serviceId) {
+        List<Integer> ids = new ArrayList<>();
+        String sql = "SELECT partId FROM PartsService WHERE serviceId = ?";
+        try (PreparedStatement ptm = connection.prepareStatement(sql)) {
+            ptm.setInt(1, serviceId);
+            ResultSet rs = ptm.executeQuery();
+            while (rs.next()) ids.add(rs.getInt("partId"));
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return ids;
     }
 
     public void insertService(Service se) {
@@ -127,8 +181,6 @@ public class ServiceDAO extends DBConnection {
                         rs.getDouble("price"),
                         rs.getString("img")
                 );
-                // Nếu bạn muốn hiển thị số lượt bán, hãy thêm thuộc tính soldCount vào Service entity
-                // se.setSoldCount(rs.getInt("soldCount"));
                 listService.add(se);
             }
         } catch (SQLException ex) {
@@ -137,32 +189,36 @@ public class ServiceDAO extends DBConnection {
         return listService;
     }
 
+    /**
+     * Lấy danh sách Part liên quan đến 1 Service
+     */
     public Vector<Part> getPartsByServiceId(int serviceId) {
         Vector<Part> parts = new Vector<>();
-        String sql = "SELECT p.id, p.name, p.price "
+        String sql = "SELECT p.id, p.name, p.image, p.price "
                 + "FROM Parts p "
                 + "JOIN PartsService ps ON p.id = ps.partId "
                 + "WHERE ps.serviceId = ?";
         try (PreparedStatement ptm = connection.prepareStatement(sql)) {
             ptm.setInt(1, serviceId);
             ResultSet rs = ptm.executeQuery();
-//            while (rs.next()) {
-//                Part part = new Part(
-//                        rs.getInt("id"),
-//                        rs.getString("name"),
-//                        null,
-//                        null,
-//                        null,
-//                        rs.getDouble("price")
-//                );
-//                parts.add(part);
-//            }
+            while (rs.next()) {
+                Part part = new Part(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("image"),
+                        rs.getDouble("price")
+                );
+                parts.add(part);
+            }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
         return parts;
     }
 
+    /**
+     * Lấy chi tiết Service và danh sách Part liên quan
+     */
     public Service getServiceDetail(int id) {
         Service se = searchService(id);
         if (se != null) {

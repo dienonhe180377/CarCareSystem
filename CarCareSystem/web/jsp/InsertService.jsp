@@ -33,10 +33,13 @@
         .alert { text-align: center; margin-bottom: 12px;}
         .alert-error { color: #e74c3c; }
         .alert-success { color: #27ae60; }
+        .checkbox-list { display: flex; flex-wrap: wrap; gap: 8px; }
+        .checkbox-item { background: #f1f6ff; border-radius: 6px; padding: 4px 8px; }
         @media (max-width: 600px) {
             .form-container { padding: 12px 3vw; max-width: 97vw;}
             table { font-size: 0.98rem;}
             .form-title { font-size: 1.2rem;}
+            .checkbox-list { flex-direction: column; }
         }
     </style>
 </head>
@@ -76,7 +79,7 @@
                             <td class="form-label">Giá dịch vụ</td>
                             <td>
                                 <input class="form-input" type="number" name="price" required 
-                                       min="1" max="99999999" step="1"
+                                       min="1" max="999999999" step="1"
                                        value="${service != null ? service.price : ''}" autocomplete="off">
                             </td>
                         </tr>
@@ -84,6 +87,19 @@
                             <td class="form-label">Ảnh dịch vụ</td>
                             <td>
                                 <input class="form-input" type="file" name="img" accept="image/*">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="form-label" style="vertical-align:top;">Phụ tùng liên quan</td>
+                            <td>
+                                <div class="checkbox-list">
+                                    <c:forEach var="part" items="${allParts}">
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="partIds" value="${part.id}">
+                                            ${part.name}
+                                        </label>
+                                    </c:forEach>
+                                </div>
                             </td>
                         </tr>
                         <tr>

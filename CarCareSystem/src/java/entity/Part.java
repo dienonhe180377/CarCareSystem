@@ -30,7 +30,13 @@ public class Part {
         this.sizes = sizes;
         this.price = price;
     }
-
+ // Constructor đơn giản: chỉ dùng cho ServiceDetail
+    public Part(int id, String name, String image, double price) {
+        this.id = id;
+        this.name = name;
+        this.image = image;
+        this.price = price;
+    }
     public int getId() {
         return id;
     }

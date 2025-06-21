@@ -230,5 +230,6 @@ GO
 -- 19. Kiểm tra toàn bộ
 -- SELECT * FROM sys.tables;
 
-
+ALTER TABLE Service
+ALTER COLUMN img NVARCHAR(255) NOT NULL;
 
