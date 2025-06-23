@@ -78,10 +78,7 @@
         </style>
     </head>
     <body>
-        <header>
-            <h1>Thông tin người dùng</h1>
-        </header>
-
+        <%@include file="/header_emp.jsp" %>
         <div class="container">
             <%
                 User user = (User) request.getAttribute("user");

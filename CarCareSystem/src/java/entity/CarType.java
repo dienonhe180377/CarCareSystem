@@ -24,6 +24,9 @@ public class CarType {
         this.name = name;
     }
 
+    public CarType() {
+    }
+
     public int getId() {
         return id;
     }
