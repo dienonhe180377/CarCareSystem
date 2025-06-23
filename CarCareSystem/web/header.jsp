@@ -219,7 +219,7 @@
                     <a href="accessories.jsp">ACCESSORIES</a>
                     <a href="promotions.jsp">PROMOTIONS</a>
                     <a href="blog.jsp">BLOG</a>
-                    <a href="booking.jsp">BOOKING</a>
+                    <a href="booking.jsp">TRACKING</a>
                     <a href="contact.jsp">CONTACT</a>
                     <br>
                 </nav>
@@ -255,7 +255,7 @@
             <!-- Navigation menu right -->
             <nav class="nav-menu">
                 <a href="blog.jsp">BLOG</a>
-                <a href="booking.jsp">BOOKING</a>
+                <a href="booking.jsp">TRACKING</a>
                 <a href="contact.jsp">CONTACT</a>
             </nav>
 
