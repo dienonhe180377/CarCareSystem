@@ -36,49 +36,49 @@ public class ChangePassServlet extends HttpServlet {
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
-User sessionUser = (User) session.getAttribute("user");
+        User sessionUser = (User) session.getAttribute("user");
 
-if (sessionUser == null) {
-    response.sendRedirect("login");
-    return;
-}
+        if (sessionUser == null) {
+            response.sendRedirect("login");
+            return;
+        }
 
-UserDAO dao = new UserDAO();
-User user = dao.getUserByEmail(sessionUser.getEmail());
+        UserDAO dao = new UserDAO();
+        User user = dao.getUserByEmail(sessionUser.getEmail());
 
-String email = user.getEmail();
-String newPassword = request.getParameter("newPassword");
-String confirmPassword = request.getParameter("confirmPassword");
+        String email = user.getEmail();
+        String newPassword = request.getParameter("newPassword");
+        String confirmPassword = request.getParameter("confirmPassword");
 
-// Kiểm tra rỗng
-if (newPassword == null || newPassword.trim().isEmpty() ||
-    confirmPassword == null || confirmPassword.trim().isEmpty()) {
-    request.setAttribute("error", "Vui lòng nhập mật khẩu mới và xác nhận.");
-    request.getRequestDispatcher("/views/auth/change-password.jsp").forward(request, response);
-    return;
-}
+        // Kiểm tra rỗng
+        if (newPassword == null || newPassword.trim().isEmpty() ||
+            confirmPassword == null || confirmPassword.trim().isEmpty()) {
+                request.setAttribute("error", "Vui lòng nhập mật khẩu mới và xác nhận.");
+                request.getRequestDispatcher("/views/auth/change-password.jsp").forward(request, response);
+                return;
+        }
 
-// Kiểm tra khớp
-if (!newPassword.equals(confirmPassword)) {
-    request.setAttribute("error", "Mật khẩu mới không khớp.");
-    request.getRequestDispatcher("/views/auth/change-password.jsp").forward(request, response);
-    return;
-}
+        // Kiểm tra khớp
+        if (!newPassword.equals(confirmPassword)) {
+            request.setAttribute("error", "Mật khẩu mới không khớp.");
+            request.getRequestDispatcher("/views/auth/change-password.jsp").forward(request, response);
+            return;
+        }
 
-// Gửi OTP
-String otp = String.valueOf(new Random().nextInt(900000) + 100000);
-session.setAttribute("otp", otp);
-session.setAttribute("email", email);
-session.setAttribute("newPassword", newPassword);
+        // Gửi OTP
+        String otp = String.valueOf(new Random().nextInt(900000) + 100000);
+        session.setAttribute("otp", otp);
+        session.setAttribute("email", email);
+        session.setAttribute("newPassword", newPassword);
 
-boolean sent = SendMailService.sendOTP(email, otp);
-if (!sent) {
-    request.setAttribute("error", "Không thể gửi OTP đến email của bạn.");
-    request.getRequestDispatcher("/views/auth/change-password.jsp").forward(request, response);
-} else {
-    request.setAttribute("message", "Mã OTP đã được gửi. Vui lòng kiểm tra email.");
-    request.getRequestDispatcher("/views/auth/verify-change-otp.jsp").forward(request, response);
-}
+        boolean sent = SendMailService.sendOTP(email, otp);
+        if (!sent) {
+            request.setAttribute("error", "Không thể gửi OTP đến email của bạn.");
+            request.getRequestDispatcher("/views/auth/change-password.jsp").forward(request, response);
+        } else {
+            request.setAttribute("message", "Mã OTP đã được gửi. Vui lòng kiểm tra email.");
+            request.getRequestDispatcher("/views/auth/verify-change-otp.jsp").forward(request, response);
+        }
         
     } 
 
