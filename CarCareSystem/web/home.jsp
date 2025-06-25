@@ -159,6 +159,15 @@
                         <input type="tel" class="form-control" placeholder="Số điện thoại" required>
                     </div>
                     <div class="col-md-6">
+                        <input type="text" class="form-control" placeholder="Email" required>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" placeholder="Địa Chỉ" required>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" placeholder="Loại Xe" required>
+                    </div>
+                    <div class="col-md-6">
                         <input type="date" class="form-control" required>
                     </div>
                     <div class="col-md-6">
