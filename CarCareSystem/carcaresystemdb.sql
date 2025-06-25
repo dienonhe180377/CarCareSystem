@@ -11,6 +11,7 @@ GO
 -- 2. Bảng User
 CREATE TABLE [User] (
     id           INT           IDENTITY(1,1) PRIMARY KEY,
+
     username     NVARCHAR(50)  NOT NULL,
     password     NVARCHAR(255) NOT NULL,
     email        NVARCHAR(100) NOT NULL,
@@ -91,7 +92,7 @@ CREATE TABLE [Order] (
     carTypeId       INT           NOT NULL,
     createDate      DATETIME      NOT NULL DEFAULT GETDATE(),
     appointmentDate DATETIME      NOT NULL,
-    price           FLOAT NOT NULL,
+    price           FLOAT         NOT NULL,
 
     CONSTRAINT FK_Order_User    FOREIGN KEY(userId)    REFERENCES [User](id),
     CONSTRAINT FK_Order_CarType FOREIGN KEY(carTypeId) REFERENCES CarType(id),
@@ -226,9 +227,18 @@ CREATE TABLE OrderService (
 );
 GO
 
+ALTER TABLE Service
+ADD img NVARCHAR(255) NOT NULL DEFAULT N'default.jpg';
+
+ALTER TABLE [Order]
+ADD
+[name] NVARCHAR(100) NOT NULL,
+email NVARCHAR(100) NOT NULL,
+phone NVARCHAR(20) NOT NULL,
+[address] NVARCHAR(255) NOT NULL,
+paymentStatus NVARCHAR(50) NOT NULL,
+orderStatus NVARCHAR(50) NOT NULL;
+
 
 -- 19. Kiểm tra toàn bộ
 -- SELECT * FROM sys.tables;
-
-ALTER TABLE Service
-ADD img NVARCHAR(255) NOT NULL DEFAULT N'default.jpg';
