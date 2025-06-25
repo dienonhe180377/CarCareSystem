@@ -5,7 +5,6 @@
 
 package controller;
 
-import dao.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -59,22 +58,17 @@ public class AuthorizationServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        HttpSession session = request.getSession(false);
-        if(session == null || session.getAttribute("user") == null){
-            request.setAttribute("error", "You need to login to continue.");
-            request.getRequestDispatcher("/views/auth/login.jsp").forward(request, response);
-            return;
-        }      
-        
+        HttpSession session = request.getSession(false);  
         User user = (User) session.getAttribute("user");
         String role = user.getUserRole().toLowerCase();
+        session.setAttribute("role", role);
         
         switch(role){
             case "admin":
                 response.sendRedirect(request.getContextPath() + "/admin/userList");
                 break;
             case "manager":
-                response.sendRedirect(request.getContextPath() + "/dashboard");
+                response.sendRedirect(request.getContextPath() + "/manager/carTypeList");
                 break;
             case "repairer":
                 response.sendRedirect(request.getContextPath() + "/dashboard");

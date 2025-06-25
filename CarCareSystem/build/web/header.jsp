@@ -6,6 +6,7 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="entity.User"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -32,7 +33,7 @@
                 flex-wrap: wrap;
                 z-index: 1000;
             }
-            
+
             .menu-left,
             .menu-right {
                 display: flex;
@@ -136,6 +137,41 @@
                 background-color: #ccc;
             }
 
+            .notification-icon {
+                font-size: 24px;
+                color: black;
+                cursor: pointer;
+                margin-right: 15px;
+                position: relative;
+            }
+
+            .notification-icon:hover {
+                color: red;
+            }
+
+            .notification-count {
+                position: absolute;
+                top: -6px;
+                right: -8px;
+                background-color: red;
+                color: white;
+                font-size: 12px;
+                padding: 2px 6px;
+                border-radius: 50%;
+            }
+
+            /* Optional: badge */
+            .notification-icon .notification-count {
+                position: absolute;
+                top: -6px;
+                right: -8px;
+                background-color: red;
+                color: white;
+                font-size: 12px;
+                padding: 2px 6px;
+                border-radius: 50%;
+            }
+
             /* Responsive (optional) */
             @media (max-width: 768px) {
                 header {
@@ -219,7 +255,7 @@
                     <a href="accessories.jsp">ACCESSORIES</a>
                     <a href="promotions.jsp">PROMOTIONS</a>
                     <a href="blog.jsp">BLOG</a>
-                    <a href="booking.jsp">BOOKING</a>
+                    <a href="booking.jsp">TRACKING</a>
                     <a href="contact.jsp">CONTACT</a>
                     <br>
                 </nav>
@@ -227,18 +263,6 @@
 
             <!-- Optional overlay -->
             <div id="overlay" class="overlay" onclick="closeSidebar()"></div>
-
-            <script>
-                function openSidebar() {
-                    document.getElementById('sidebar').classList.add('open');
-                    document.getElementById('overlay').classList.add('active');
-                }
-
-                function closeSidebar() {
-                    document.getElementById('sidebar').classList.remove('open');
-                    document.getElementById('overlay').classList.remove('active');
-                }
-            </script>
 
             <!-- Navigation menu left -->
             <nav class="nav-menu">
@@ -255,13 +279,13 @@
             <!-- Navigation menu right -->
             <nav class="nav-menu">
                 <a href="blog.jsp">BLOG</a>
-                <a href="booking.jsp">BOOKING</a>
+                <a href="booking.jsp">TRACKING</a>
                 <a href="contact.jsp">CONTACT</a>
             </nav>
 
             <!-- After login: avatar with dropdown -->
             <%
-                Object user = session.getAttribute("user");
+                User user = (User) session.getAttribute("user");
             %>
 
             <div class="menu-right">
@@ -270,30 +294,64 @@
                 <a href="login"><button class="login-button">Login</button></a>
                 <% } else { %>
                 <!-- Nếu đã login -->
+
+                <!-- Icon chuông thông báo -->
                 <div class="dropdown">
-                    <i class="fas fa-user-circle avatar-icon" onclick="toggleDropdown()"></i>
+                    <i class="fas fa-bell notification-icon" onclick="toggleNotificationDropdown()"></i>
+                    <div id="notificationDropdown" class="dropdown-content">
+                        <a href="#">You have 3 new messages</a>
+                        <a href="#">Booking confirmed</a>
+                        <a href="#">Promotion: 20% off service</a>
+                    </div>
+                </div>
+
+                <div class="dropdown">
+                    <i class="fas fa-user-circle avatar-icon" onclick="toggleUserDropdown()"></i>
                     <div id="userDropdown" class="dropdown-content">
-                        <a href="viewProfile">Profile</a>
-                        <a href="#">My Orders</a>
-                        <a href="logout">Logout</a>
+                        <a href="profile.jsp">Profile</a>
+                        <a href="orders.jsp">My Orders</a>
+                        <a href="${pageContext.request.contextPath}/logout">Logout</a>
                     </div>
                 </div>
                 <% } %>
             </div>
 
             <script>
-                function toggleDropdown() {
-                    var dropdown = document.getElementById("userDropdown");
-                    dropdown.classList.toggle("show");
+                function openSidebar() {
+                    document.getElementById('sidebar').classList.add('open');
+                    document.getElementById('overlay').classList.add('active');
                 }
 
-                // Tắt dropdown nếu click bên ngoài
-                window.onclick = function (event) {
-                    if (!event.target.matches('.avatar-icon')) {
-                        var dropdown = document.getElementById("userDropdown");
-                        if (dropdown && dropdown.classList.contains('show')) {
-                            dropdown.classList.remove('show');
+                function closeSidebar() {
+                    document.getElementById('sidebar').classList.remove('open');
+                    document.getElementById('overlay').classList.remove('active');
+                }
+
+                function toggleDropdown(dropdownId) {
+                    const allDropdowns = document.querySelectorAll('.dropdown-content');
+                    allDropdowns.forEach(drop => {
+                        if (drop.id !== dropdownId) {
+                            drop.classList.remove('show');
                         }
+                    });
+
+                    const target = document.getElementById(dropdownId);
+                    target.classList.toggle('show');
+                }
+
+                function toggleUserDropdown() {
+                    toggleDropdown("userDropdown");
+                }
+
+                function toggleNotificationDropdown() {
+                    toggleDropdown("notificationDropdown");
+                }
+
+                window.onclick = function (event) {
+                    if (!event.target.closest('.dropdown') && !event.target.matches('.avatar-icon') && !event.target.matches('.notification-icon')) {
+                        document.querySelectorAll('.dropdown-content').forEach(dropdown => {
+                            dropdown.classList.remove('show');
+                        });
                     }
                 }
             </script>

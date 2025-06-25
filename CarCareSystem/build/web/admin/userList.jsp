@@ -4,7 +4,7 @@
     Author     : GIGABYTE
 --%>
 
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List" %>
 <%@ page import="entity.User" %>
 <html>
@@ -48,20 +48,58 @@
                 margin-bottom: 20px;
             }
 
+            .top-bar {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+                gap: 10px;
+            }
+
+            .search-form {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                height: 40px;
+            }
+
+            .search-form input[type="text"] {
+                padding: 8px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                height: 100%;
+            }
+
+            .search-form button {
+                padding: 8px 12px;
+                border: none;
+                border-radius: 5px;
+                background-color: lightblue;
+                color: black;
+                cursor: pointer;
+                height: 100%;
+            }
+
+            .search-form button:hover {
+                background-color: deepskyblue;
+                color: white;
+            }
+
             .add-user {
-                display: inline-block;
+                padding: 8px 16px;
                 background-color: lightblue;
                 color: #fff;
-                padding: 10px 16px;
                 border-radius: 6px;
                 text-decoration: none;
                 font-weight: bold;
-                margin-bottom: 20px;
                 transition: background-color 0.3s ease;
+                height: 40px;
+                display: flex;
+                align-items: center;
             }
 
             .add-user:hover {
-                background-color: #4daee0;
+                background-color: deepskyblue;
             }
 
             table {
@@ -78,16 +116,6 @@
 
             th {
                 background-color: #f1f1f1;
-            }
-
-            a.detail-link {
-                color: #007bff;
-                text-decoration: none;
-                font-weight: bold;
-            }
-
-            a.detail-link:hover {
-                text-decoration: underline;
             }
 
             .no-user {
@@ -112,13 +140,16 @@
         </style>
     </head>
     <body>
-        <header>
-            <h1>Admin</h1>
-        </header>
-
-        <div class="container">
+        <%@include file="/header_emp.jsp" %>
+        <div class="container"> 
             <h2>Danh sách User</h2>
-            <a class="add-user" href="${pageContext.request.contextPath}/admin/addUser">+ Thêm User mới</a>
+            <div class="top-bar">
+                <a class="add-user" href="${pageContext.request.contextPath}/admin/addUser">+ Thêm User mới</a>
+                <form class="search-form" action="${pageContext.request.contextPath}/admin/userList" method="get">
+                    <input type="text" name="search" placeholder="Tìm username..." value="${param.search}"/>
+                    <button type="submit">Tìm</button>          
+                </form>             
+            </div>
             <table>
                 <tr>
                     <th>ID</th>
@@ -163,7 +194,7 @@
                     <td colspan="5" class="no-user">Chưa có user nào</td>
                 </tr>
                 <% } %>
-            </table>
+            </table>            
         </div>
     </body>
 </html>
