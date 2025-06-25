@@ -30,6 +30,11 @@ public class Service {
         this.price = price;
     }
 
+        public Service(int id, String name, double price) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+    }
     // Constructor đầy đủ
     public Service(int id, String name, String description, double price, String img, ArrayList<Part> parts) {
         this.id = id;
