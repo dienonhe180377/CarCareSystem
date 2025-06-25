@@ -32,16 +32,14 @@ public class ServiceServlet_JSP extends HttpServlet {
 
     private boolean isValidDescription(String desc) {
         return desc != null
-            && desc.trim().length() >= 3
-            && desc.trim().length() < 30
-            && VALID_DESC_PATTERN.matcher(desc.trim()).matches();
+                && desc.trim().length() >= 3
+                && desc.trim().length() < 30
+                && VALID_DESC_PATTERN.matcher(desc.trim()).matches();
     }
 
     private boolean isValidPrice(String priceStr) {
         try {
-            // Sử dụng Double để chấp nhận cả số thực và nguyên
             double price = Double.parseDouble(priceStr);
-            // Chỉ nhận giá trị nguyên dương nhỏ hơn 1 tỷ
             return price > 0 && price < 1_000_000_000 && price == Math.floor(price);
         } catch (NumberFormatException ex) {
             return false;
@@ -58,13 +56,9 @@ public class ServiceServlet_JSP extends HttpServlet {
             service = "listService";
         }
 
-        // Lấy user từ session
+        // Lấy user từ session (user có thể null với previewService)
         User currentUser = (User) request.getSession().getAttribute("user");
-        if (currentUser == null) {
-            response.sendRedirect("login.jsp");
-            return;
-        }
-        String role = currentUser.getUserRole();
+        String role = currentUser != null ? currentUser.getUserRole() : null;
         boolean canEdit = "admin".equals(role) || "manager".equals(role) || "maketing".equals(role);
 
         try {
@@ -102,12 +96,10 @@ public class ServiceServlet_JSP extends HttpServlet {
                         String priceStr = request.getParameter("price");
                         String oldImg = request.getParameter("imgOld");
 
-                        // Xử lý dấu phẩy thành dấu chấm để parse được số thực
                         if (priceStr != null) {
                             priceStr = priceStr.replace(",", ".").trim();
                         }
 
-                        // Validate
                         String errorMsg = null;
                         if (!isValidName(name)) {
                             errorMsg = "Tên dịch vụ phải từ 3 đến 29 ký tự!";
@@ -154,11 +146,12 @@ public class ServiceServlet_JSP extends HttpServlet {
                         Service se = new Service(id, name, description, price, imgPath);
                         dao.updateService(se);
 
-                        // Xử lý cập nhật phụ tùng liên quan
                         String[] partIdsParam = request.getParameterValues("partIds");
                         List<Integer> partIds = new ArrayList<>();
                         if (partIdsParam != null) {
-                            for (String pid : partIdsParam) partIds.add(Integer.parseInt(pid));
+                            for (String pid : partIdsParam) {
+                                partIds.add(Integer.parseInt(pid));
+                            }
                         }
                         dao.updatePartsForService(id, partIds);
 
@@ -181,7 +174,6 @@ public class ServiceServlet_JSP extends HttpServlet {
                         String name = request.getParameter("name");
                         String description = request.getParameter("description");
                         String priceStr = request.getParameter("price");
-
                         if (priceStr != null) {
                             priceStr = priceStr.replace(",", ".").trim();
                         }
@@ -229,11 +221,12 @@ public class ServiceServlet_JSP extends HttpServlet {
                         Service se = new Service(0, name, description, price, imgPath);
                         int newServiceId = dao.insertServiceAndReturnId(se);
 
-                        // Xử lý thêm phụ tùng liên quan
                         String[] partIdsParam = request.getParameterValues("partIds");
                         List<Integer> partIds = new ArrayList<>();
                         if (partIdsParam != null) {
-                            for (String pid : partIdsParam) partIds.add(Integer.parseInt(pid));
+                            for (String pid : partIdsParam) {
+                                partIds.add(Integer.parseInt(pid));
+                            }
                         }
                         dao.insertPartsForService(newServiceId, partIds);
 
@@ -242,16 +235,21 @@ public class ServiceServlet_JSP extends HttpServlet {
                     break;
                 }
                 case "detailService": {
+                    if (!canEdit) {
+                        response.sendError(HttpServletResponse.SC_FORBIDDEN, "Bạn không có quyền xem chi tiết dịch vụ quản trị.");
+                        return;
+                    }
                     int id = Integer.parseInt(request.getParameter("id"));
                     Service se = dao.getServiceDetail(id);
+
                     request.setAttribute("service", se);
                     request.setAttribute("role", role);
                     request.getRequestDispatcher("jsp/ServiceDetail.jsp").forward(request, response);
                     break;
                 }
                 case "buyService": {
-                    if (!"customer".equals(role)) {
-                        response.sendError(HttpServletResponse.SC_FORBIDDEN, "Bạn không có quyền mua dịch vụ.");
+                    if (currentUser == null || !"customer".equals(role)) {
+                        response.sendError(HttpServletResponse.SC_FORBIDDEN, "Bạn cần đăng nhập với vai trò khách để mua dịch vụ!");
                         return;
                     }
                     String[] selectedIds = request.getParameterValues("selectedServiceIds");
@@ -261,20 +259,23 @@ public class ServiceServlet_JSP extends HttpServlet {
                         request.setAttribute("data", list);
                         request.setAttribute("role", role);
                         request.setAttribute("pageTitle", "Service Manager");
-                        request.getRequestDispatcher("jsp/ServiceJSP.jsp").forward(request, response);
+                        request.getRequestDispatcher("jsp/serviceUser.jsp").forward(request, response);
                         return;
                     }
+                    // Xử lý lưu đơn mua hàng vào DB ở đây (có thể tạo bảng Order/OrderDetail)
+                    // Ví dụ: orderDAO.addOrder(currentUser.getId(), selectedIds);
                     request.setAttribute("message", "Bạn đã mua thành công " + selectedIds.length + " dịch vụ.");
                     Vector<Service> list = dao.getAllService();
                     request.setAttribute("data", list);
                     request.setAttribute("role", role);
                     request.setAttribute("pageTitle", "Service Manager");
-                    request.getRequestDispatcher("jsp/ServiceJSP.jsp").forward(request, response);
+                    request.getRequestDispatcher("jsp/serviceUser.jsp").forward(request, response);
                     break;
                 }
                 case "previewService": {
                     int id = Integer.parseInt(request.getParameter("id"));
                     Service se = dao.getServiceDetail(id);
+
                     request.setAttribute("service", se);
                     request.getRequestDispatcher("jsp/ServicePreview.jsp").forward(request, response);
                     break;
@@ -292,7 +293,13 @@ public class ServiceServlet_JSP extends HttpServlet {
                     request.setAttribute("tableTitle", "List of Service");
                     request.setAttribute("role", role);
 
-                    RequestDispatcher dispatch = request.getRequestDispatcher("jsp/ServiceJSP.jsp");
+                    String view;
+                    if ("admin".equals(role) || "manager".equals(role) || "maketing".equals(role)) {
+                        view = "jsp/ServiceJSP.jsp";
+                    } else {
+                        view = "jsp/serviceUser.jsp";
+                    }
+                    RequestDispatcher dispatch = request.getRequestDispatcher(view);
                     dispatch.forward(request, response);
                     break;
                 }

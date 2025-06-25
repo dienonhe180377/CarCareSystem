@@ -38,41 +38,42 @@ public class FeedbackDAO extends DBConnection {
         }
         return list;
     }
-    // ...existing code...
-public String getUsernameByUserId(int userId) {
-    String sql = "SELECT username FROM [User] WHERE id = ?";
-    try {
-        PreparedStatement ps = connection.prepareStatement(sql);
-        ps.setInt(1, userId);
-        ResultSet rs = ps.executeQuery();
-        if (rs.next()) {
-            return rs.getString("username");
-        }
-    } catch (SQLException ex) {
-        ex.printStackTrace();
-    }
-    return "Unknown";
-}
-public void deleteFeedback(int id) {
-    String sql = "DELETE FROM Feedback WHERE id = ?";
-    try {
-        PreparedStatement ps = connection.prepareStatement(sql);
-        ps.setInt(1, id);
-        ps.executeUpdate();
-    } catch (SQLException ex) {
-        ex.printStackTrace();
-    }
-}
 
-public void updateFeedback(int id, String description) {
-    String sql = "UPDATE Feedback SET description = ? WHERE id = ?";
-    try {
-        PreparedStatement ps = connection.prepareStatement(sql);
-        ps.setString(1, description);
-        ps.setInt(2, id);
-        ps.executeUpdate();
-    } catch (SQLException ex) {
-        ex.printStackTrace();
+    public String getUsernameByUserId(int userId) {
+        String sql = "SELECT username FROM [User] WHERE id = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getString("username");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return "Unknown";
     }
-}
+
+    public void deleteFeedback(int id) {
+        String sql = "DELETE FROM Feedback WHERE id = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void updateFeedback(int id, String description) {
+        String sql = "UPDATE Feedback SET description = ? WHERE id = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, description);
+            ps.setInt(2, id);
+            ps.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
 }

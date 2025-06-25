@@ -1,5 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="entity.Service, entity.Part, java.util.ArrayList" %>
+<%@page import="entity.Service, entity.Part, entity.User, java.util.ArrayList" %>
 <%
     Service se = (Service) request.getAttribute("service");
     ArrayList<Part> parts = (se != null && se.getParts() != null) ? se.getParts() : new ArrayList<>();
@@ -8,6 +8,8 @@
         totalPartPrice += part.getPrice();
     }
     double totalPrice = (se != null ? se.getPrice() : 0) + totalPartPrice;
+
+    User currentUser = (User) session.getAttribute("user");
 %>
 <!DOCTYPE html>
 <html>
@@ -18,11 +20,11 @@
         body { font-family: Arial, sans-serif; background: #f5f6fa; }
         .form-container {
             background: #fff;
-            width: 600px;
+            width: 700px;
             margin: 40px auto;
             border-radius: 8px;
             box-shadow: 0 4px 16px rgba(0,0,0,0.07);
-            padding: 32px 40px 32px 40px;
+            padding: 32px 40px;
         }
         .form-title {
             font-size: 28px;
@@ -94,6 +96,25 @@
         }
         .img-note {
             color: #999; font-size: 12px; font-style: italic;
+        }
+        /* Feedback link */
+        .feedback-link {
+            display: block;
+            margin: 34px auto 10px auto;
+            width: fit-content;
+            background: #f7fbff;
+            color: #1161b5;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 1.15rem;
+            font-weight: 600;
+            border: 1px solid #b3cef6;
+            transition: background 0.2s, color 0.2s;
+        }
+        .feedback-link:hover {
+            background: #1161b5;
+            color: #fff;
         }
     </style>
 </head>
@@ -172,6 +193,14 @@
                 }
             %>
         </table>
+
+        <!-- ĐƯỜNG DẪN XEM FEEDBACK -->
+        <% if (se != null) { %>
+            <a href="FeedbackServlet?serviceId=<%= se.getId() %>" class="feedback-link">
+                Xem đánh giá &amp; phản hồi của khách hàng
+            </a>
+        <% } %>
+
         <div class="form-actions">
             <a href="ServiceServlet_JSP?service=listService" class="btn-back">Quay lại danh sách</a>
         </div>

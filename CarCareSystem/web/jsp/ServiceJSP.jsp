@@ -1,17 +1,13 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>${pageTitle}</title>
     <style>
-        body {
-            background: #f3f5f8;
-            font-family: Arial, sans-serif;
-        }
+        body { background: #f3f5f8; font-family: Arial, sans-serif;}
         .container {
             max-width: 1300px;
             margin: 40px auto 0 auto;
@@ -20,70 +16,30 @@
             border-radius: 16px;
             box-shadow: 0 8px 42px 0 rgba(31,38,135,0.13);
         }
-        h2 {
-            margin-bottom: 30px;
-            color: #1b72c2;
-            font-size: 2.5rem;
-            font-weight: 800;
-            letter-spacing: 1.5px;
-        }
+        h2 { margin-bottom: 30px; color: #1b72c2; font-size: 2.5rem; font-weight: 800; letter-spacing: 1.5px; }
         .search-bar {
-            margin-bottom: 18px;
-            display: flex;
-            gap: 16px;
-            align-items: center;
+            margin-bottom: 18px; display: flex; gap: 16px; align-items: center;
         }
         .search-bar input[type="text"] {
-            font-size: 1.2rem;
-            padding: 10px 20px;
-            border-radius: 7px;
-            border: 1.5px solid #b7c7d7;
-            width: 330px;
+            font-size: 1.2rem; padding: 10px 20px; border-radius: 7px; border: 1.5px solid #b7c7d7; width: 330px;
         }
         .search-bar button, .search-bar a {
-            font-size: 1.2rem;
-            padding: 10px 32px;
-            border-radius: 7px;
-            border: none;
-            background: #26be6b;
-            color: #fff;
-            text-decoration: none;
-            cursor: pointer;
+            font-size: 1.2rem; padding: 10px 32px; border-radius: 7px; border: none; background: #26be6b;
+            color: #fff; text-decoration: none; cursor: pointer;
         }
         .search-bar button { background: #2596ff; }
         .search-bar a.add { background: #26be6b;}
         .search-bar a.add:hover { background: #1d9d55;}
         .search-bar a.reset { background: #888;}
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 1.25rem;
-        }
-        .table th, .table td {
-            padding: 18px 10px;
-            border-bottom: 1.5px solid #e2e9f3;
-            text-align: center;
-        }
-        .table th {
-            background: #e2f0ff;
-            font-weight: bold;
-            font-size: 1.25rem;
-        }
+        .table { width: 100%; border-collapse: collapse; font-size: 1.25rem; }
+        .table th, .table td { padding: 18px 10px; border-bottom: 1.5px solid #e2e9f3; text-align: center; }
+        .table th { background: #e2f0ff; font-weight: bold; font-size: 1.25rem; }
         .table td img.service-img {
-            max-width: 100px;
-            max-height: 70px;
-            border-radius: 8px;
-            background: #f0f0f0;
+            max-width: 100px; max-height: 70px; border-radius: 8px; background: #f0f0f0;
         }
         .btn {
-            font-size: 1.15rem;
-            padding: 8px 20px;
-            border-radius: 6px;
-            border: none;
-            color: #fff;
-            cursor: pointer;
-            margin: 0 2px;
-            min-width: 70px;
+            font-size: 1.15rem; padding: 8px 20px; border-radius: 6px; border: none;
+            color: #fff; cursor: pointer; margin: 0 2px; min-width: 70px;
         }
         .btn-info { background: #2596ff;}
         .btn-warning { background: #ffd600; color: #333;}
@@ -122,10 +78,8 @@
                     <th>Mô tả</th>
                     <th>Giá</th>
                     <th>Chi tiết</th>
-                    <c:if test="${role eq 'admin' || role eq 'manager' || role eq 'maketing'}">
-                        <th>Sửa</th>
-                        <th>Xóa</th>
-                    </c:if>
+                    <th>Sửa</th>
+                    <th>Xóa</th>
                 </tr>
             </thead>
             <tbody>
@@ -149,19 +103,17 @@
                         <td>
                             <a class="btn btn-info" href="ServiceServlet_JSP?service=detailService&id=${se.id}">Chi tiết</a>
                         </td>
-                        <c:if test="${role eq 'admin' || role eq 'manager' || role eq 'maketing'}">
-                            <td>
-                                <a class="btn btn-warning" href="ServiceServlet_JSP?service=updateService&id=${se.id}">Sửa</a>
-                            </td>
-                            <td>
-                                <a class="btn btn-danger" href="ServiceServlet_JSP?service=deleteService&id=${se.id}" onclick="return confirm('Bạn chắc chắn muốn xóa?');">Xóa</a>
-                            </td>
-                        </c:if>
+                        <td>
+                            <a class="btn btn-warning" href="ServiceServlet_JSP?service=updateService&id=${se.id}">Sửa</a>
+                        </td>
+                        <td>
+                            <a class="btn btn-danger" href="ServiceServlet_JSP?service=deleteService&id=${se.id}" onclick="return confirm('Bạn chắc chắn muốn xóa?');">Xóa</a>
+                        </td>
                     </tr>
                 </c:forEach>
                 <c:if test="${empty data}">
                     <tr>
-                        <td colspan="8" class="empty-message">Không có dịch vụ nào.</td>
+                        <td colspan="7" class="empty-message">Không có dịch vụ nào.</td>
                     </tr>
                 </c:if>
             </tbody>

@@ -232,3 +232,10 @@ GO
 
 ALTER TABLE Service
 ADD img NVARCHAR(255) NOT NULL DEFAULT N'default.jpg';
+
+ALTER TABLE Feedback 
+ADD serviceId INT NOT NULL,
+    rating INT NOT NULL;
+
+ALTER TABLE Feedback 
+ADD CONSTRAINT FK_Feedback_Service FOREIGN KEY(serviceId) REFERENCES Service(id);
