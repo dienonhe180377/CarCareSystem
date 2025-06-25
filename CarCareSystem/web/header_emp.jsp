@@ -109,6 +109,13 @@
                 color: black;
             }
 
+            .Header-right {
+                display: flex;
+                align-items: center;
+                gap: 20px;
+            }
+
+
             Header .title {
                 font-size: 24px;
                 font-weight: bold;
@@ -116,8 +123,20 @@
                 align-items: center;
             }
 
+            .Notification-icon {
+                font-size: 24px;
+                color: black;
+                cursor: pointer;
+                margin-right: 15px;
+                position: relative;
+            }
+
+            .Notification-icon:hover {
+                color: red;
+            }
+
             /* Avatar Dropdown */
-            .avatar-icon {
+            .Avatar-icon {
                 font-size: 36px;
                 color: black;
                 cursor: pointer;
@@ -207,49 +226,69 @@
             <div class="title">
                 <button class="Menu-button" onclick="toggleSidebar()">☰</button>
             </div>
-            <div class="Dropdown">
-                <button class="Avatar-button" onclick="toggleDropdown()">
-                    <i class="fas fa-user-circle avatar-icon"></i>
-                </button>
-                <div id="userDropdown" class="Dropdown-content">
-                    <a href="profile.jsp">Profile</a>
-                    <a href="orders.jsp">My Orders</a>
-                    <a href="${pageContext.request.contextPath}/logout">Logout</a>
+
+            <div class="Header-right" style="display: flex; align-items: center; gap: 20px;">
+                <div class="dropdown">
+                    <i class="fas fa-bell Notification-icon" onclick="toggleNotificationDropdown()"></i>
+                    <div id="notificationDropdown" class="Dropdown-content">
+                        <a href="#">You have 3 new messages</a>
+                        <a href="#">Booking confirmed</a>
+                        <a href="#">Promotion: 20% off service</a>
+                    </div>
+                </div>
+
+                <div class="Dropdown">
+                    <button class="Avatar-button" onclick="toggleUserDropdown()">
+                        <i class="fas fa-user-circle Avatar-icon"></i>
+                    </button>
+                    <div id="userDropdown" class="Dropdown-content">
+                        <a href="profile.jsp">Profile</a>
+                        <a href="orders.jsp">My Orders</a>
+                        <a href="${pageContext.request.contextPath}/logout">Logout</a>
+                    </div>
                 </div>
             </div>
         </header>
 
-        <script>
-            function toggleSidebar() {
-                const sidebar = document.getElementById('sidebar');
-                const overlay = document.getElementById('overlay');
-                const mainContent = document.getElementById('mainContent');
-                const isOpen = sidebar.classList.contains('open');
 
-                if (isOpen) {
-                    sidebar.classList.remove('open');
-                    overlay.classList.remove('show');
-                    mainContent.classList.remove('shifted');
-                } else {
-                    sidebar.classList.add('open');
-                    overlay.classList.add('show');
-                    mainContent.classList.add('shifted');
-                }
+        <script>
+            function openSidebar() {
+                document.getElementById('Sidebar').classList.add('open');
+                document.getElementById('Overlay').classList.add('active');
             }
 
-            function toggleDropdown() {
-                var dropdown = document.getElementById("userDropdown");
-                dropdown.classList.toggle("show");
+            function closeSidebar() {
+                document.getElementById('Sidebar').classList.remove('open');
+                document.getElementById('Overlay').classList.remove('active');
+            }
+
+            function toggleDropdown(dropdownId) {
+                const allDropdowns = document.querySelectorAll('.Dropdown-content');
+                allDropdowns.forEach(drop => {
+                    if (drop.id !== dropdownId) {
+                        drop.classList.remove('show');
+                    }
+                });
+
+                const target = document.getElementById(dropdownId);
+                target.classList.toggle('show');
+            }
+
+            function toggleUserDropdown() {
+                toggleDropdown("userDropdown");
+            }
+
+            function toggleNotificationDropdown() {
+                toggleDropdown("notificationDropdown");
             }
 
             window.onclick = function (event) {
-                if (!event.target.matches('.avatar-icon')) {
-                    var dropdown = document.getElementById("userDropdown");
-                    if (dropdown && dropdown.classList.contains('show')) {
+                if (!event.target.closest('.dropdown') && !event.target.matches('.Avatar-icon') && !event.target.matches('.Notification-icon')) {
+                    document.querySelectorAll('.Dropdown-content').forEach(dropdown => {
                         dropdown.classList.remove('show');
-                    }
+                    });
                 }
-            };
+            }
         </script>
     </body>
 </html>
