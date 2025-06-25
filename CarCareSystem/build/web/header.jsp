@@ -254,7 +254,7 @@
                     <a href="ServiceServlet_JSP">SERVICES</a>
                     <a href="accessories.jsp">ACCESSORIES</a>
                     <a href="promotions.jsp">PROMOTIONS</a>
-                    <a href="blog.jsp">BLOG</a>
+                    <a href="blog">BLOG</a>
                     <a href="booking.jsp">TRACKING</a>
                     <a href="contact.jsp">CONTACT</a>
                     <br>
