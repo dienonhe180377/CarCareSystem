@@ -16,6 +16,14 @@
         <servlet-name>PartController</servlet-name>
         <servlet-class>controller.PartController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>BlogController</servlet-name>
+        <servlet-class>controller.BlogController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CampaignController</servlet-name>
+        <servlet-class>controller.CampaignController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>CategoryServlet</servlet-name>
         <url-pattern>/CategoryController</url-pattern>
@@ -31,6 +39,14 @@
     <servlet-mapping>
         <servlet-name>PartController</servlet-name>
         <url-pattern>/PartController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>BlogController</servlet-name>
+        <url-pattern>/blog</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CampaignController</servlet-name>
+        <url-pattern>/campaign</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>home</welcome-file>
