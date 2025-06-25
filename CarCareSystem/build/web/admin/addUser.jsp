@@ -4,7 +4,7 @@
     Author     : GIGABYTE
 --%>
 
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <html>
     <head>
         <title>Thêm User mới</title>

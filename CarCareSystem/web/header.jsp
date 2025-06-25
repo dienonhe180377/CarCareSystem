@@ -6,6 +6,7 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="entity.User"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -284,7 +285,7 @@
 
             <!-- After login: avatar with dropdown -->
             <%
-                Object user = session.getAttribute("user");
+                User user = (User) session.getAttribute("user");
             %>
 
             <div class="menu-right">

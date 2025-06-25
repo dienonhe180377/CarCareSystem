@@ -117,7 +117,7 @@
             }
 
             /* Avatar Dropdown */
-            .Avatar-icon {
+            .avatar-icon {
                 font-size: 36px;
                 color: black;
                 cursor: pointer;
@@ -186,7 +186,7 @@
             <a href="${pageContext.request.contextPath}/ServiceServlet_JSP">Quản lý dịch vụ</a>
             <% } else if ("repairer".equals(role)) { %>
             <h2>Repairer</h2>
-            <a href="#"></a>
+            <a href="${pageContext.request.contextPath}/orderList.jsp">Quản lý đơn</a>
             <% } else if ("warehouse_manager".equals(role)) { %>
             <h2>Warehouse Manager</h2>
             <a href="${pageContext.request.contextPath}/categoryList.jsp">Quản lý category</a>
@@ -209,7 +209,7 @@
             </div>
             <div class="Dropdown">
                 <button class="Avatar-button" onclick="toggleDropdown()">
-                    <i class="fas fa-user-circle Avatar-icon"></i>
+                    <i class="fas fa-user-circle avatar-icon"></i>
                 </button>
                 <div id="userDropdown" class="Dropdown-content">
                     <a href="profile.jsp">Profile</a>
