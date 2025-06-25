@@ -4,7 +4,7 @@
     Author     : GIGABYTE
 --%>
 
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <html>
     <head>
         <title>Thêm User mới</title>
@@ -99,36 +99,33 @@
         </style>
     </head>
     <body>
-        <header>
-            <h1>Admin</h1>
-        </header>
-
+        <%@include file="/header_emp.jsp" %>
         <div class="container">
             <h2>Thêm User mới</h2>
             <form action="${pageContext.request.contextPath}/admin/addUser" method="post">
                 <label>Username:</label>
-                <input type="text" name="username" required />
+                <input type="text" name="username" value="${username}" required />
 
                 <label>Password:</label>
-                <input type="password" name="password" required />
+                <input type="password" name="password" value="${password}" required />
 
                 <label>Email:</label>
-                <input type="email" name="email" />
+                <input type="email" name="email" value="${email}" />
 
                 <label>Phone:</label>
-                <input type="text" name="phone" />
+                <input type="text" name="phone" value="${phone}" />
 
                 <label>Address:</label>
-                <input type="text" name="address" />
+                <input type="text" name="address" value="${address}" />
 
                 <label>Role:</label>
                 <select name="userRole" required>
-                    <option value="admin">Admin</option>
-                    <option value="manager">Manager</option>
-                    <option value="repairer">Repairer</option>
-                    <option value="customer">Customer</option>
-                    <option value="warehouse_manager">Warehouse Manager</option>
-                    <option value="marketing">Marketing</option>
+                    <option value="admin" ${userRole == 'admin' ? 'selected' : ''}>Admin</option>
+                    <option value="manager" ${userRole == 'manager' ? 'selected' : ''}>Manager</option>
+                    <option value="repairer" ${userRole == 'repairer' ? 'selected' : ''}>Repairer</option>
+                    <option value="customer" ${userRole == 'customer' ? 'selected' : ''}>Customer</option>
+                    <option value="warehouse_manager" ${userRole == 'warehouse_manager' ? 'selected' : ''}>Warehouse Manager</option>
+                    <option value="marketing" ${userRole == 'marketing' ? 'selected' : ''}>Marketing</option>
                 </select>
 
                 <button type="submit">Thêm User</button>

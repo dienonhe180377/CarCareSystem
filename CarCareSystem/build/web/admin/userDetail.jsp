@@ -4,7 +4,7 @@
     Author     : GIGABYTE
 --%>
 
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="entity.User" %>
 <html>
     <head>
@@ -78,10 +78,7 @@
         </style>
     </head>
     <body>
-        <header>
-            <h1>Thông tin người dùng</h1>
-        </header>
-
+        <%@include file="/header_emp.jsp" %>
         <div class="container">
             <%
                 User user = (User) request.getAttribute("user");
