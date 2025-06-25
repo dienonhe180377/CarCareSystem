@@ -26,7 +26,6 @@
                 padding: 0;
             }
 
-
             .Sidebar {
                 width: 250px;
                 background-color: lightblue;
@@ -228,7 +227,7 @@
             </div>
 
             <div class="Header-right" style="display: flex; align-items: center; gap: 20px;">
-                <div class="dropdown">
+                <div class="Dropdown">
                     <i class="fas fa-bell Notification-icon" onclick="toggleNotificationDropdown()"></i>
                     <div id="notificationDropdown" class="Dropdown-content">
                         <a href="#">You have 3 new messages</a>
@@ -252,14 +251,18 @@
 
 
         <script>
-            function openSidebar() {
-                document.getElementById('Sidebar').classList.add('open');
-                document.getElementById('Overlay').classList.add('active');
-            }
+            function toggleSidebar() {
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('overlay');
 
-            function closeSidebar() {
-                document.getElementById('Sidebar').classList.remove('open');
-                document.getElementById('Overlay').classList.remove('active');
+                const isOpen = sidebar.classList.contains('open');
+                if (isOpen) {
+                    sidebar.classList.remove('open');
+                    overlay.classList.remove('show');
+                } else {
+                    sidebar.classList.add('open');
+                    overlay.classList.add('show');
+                }
             }
 
             function toggleDropdown(dropdownId) {
@@ -283,7 +286,7 @@
             }
 
             window.onclick = function (event) {
-                if (!event.target.closest('.dropdown') && !event.target.matches('.Avatar-icon') && !event.target.matches('.Notification-icon')) {
+                if (!event.target.closest('.Dropdown') && !event.target.matches('.Avatar-icon') && !event.target.matches('.Notification-icon')) {
                     document.querySelectorAll('.Dropdown-content').forEach(dropdown => {
                         dropdown.classList.remove('show');
                     });
