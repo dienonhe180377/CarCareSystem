@@ -17,6 +17,8 @@ import jakarta.servlet.http.Part;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -55,6 +57,17 @@ public class SupplierController extends HttpServlet {
                 ArrayList<Supplier> suppliers = supplierDAO.getAllSupplierByText(text);
                 request.setAttribute("supplierList", suppliers);
                 request.setAttribute("searchedValue", text);
+                request.getRequestDispatcher("supplierList.jsp").forward(request, response);
+            }
+            
+            if(service.equals("filter")){
+                String filterValue = request.getParameter("filterValue");
+                ArrayList<Supplier> suppliers = supplierDAO.getAllSupplier();
+                if(filterValue.equals("newest")){
+                    Collections.reverse(suppliers);
+                }
+                request.setAttribute("filteredValue", filterValue);
+                request.setAttribute("supplierList", suppliers);
                 request.getRequestDispatcher("supplierList.jsp").forward(request, response);
             }
 

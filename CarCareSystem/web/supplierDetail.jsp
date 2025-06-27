@@ -11,6 +11,8 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </head>
     <body>
+        <jsp:include page="header_emp.jsp"></jsp:include>
+        
         <div class="container-wrapper">
             <!-- Nút Quay về danh sách, nằm ngoài .form-container -->
             <a href="${contextPath}/SupplierController?service=list" class="btn-back">

@@ -11,8 +11,10 @@
         <script src="https://cdn.tiny.cloud/1/bpczrech1jam3gtdjv4btw4n34ryl064yvnd260pxmaonk1b/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </head>
-    <body style="margin-top: 115px;">
+    <body>
 
+        <jsp:include page="header_emp.jsp"></jsp:include>
+        
         <div class="container mt-5" style="margin-bottom: 5%;">
             <div class="row mb-3">
                 <div class="col">

@@ -137,8 +137,9 @@
         </style>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </head>
-    <body style="margin-top: 116px;">
+    <body>
         
+        <jsp:include page="header_emp.jsp"></jsp:include>
 
         <div class="container mt-5">
             <div class="row mb-3">
