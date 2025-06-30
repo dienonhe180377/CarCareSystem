@@ -73,7 +73,7 @@ public class AuthorizationServlet extends HttpServlet {
             case "repairer":
                 response.sendRedirect(request.getContextPath() + "/dashboard");
                 break;
-            case "warehouse_manager":
+            case "warehouse manager":
                 response.sendRedirect(request.getContextPath() + "/dashboard");
                 break;
             case "marketing":

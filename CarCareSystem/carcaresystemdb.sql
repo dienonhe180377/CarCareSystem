@@ -227,6 +227,15 @@ CREATE TABLE OrderService (
 );
 GO
 
+CREATE TABLE OrderParts (
+    id       INT IDENTITY(1,1) PRIMARY KEY,
+    orderId  INT NOT NULL,
+    partId   INT NOT NULL,
+    FOREIGN KEY (orderId) REFERENCES [Order](id),
+    FOREIGN KEY (partId) REFERENCES Parts(id)
+);
+GO
+
 ALTER TABLE Service
 ADD img NVARCHAR(255) NOT NULL DEFAULT N'default.jpg';
 
@@ -253,4 +262,102 @@ ADD serviceId INT NOT NULL,
 ALTER TABLE Feedback 
 ADD CONSTRAINT FK_Feedback_Service FOREIGN KEY(serviceId) REFERENCES Service(id);
 
+select * from [Parts]
 
+INSERT INTO Service (name, description, price, img) VALUES
+(N'Rửa xe', N'Rửa ngoài', 50000, N'svc1.jpg'),
+(N'Vệ sinh nội thất', N'Nội thất sạch', 90000, N'svc2.jpg'),
+(N'Bảo dưỡng tổng thể', N'Bảo dưỡng xe', 200000, N'svc3.jpg'),
+(N'Kiểm tra động cơ', N'Kiểm tra chi tiết', 150000, N'svc4.jpg'),
+(N'Đánh bóng sơn', N'Làm mới ngoại thất', 120000, N'svc5.jpg'),
+(N'Thay dầu', N'Dầu nhớt xe', 100000, N'svc6.jpg'),
+(N'Lắp lốp mới', N'Lốp chất lượng', 800000, N'svc7.jpg'),
+(N'Sửa điện', N'Sửa chữa điện', 50000, N'svc8.jpg'),
+(N'Thay ắc quy', N'Ắc quy mới', 350000, N'svc9.jpg'),
+(N'Sửa điều hòa', N'Điều hòa mát', 250000, N'svc10.jpg');
+
+INSERT INTO [dbo].[User]
+           ([username], [password], [email], [phone], [address], [createDate], [role])
+VALUES
+           (N'admin01', N'123', N'admin@example.com', N'0900000001', N'Hà Nội', GETDATE(), N'admin'),
+           (N'manager01', N'123', N'manager@example.com', N'0900000002', N'Hồ Chí Minh', GETDATE(), N'manager'),
+           (N'repairer01', N'123', N'repairer@example.com', N'0900000003', N'Đà Nẵng', GETDATE(), N'repairer'),
+           (N'customer01', N'123', N'customer@example.com', N'0900000004', N'Cần Thơ', GETDATE(), N'customer'),
+           (N'warehouse01', N'123', N'warehouse@example.com', N'0900000005', N'Bình Dương', GETDATE(), N'warehouse manager'),
+           (N'marketing01', N'123', N'marketing@example.com', N'0900000006', N'Nha Trang', GETDATE(), N'marketing');
+
+INSERT INTO Category (name, description, status) VALUES
+('Engine',           N'Động cơ ô tô chịu trách nhiệm tạo lực đẩy',                      1),
+('Transmission',     N'Hộp số và cơ cấu truyền động',                                    1),
+('Brakes',           N'Hệ thống phanh đảm bảo an toàn khi giảm tốc và dừng xe',         1),
+('Suspension',       N'Hệ thống treo giảm chấn, giữ ổn định khung xe',                  1),
+('Electrical',       N'Hệ thống điện, bao gồm ắc-quy, máy phát và khởi động',          1),
+('Cooling',          N'Hệ thống làm mát động cơ, két nước và quạt giải nhiệt',         1),
+('Fuel System',      N'Hệ thống nhiên liệu: bơm, bình chứa và kim phun',                1),
+('Exhaust System',   N'Hệ thống xả khí thải, ống pô và bộ lọc khí thải',              1),
+('Steering',         N'Hệ thống lái gồm tay lái, trục lái và trợ lực lái',              1),
+('Tires & Wheels',   N'Vỏ, mâm và van xe đảm bảo bám đường và chịu tải trọng',         1);
+
+-- Insert bảng Parts (liên kết với Service, Category, Supplier)
+INSERT INTO Parts (name, image, categoryId, price) VALUES
+  -- Engine (categoryId = 1)
+  (N'Timing Belt', 'iStock-1080119374.jpg' , 1, 120.00),
+  (N'Spark Plug', 'blog-17.5.jpg',  1,  15.00),
+  (N'Air Filter', '71SRS5E+NfL.jpg' , 1,  25.00),
+
+  -- Transmission (categoryId = 2)
+  (N'Clutch Plate',  'Diagram-to-explain-how-does-a-clutch-work.jpg' ,         2, 150.00),
+  (N'Gearbox Oil',     'delo-gear-ep-5.png'      ,       2,  40.00),
+  (N'Shift Lever', '619s8In8SZL._UF1000,1000_QL80_.jpg' ,     2,  80.00),
+
+  -- Brakes (categoryId = 3)
+  (N'Brake Pad Front',  'zimmermann-default-title-brake-pads-front-42053815697729.jpg'    ,            3,  60.00),
+  (N'Brake Disc Rear',   'BDVOLK012-01-1.jpg'    ,         3,  75.00),
+  (N'Brake Caliper',  'BDVOLK012-01-1.jpg'    ,            3, 150.00),
+
+  -- Suspension (categoryId = 4)
+  (N'Shock Absorber Front Left', 'BDVOLK012-01-1.jpg'    ,      4, 200.00),
+  (N'Coil Spring Rear',  'BDVOLK012-01-1.jpg'    ,              4, 120.00),
+  (N'Strut Mount',    'BDVOLK012-01-1.jpg'    ,                 4,  90.00),
+
+  -- Electrical (categoryId = 5)
+  (N'Car Battery 12V',  'BDVOLK012-01-1.jpg'    ,               5, 110.00),
+  (N'Alternator',   'BDVOLK012-01-1.jpg'    ,                   5, 250.00),
+  (N'Starter Motor',  'BDVOLK012-01-1.jpg'    ,                 5, 180.00),
+
+  -- Cooling (categoryId = 6)
+  (N'Radiator',    'BDVOLK012-01-1.jpg'    ,                    6, 300.00),
+  (N'Water Pump',   'BDVOLK012-01-1.jpg'    ,                   6,  75.00),
+  (N'Cooling Fan',   'BDVOLK012-01-1.jpg'    ,                  6,  65.00),
+
+  -- Fuel System (categoryId = 7)
+  (N'Fuel Pump',    'BDVOLK012-01-1.jpg'    ,                   7, 130.00),
+  (N'Fuel Injector',   'BDVOLK012-01-1.jpg'    ,                7,  45.00),
+  (N'Fuel Filter',   'BDVOLK012-01-1.jpg'    ,                  7,  35.00),
+
+  -- Exhaust System (categoryId = 8)
+  (N'Muffler',    'BDVOLK012-01-1.jpg'    ,                     8, 200.00),
+  (N'Catalytic Converter',  'BDVOLK012-01-1.jpg'    ,           8, 500.00),
+  (N'Exhaust Pipe',  'BDVOLK012-01-1.jpg'    ,                  8, 120.00),
+
+  -- Steering (categoryId = 9)
+  (N'Power Steering Pump',  'BDVOLK012-01-1.jpg'    ,           9, 180.00),
+  (N'Steering Rack',   'BDVOLK012-01-1.jpg'    ,                9, 400.00),
+  (N'Tie Rod End',   'BDVOLK012-01-1.jpg'    ,                  9,  45.00),
+
+  -- Tires & Wheels (categoryId = 10)
+  (N'Alloy Wheel 17\"',  'BDVOLK012-01-1.jpg'    ,             10, 120.00),
+  (N'Tire 225/45R17',   'BDVOLK012-01-1.jpg'    ,              10,  90.00),
+  (N'Valve Stem',    'BDVOLK012-01-1.jpg'    ,                 10,   5.00);
+GO
+
+INSERT INTO CarType (name, status) VALUES (N'Toyota Vios', 1);
+INSERT INTO CarType (name, status) VALUES (N'Honda Civic', 1);
+INSERT INTO CarType (name, status) VALUES (N'Hyundai Accent', 1);
+INSERT INTO CarType (name, status) VALUES (N'Ford Ranger', 1);
+INSERT INTO CarType (name, status) VALUES (N'Kia Seltos', 1);
+INSERT INTO CarType (name, status) VALUES (N'Mazda CX-5', 1);
+INSERT INTO CarType (name, status) VALUES (N'VinFast Lux A2.0', 1);
+INSERT INTO CarType (name, status) VALUES (N'Toyota Camry', 1);
+INSERT INTO CarType (name, status) VALUES (N'Mercedes C-Class', 1);
+INSERT INTO CarType (name, status) VALUES (N'BMW X5', 1);

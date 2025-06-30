@@ -138,30 +138,7 @@
         <!-- PHẦN ĐẶT LỊCH NHANH -->
         <div class="container my-5">
             <h2 class="fw-bold mb-4 text-center">ĐẶT LỊCH NHANH</h2>
-            <form action="BookingController" method="post" class="row justify-content-center g-3">
-                <div class="col-md-3">
-                    <input type="text" class="form-control" name="name" placeholder="Họ tên của bạn" required>
-                </div>
-                <div class="col-md-3">
-                    <input type="tel" class="form-control" name="phone" placeholder="Số điện thoại" required>
-                </div>
-                <div class="col-md-3">
-                    <select class="form-select" name="serviceId" required>
-                        <option value="" selected disabled>Chọn dịch vụ</option>
-                        <%
-                            if (top3Services != null) {
-                                for (Service s : top3Services) {
-                        %>
-                        <option value="<%=s.getId()%>"><%=s.getName()%></option>
-                        <%
-                                }
-                            }
-                        %>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <input type="date" class="form-control" name="date" required>
-                </div>
+            <form action="order" method="post" class="row justify-content-center g-3">
                 <div class="col-md-12 text-center">
                     <button type="submit" class="btn btn-success px-5">Đặt lịch</button>
                 </div>
