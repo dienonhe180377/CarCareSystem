@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class CampaignController extends HttpServlet {
+public class CampaignServlet extends AuthorizationServlet {
 
-    private static final Logger LOGGER = Logger.getLogger(CampaignController.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(CampaignServlet.class.getName());
     private CampaignDAO campaignDAO;
 
     @Override
@@ -93,7 +93,7 @@ public class CampaignController extends HttpServlet {
         List<Campaign> campaigns = campaignDAO.getAllCampaigns();
         request.getSession().setAttribute("mainCampaignList", campaigns);
         request.setAttribute("campaigns", campaigns);
-        request.getRequestDispatcher("Campaign/CampaignList.jsp").forward(request, response);
+        request.getRequestDispatcher("Campaign/Campaign.jsp").forward(request, response);
     }
 
     private void addOrUpdateCampaign(HttpServletRequest request, HttpServletResponse response, boolean isEdit)

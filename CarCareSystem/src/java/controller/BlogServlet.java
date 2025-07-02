@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class BlogController extends HttpServlet {
-    private static final Logger LOGGER = Logger.getLogger(BlogController.class.getName());
+public class BlogServlet extends HttpServlet {
+    private static final Logger LOGGER = Logger.getLogger(BlogServlet.class.getName());
     private CampaignDAO campaignDAO;
 
     @Override
