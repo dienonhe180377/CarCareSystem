@@ -6,6 +6,8 @@
 package controller.order;
 
 import dao.OrderDAO;
+import dao.PartDAO;
+import dao.ServiceDAO;
 import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -95,7 +97,7 @@ public class OrderServlet extends HttpServlet {
         int carTypeId = Integer.parseInt(carTypeIdStr);
         
         String appointmentDateStr = request.getParameter("appointmentDate");
-        String paymentStatus = request.getParameter("paymentStatus");
+        String paymentMethod = request.getParameter("paymentMethod");
         String[] serviceIds = request.getParameterValues("serviceIds");
         String[] partIds = request.getParameterValues("partIds");
 
@@ -109,16 +111,19 @@ public class OrderServlet extends HttpServlet {
             }
 
             double price = 0.0;
-            String orderStatus = "Chưa xác nhận";
+            String paymentStatus = "Chưa thanh toán";
+            String orderStatus = "Chưa xác nhận";           
 
             OrderDAO dao = new OrderDAO();
-            int orderId = dao.createOrder(fullName, email, phone, address, carTypeId,
-                                          appointmentTimestamp, price, paymentStatus, orderStatus);
+            ServiceDAO serviceDAO = new ServiceDAO();
+            PartDAO partDAO = new PartDAO();
 
             if (serviceIds != null) {
                 for (String sid : serviceIds) {
                     if (sid != null && !sid.trim().isEmpty()) {
-                        dao.addServiceToOrder(orderId, Integer.parseInt(sid));
+                        int serviceId = Integer.parseInt(sid);
+                        double servicePrice = serviceDAO.getPriceById(serviceId);
+                        price += servicePrice;
                     }
                 }
             }
@@ -126,14 +131,45 @@ public class OrderServlet extends HttpServlet {
             if (partIds != null) {
                 for (String pid : partIds) {
                     if (pid != null && !pid.trim().isEmpty()) {
+                        int partId = Integer.parseInt(pid);
+                        double partPrice = partDAO.getPriceById(partId);
+                        price += partPrice;
+                    }
+                }
+            }
+            
+            int orderId = dao.createOrder(fullName, email, phone, address, carTypeId,
+                                  appointmentTimestamp, price, paymentStatus, orderStatus, paymentMethod);
+            
+            if (serviceIds != null) {
+                for (String sid : serviceIds) {
+                    if (sid != null && !sid.trim().isEmpty()) {
+                        dao.addServiceToOrder(orderId, Integer.parseInt(sid));
+                    }
+                }
+            }
+            
+            if (partIds != null) {
+                for (String pid : partIds) {
+                    if (pid != null && !pid.trim().isEmpty()) {
                         dao.addPartToOrder(orderId, Integer.parseInt(pid));
                     }
                 }
             }
-
-            request.setAttribute("message", "Đặt lịch thành công!");
+            
+            if ("Chuyển khoản ngân hàng".equals(paymentMethod)) {
+                session.setAttribute("currentOrderId", orderId);
+                session.setAttribute("totalPrice", price);
+                request.getRequestDispatcher("/views/order/payment.jsp").forward(request, response);
+            } else {
+                request.setAttribute("currentOrderId", orderId);
+                request.setAttribute("appointmentDate", appointmentTimestamp);
+                request.setAttribute("totalPrice", price);
+                request.setAttribute("paymentStatus", paymentStatus);
+                request.getRequestDispatcher("/views/order/success.jsp").forward(request, response);
+            }
+            return;
         } catch (Exception e) {
-            e.printStackTrace();
             request.setAttribute("message", "Lỗi: " + e.getMessage());
         }
         request.getRequestDispatcher("/views/order/order.jsp").forward(request, response);

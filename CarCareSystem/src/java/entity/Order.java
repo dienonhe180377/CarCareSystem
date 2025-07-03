@@ -26,8 +26,9 @@ public class Order {
     private String address;
     private String paymentStatus;
     private String orderStatus;
+    private String paymentMethod;
 
-    public Order(int id, User user, CarType carType, ArrayList<Service> services, ArrayList<Part> parts, Date createdDate, Date appointmentDate, double price, String name, String email, String phone, String address, String paymentStatus, String orderStatus) {
+    public Order(int id, User user, CarType carType, ArrayList<Service> services, ArrayList<Part> parts, Date createdDate, Date appointmentDate, double price, String name, String email, String phone, String address, String paymentStatus, String orderStatus, String paymentMethod) {
         this.id = id;
         this.user = user;
         this.carType = carType;
@@ -42,6 +43,11 @@ public class Order {
         this.address = address;
         this.paymentStatus = paymentStatus;
         this.orderStatus = orderStatus;
+        this.paymentMethod = paymentMethod;
+    }
+
+    public Order() {
+        
     }
 
     public int getId() {
@@ -154,6 +160,14 @@ public class Order {
 
     public void setOrderStatus(String orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
     }
     
 }

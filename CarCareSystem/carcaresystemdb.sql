@@ -88,13 +88,12 @@ GO
 -- 9. Bảng [Order]
 CREATE TABLE [Order] (
     id              INT           IDENTITY(1,1) PRIMARY KEY,
-    userId          INT           NOT NULL,
+    userId          INT           NULL,
     carTypeId       INT           NOT NULL,
     createDate      DATETIME      NOT NULL DEFAULT GETDATE(),
     appointmentDate DATETIME      NOT NULL,
     price           FLOAT         NOT NULL,
 
-    CONSTRAINT FK_Order_User    FOREIGN KEY(userId)    REFERENCES [User](id),
     CONSTRAINT FK_Order_CarType FOREIGN KEY(carTypeId) REFERENCES CarType(id),
 );
 GO
@@ -248,6 +247,8 @@ phone NVARCHAR(20) NOT NULL,
 paymentStatus NVARCHAR(50) NOT NULL,
 orderStatus NVARCHAR(50) NOT NULL;
 
+ALTER TABLE [Order]
+ADD paymentMethod NVARCHAR(50) NOT NULL;
 
 -- 19. Kiểm tra toàn bộ
 -- SELECT * FROM sys.tables;
@@ -262,7 +263,11 @@ ADD serviceId INT NOT NULL,
 ALTER TABLE Feedback 
 ADD CONSTRAINT FK_Feedback_Service FOREIGN KEY(serviceId) REFERENCES Service(id);
 
-select * from [Parts]
+ALTER TABLE [Order] 
+ADD CONSTRAINT FK_Order_User FOREIGN KEY(userId) REFERENCES [User](id);
+
+select * from [Order]
+DELETE FROM [Order]
 
 INSERT INTO Service (name, description, price, img) VALUES
 (N'Rửa xe', N'Rửa ngoài', 50000, N'svc1.jpg'),
