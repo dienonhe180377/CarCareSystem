@@ -168,7 +168,7 @@
         
         .contact-label {
             font-weight: bold;
-            min-width: 120px;
+            min-width: 140px;
         }
         
         .thank-you {
@@ -190,10 +190,10 @@
             </div>
         
             <div class="order-details">
-<!--                <div class="detail-item">
+                <div class="detail-item">
                     <span class="detail-label">Mã đơn hàng:</span>
                     <span class="detail-value">${currentOrderId}</span>
-                </div>-->
+                </div>
                 <div class="detail-item">
                     <span class="detail-label">Thời gian hẹn:</span>
                     <span class="detail-value">
@@ -210,7 +210,7 @@
                     <span class="detail-label">Trạng thái thanh toán:</span>
                     <c:choose>
                         <c:when test="${paymentStatus eq 'Đã thanh toán'}">
-                            <span class="payment-status paid">Đã thanh toán ✅</span>
+                            <span class="payment-status paid">Đã thanh toán</span>
                         </c:when>
                         <c:otherwise>
                             <span class="payment-status pending">Chưa thanh toán</span>

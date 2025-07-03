@@ -7,6 +7,7 @@ package controller.order;
 
 import dao.OrderDAO;
 import entity.Order;
+import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -73,20 +74,48 @@ public class PaymentServlet extends HttpServlet {
     throws ServletException, IOException {
 //        processRequest(request, response);
         HttpSession session = request.getSession();
-        int orderId = Integer.parseInt(request.getParameter("orderId"));
+        User user = (User) session.getAttribute("user");
+        
+        String orderIdParam = request.getParameter("orderId");
+        if (orderIdParam == null || orderIdParam.isEmpty()) {
+            request.setAttribute("message", "Thiếu thông tin đơn hàng");
+            request.getRequestDispatcher("/views/order/payment.jsp").forward(request, response);
+            return;
+        }
         
         try {
+            int orderId = Integer.parseInt(orderIdParam);
             OrderDAO dao = new OrderDAO();
+            Order order = dao.getOrderById(orderId);
+            if (order == null) {
+                request.setAttribute("message", "Không tìm thấy đơn hàng với ID: " + orderId);
+                request.getRequestDispatcher("/views/order/payment.jsp").forward(request, response);
+                return;
+            }
+            
+            boolean hasPermission = false;
+        
+            if (user != null) {
+                hasPermission = order.getEmail().equalsIgnoreCase(user.getEmail());
+            } else {
+                Integer sessionOrderId = (Integer) session.getAttribute("currentOrderId");
+                hasPermission = sessionOrderId != null && sessionOrderId == orderId;
+            }
+        
+            if (!hasPermission) {
+                request.setAttribute("message", "Bạn không có quyền thanh toán đơn này");
+                request.getRequestDispatcher("/views/order/payment.jsp").forward(request, response);
+                return;
+            }
             
             boolean success = dao.updatePaymentStatus(orderId, "Đã thanh toán");
             
             if (success) {
-                Order order = dao.getOrderById(orderId);
-                
                 request.setAttribute("currentOrderId", orderId);
                 request.setAttribute("appointmentDate", order.getAppointmentDate());
                 request.setAttribute("totalPrice", order.getPrice());
                 request.setAttribute("paymentStatus", "Đã thanh toán");
+                
                 request.getRequestDispatcher("/views/order/success.jsp").forward(request, response);
             } else {
                 request.setAttribute("message", "Cập nhật thanh toán thất bại");

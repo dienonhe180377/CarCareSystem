@@ -8,9 +8,9 @@ import entity.CarType;
 import entity.Order;
 import entity.Part;
 import entity.Service;
-import entity.User;
 import java.sql.*;
 import java.util.ArrayList;
+
 
 /**
  *
@@ -61,7 +61,7 @@ public class OrderDAO extends DBConnection {
     }
     
     public boolean updatePaymentStatus(int orderId, String paymentStatus) {
-        String sql = "UPDATE orders SET payment_status = ? WHERE id = ?";
+        String sql = "UPDATE [Order] SET paymentStatus = ? WHERE id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, paymentStatus);
             ps.setInt(2, orderId);
@@ -74,92 +74,96 @@ public class OrderDAO extends DBConnection {
         }
     }
     
-    public Order getOrderById(int orderId) {
-        String orderSql = "SELECT o.*, ct.name AS car_type_name " +
-                            "FROM orders o " +
-                            "JOIN car_types ct ON o.car_type_id = ct.id " +
-                            "WHERE o.id = ?";
-    
-        String serviceSql = "SELECT s.id, s.name, s.description, s.price, os.quantity " +
-                            "FROM order_services os " +
-                            "JOIN services s ON os.service_id = s.id " +
-                            "WHERE os.order_id = ?";
-    
-        String partSql = "SELECT p.id, p.name, p.description, p.price, op.quantity " +
-                            "FROM order_parts op " +
-                            "JOIN parts p ON op.part_id = p.id " +
-                            "WHERE op.order_id = ?";
+    public Order getOrderById(int orderId) throws SQLException{
+        String sql = "SELECT "
+               + "o.id, o.name, o.email, o.phone, o.address, "
+               + "o.appointmentDate, o.price, o.paymentStatus, o.orderStatus, o.paymentMethod, "
+               + "ct.id AS car_type_id, ct.name AS car_type_name "
+               + "FROM [Order] o "
+               + "LEFT JOIN CarType ct ON o.carTypeId = ct.id "
+               + "WHERE o.id = ?";
 
-        try (PreparedStatement orderStmt = connection.prepareStatement(orderSql);
-             PreparedStatement serviceStmt = connection.prepareStatement(serviceSql);
-             PreparedStatement partStmt = connection.prepareStatement(partSql)) {
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, orderId);
+            ResultSet rs = stmt.executeQuery();
 
-        
-            orderStmt.setInt(1, orderId);
-            ResultSet orderRs = orderStmt.executeQuery();
-        
-            if (orderRs.next()) {
+            if (rs.next()) {
                 Order order = new Order();
-                order.setId(orderRs.getInt("id"));
             
-                int userId = orderRs.getInt("user_id");
-                if (userId > 0) {
-                    User user = new User();
-                    user.setId(userId);
-                    order.setUser(user);
-                }
-            
+                order.setId(rs.getInt("id"));
+                order.setName(rs.getString("name"));
+                order.setEmail(rs.getString("email"));
+                order.setPhone(rs.getString("phone"));
+                order.setAddress(rs.getString("address"));
+                order.setAppointmentDate(rs.getTimestamp("appointmentDate"));
+                order.setPrice(rs.getDouble("price"));
+                order.setPaymentStatus(rs.getString("paymentStatus"));
+                order.setOrderStatus(rs.getString("orderStatus"));
+                order.setPaymentMethod(rs.getString("paymentMethod"));
+
                 CarType carType = new CarType();
-                carType.setId(orderRs.getInt("id"));
-                carType.setName(orderRs.getString("name"));
+                carType.setId(rs.getInt("car_type_id"));  
+                carType.setName(rs.getString("car_type_name"));
                 order.setCarType(carType);
-            
-            
-                order.setCreatedDate(orderRs.getTimestamp("created_date"));
-                order.setAppointmentDate(orderRs.getTimestamp("appointment_date"));
-                order.setPrice(orderRs.getDouble("total_price"));
-                order.setName(orderRs.getString("full_name"));
-                order.setEmail(orderRs.getString("email"));
-                order.setPhone(orderRs.getString("phone"));
-                order.setAddress(orderRs.getString("address"));
-                order.setPaymentStatus(orderRs.getString("payment_status"));
-                order.setOrderStatus(orderRs.getString("order_status"));
-                order.setPaymentMethod(orderRs.getString("payment_method"));
-            
-            
-                serviceStmt.setInt(1, orderId);
-                ResultSet serviceRs = serviceStmt.executeQuery();
-                ArrayList<Service> services = new ArrayList<>();
-                while (serviceRs.next()) {
-                    Service service = new Service();
-                    service.setId(serviceRs.getInt("id"));
-                    service.setName(serviceRs.getString("name"));
-                    service.setDescription(serviceRs.getString("description"));
-                    service.setPrice(serviceRs.getDouble("price"));
-                    services.add(service);
-                }
-                order.setServices(services);
-            
-            
-                partStmt.setInt(1, orderId);
-                ResultSet partRs = partStmt.executeQuery();
-                ArrayList<Part> parts = new ArrayList<>();
-                while (partRs.next()) {
-                    Part part = new Part(partRs.getInt("id"),
-                                        partRs.getString("name"),
-                                       partRs.getDouble("price")
-                                    );
-                    parts.add(part);
-                }
-                order.setParts(parts);
-            
+
+                order.setServices(getServicesForOrder(orderId));
+                order.setParts(getPartsForOrder(orderId));
+
                 return order;
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
     
+    private ArrayList<Service> getServicesForOrder(int orderId) throws SQLException {
+        ArrayList<Service> services = new ArrayList<>();
+        String sql = "SELECT s.id, s.name, s.description, s.price "
+                    + "FROM OrderService os "
+                    + "JOIN Service s ON os.serviceId = s.id "
+                    + "WHERE os.orderId = ?";
     
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, orderId);
+            ResultSet rs = stmt.executeQuery();
+        
+            while (rs.next()) {
+                Service service = new Service();
+                service.setId(rs.getInt("id"));
+                service.setName(rs.getString("name"));
+                service.setDescription(rs.getString("description"));
+                service.setPrice(rs.getDouble("price"));
+                services.add(service);
+            }
+        }
+        return services;
+    }
+
+    private ArrayList<Part> getPartsForOrder(int orderId) throws SQLException {
+        ArrayList<Part> parts = new ArrayList<>();
+        String sql = "SELECT p.id, p.name, p.price "
+                    + "FROM OrderParts op "
+                    + "JOIN Parts p ON op.partId = p.id "
+                    + "WHERE op.orderId = ?";
+    
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, orderId);
+            ResultSet rs = stmt.executeQuery();
+        
+            while (rs.next()) {
+                Part part = new Part(rs.getInt("id"),
+                                    rs.getString("name"),
+                                   rs.getDouble("price")
+                                );
+                parts.add(part);
+            }
+        }
+        return parts;
+    }
+    
+    public static void main(String[] args) throws Exception {
+        OrderDAO dao = new OrderDAO();
+        System.out.println(dao.getOrderById(14));
+    }
 }

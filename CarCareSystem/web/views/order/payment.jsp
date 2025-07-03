@@ -205,7 +205,6 @@
         <div class="payment-container">
             <h1>Thanh Toán Chuyển Khoản</h1>
             <p class="description">Vui lòng quét mã QR hoặc chuyển khoản theo thông tin dưới đây</p>
-        
             <div class="total-price">
                 Tổng số tiền cần thanh toán: 
                 <strong>
@@ -259,12 +258,14 @@
         
             <div class="confirm-section">
                 <p>Sau khi chuyển khoản, vui lòng nhấn nút xác nhận bên dưới</p>
-                <form action="payment" method="POST">
+                <form action="payment" method="post">
                     <input type="hidden" name="orderId" value="${currentOrderId}">
                     <button type="submit" class="confirm-btn">Tôi đã chuyển tiền</button>
                 </form>
-<!--                <div class="order-id">Mã đơn hàng: ${currentOrderId}</div>-->
             </div>
+            <% if (request.getAttribute("message") != null) { %>
+                <p class="message"><%= request.getAttribute("message") %></p>
+            <% } %>
         </div>
     </body>
 </html>

@@ -159,7 +159,9 @@ public class OrderServlet extends HttpServlet {
             
             if ("Chuyển khoản ngân hàng".equals(paymentMethod)) {
                 session.setAttribute("currentOrderId", orderId);
+                session.setAttribute("appointmentDate", appointmentTimestamp);
                 session.setAttribute("totalPrice", price);
+                session.setAttribute("paymentStatus", paymentStatus);
                 request.getRequestDispatcher("/views/order/payment.jsp").forward(request, response);
             } else {
                 request.setAttribute("currentOrderId", orderId);
