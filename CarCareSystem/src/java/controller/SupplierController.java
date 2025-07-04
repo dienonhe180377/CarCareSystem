@@ -59,11 +59,11 @@ public class SupplierController extends HttpServlet {
                 request.setAttribute("searchedValue", text);
                 request.getRequestDispatcher("supplierList.jsp").forward(request, response);
             }
-            
-            if(service.equals("filter")){
+
+            if (service.equals("filter")) {
                 String filterValue = request.getParameter("filterValue");
                 ArrayList<Supplier> suppliers = supplierDAO.getAllSupplier();
-                if(filterValue.equals("newest")){
+                if (filterValue.equals("newest")) {
                     Collections.reverse(suppliers);
                 }
                 request.setAttribute("filteredValue", filterValue);
@@ -90,15 +90,20 @@ public class SupplierController extends HttpServlet {
                 } else {
                     //Supplier Logo
                     Part logo = request.getPart("logo");
-                    String fileName = Paths.get(logo.getSubmittedFileName()).getFileName().toString();
-                    String uploadDir = getServletContext().getRealPath("/image");
-                    File uploadDirFile = new File(uploadDir);
-                    if (!uploadDirFile.exists()) {
-                        uploadDirFile.mkdirs();
+                    String fileName = "free-user-icon-3296-thumb.png";
+                    String logoFilePath = "";
+                    if (logo.getSize() > 0) {
+                        fileName = Paths.get(logo.getSubmittedFileName()).getFileName().toString();
+                        String uploadDir = getServletContext().getRealPath("/image");
+                        File uploadDirFile = new File(uploadDir);
+                        if (!uploadDirFile.exists()) {
+                            uploadDirFile.mkdirs();
+                        }
+                        logoFilePath = uploadDir + File.separator + fileName;
                     }
-                    String logoFilePath = uploadDir + File.separator + fileName;
+
                     int successCheck = supplierDAO.addSupplier(name, fileName, description, email, phone, address);
-                    if (successCheck > 0) {
+                    if (successCheck > 0 && logo.getSize() > 0) {
                         logo.write(logoFilePath);
                     }
                     request.setAttribute("successCheck", successCheck);
