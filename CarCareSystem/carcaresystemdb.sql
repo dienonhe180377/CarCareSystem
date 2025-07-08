@@ -267,7 +267,7 @@ ALTER TABLE [Order]
 ADD CONSTRAINT FK_Order_User FOREIGN KEY(userId) REFERENCES [User](id);
 
 select * from [Order]
-SELECT * FROM [Order] WHERE id = 14;
+SELECT * FROM [PartsService] 
 DELETE FROM [Order]
 
 INSERT INTO Service (name, description, price, img) VALUES
