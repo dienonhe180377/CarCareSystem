@@ -14,18 +14,42 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class BlogServlet extends HttpServlet {
+public class BlogServlet extends AuthorizationServlet {
     private static final Logger LOGGER = Logger.getLogger(BlogServlet.class.getName());
     private CampaignDAO campaignDAO;
 
+    
     @Override
     public void init() {
         campaignDAO = new CampaignDAO();
     }
 
+    private boolean isUnauthorized(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            return true;
+        }
+
+        Object userObj = session.getAttribute("user");
+        if (userObj == null) {
+            return true;
+        }
+
+        entity.User user = (entity.User) userObj;
+        String role = user.getUserRole().toLowerCase();
+
+        // Nếu role là "user" thì không cho phép
+        return role.equals("user");
+    }
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        if (isUnauthorized(request)) {
+            response.setContentType("text/plain;charset=UTF-8");
+            response.getWriter().write("Bạn không có quyền truy cập trang này.");
+            return;
+        }
         String service = request.getParameter("service");
         String editId = request.getParameter("editId");
 
@@ -46,6 +70,11 @@ public class BlogServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        if (isUnauthorized(request)) {
+            response.setContentType("text/plain;charset=UTF-8");
+            response.getWriter().write("Bạn không có quyền thực hiện thao tác này.");
+            return;
+        }
         String service = request.getParameter("service");
 
         try {

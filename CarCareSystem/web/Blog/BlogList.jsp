@@ -36,7 +36,7 @@
                 <table class="table table-striped table-bordered table-hover">
                     <thead class="table-dark">
                         <tr>
-                            <th>ID</th>
+                            
                             <th>Tiêu đề</th>
                             <th>Campaign</th>
                             <th>Nội dung</th>
@@ -48,7 +48,7 @@
                     <tbody>
                         <c:forEach items="${blogs}" var="blog">
                             <tr>
-                                <td>${blog.id}</td>
+                                
                                 <td><i class="fas fa-blog"></i> ${blog.title}</td>
                                 <td><span class="badge bg-secondary">${blog.campaign.name}</span></td>
                                 <td><div class="content-preview" title="${blog.content}">${blog.content}</div></td>

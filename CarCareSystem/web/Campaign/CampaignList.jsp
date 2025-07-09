@@ -78,7 +78,7 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            
                             <th>Tên</th>
                             <th>Trạng thái</th>
                             <th>Mô tả</th>
@@ -89,7 +89,7 @@
                     <tbody>
                         <c:forEach var="c" items="${campaigns}">
                             <tr>
-                                <td>${c.id}</td>
+                                
                                 <td>${c.name}</td>
                                 <td>
                                     <span class="${c.status ? 'status-active' : 'status-inactive'}">
