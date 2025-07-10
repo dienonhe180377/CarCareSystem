@@ -252,7 +252,7 @@
                 <nav>
                     <a href="home.jsp">HOME</a>
                     <a href="ServiceServlet_JSP">SERVICES</a>
-                    <a href="accessories.jsp">ACCESSORIES</a>
+                    <a href="part">ACCESSORIES</a>
                     <a href="promotions.jsp">PROMOTIONS</a>
                     <a href="blog.jsp">BLOG</a>
                     <a href="booking.jsp">TRACKING</a>
@@ -267,7 +267,7 @@
             <!-- Navigation menu left -->
             <nav class="nav-menu">
                 <a href="ServiceServlet_JSP">SERVICES</a>
-                <a href="accessories.jsp">ACCESSORIES</a>
+                <a href="part">ACCESSORIES</a>
                 <a href="promotions.jsp">PROMOTIONS</a>
             </nav>
 
@@ -308,7 +308,7 @@
                 <div class="dropdown">
                     <i class="fas fa-user-circle avatar-icon" onclick="toggleUserDropdown()"></i>
                     <div id="userDropdown" class="dropdown-content">
-                        <a href="profile.jsp">Profile</a>
+                        <a href="viewProfile">Profile</a>
                         <a href="orders.jsp">My Orders</a>
                         <a href="${pageContext.request.contextPath}/logout">Logout</a>
                     </div>

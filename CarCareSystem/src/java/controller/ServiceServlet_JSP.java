@@ -82,7 +82,7 @@ public class ServiceServlet_JSP extends HttpServlet {
                     List<Part> allParts = partDAO.getAllParts();
                     if (submit == null) {
                         int id = Integer.parseInt(request.getParameter("id"));
-                        Service ser = dao.searchService(id);
+                        Service ser = dao.getServiceDetail(id); // Lấy service đã có parts
                         List<Integer> selectedPartIds = dao.getPartIdsByServiceId(id);
                         request.setAttribute("service", ser);
                         request.setAttribute("allParts", allParts);
@@ -113,7 +113,7 @@ public class ServiceServlet_JSP extends HttpServlet {
                             try {
                                 price = Double.parseDouble(priceStr);
                             } catch (Exception ex) {
-                                Service oldService = dao.searchService(id);
+                                Service oldService = dao.getServiceDetail(id);
                                 price = oldService.getPrice();
                             }
                             Service ser = new Service(id, name, description, price, oldImg);
@@ -140,7 +140,7 @@ public class ServiceServlet_JSP extends HttpServlet {
                             }
                             String filePath = uploadDir + File.separator + fileName;
                             filePart.write(filePath);
-                            imgPath = "uploads/" + fileName;
+                            imgPath = fileName; // <-- chỉ lưu tên file
                         }
 
                         Service se = new Service(id, name, description, price, imgPath);
@@ -215,7 +215,7 @@ public class ServiceServlet_JSP extends HttpServlet {
                             }
                             String filePath = uploadDir + File.separator + fileName;
                             filePart.write(filePath);
-                            imgPath = "uploads/" + fileName;
+                            imgPath = fileName; // <-- chỉ lưu tên file
                         }
 
                         Service se = new Service(0, name, description, price, imgPath);
@@ -234,24 +234,39 @@ public class ServiceServlet_JSP extends HttpServlet {
                     }
                     break;
                 }
+                // ... giữ nguyên các case còn lại ...
                 case "detailService": {
-                    if (!canEdit) {
-                        response.sendError(HttpServletResponse.SC_FORBIDDEN, "Bạn không có quyền xem chi tiết dịch vụ quản trị.");
+                    String idParam = request.getParameter("id");
+                    if (idParam == null) {
+                        response.sendRedirect("ServiceServlet_JSP?service=listService");
                         return;
                     }
-                    int id = Integer.parseInt(request.getParameter("id"));
+                    int id = Integer.parseInt(idParam);
                     Service se = dao.getServiceDetail(id);
 
-                    request.setAttribute("service", se);
-                    request.setAttribute("role", role);
-                    request.getRequestDispatcher("jsp/ServiceDetail.jsp").forward(request, response);
-                    break;
-                }
-                case "buyService": {
-                    if (currentUser == null || !"customer".equals(role)) {
-                        response.sendError(HttpServletResponse.SC_FORBIDDEN, "Bạn cần đăng nhập với vai trò khách để mua dịch vụ!");
+                    if (se == null) {
+                        request.setAttribute("error", "Không tìm thấy dịch vụ.");
+                        request.getRequestDispatcher("jsp/error.jsp").forward(request, response);
                         return;
                     }
+                    request.setAttribute("service", se);
+                    request.setAttribute("role", role);
+                    // Sử dụng hàm entity đã hoàn thiện
+                    request.setAttribute("totalPrice", se.getTotalPriceWithParts());
+
+                    if (role == null) {
+                        request.getRequestDispatcher("jsp/serviceUserDetail.jsp").forward(request, response);
+                    } else if ("admin".equals(role) || "manager".equals(role) || "maketing".equals(role)) {
+                        request.getRequestDispatcher("jsp/ServiceDetail.jsp").forward(request, response);
+                    } else if ("customer".equals(role)) {
+                        request.getRequestDispatcher("jsp/serviceUserDetail.jsp").forward(request, response);
+                    } else {
+                        request.getRequestDispatcher("jsp/serviceUserDetail.jsp").forward(request, response);
+                    }
+                    break;
+                }
+
+                case "buyService": {
                     String[] selectedIds = request.getParameterValues("selectedServiceIds");
                     if (selectedIds == null || selectedIds.length == 0) {
                         request.setAttribute("error", "Vui lòng chọn ít nhất một dịch vụ để mua.");
@@ -277,21 +292,36 @@ public class ServiceServlet_JSP extends HttpServlet {
                     Service se = dao.getServiceDetail(id);
 
                     request.setAttribute("service", se);
+                    request.setAttribute("totalPrice", se.getTotalPriceWithParts());
                     request.getRequestDispatcher("jsp/ServicePreview.jsp").forward(request, response);
                     break;
                 }
                 case "listService": {
-                    Vector<Service> list;
-                    String searchName = request.getParameter("name");
-                    if (searchName == null || searchName.isEmpty()) {
-                        list = dao.getAllService();
-                    } else {
-                        list = dao.searchServiceByName(searchName);
+                    int page = 1;
+                    int pageSize = 6; // Số dịch vụ/trang
+                    try {
+                        String pageParam = request.getParameter("page");
+                        if (pageParam != null) {
+                            page = Integer.parseInt(pageParam);
+                            if (page < 1) {
+                                page = 1;
+                            }
+                        }
+                    } catch (Exception ex) {
+                        page = 1;
                     }
+                    String searchName = request.getParameter("name");
+                    int totalRecord = dao.countAllServices(searchName);
+                    int totalPage = (int) Math.ceil(totalRecord / (double) pageSize);
+
+                    Vector<Service> list = dao.getServicesPaging(page, pageSize, searchName);
+
                     request.setAttribute("data", list);
                     request.setAttribute("pageTitle", "Service Manager");
                     request.setAttribute("tableTitle", "List of Service");
                     request.setAttribute("role", role);
+                    request.setAttribute("currentPage", page);
+                    request.setAttribute("totalPage", totalPage);
 
                     String view;
                     if ("admin".equals(role) || "manager".equals(role) || "maketing".equals(role)) {

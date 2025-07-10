@@ -89,32 +89,19 @@
             margin: 3px 0 3px 0;
         }
         .part-img {
-            max-width: 60px;
-            max-height: 40px;
+            max-width: 100px;
+            max-height: 70px;
             border-radius: 4px;
             border: 1px solid #ececec;
         }
         .img-note {
             color: #999; font-size: 12px; font-style: italic;
         }
-        /* Feedback link */
-        .feedback-link {
-            display: block;
-            margin: 34px auto 10px auto;
-            width: fit-content;
-            background: #f7fbff;
-            color: #1161b5;
-            padding: 12px 30px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-size: 1.15rem;
-            font-weight: 600;
-            border: 1px solid #b3cef6;
-            transition: background 0.2s, color 0.2s;
-        }
-        .feedback-link:hover {
-            background: #1161b5;
-            color: #fff;
+        .img-debug {
+            color: #c00;
+            font-size: 11px;
+            font-style: italic;
+            word-break: break-all;
         }
     </style>
 </head>
@@ -123,10 +110,6 @@
         <div class="form-title">Chi tiết dịch vụ</div>
         <h2 class="tieu-de">Thông tin dịch vụ</h2>
         <table>
-            <tr>
-                <td class="form-label">ID</td>
-                <td class="form-value"><%= se != null ? se.getId() : "" %></td>
-            </tr>
             <tr>
                 <td class="form-label">Tên dịch vụ</td>
                 <td class="form-value"><%= se != null ? se.getName() : "" %></td>
@@ -139,7 +122,7 @@
                 <td class="form-label">Ảnh dịch vụ</td>
                 <td class="form-value">
                     <% if (se != null && se.getImg() != null && !se.getImg().isEmpty()) { %>
-                        <img src="<%= request.getContextPath() + "/" + se.getImg() %>" alt="Ảnh dịch vụ" class="service-img">
+                        <img src="<%= request.getContextPath() + "/uploads/" + se.getImg() %>" alt="Ảnh dịch vụ" class="service-img">
                     <% } else { %>
                         <span class="img-note">Chưa có ảnh</span>
                     <% } %>
@@ -161,24 +144,33 @@
         <h2 class="tieu-de" style="margin-top:32px;">Phụ tùng liên quan</h2>
         <table class="table-parts">
             <tr>
-                <th>ID</th>
+                <th>STT</th>
                 <th>Tên phụ tùng</th>
                 <th>Ảnh</th>
                 <th>Giá</th>
             </tr>
             <%
                 if (parts != null && !parts.isEmpty()) {
+                    int stt = 1;
                     for (Part part : parts) {
             %>
             <tr>
-                <td><%= part.getId() %></td>
+                <td style="text-align:center;"><%= stt++ %></td>
                 <td><%= part.getName() %></td>
                 <td>
-                    <% if (part.getImage() != null && !part.getImage().isEmpty()) { %>
-                        <img src="<%= request.getContextPath() + "/" + part.getImage() %>" class="part-img" alt="Ảnh phụ tùng"/>
-                    <% } else { %>
+                    <%
+                        String partImgPath = part.getImage();
+                        if (partImgPath != null && !partImgPath.trim().isEmpty()) {
+                            String finalPartImgUrl = request.getContextPath() + "/uploads/" + partImgPath;
+                    %>
+                        <img src="<%= finalPartImgUrl %>" class="part-img" alt="Ảnh phụ tùng"/>
+                    <%
+                        } else {
+                    %>
                         <span class="img-note">Chưa có ảnh</span>
-                    <% } %>
+                    <%
+                        }
+                    %>
                 </td>
                 <td><%= String.format("%,.0f", part.getPrice()) %> VND</td>
             </tr>
@@ -193,14 +185,6 @@
                 }
             %>
         </table>
-
-        <!-- ĐƯỜNG DẪN XEM FEEDBACK -->
-        <% if (se != null) { %>
-            <a href="FeedbackServlet?serviceId=<%= se.getId() %>" class="feedback-link">
-                Xem đánh giá &amp; phản hồi của khách hàng
-            </a>
-        <% } %>
-
         <div class="form-actions">
             <a href="ServiceServlet_JSP?service=listService" class="btn-back">Quay lại danh sách</a>
         </div>

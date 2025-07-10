@@ -1,236 +1,184 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="entity.Service, entity.Part, entity.User, java.util.ArrayList" %>
-<%
-    Service se = (Service) request.getAttribute("service");
-    ArrayList<Part> parts = (se != null && se.getParts() != null) ? se.getParts() : new ArrayList<>();
-    double totalPartPrice = 0;
-    for (Part part : parts) {
-        totalPartPrice += part.getPrice();
-    }
-    double totalPrice = (se != null ? se.getPrice() : 0) + totalPartPrice;
-
-    User currentUser = (User) session.getAttribute("user");
-%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Chi tiết dịch vụ</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Xem nhanh dịch vụ</title>
     <style>
-        body {
-            background: #f1f6fc;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            max-width: 960px;
-            margin: 36px auto 24px auto;
-            padding: 0 12px;
-        }
-        .card {
+        body { background: #f6faff; font-family: Arial, sans-serif; margin:0; }
+        .preview-container {
             background: #fff;
+            max-width: 940px;
+            margin: 60px auto 32px auto;
             border-radius: 18px;
-            box-shadow: 0 4px 18px rgba(0,0,0,0.07);
-            padding: 34px 28px 24px 28px;
-            margin-bottom: 32px;
+            box-shadow: 0 8px 36px rgba(0,0,0,0.13);
+            padding: 48px 36px 36px 36px;
         }
-        .header-title {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #1161b5;
-            text-align: center;
-            letter-spacing: 1px;
-            margin-bottom: 30px;
+        .preview-row {
+            display: flex;
+            gap: 48px;
+            align-items: flex-start;
         }
-        .service-info-table, .parts-table {
-            width: 100%;
-            border-collapse: collapse;
+        .preview-img-col {
+            flex: 0 0 370px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .preview-img {
+            width: 340px;
+            height: 240px;
+            border-radius: 14px;
+            object-fit: cover;
+            background: #f4f6fa;
+            border: 2px solid #eaeaea;
             margin-bottom: 18px;
-        }
-        .service-info-table td {
-            padding: 11px 10px;
-            border-bottom: 1px solid #f0f2f7;
-        }
-        .service-info-table .label {
-            color: #346899;
-            font-weight: 500;
-            width: 140px;
-            background: #f7fbff;
-        }
-        .service-info-table .value {
-            color: #123;
-            background: #fcfdff;
-        }
-        .service-img {
-            max-width: 170px;
-            max-height: 110px;
-            border-radius: 8px;
-            border: 1px solid #e6e6e6;
-        }
-        .parts-section {
-            margin-bottom: 30px;
-        }
-        .parts-title {
-            font-size: 20px;
-            color: #1161b5;
-            font-weight: 600;
-            margin-bottom: 12px;
-        }
-        .parts-table th, .parts-table td {
-            padding: 8px 8px;
-            border: 1px solid #e0e9f5;
-            font-size: 15px;
-        }
-        .parts-table th {
-            background: #eaf3fb;
-            color: #276fbe;
-            font-weight: 600;
-        }
-        .part-img {
-            max-width: 55px;
-            max-height: 35px;
-            border-radius: 6px;
-            border: 1px solid #ececec;
+            box-shadow: 0 4px 22px #e0e0e0;
         }
         .img-note {
-            color: #999; font-size: 12px; font-style: italic;
+            color: #aaa;
+            font-size: 17px;
+            font-style: italic;
+            text-align: center;
+            margin-bottom: 12px;
         }
-        .no-parts {
-            color: #aaa; text-align: center;
+        .preview-data-col {
+            flex: 1 1 0;
         }
-        .price-main, .price-parts, .price-total {
+        .preview-title {
+            font-size: 2.05rem;
             font-weight: bold;
+            color: #1455a2;
+            margin-bottom: 13px;
         }
-        .price-total {
-            color: #d35400;
-            font-size: 1.1em;
+        .preview-price {
+            color: #e74c3c;
+            font-size: 1.45rem;
+            font-weight: bold;
+            margin-bottom: 16px;
         }
-        .feedback-link {
-            display: inline-block;
-            margin: 22px 0 0 0;
-            background: #f7fbff;
-            color: #1161b5;
-            padding: 10px 22px;
+        .preview-section-title {
+            font-weight:700;
+            color:#1368ce;
+            margin-bottom:8px;
+            font-size:1.23rem;
+            margin-top:26px;
+        }
+        .preview-desc {
+            color:#234;
+            font-size:1.17rem;
+            margin-bottom: 14px;
+        }
+        .preview-parts-list {
+            margin:0;
+            padding:0;
+            list-style:none;
+        }
+        .preview-parts-list li {
+            font-size:1.09rem;
+            margin-bottom:9px;
+            display:flex;
+            align-items:center;
+            gap:14px;
+        }
+        .part-img {
+            width: 70px;
+            height: 48px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #eaeaea;
+            background: #f6f6f6;
+        }
+        .no-parts { color: #aaa; font-size:1.05rem; font-style:italic;}
+        .preview-actions {
+            display:flex;
+            gap:18px;
+            margin-top:32px;
+        }
+        .btn-detail, .btn-back {
+            background: #1565c0;
+            color: #fff;
+            padding: 12px 28px;
             border-radius: 7px;
-            text-decoration: none;
-            font-size: 1.1rem;
+            border: none;
+            font-size: 1.08rem;
             font-weight: 600;
-            border: 1px solid #b3cef6;
-            transition: background 0.2s, color 0.2s;
-        }
-        .feedback-link:hover {
-            background: #1161b5;
-            color: #fff;
-        }
-        .back-btn {
-            background: #1161b5;
-            color: #fff;
-            padding: 8px 22px;
-            border-radius: 5px;
             text-decoration: none;
-            font-size: 16px;
-            font-weight: 500;
-            transition: background 0.2s;
-            margin-top: 16px;
+            transition: background 0.18s, box-shadow 0.18s;
             display: inline-block;
+            box-shadow: 0 2px 10px #e4e4e4;
         }
-        .back-btn:hover {
-            background: #093f77;
+        .btn-detail:hover { background: #0d4587;}
+        .btn-back { background: #aaa;}
+        .btn-back:hover { background: #444; }
+        @media (max-width: 1100px) {
+            .preview-container { max-width: 98vw; padding:28px 5vw;}
+            .preview-row { gap:18px; }
+            .preview-img-col { flex-basis: 200px; }
+            .preview-img { width: 180px; height: 120px;}
         }
         @media (max-width: 700px) {
-            .container, .card { padding: 12px 5px; }
-            .header-title { font-size: 1.3rem; }
+            .preview-row { flex-direction: column; gap:0;}
+            .preview-img-col { margin-bottom: 28px;}
+            .preview-container { padding:18px 1vw;}
+            .preview-title { font-size: 1.3rem;}
+            .preview-img { width:98vw; max-width: 96vw; height: 180px;}
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="card">
-            <div class="header-title">Chi tiết dịch vụ</div>
-            <table class="service-info-table">
-                <tr>
-                    <td class="label">ID</td>
-                    <td class="value"><%= se != null ? se.getId() : "" %></td>
-                </tr>
-                <tr>
-                    <td class="label">Tên dịch vụ</td>
-                    <td class="value"><%= se != null ? se.getName() : "" %></td>
-                </tr>
-                <tr>
-                    <td class="label">Mô tả</td>
-                    <td class="value"><%= se != null ? se.getDescription() : "" %></td>
-                </tr>
-                <tr>
-                    <td class="label">Ảnh dịch vụ</td>
-                    <td class="value">
-                        <% if (se != null && se.getImg() != null && !se.getImg().isEmpty()) { %>
-                            <img src="<%= request.getContextPath() + "/" + se.getImg() %>" alt="Ảnh dịch vụ" class="service-img">
-                        <% } else { %>
-                            <span class="img-note">Chưa có ảnh</span>
-                        <% } %>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label">Giá gốc dịch vụ</td>
-                    <td class="value price-main"><%= se != null ? String.format("%,.0f", se.getPrice()) : "" %> VND</td>
-                </tr>
-                <tr>
-                    <td class="label">Tổng giá phụ tùng</td>
-                    <td class="value price-parts"><%= String.format("%,.0f", totalPartPrice) %> VND</td>
-                </tr>
-                <tr>
-                    <td class="label"><b>Giá cuối (gồm phụ tùng)</b></td>
-                    <td class="value price-total"><b><%= String.format("%,.0f", totalPrice) %> VND</b></td>
-                </tr>
-            </table>
-
-            <!-- PHỤ TÙNG -->
-            <div class="parts-section">
-                <div class="parts-title">Phụ tùng liên quan</div>
-                <table class="parts-table">
-                    <tr>
-                        <th>ID</th>
-                        <th>Tên phụ tùng</th>
-                        <th>Ảnh</th>
-                        <th>Giá</th>
-                    </tr>
-                    <%
-                        if (parts != null && !parts.isEmpty()) {
-                            for (Part part : parts) {
-                    %>
-                    <tr>
-                        <td><%= part.getId() %></td>
-                        <td><%= part.getName() %></td>
-                        <td>
-                            <% if (part.getImage() != null && !part.getImage().isEmpty()) { %>
-                                <img src="<%= request.getContextPath() + "/" + part.getImage() %>" class="part-img" alt="Ảnh phụ tùng"/>
-                            <% } else { %>
-                                <span class="img-note">Chưa có ảnh</span>
-                            <% } %>
-                        </td>
-                        <td><%= String.format("%,.0f", part.getPrice()) %> VND</td>
-                    </tr>
-                    <%
-                            }
-                        } else {
-                    %>
-                    <tr>
-                        <td colspan="4" class="no-parts">Không có phụ tùng liên quan</td>
-                    </tr>
-                    <%
-                        }
-                    %>
-                </table>
+    <div class="preview-container">
+        <div class="preview-row">
+            <!-- Cột trái: Ảnh dịch vụ -->
+            <div class="preview-img-col">
+                <c:choose>
+                    <c:when test="${not empty service.img}">
+                        <img src="${pageContext.request.contextPath}/${service.img}" class="preview-img" alt="Ảnh dịch vụ">
+                    </c:when>
+                    <c:otherwise>
+                        <span class="img-note">Chưa có ảnh dịch vụ</span>
+                    </c:otherwise>
+                </c:choose>
             </div>
 
-            <!-- Liên kết xem feedback -->
-            <% if (se != null) { %>
-                <a href="FeedbackServlet?serviceId=<%= se.getId() %>" class="feedback-link">Xem đánh giá & phản hồi</a>
-            <% } %>
-
-            <a href="home" class="back-btn">← Quay lại trang chủ</a>
+            <!-- Cột phải: Dữ liệu dịch vụ -->
+            <div class="preview-data-col">
+                <div class="preview-title">${service.name}</div>
+                <div class="preview-price">
+                    <fmt:formatNumber value="${service.price}" type="number" maxFractionDigits="0"/> đ
+                </div>
+                <div class="preview-section-title">Mô tả dịch vụ</div>
+                <div class="preview-desc">${service.description}</div>
+                <div class="preview-section-title">Phụ tùng kèm theo</div>
+                <c:choose>
+                    <c:when test="${not empty service.parts}">
+                        <ul class="preview-parts-list">
+                            <c:forEach var="part" items="${service.parts}">
+                                <li>
+                                    <c:choose>
+                                        <c:when test="${not empty part.image}">
+                                            <img src="${pageContext.request.contextPath}/image/${part.image}" alt="${part.name}" class="part-img">
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span style="color:#bbb;font-size:15px;">Không ảnh</span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                    <span>${part.name}</span>
+                                </li>
+                            </c:forEach>
+                        </ul>
+                    </c:when>
+                    <c:otherwise>
+                        <span class="no-parts">Không có phụ tùng kèm theo</span>
+                    </c:otherwise>
+                </c:choose>
+                <div class="preview-actions">
+                    <a href="ServiceServlet_JSP?service=detailService&id=${service.id}" class="btn-detail">Xem chi tiết</a>
+                    <a href="ServiceServlet_JSP?service=listService" class="btn-back">Quay lại</a>
+                </div>
+            </div>
         </div>
     </div>
 </body>

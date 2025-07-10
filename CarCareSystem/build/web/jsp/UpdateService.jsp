@@ -1,5 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -32,13 +34,80 @@
         .alert { text-align: center; margin-bottom: 12px;}
         .alert-error { color: #e74c3c; }
         .alert-success { color: #27ae60; }
-        .checkbox-list { display: flex; flex-wrap: wrap; gap: 8px; }
-        .checkbox-item { background: #f1f6ff; border-radius: 6px; padding: 4px 8px; }
+        /* Custom dropdown multi-select */
+        .multiselect-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        .multiselect-selected {
+            border: 1.3px solid #b7c7d7;
+            border-radius: 7px;
+            min-height: 38px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 3px;
+            padding: 6px 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+        .multiselect-selected:after {
+            content: '';
+            border: solid #2563eb;
+            border-width: 0 2px 2px 0;
+            display: inline-block;
+            padding: 5px;
+            transform: rotate(45deg);
+            position: absolute;
+            right: 16px;
+            top: 16px;
+            pointer-events: none;
+        }
+        .multiselect-dropdown {
+            display: none;
+            position: absolute;
+            top: 105%;
+            left: 0;
+            width: 100%;
+            background: #fff;
+            border: 1.3px solid #b7c7d7;
+            border-radius: 7px;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.07);
+            z-index: 10;
+            max-height: 220px;
+            overflow-y: auto;
+        }
+        .multiselect-dropdown.open {
+            display: block;
+        }
+        .multiselect-option {
+            padding: 7px 14px 7px 7px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            border-radius: 4px;
+        }
+        .multiselect-option:hover {
+            background: #e7f1fd;
+        }
+        .multiselect-option input {
+            margin-right: 7px;
+        }
+        .multiselect-badge {
+            background: #e0f0ff;
+            color: #166bb3;
+            border-radius: 9px;
+            padding: 2px 8px;
+            font-size: 0.95em;
+            margin-right: 3px;
+            margin-bottom: 2px;
+            display: inline-block;
+        }
         @media (max-width: 600px) {
             .form-container { padding: 12px 3vw; max-width: 97vw;}
             table { font-size: 0.98rem;}
             .form-title { font-size: 1.2rem;}
-            .checkbox-list { flex-direction: column; }
         }
     </style>
 </head>
@@ -89,7 +158,7 @@
                                 <input class="form-input" type="file" name="img" accept="image/*">
                                 <c:if test="${not empty service.img}">
                                     <div style="margin-top:10px">
-                                        <img src="${pageContext.request.contextPath}/${service.img}" width="120" alt="Ảnh dịch vụ hiện tại">
+                                        <img src="${pageContext.request.contextPath}/uploads/${service.img}" width="120" alt="Ảnh dịch vụ hiện tại">
                                         <div style="font-size:12px;color:#888;">Ảnh hiện tại</div>
                                     </div>
                                 </c:if>
@@ -99,15 +168,20 @@
                         <tr>
                             <td class="form-label" style="vertical-align:top;">Phụ tùng liên quan</td>
                             <td>
-                                <div class="checkbox-list">
-                                    <c:forEach var="part" items="${allParts}">
-                                        <label class="checkbox-item">
-                                            <input type="checkbox" name="partIds" value="${part.id}"
-                                                <c:if test="${selectedPartIds != null && selectedPartIds.contains(part.id)}">checked</c:if>
-                                            >
-                                            ${part.name}
-                                        </label>
-                                    </c:forEach>
+                                <div class="multiselect-wrapper" id="multiPartSelect">
+                                    <div class="multiselect-selected" onclick="toggleDropdown()">
+                                        <span id="selectedPartsPlaceholder" style="color:#bbb;">Chọn phụ tùng liên quan</span>
+                                    </div>
+                                    <div class="multiselect-dropdown" id="dropdownList">
+                                        <c:forEach var="part" items="${allParts}">
+                                            <div class="multiselect-option">
+                                                <input type="checkbox" name="partIds" value="${part.id}" id="part_${part.id}"
+                                                    <c:if test="${selectedPartIds != null && selectedPartIds.contains(part.id)}">checked</c:if>
+                                                onchange="updateSelectedParts()">
+                                                <label for="part_${part.id}" style="margin-bottom:0">${part.name}</label>
+                                            </div>
+                                        </c:forEach>
+                                    </div>
                                 </div>
                             </td>
                         </tr>
@@ -128,5 +202,42 @@
             </c:otherwise>
         </c:choose>
     </div>
+    <script>
+        // Mở/đóng dropdown khi bấm vào khung
+        function toggleDropdown() {
+            var dropdown = document.getElementById("dropdownList");
+            dropdown.classList.toggle("open");
+        }
+        // Đóng dropdown khi bấm ra ngoài
+        document.addEventListener('click', function(event) {
+            var wrapper = document.getElementById("multiPartSelect");
+            if (!wrapper.contains(event.target)) {
+                document.getElementById("dropdownList").classList.remove("open");
+            }
+        });
+        // Hiển thị các phụ tùng đã chọn lên khung
+        function updateSelectedParts() {
+            var checked = document.querySelectorAll('.multiselect-dropdown input[type="checkbox"]:checked');
+            var container = document.querySelector('.multiselect-selected');
+            var placeholder = document.getElementById('selectedPartsPlaceholder');
+            // Xóa phần tử cũ (nếu có)
+            container.innerHTML = '';
+            if (checked.length === 0) {
+                placeholder.style.display = '';
+                container.appendChild(placeholder);
+            } else {
+                checked.forEach(function(item){
+                    var badge = document.createElement("span");
+                    badge.className = "multiselect-badge";
+                    badge.textContent = item.nextElementSibling.textContent;
+                    container.appendChild(badge);
+                });
+            }
+        }
+        // Khởi tạo placeholder và checked
+        window.onload = function() {
+            updateSelectedParts();
+        };
+    </script>
 </body>
 </html>

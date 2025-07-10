@@ -23,18 +23,15 @@ public class Service {
         this.img = img;
         this.parts = new ArrayList<>();
     }
-      public Service(int id, String name, String description, double price) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.price = price;
+
+    public Service(int id, String name, String description, double price) {
+        this(id, name, description, price, "default.jpg");
     }
 
-        public Service(int id, String name, double price) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
+    public Service(int id, String name, double price) {
+        this(id, name, null, price, "default.jpg");
     }
+
     // Constructor đầy đủ
     public Service(int id, String name, String description, double price, String img, ArrayList<Part> parts) {
         this.id = id;
@@ -93,9 +90,21 @@ public class Service {
         this.parts = parts;
     }
 
+    /**
+     * Hàm này trả về tổng giá dịch vụ + tổng giá tất cả part liên quan.
+     */
+    public double getTotalPriceWithParts() {
+        double total = this.price;
+        if (parts != null) {
+            for (Part p : parts) {
+                total += p.getPrice();
+            }
+        }
+        return total;
+    }
+
     @Override
     public String toString() {
         return "Service{" + "id=" + id + ", name=" + name + ", description=" + description + ", price=" + price + ", img=" + img + ", parts=" + parts + '}';
     }
-  
 }
