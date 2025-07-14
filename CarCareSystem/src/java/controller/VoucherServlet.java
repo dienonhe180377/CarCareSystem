@@ -1,34 +1,32 @@
 package controller;
 
 import dao.VoucherDAO;
-import dao.CampaignDAO;
-import dao.ServiceDAO;
+import dao.UserVoucherDAO;
 import entity.Voucher;
-import entity.Campaign;
-import entity.Service;
-
+import entity.User;
+import entity.UserVoucher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.sql.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
+/**
+ *
+ * @author NTN
+ */
 public class VoucherServlet extends AuthorizationServlet {
-
-    private static final Logger LOGGER = Logger.getLogger(VoucherServlet.class.getName());
+    
     private VoucherDAO voucherDAO;
-    private CampaignDAO campaignDAO;
-    private ServiceDAO serviceDAO;
-
+    private UserVoucherDAO userVoucherDAO;
+    
     @Override
     public void init() {
         voucherDAO = new VoucherDAO();
-        campaignDAO = new CampaignDAO();
-        serviceDAO = new ServiceDAO();
+        userVoucherDAO = new UserVoucherDAO();
     }
-
+    
     private boolean isUnauthorized(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session == null) {
@@ -40,212 +38,363 @@ public class VoucherServlet extends AuthorizationServlet {
             return true;
         }
 
+        return false; // Đã login thì được phép truy cập
+    }
+    
+    // Chỉ admin, marketing, manager được quản lý voucher
+    private boolean canManageVouchers(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session == null) return false;
+        
+        Object userObj = session.getAttribute("user");
+        if (userObj == null) return false;
+        
         entity.User user = (entity.User) userObj;
         String role = user.getUserRole().toLowerCase();
-
-        // Nếu role là "user" thì không cho phép
-        return role.equals("user");
+        
+        return role.equals("admin") || role.equals("marketing") || role.equals("manager");
     }
-
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
         if (isUnauthorized(request)) {
             response.setContentType("text/plain;charset=UTF-8");
-            response.getWriter().write("Bạn không có quyền truy cập trang này.");
+            response.getWriter().write("Bạn cần đăng nhập để truy cập trang này.");
             return;
         }
         
-        String service = request.getParameter("service");
-        String editId = request.getParameter("editId");
-
-        try {
-            if (editId != null) {
-                int id = Integer.parseInt(editId);
-                showEditForm(id, request, response);
-            } else if ("delete".equalsIgnoreCase(service)) {
-                deleteVoucher(request, response);
+        String action = request.getParameter("action");
+        if (action == null) action = "list";
+        
+        // Nếu KHÔNG phải admin/marketing/manager, chỉ cho phép xem voucher của mình
+        if (!canManageVouchers(request)) {
+            if ("userVouchers".equals(action) || action == null || "list".equals(action)) {
+                showUserVouchers(request, response);
+                return;
+            } else if ("userDetail".equals(action)) {
+                showUserVoucherDetail(request, response);
+                return;
             } else {
-                showVoucherList(request, response);
+                response.setContentType("text/plain;charset=UTF-8");
+                response.getWriter().write("Bạn không có quyền truy cập chức năng này.");
+                return;
             }
-        } catch (Exception ex) {
-            handleError(request, response, "Lỗi xử lý GET", ex);
+        }
+        
+        // Chỉ admin/marketing/manager mới được truy cập đầy đủ
+        try {
+            switch (action) {
+                case "list":
+                    showVoucherList(request, response);
+                    break;
+                case "addByUser":
+                    showAddByUserForm(request, response);
+                    break;
+                case "addPublic":
+                    showAddPublicForm(request, response);
+                    break;
+                case "addPrivate":
+                    showAddPrivateForm(request, response);
+                    break;
+                case "detail":
+                    showVoucherDetail(request, response);
+                    break;
+                case "delete":
+                    deleteVoucher(request, response);
+                    break;
+                case "userVouchers":
+                    showUserVouchers(request, response);
+                    break;
+                default:
+                    showVoucherList(request, response);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("errorMessage", "Có lỗi xảy ra: " + e.getMessage());
+            showVoucherList(request, response);
         }
     }
-
+    
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
         if (isUnauthorized(request)) {
+            response.setContentType("text/plain;charset=UTF-8");
+            response.getWriter().write("Bạn cần đăng nhập để thực hiện thao tác này.");
+            return;
+        }
+        
+        // Chỉ admin/marketing/manager mới được thực hiện POST
+        if (!canManageVouchers(request)) {
             response.setContentType("text/plain;charset=UTF-8");
             response.getWriter().write("Bạn không có quyền thực hiện thao tác này.");
             return;
         }
         
-        String service = request.getParameter("service");
-
+        String action = request.getParameter("action");
+        
         try {
-            switch (service.toLowerCase()) {
-                case "add" ->
-                    addOrUpdateVoucher(request, response, false);
-                case "edit" ->
-                    addOrUpdateVoucher(request, response, true);
-                case "delete" ->
-                    deleteVoucher(request, response);
-                default ->
+            switch (action) {
+                case "addByUser":
+                    processAddByUser(request, response);
+                    break;
+                case "addPublic":
+                    processAddPublic(request, response);
+                    break;
+                case "addPrivate":
+                    processAddPrivate(request, response);
+                    break;
+                default:
                     showVoucherList(request, response);
             }
-        } catch (Exception ex) {
-            handleError(request, response, "Lỗi xử lý POST", ex);
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("errorMessage", "Có lỗi xảy ra: " + e.getMessage());
+            showVoucherList(request, response);
         }
     }
-
-    private void showEditForm(int id, HttpServletRequest request, HttpServletResponse response)
+    
+    // Method mới: Hiển thị voucher detail cho user thường (không hiển thị owners)
+    private void showUserVoucherDetail(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            List<Voucher> vouchers = voucherDAO.getAllVouchers();
-            List<Campaign> campaigns = campaignDAO.getAllCampaigns();
-            List<Service> services = serviceDAO.getAllService();
-
-            Voucher voucherToEdit = vouchers.stream()
-                    .filter(v -> v.getId() == id)
-                    .findFirst()
-                    .orElse(null);
-
-            if (voucherToEdit == null) {
-                request.setAttribute("errorMessage", "Không tìm thấy voucher để sửa");
-            } else {
-                request.setAttribute("voucher", voucherToEdit);
-                request.setAttribute("isEditing", true);
+            int voucherId = Integer.parseInt(request.getParameter("id"));
+            HttpSession session = request.getSession();
+            entity.User currentUser = (entity.User) session.getAttribute("user");
+            
+            // Kiểm tra user có voucher này không
+            List<UserVoucher> userVouchers = userVoucherDAO.getUserVouchersByUserId(currentUser.getId());
+            boolean hasVoucher = userVouchers.stream()
+                    .anyMatch(uv -> uv.getVoucher().getId() == voucherId);
+            
+            if (!hasVoucher) {
+                response.setContentType("text/plain;charset=UTF-8");
+                response.getWriter().write("Bạn không có quyền xem voucher này.");
+                return;
             }
-
-            request.setAttribute("vouchers", vouchers);
-            request.setAttribute("campaigns", campaigns);
-            request.setAttribute("services", services);
-            request.getRequestDispatcher("Voucher/Voucher.jsp").forward(request, response);
-
-        } catch (Exception ex) {
-            handleError(request, response, "Không thể hiển thị form sửa", ex);
+            
+            Voucher voucher = voucherDAO.getVoucherById(voucherId);
+            request.setAttribute("voucher", voucher);
+            request.getRequestDispatcher("Voucher/VoucherDetailUser.jsp").forward(request, response);
+            
+        } catch (NumberFormatException e) {
+            response.setContentType("text/plain;charset=UTF-8");
+            response.getWriter().write("ID voucher không hợp lệ.");
         }
     }
-
+    
+    // Các method khác giữ nguyên...
     private void showVoucherList(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         List<Voucher> vouchers = voucherDAO.getAllVouchers();
-        List<Campaign> campaigns = campaignDAO.getAllCampaigns();
-        List<Service> services = serviceDAO.getAllService();
-        
         request.setAttribute("vouchers", vouchers);
-        request.setAttribute("campaigns", campaigns);
-        request.setAttribute("services", services);
         request.getRequestDispatcher("Voucher/Voucher.jsp").forward(request, response);
     }
-
-    private void addOrUpdateVoucher(HttpServletRequest request, HttpServletResponse response, boolean isEdit)
+    
+    private void showAddByUserForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            int id = isEdit ? Integer.parseInt(request.getParameter("id")) : 0;
-            String name = request.getParameter("name");
-            int campaignId = Integer.parseInt(request.getParameter("campaignId"));
-            int serviceId = Integer.parseInt(request.getParameter("serviceId"));
-            String description = request.getParameter("description");
-            int discount = Integer.parseInt(request.getParameter("discount"));
-            boolean status = request.getParameter("status") != null;
-            Date startDate = Date.valueOf(request.getParameter("startDate"));
-            Date endDate = Date.valueOf(request.getParameter("endDate"));
-
-            String error = validateVoucher(name, startDate, endDate, discount, id, isEdit);
-            if (error != null) {
-                request.setAttribute("errorMessage", error);
-                showVoucherList(request, response);
-                return;
-            }
-
-            // Get campaign and service objects
-            Campaign campaign = campaignDAO.getAllCampaigns().stream()
-                    .filter(c -> c.getId() == campaignId)
-                    .findFirst()
-                    .orElse(null);
-            
-            Service service = serviceDAO.getAllService().stream()
-                    .filter(s -> s.getId() == serviceId)
-                    .findFirst()
-                    .orElse(null);
-
-            if (campaign == null || service == null) {
-                request.setAttribute("errorMessage", "Campaign hoặc Service không tồn tại");
-                showVoucherList(request, response);
-                return;
-            }
-
-            Voucher voucher = new Voucher(id, name.trim(), campaign, service, startDate, endDate, description, discount, status);
-            
-            if (isEdit) {
-                voucherDAO.updateVoucher(voucher);
-                request.setAttribute("successMessage", "Cập nhật voucher thành công");
-            } else {
-                voucherDAO.addVoucher(voucher);
-                request.setAttribute("successMessage", "Thêm voucher thành công");
-            }
-
-            showVoucherList(request, response);
-
-        } catch (IllegalArgumentException ex) {
-            LOGGER.log(Level.WARNING, "Sai định dạng dữ liệu: ", ex);
-            request.setAttribute("errorMessage", "Định dạng dữ liệu không hợp lệ");
-            showVoucherList(request, response);
-        } catch (Exception ex) {
-            handleError(request, response, "Lỗi khi thêm/sửa voucher", ex);
-        }
+        List<User> users = userVoucherDAO.getAllUsers();
+        request.setAttribute("users", users);
+        request.getRequestDispatcher("Voucher/AddVoucherByUser.jsp").forward(request, response);
     }
-
+    
+    private void showAddPublicForm(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.getRequestDispatcher("Voucher/AddVoucherPublic.jsp").forward(request, response);
+    }
+    
+    private void showAddPrivateForm(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.getRequestDispatcher("Voucher/AddVoucherPrivate.jsp").forward(request, response);
+    }
+    
+    private void showVoucherDetail(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        int voucherId = Integer.parseInt(request.getParameter("id"));
+        Voucher voucher = voucherDAO.getVoucherById(voucherId);
+        List<String> owners = userVoucherDAO.getVoucherOwners(voucherId);
+        
+        request.setAttribute("voucher", voucher);
+        request.setAttribute("owners", owners);
+        request.getRequestDispatcher("Voucher/VoucherDetail.jsp").forward(request, response);
+    }
+    
+    private void showUserVouchers(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        entity.User user = (entity.User) session.getAttribute("user");
+        
+        if (user != null) {
+            List<UserVoucher> userVouchers = userVoucherDAO.getUserVouchersByUserId(user.getId());
+            request.setAttribute("userVouchers", userVouchers);
+        }
+        
+        request.getRequestDispatcher("Voucher/VoucherList.jsp").forward(request, response);
+    }
+    
     private void deleteVoucher(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            int id = Integer.parseInt(request.getParameter("id"));
-            voucherDAO.deleteVoucher(id);
-            request.setAttribute("successMessage", "Xóa voucher thành công");
-        } catch (Exception ex) {
-            request.setAttribute("errorMessage", "Không thể xóa voucher");
-            LOGGER.log(Level.WARNING, "Delete failed: ", ex);
+        int voucherId = Integer.parseInt(request.getParameter("id"));
+        
+        if (voucherDAO.deleteVoucher(voucherId)) {
+            request.setAttribute("successMessage", "Xóa voucher thành công!");
+        } else {
+            request.setAttribute("errorMessage", "Không thể xóa voucher!");
         }
+        
         showVoucherList(request, response);
     }
-
-    private String validateVoucher(String name, Date start, Date end, int discount, int id, boolean isEdit) {
-        if (name == null || name.trim().isEmpty()) {
-            return "Tên không được để trống";
-        }
-        if (start.after(end)) {
-            return "Ngày bắt đầu phải trước ngày kết thúc";
-        }
-        if (discount < 0 || discount > 100) {
-            return "Discount phải từ 0 đến 100";
-        }
-
-        java.sql.Date currentDate = new java.sql.Date(System.currentTimeMillis());
-        if (end.before(currentDate)) {
-            return "Ngày kết thúc phải sau thời gian hiện tại";
-        }
-
-        List<Voucher> vouchers = voucherDAO.getAllVouchers();
-        for (Voucher v : vouchers) {
-            if (v.getName().equalsIgnoreCase(name.trim()) && (!isEdit || v.getId() != id)) {
-                return "Tên voucher đã tồn tại";
-            }
-        }
-        return null;
-    }
-
-    private void handleError(HttpServletRequest request, HttpServletResponse response, String message, Exception ex)
+    
+    // Các method process khác giữ nguyên...
+    private void processAddByUser(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        LOGGER.log(Level.SEVERE, message, ex);
-        request.setAttribute("errorMessage", message);
-        showVoucherList(request, response);
+        
+        String[] userIds = request.getParameterValues("userIds");
+        if (userIds == null || userIds.length == 0) {
+            request.setAttribute("errorMessage", "Vui lòng chọn ít nhất một người dùng!");
+            showAddByUserForm(request, response);
+            return;
+        }
+        
+        Voucher voucher = createVoucherFromRequest(request);
+        String validationError = validateVoucher(voucher);
+        
+        if (validationError != null) {
+            request.setAttribute("errorMessage", validationError);
+            showAddByUserForm(request, response);
+            return;
+        }
+        
+        if (voucherDAO.addVoucher(voucher)) {
+            for (String userIdStr : userIds) {
+                int userId = Integer.parseInt(userIdStr);
+                userVoucherDAO.addUserVoucher(userId, voucher.getId(), voucher.getVoucherCode());
+            }
+            request.setAttribute("successMessage", "Thêm voucher thành công!");
+            showVoucherList(request, response);
+        } else {
+            request.setAttribute("errorMessage", "Không thể thêm voucher!");
+            showAddByUserForm(request, response);
+        }
     }
-
-    @Override
-    public String getServletInfo() {
-        return "Voucher Management Servlet";
+    
+    private void processAddPublic(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        
+        Voucher voucher = createVoucherFromRequest(request);
+        String validationError = validateVoucher(voucher);
+        
+        if (validationError != null) {
+            request.setAttribute("errorMessage", validationError);
+            showAddPublicForm(request, response);
+            return;
+        }
+        
+        if (voucherDAO.addVoucher(voucher)) {
+            List<User> allUsers = userVoucherDAO.getAllUsers();
+            for (User user : allUsers) {
+                userVoucherDAO.addUserVoucher(user.getId(), voucher.getId(), voucher.getVoucherCode());
+            }
+            request.setAttribute("successMessage", "Thêm voucher công khai thành công!");
+            showVoucherList(request, response);
+        } else {
+            request.setAttribute("errorMessage", "Không thể thêm voucher!");
+            showAddPublicForm(request, response);
+        }
+    }
+    
+    private void processAddPrivate(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        
+        String[] roles = request.getParameterValues("roles");
+        if (roles == null || roles.length == 0) {
+            request.setAttribute("errorMessage", "Vui lòng chọn ít nhất một vai trò!");
+            showAddPrivateForm(request, response);
+            return;
+        }
+        
+        Voucher voucher = createVoucherFromRequest(request);
+        String validationError = validateVoucher(voucher);
+        
+        if (validationError != null) {
+            request.setAttribute("errorMessage", validationError);
+            showAddPrivateForm(request, response);
+            return;
+        }
+        
+        if (voucherDAO.addVoucher(voucher)) {
+            for (String role : roles) {
+                List<User> usersWithRole = userVoucherDAO.getUsersByRole(role);
+                for (User user : usersWithRole) {
+                    userVoucherDAO.addUserVoucher(user.getId(), voucher.getId(), voucher.getVoucherCode());
+                }
+            }
+            request.setAttribute("successMessage", "Thêm voucher riêng tư thành công!");
+            showVoucherList(request, response);
+        } else {
+            request.setAttribute("errorMessage", "Không thể thêm voucher!");
+            showAddPrivateForm(request, response);
+        }
+    }
+    
+    private Voucher createVoucherFromRequest(HttpServletRequest request) {
+        Voucher voucher = new Voucher();
+        
+        voucher.setName(request.getParameter("name"));
+        voucher.setDescription(request.getParameter("description"));
+        voucher.setVoucherCode(request.getParameter("voucherCode"));
+        voucher.setDiscountType(request.getParameter("discountType"));
+        voucher.setDiscount(Float.parseFloat(request.getParameter("discount")));
+        
+        String maxDiscountStr = request.getParameter("maxDiscountAmount");
+        if (maxDiscountStr != null && !maxDiscountStr.trim().isEmpty()) {
+            voucher.setMaxDiscountAmount(Float.parseFloat(maxDiscountStr));
+        }
+        
+        String minOrderStr = request.getParameter("minOrderAmount");
+        if (minOrderStr != null && !minOrderStr.trim().isEmpty()) {
+            voucher.setMinOrderAmount(Float.parseFloat(minOrderStr));
+        }
+        
+        voucher.setStartDate(Date.valueOf(request.getParameter("startDate")));
+        voucher.setEndDate(Date.valueOf(request.getParameter("endDate")));
+        voucher.setStatus(true);
+        
+        return voucher;
+    }
+    
+    private String validateVoucher(Voucher voucher) {
+        if (voucher.getName() == null || voucher.getName().trim().isEmpty()) {
+            return "Tên voucher không được để trống!";
+        }
+        
+        if (voucher.getVoucherCode() == null || voucher.getVoucherCode().trim().isEmpty()) {
+            return "Mã voucher không được để trống!";
+        }
+        
+        if (!Pattern.matches("^[a-zA-Z0-9]+$", voucher.getVoucherCode())) {
+            return "Mã voucher chỉ được chứa chữ cái và số, không có dấu cách hoặc ký tự đặc biệt!";
+        }
+        
+        if (voucherDAO.isVoucherCodeExists(voucher.getVoucherCode())) {
+            return "Mã voucher đã tồn tại!";
+        }
+        
+        if (voucher.getStartDate().after(voucher.getEndDate())) {
+            return "Ngày bắt đầu phải trước ngày kết thúc!";
+        }
+        
+        if (voucher.getDiscount() <= 0) {
+            return "Giá trị giảm giá phải lớn hơn 0!";
+        }
+        
+        if ("PERCENTAGE".equals(voucher.getDiscountType()) && voucher.getDiscount() > 100) {
+            return "Giảm giá theo phần trăm không được vượt quá 100%!";
+        }
+        
+        return null;
     }
 }
