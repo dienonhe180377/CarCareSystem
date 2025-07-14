@@ -76,6 +76,7 @@
     </style>
 </head>
 <body>
+    
     <div class="container">
         <div class="service-heading">DANH SÁCH DỊCH VỤ</div>
         <form class="service-search-bar" action="ServiceServlet_JSP" method="get">

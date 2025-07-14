@@ -8,7 +8,6 @@
         totalPartPrice += part.getPrice();
     }
     double totalPrice = (se != null ? se.getPrice() : 0) + totalPartPrice;
-
     User currentUser = (User) session.getAttribute("user");
 %>
 <!DOCTYPE html>
@@ -69,7 +68,7 @@
             margin-top: 24px;
             text-align: right;
         }
-        .btn-back {
+        .btn-back, .btn-order {
             background: #2471a3;
             color: #fff;
             padding: 8px 18px;
@@ -77,9 +76,18 @@
             text-decoration: none;
             font-weight: 500;
             transition: background 0.2s;
+            border: none;
+            cursor: pointer;
         }
-        .btn-back:hover {
+        .btn-back:hover, .btn-order:hover {
             background: #15518d;
+        }
+        .btn-order {
+            background: #e74c3c;
+            margin-right: 16px;
+        }
+        .btn-order:hover {
+            background: #b62a13;
         }
         .service-img {
             max-width: 180px;
@@ -97,11 +105,13 @@
         .img-note {
             color: #999; font-size: 12px; font-style: italic;
         }
-        .img-debug {
-            color: #c00;
-            font-size: 11px;
-            font-style: italic;
-            word-break: break-all;
+        @media (max-width: 900px) {
+            .form-container { width: 96vw; padding: 12px 2vw; }
+        }
+        @media (max-width: 600px) {
+            .form-title { font-size: 20px; }
+            .tieu-de { font-size: 17px; }
+            table, th, td { font-size: 13px; }
         }
     </style>
 </head>
@@ -138,7 +148,7 @@
             </tr>
             <tr>
                 <td class="form-label"><b>Giá dịch vụ (gồm phụ tùng)</b></td>
-                <td class="form-value"><b><%= String.format("%,.0f", totalPrice) %> VND</b></td>
+                <td class="form-value"><b style="color:#e74c3c;"><%= String.format("%,.0f", totalPrice) %> VND</b></td>
             </tr>
         </table>
         <h2 class="tieu-de" style="margin-top:32px;">Phụ tùng liên quan</h2>
@@ -161,7 +171,7 @@
                     <%
                         String partImgPath = part.getImage();
                         if (partImgPath != null && !partImgPath.trim().isEmpty()) {
-                            String finalPartImgUrl = request.getContextPath() + "/uploads/" + partImgPath;
+                            String finalPartImgUrl = request.getContextPath() + "/image/" + partImgPath;
                     %>
                         <img src="<%= finalPartImgUrl %>" class="part-img" alt="Ảnh phụ tùng"/>
                     <%
@@ -186,6 +196,10 @@
             %>
         </table>
         <div class="form-actions">
+            <form action="OrderServlet" method="post" style="display:inline;">
+                <input type="hidden" name="serviceId" value="<%= se != null ? se.getId() : "" %>"/>
+                <button type="submit" class="btn-order">Đặt dịch vụ</button>
+            </form>
             <a href="ServiceServlet_JSP?service=listService" class="btn-back">Quay lại danh sách</a>
         </div>
     </div>

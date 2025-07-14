@@ -9,28 +9,43 @@
         body { background: #f4f7fb; font-family: Arial, sans-serif; }
         .form-container {
             background: #fff;
-            max-width: 480px;
-            margin: 42px auto;
-            border-radius: 14px;
-            padding: 32px 32px 20px 32px;
-            box-shadow: 0 8px 32px 0 rgba(31,38,135,0.11);
+            max-width: 900px;
+            margin: 48px auto;
+            border-radius: 18px;
+            padding: 48px 56px 30px 56px;
+            box-shadow: 0 8px 32px 0 rgba(31,38,135,0.12);
         }
-        .form-title { font-size: 2rem; color: #2563eb; font-weight: 700; text-align: center; margin-bottom: 18px; }
-        .tieu-de { font-size: 1.3rem; color: #166bb3; font-weight: 600; text-align: center; margin-bottom: 20px; }
-        table { width: 100%; border-collapse: separate; border-spacing: 0 13px;}
-        .form-label { width: 110px; color: #333; font-weight: 500; vertical-align: top; }
-        .form-input[type="text"],
-        .form-input[type="number"] {
-            width: 100%; padding: 8px 10px; border-radius: 7px;
-            border: 1.3px solid #b7c7d7; font-size: 1.1rem;
+        .form-title { font-size: 2.5rem; color: #2563eb; font-weight: 700; text-align: center; margin-bottom: 28px; }
+        .tieu-de { font-size: 1.65rem; color: #166bb3; font-weight: 600; text-align: center; margin-bottom: 28px; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 20px; font-size: 1.22rem;}
+        .form-label { width: 170px; color: #333; font-weight: 500; vertical-align: top; font-size: 1.15rem; padding-top: 10px;}
+        .form-input[type="text"], .form-input[type="number"] {
+            width: 100%;
+            padding: 13px 18px;
+            border-radius: 10px;
+            border: 1.6px solid #b7c7d7;
+            font-size: 1.18rem;
         }
-        .form-input[type="file"] { font-size: 1rem; }
-        .form-actions { text-align: right; }
-        .btn { padding: 8px 22px; border-radius: 6px; border: none; font-size: 1rem; font-weight: 600; }
+        .form-input[type="file"] { font-size: 1.12rem; }
+        .form-actions { text-align: right; padding-top: 10px;}
+        .btn { padding: 12px 32px; border-radius: 8px; border: none; font-size: 1.15rem; font-weight: 700; }
         .btn-submit { background: #2563eb; color: #fff; }
         .btn-submit:hover { background: #1746a2; }
-        .btn-reset { background: #888; color: #fff; margin-left: 8px; }
-        .alert { text-align: center; margin-bottom: 12px;}
+        .btn-reset { background: #888; color: #fff; margin-left: 14px; }
+        .btn-back {
+            background: #2471a3;
+            color: #fff;
+            padding: 12px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            margin-left: 14px;
+            transition: background 0.2s;
+            display: inline-block;
+            font-size: 1.15rem;
+        }
+        .btn-back:hover { background: #15518d; }
+        .alert { text-align: center; margin-bottom: 18px; font-size: 1.12rem;}
         .alert-error { color: #e74c3c; }
         .alert-success { color: #27ae60; }
 
@@ -40,78 +55,81 @@
             width: 100%;
         }
         .multiselect-selected {
-            border: 1.3px solid #b7c7d7;
-            border-radius: 7px;
-            min-height: 38px;
+            border: 1.6px solid #b7c7d7;
+            border-radius: 10px;
+            min-height: 44px;
             background: #fff;
             display: flex;
             align-items: center;
             flex-wrap: wrap;
-            gap: 3px;
-            padding: 6px 10px;
+            gap: 6px;
+            padding: 10px 16px;
             cursor: pointer;
-            font-size: 1.1rem;
+            font-size: 1.18rem;
+            position: relative;
         }
         .multiselect-selected:after {
             content: '';
             border: solid #2563eb;
-            border-width: 0 2px 2px 0;
+            border-width: 0 3px 3px 0;
             display: inline-block;
-            padding: 5px;
+            padding: 7px;
             transform: rotate(45deg);
             position: absolute;
-            right: 16px;
-            top: 16px;
+            right: 24px;
+            top: 17px;
             pointer-events: none;
         }
         .multiselect-dropdown {
             display: none;
             position: absolute;
-            top: 105%;
+            top: 108%;
             left: 0;
             width: 100%;
             background: #fff;
-            border: 1.3px solid #b7c7d7;
-            border-radius: 7px;
-            box-shadow: 0 4px 18px rgba(0,0,0,0.07);
+            border: 1.6px solid #b7c7d7;
+            border-radius: 10px;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.09);
             z-index: 10;
-            max-height: 220px;
+            max-height: 280px;
             overflow-y: auto;
         }
         .multiselect-dropdown.open {
             display: block;
         }
         .multiselect-option {
-            padding: 7px 14px 7px 7px;
+            padding: 12px 24px 12px 12px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            border-radius: 4px;
+            border-radius: 6px;
+            font-size: 1.13rem;
         }
         .multiselect-option:hover {
             background: #e7f1fd;
         }
         .multiselect-option input {
-            margin-right: 7px;
+            margin-right: 10px;
         }
         .multiselect-badge {
             background: #e0f0ff;
             color: #166bb3;
-            border-radius: 9px;
-            padding: 2px 8px;
-            font-size: 0.95em;
-            margin-right: 3px;
-            margin-bottom: 2px;
+            border-radius: 13px;
+            padding: 4px 14px;
+            font-size: 1.08em;
+            margin-right: 5px;
+            margin-bottom: 3px;
             display: inline-block;
         }
-        @media (max-width: 600px) {
-            .form-container { padding: 12px 3vw; max-width: 97vw;}
-            table { font-size: 0.98rem;}
-            .form-title { font-size: 1.2rem;}
+        @media (max-width: 900px) {
+            .form-container { padding: 12px 2vw; max-width: 98vw;}
+            table { font-size: 1.05rem;}
+            .form-title { font-size: 1.3rem; }
         }
     </style>
 </head>
 <body>
+     <%@include file="/header_emp.jsp" %>
     <div class="form-container">
         <div class="form-title">${pageTitle}</div>
         <c:if test="${not empty error}">
@@ -179,6 +197,7 @@
                             <td colspan="2" class="form-actions">
                                 <input class="btn btn-submit" type="submit" name="submit" value="Thêm dịch vụ">
                                 <input class="btn btn-reset" type="reset" value="Làm lại">
+                                <a href="ServiceServlet_JSP?service=listService" class="btn btn-back">Quay lại danh sách</a>
                                 <input type="hidden" name="service" value="addService">
                             </td>
                         </tr>
