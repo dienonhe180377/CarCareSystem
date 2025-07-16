@@ -113,7 +113,7 @@ public class BlogServlet extends AuthorizationServlet {
             request.getSession().setAttribute("mainBlogList", blogs);
             request.setAttribute("blogs", blogs);
             request.setAttribute("campaigns", campaigns);
-            request.getRequestDispatcher("Blog/BlogList.jsp").forward(request, response);
+            request.getRequestDispatcher("Blog/Blog.jsp").forward(request, response);
 
         } catch (Exception ex) {
             handleError(request, response, "Không thể hiển thị form sửa", ex);
@@ -131,7 +131,7 @@ public class BlogServlet extends AuthorizationServlet {
         request.getSession().setAttribute("mainBlogList", blogs);
         request.setAttribute("blogs", blogs);
         request.setAttribute("campaigns", campaigns);
-        request.getRequestDispatcher("Blog/BlogList.jsp").forward(request, response);
+        request.getRequestDispatcher("Blog/Blog.jsp").forward(request, response);
     }
 
     private void addOrUpdateBlog(HttpServletRequest request, HttpServletResponse response, boolean isEdit)
