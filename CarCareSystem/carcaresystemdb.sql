@@ -253,4 +253,34 @@ ADD serviceId INT NOT NULL,
 ALTER TABLE Feedback 
 ADD CONSTRAINT FK_Feedback_Service FOREIGN KEY(serviceId) REFERENCES Service(id);
 
+ALTER TABLE Insurance
+DROP COLUMN price, description;
+GO
+
+
+ALTER TABLE Insurance
+ADD insuranceTypeId INT NOT NULL;
+
+ALTER TABLE Insurance
+ADD CONSTRAINT FK_Insurance_InsuranceType FOREIGN KEY (insuranceTypeId) REFERENCES InsuranceType(id);
+GO
+
+
+CREATE TABLE InsuranceType (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    name NVARCHAR(100) NOT NULL,
+    description NVARCHAR(500) NULL,
+    price FLOAT NOT NULL
+);
+GO
+
+-- Bước 1: Xóa khóa ngoại liên quan đến serviceId
+ALTER TABLE Feedback
+DROP CONSTRAINT FK_Feedback_Service;
+
+-- Bước 2: Xóa 2 cột serviceId và rating
+ALTER TABLE Feedback
+DROP COLUMN serviceId, rating;
+
+
 
