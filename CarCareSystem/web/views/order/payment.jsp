@@ -212,7 +212,7 @@
                 <div class="qr-section">
                     <h2 class="section-title">Mã QR Thanh Toán</h2>
                     <div class="qr-code">
-                        <div class="qr-placeholder">MÃ QR THANH TOÁN</div>
+                        <img src="data:image/png;base64,${qrCodeImage}" alt="Mã QR Thanh Toán">
                         <p>Quét mã QR để chuyển tiền nhanh chóng</p>
                     </div>
                 </div>
@@ -222,15 +222,15 @@
                     <div class="bank-info">
                         <div class="info-item">
                             <span class="info-label">Ngân hàng:</span>
-                            <span class="info-value">Techcombank</span>
+                            <span class="info-value">Vietcombank</span>
                         </div>
                         <div class="info-item">
                             <span class="info-label">Số tài khoản:</span>
-                            <span class="info-value">1903 6666 8888</span>
+                            <span class="info-value">1013367685</span>
                         </div>
                         <div class="info-item">
                             <span class="info-label">Tên tài khoản:</span>
-                            <span class="info-value">Công Ty TNHH Sửa Xe XYZ</span>
+                            <span class="info-value">TRAN THANH HAI</span>
                         </div>
                         <div class="info-item">
                             <span class="info-label">Chi nhánh:</span>
