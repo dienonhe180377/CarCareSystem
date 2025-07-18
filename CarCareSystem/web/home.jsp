@@ -198,46 +198,6 @@
                 <button type="submit" class="btn btn-success px-5">Mua dịch vụ & phụ tùng đã chọn</button>
             </div>
         </form>
-        
-        <!-- PHẦN ĐẶT LỊCH NHANH -->
-        <div class="container my-5">
-            <h2 class="fw-bold mb-4 text-center">ĐẶT LỊCH NHANH</h2>
-            <form action="order" method="post" class="row justify-content-center g-3">
-                <div class="col-md-12 text-center">
-                    <button type="submit" class="btn btn-success px-5">Đặt lịch</button>
-                </div>
-            </form>
-        </div>
-
-        <!-- PHỤ TÙNG NỔI BẬT (Featured Parts) -->
-        <div class="container my-5">
-            <h2 class="fw-bold mb-4 text-center">PHỤ TÙNG NỔI BẬT</h2>
-            <div class="row justify-content-center">
-                <%
-                    Vector<Part> top5Parts = (Vector<Part>) request.getAttribute("top5Parts");
-                    if (top5Parts != null && !top5Parts.isEmpty()) {
-                        for (Part p : top5Parts) {
-                %>
-                <div class="col-md-3 mb-4 d-flex">
-                    <div class="card flex-fill">
-                        <img src="<%=p.getImage()%>" class="card-img-top" alt="<%=p.getName()%>">
-                        <div class="card-body">
-                            <div class="card-title"><%=p.getName()%></div>
-                            <div class="card-text text-warning">Giá: <%=String.format("%,.0f", p.getPrice())%> VNĐ</div>
-                            <a href="PartServlet?part=previewPart&id=<%=p.getId()%>" class="btn btn-sm btn-outline-primary mt-2">Xem chi tiết</a>
-                        </div>
-                    </div>
-                </div>
-                <%
-                        }
-                    } else {
-                %>
-                <div class="col-12 text-center"><p>Không có phụ tùng nổi bật!</p></div>
-                <%
-                    }
-                %>
-            </div>
-        </div>
 
         <!-- ĐẶT LỊCH NHANH VÀ VOUCHER -->
         <div class="container my-5">

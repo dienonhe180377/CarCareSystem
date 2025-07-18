@@ -270,20 +270,7 @@ public class ServiceDAO extends DBConnection {
         String sql = "SELECT id, name, description, price, img FROM Service";
         if (hasSearch) {
             sql += " WHERE name LIKE ?";
-        }
-        
-        // Lay price theo id
-        public double getPriceById(int serviceId) throws SQLException {
-            String sql = "SELECT price FROM Service WHERE id = ?";
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setInt(1, serviceId);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return rs.getDouble("price");
-            }
-            return 0;
-        }
-        
+        }        
         // Đảm bảo thứ tự tăng dần của ID
         sql += " ORDER BY id ASC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
         try (PreparedStatement ptm = connection.prepareStatement(sql)) {
@@ -311,6 +298,19 @@ public class ServiceDAO extends DBConnection {
         }
         return listService;
     }
+    
+    // Lay price theo id
+        public double getPriceById(int serviceId) throws SQLException {
+            String sql = "SELECT price FROM Service WHERE id = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, serviceId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getDouble("price");
+            }
+            return 0;
+        }
+        
      public Vector<Part> getAllParts() {
         Vector<Part> parts = new Vector<>();
         String sql = "SELECT id, name, image, price FROM Parts";

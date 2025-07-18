@@ -208,13 +208,16 @@ CREATE TABLE PartsService (
 GO
 
 ALTER TABLE Category
-ADD description nvarchar(255)
+ADD description nvarchar(255);
+GO
 
 ALTER TABLE [Order]
 DROP CONSTRAINT FK_Order_Service;
+GO
 
 ALTER TABLE [Order]
 DROP COLUMN serviceId;
+GO
 
 CREATE TABLE OrderService (
     id         INT IDENTITY(1,1) PRIMARY KEY,
@@ -246,22 +249,27 @@ phone NVARCHAR(20) NOT NULL,
 [address] NVARCHAR(255) NOT NULL,
 paymentStatus NVARCHAR(50) NOT NULL,
 orderStatus NVARCHAR(50) NOT NULL;
+GO
 
 ALTER TABLE [Order]
 ADD paymentMethod NVARCHAR(50) NOT NULL;
+GO
 
 -- 19. Kiểm tra toàn bộ
 -- SELECT * FROM sys.tables;
 
 ALTER TABLE Service
 ADD img NVARCHAR(255) NOT NULL DEFAULT N'default.jpg';
+GO
 
 ALTER TABLE Feedback 
 ADD serviceId INT NOT NULL,
     rating INT NOT NULL;
+GO
 
 ALTER TABLE Feedback 
 ADD CONSTRAINT FK_Feedback_Service FOREIGN KEY(serviceId) REFERENCES Service(id);
+GO
 
 ALTER TABLE Insurance
 DROP COLUMN price, description;
@@ -270,6 +278,7 @@ GO
 
 ALTER TABLE Insurance
 ADD insuranceTypeId INT NOT NULL;
+GO
 
 ALTER TABLE Insurance
 ADD CONSTRAINT FK_Insurance_InsuranceType FOREIGN KEY (insuranceTypeId) REFERENCES InsuranceType(id);
@@ -287,11 +296,12 @@ GO
 -- Bước 1: Xóa khóa ngoại liên quan đến serviceId
 ALTER TABLE Feedback
 DROP CONSTRAINT FK_Feedback_Service;
+GO
 
 -- Bước 2: Xóa 2 cột serviceId và rating
 ALTER TABLE Feedback
 DROP COLUMN serviceId, rating;
-
+GO
 
 
 CREATE TABLE [Notification](
@@ -303,6 +313,7 @@ CREATE TABLE [Notification](
     notification_type nvarchar(50) not null,
     CONSTRAINT FK_Notification_User    FOREIGN KEY(recieverId)    REFERENCES [User](id)
 )
+GO
 
 CREATE TABLE [NotificationSetting](
     id int identity(1,1),
@@ -310,11 +321,13 @@ CREATE TABLE [NotificationSetting](
     recieverId int not null,
     CONSTRAINT FK_Notification_User    FOREIGN KEY(recieverId)    REFERENCES [User](id)
 )
+GO
 
 ALTER TABLE [Order] 
 ADD CONSTRAINT FK_Order_User FOREIGN KEY(userId) REFERENCES [User](id);
+GO
 
-select * from [Parts]
+select * from [Notification]
 SELECT * FROM [PartsService] 
 DELETE FROM [Order]
 
@@ -329,6 +342,7 @@ INSERT INTO Service (name, description, price, img) VALUES
 (N'Sửa điện', N'Sửa chữa điện', 50000, N'svc8.jpg'),
 (N'Thay ắc quy', N'Ắc quy mới', 350000, N'svc9.jpg'),
 (N'Sửa điều hòa', N'Điều hòa mát', 250000, N'svc10.jpg');
+GO
 
 INSERT INTO [dbo].[User]
            ([username], [password], [email], [phone], [address], [createDate], [role])
@@ -339,6 +353,7 @@ VALUES
            (N'customer01', N'123', N'customer@example.com', N'0900000004', N'Cần Thơ', GETDATE(), N'customer'),
            (N'warehouse01', N'123', N'warehouse@example.com', N'0900000005', N'Bình Dương', GETDATE(), N'warehouse manager'),
            (N'marketing01', N'123', N'marketing@example.com', N'0900000006', N'Nha Trang', GETDATE(), N'marketing');
+GO
 
 INSERT INTO Category (name, description, status) VALUES
 ('Engine',           N'Động cơ ô tô chịu trách nhiệm tạo lực đẩy',                      1),
