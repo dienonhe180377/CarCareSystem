@@ -1,8 +1,4 @@
-<%-- 
-    Document   : verify-request-otp
-    Created on : Jun 4, 2025, 12:24:20 AM
-    Author     : TRAN ANH HAI
---%>
+
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>

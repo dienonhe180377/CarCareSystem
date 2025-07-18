@@ -60,7 +60,8 @@ public class OrderTrackingServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+//        processRequest(request, response);
+        request.getRequestDispatcher("/views/order/tracking.jsp").forward(request, response);
     } 
 
     /** 

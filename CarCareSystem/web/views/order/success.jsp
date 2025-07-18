@@ -1,8 +1,4 @@
-<%-- 
-    Document   : success
-    Created on : Jul 2, 2025, 5:16:33 PM
-    Author     : TRAN ANH HAI
---%>
+
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -240,7 +236,7 @@
             </div>
         
             <div class="actions">
-                <a href="tracking" class="btn btn-primary">Theo dõi đơn hàng</a>
+                <a href="ordertracking" class="btn btn-primary">Theo dõi đơn hàng</a>
                 <a href="home" class="btn btn-secondary">Về trang chủ</a>
             </div>
         

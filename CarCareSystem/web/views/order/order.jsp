@@ -1,8 +1,3 @@
-<%-- 
-    Document   : order
-    Created on : Jun 27, 2025, 3:58:39 PM
-    Author     : TRAN ANH HAI
---%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="java.util.*, entity.CarType, entity.Service, entity.Part" %>

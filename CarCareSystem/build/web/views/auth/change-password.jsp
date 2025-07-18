@@ -1,14 +1,10 @@
-<%-- 
-    Document   : change-password
-    Created on : Jun 20, 2025, 9:30:20 AM
-    Author     : TRAN ANH HAI
---%>
+
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="entity.User" %>
 <%
-    User user = (User) session.getAttribute("user");
-    String username = user.getUsername();
+    User currentUser = (User) session.getAttribute("user");
+    String username = currentUser.getUsername();
     String firstLetter = username.substring(0, 1).toUpperCase();
 %>
 <!DOCTYPE html>
@@ -22,11 +18,15 @@
             background: #f8f9fa;
             margin: 0;
             padding: 0;
+            padding-top: 120px; 
+            box-sizing: border-box; 
         }
 
         .container {
             display: flex;
             padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .sidebar {
@@ -111,10 +111,28 @@
             color: green;
             margin-top: 10px;
         }
+        .alert {
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        
+        .alert-danger {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
     </style>
     </head>
     <body>
-        <%--<%@include file="/header.jsp" %>--%>
+        <%@include file="/header.jsp" %>
+        
         <div class="container">
             <!-- Sidebar -->
             <div class="sidebar">
@@ -122,7 +140,7 @@
                 <h3><%= username %> <span style="color: red;">✔</span></h3>
                 <ul>
                     <a href="viewProfile"><li>Thông tin tài khoản</li></a>
-                    <li>My Order</li>
+                    <a href="myorder"><li>My Order</li></a>
                     <li>Đánh giá dịch vụ</li>
                     <li class="active">Đổi mật khẩu</li>
                     <a href="logout"><li>Đăng xuất</li></a>

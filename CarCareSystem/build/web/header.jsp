@@ -255,7 +255,7 @@
                     <a href="accessories.jsp">ACCESSORIES</a>
                     <a href="promotions.jsp">PROMOTIONS</a>
                     <a href="blog.jsp">BLOG</a>
-                    <a href="booking.jsp">TRACKING</a>
+                    <a href="ordertracking">TRACKING</a>
                     <a href="contact.jsp">CONTACT</a>
                     <br>
                 </nav>
@@ -279,7 +279,7 @@
             <!-- Navigation menu right -->
             <nav class="nav-menu">
                 <a href="blog.jsp">BLOG</a>
-                <a href="booking.jsp">TRACKING</a>
+                <a href="ordertracking">TRACKING</a>
                 <a href="contact.jsp">CONTACT</a>
             </nav>
 
@@ -308,8 +308,8 @@
                 <div class="dropdown">
                     <i class="fas fa-user-circle avatar-icon" onclick="toggleUserDropdown()"></i>
                     <div id="userDropdown" class="dropdown-content">
-                        <a href="profileDetail">Profile</a>
-                        <a href="orders.jsp">My Orders</a>
+                        <a href="viewProfile">Profile</a>
+                        <a href="myorder">My Orders</a>
                         <a href="${pageContext.request.contextPath}/logout">Logout</a>
                     </div>
                 </div>
