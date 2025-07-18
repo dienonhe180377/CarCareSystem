@@ -62,6 +62,8 @@ public class UserDAO extends DBConnection {
                 u.setId(rs.getInt("id"));
                 u.setUsername(rs.getString("username"));
                 u.setEmail(rs.getString("email"));
+                u.setPhone(rs.getString("phone"));
+                u.setAddress(rs.getString("address"));
                 u.setUserRole(rs.getString("role"));
                 return u;
             }

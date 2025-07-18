@@ -18,6 +18,18 @@
     List<Service> services = serviceDAO.getAllService();
     List<Part> parts = partDAO.getAllPart();
 %>
+<% 
+Map<Integer, Double> serviceTotalPrices = new HashMap<>();
+for (Service s : services) {
+    double totalPrice = s.getPrice();
+    if (s.getParts() != null) {
+        for (Part p : s.getParts()) {
+            totalPrice += p.getPrice();
+        }
+    }
+    serviceTotalPrices.put(s.getId(), totalPrice);
+}
+%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -157,14 +169,16 @@
                     <label>Dịch vụ muốn đặt:</label>
                     <div class="scrollable-container" style="max-height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 10px;">
                         <% if (services != null) { 
-                            for (Service s : services) { %>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="serviceIds" value="<%= s.getId() %>" id="service_<%= s.getId() %>" data-price="<%= s.getPrice() %>">
-                                    <label class="form-check-label" for="service_<%= s.getId() %>">
-                                        <%= s.getName() %> - <%= s.getPrice() %> VNĐ
-                                    </label>
-                                </div>
-                            <% } 
+                            for (Service s : services) { 
+                            double totalPrice = serviceTotalPrices.get(s.getId());
+                        %>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="serviceIds" value="<%= s.getId() %>" id="service_<%= s.getId() %>" data-price="<%= totalPrice %>">
+                            <label class="form-check-label" for="service_<%= s.getId() %>">
+                                <%= s.getName() %> - <%= String.format("%,.0f", totalPrice) %> VNĐ
+                            </label>
+                        </div>
+                        <% } 
                         } %>
                     </div>
                 </div>
@@ -172,15 +186,28 @@
                 <div class="checkbox-group">
                     <label>Thêm phụ tùng (nếu cần):</label>
                     <div class="scrollable-container" style="max-height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 10px;">
-                        <% if (parts != null) { 
-                            for (Part p : parts) { %>
+                    <% 
+                        Set<Integer> servicePartIds = new HashSet<>();
+                        for (Service s : services) {
+                            if (s.getParts() != null) {
+                                for (Part p : s.getParts()) {
+                                    servicePartIds.add(p.getId());
+                                }
+                            }
+                        }
+        
+                        if (parts != null) { 
+                            for (Part p : parts) { 
+                                if (!servicePartIds.contains(p.getId())) { 
+                    %>
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" name="partIds" value="<%= p.getId() %>" id="part_<%= p.getId() %>" data-price="<%= p.getPrice() %>">
                                     <label class="form-check-label" for="part_<%= p.getId() %>">
-                                        <%= p.getName() %> - <%= p.getPrice() %> VNĐ
+                                        <%= p.getName() %> - <%= String.format("%,.0f", p.getPrice()) %> VNĐ
                                     </label>
                                 </div>
-                            <% } 
+                                <% } 
+                            } 
                         } %>
                     </div>
                 </div>

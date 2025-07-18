@@ -308,7 +308,7 @@
                 <div class="dropdown">
                     <i class="fas fa-user-circle avatar-icon" onclick="toggleUserDropdown()"></i>
                     <div id="userDropdown" class="dropdown-content">
-                        <a href="profile.jsp">Profile</a>
+                        <a href="profileDetail">Profile</a>
                         <a href="orders.jsp">My Orders</a>
                         <a href="${pageContext.request.contextPath}/logout">Logout</a>
                     </div>

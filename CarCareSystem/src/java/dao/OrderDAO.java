@@ -162,6 +162,45 @@ public class OrderDAO extends DBConnection {
         return parts;
     }
     
+public ArrayList<Order> getOrdersByEmail(String email) throws SQLException {
+    ArrayList<Order> orders = new ArrayList<>();
+    String sql = "SELECT o.id, o.name, o.email, o.phone, o.address, o.createdDate, "
+               + "o.appointmentDate, o.price, o.paymentStatus, o.orderStatus, o.paymentMethod, "
+               + "ct.id AS car_type_id, ct.name AS car_type_name "
+               + "FROM [Order] o "
+               + "LEFT JOIN CarType ct ON o.carTypeId = ct.id "
+               + "WHERE o.email = ? "
+               + "ORDER BY o.createdDate DESC";
+
+    try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        stmt.setString(1, email);
+        ResultSet rs = stmt.executeQuery();
+
+        while (rs.next()) {
+            Order order = new Order();
+            order.setId(rs.getInt("id"));
+            order.setName(rs.getString("name"));
+            order.setEmail(rs.getString("email"));
+            order.setPhone(rs.getString("phone"));
+            order.setAddress(rs.getString("address"));
+            order.setCreatedDate(rs.getTimestamp("createdDate"));
+            order.setAppointmentDate(rs.getTimestamp("appointmentDate"));
+            order.setPrice(rs.getDouble("price"));
+            order.setPaymentStatus(rs.getString("paymentStatus"));
+            order.setOrderStatus(rs.getString("orderStatus"));
+            order.setPaymentMethod(rs.getString("paymentMethod"));
+
+            CarType carType = new CarType();
+            carType.setId(rs.getInt("car_type_id"));
+            carType.setName(rs.getString("car_type_name"));
+            order.setCarType(carType);
+
+            orders.add(order);
+        }
+    }
+    return orders;
+}
+    
     public static void main(String[] args) throws Exception {
         OrderDAO dao = new OrderDAO();
         System.out.println(dao.getOrderById(14));

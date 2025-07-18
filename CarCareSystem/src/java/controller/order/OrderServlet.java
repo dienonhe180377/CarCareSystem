@@ -8,6 +8,8 @@ package controller.order;
 import dao.OrderDAO;
 import dao.PartDAO;
 import dao.ServiceDAO;
+import entity.Part;
+import entity.Service;
 import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -122,8 +124,19 @@ public class OrderServlet extends HttpServlet {
                 for (String sid : serviceIds) {
                     if (sid != null && !sid.trim().isEmpty()) {
                         int serviceId = Integer.parseInt(sid);
-                        double servicePrice = serviceDAO.getPriceById(serviceId);
-                        price += servicePrice;
+
+                        Service service = serviceDAO.getServiceDetail(serviceId);
+            
+                        if (service != null) {
+                            double totalServicePrice = service.getPrice();
+                            if (service.getParts() != null) {
+                                for (Part part : service.getParts()) {
+                                    totalServicePrice += part.getPrice();
+                                }
+                            }
+                
+                            price += totalServicePrice;
+                        }
                     }
                 }
             }
