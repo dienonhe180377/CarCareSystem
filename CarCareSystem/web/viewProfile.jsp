@@ -54,7 +54,7 @@
             </div>
             <div class="sidebar-menu">
                 <a class="active" href="viewProfile"><i class="fa fa-user"></i> Thông tin tài khoản</a>
-                <a href="#"><i class="fa fa-bookmark"></i> My Order</a>
+                <a href="myorder"><i class="fa fa-bookmark"></i> My Order</a>
                 <a href="changepass"><i class="fa fa-key"></i> Đổi mật khẩu</a>
                 <a href="logout"><i class="fa fa-sign-out-alt"></i> Đăng xuất</a>
             </div>

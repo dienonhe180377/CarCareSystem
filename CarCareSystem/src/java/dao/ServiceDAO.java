@@ -241,4 +241,16 @@
             }
             return se;
         }
+        
+        // Lay price theo id
+        public double getPriceById(int serviceId) throws SQLException {
+            String sql = "SELECT price FROM Service WHERE id = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, serviceId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getDouble("price");
+            }
+            return 0;
+        }
     }

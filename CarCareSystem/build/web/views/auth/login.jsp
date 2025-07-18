@@ -1,8 +1,3 @@
-<%-- 
-    Document   : login
-    Created on : Jun 3, 2025, 5:35:41 PM
-    Author     : TRAN ANH HAI
---%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>

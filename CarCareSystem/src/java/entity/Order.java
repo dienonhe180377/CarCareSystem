@@ -16,18 +16,38 @@ public class Order {
     private User user;
     private CarType carType;
     private ArrayList<Service> services;
+    private ArrayList<Part> parts;
     private Date createdDate;
     private Date appointmentDate;
     private double price;
+    private String name;
+    private String email;
+    private String phone;
+    private String address;
+    private String paymentStatus;
+    private String orderStatus;
+    private String paymentMethod;
 
-    public Order(int id, User user, CarType carType, ArrayList<Service> services, Date createdDate, Date appointmentDate, double price) {
+    public Order(int id, User user, CarType carType, ArrayList<Service> services, ArrayList<Part> parts, Date createdDate, Date appointmentDate, double price, String name, String email, String phone, String address, String paymentStatus, String orderStatus, String paymentMethod) {
         this.id = id;
         this.user = user;
         this.carType = carType;
         this.services = services;
+        this.parts = parts;
         this.createdDate = createdDate;
         this.appointmentDate = appointmentDate;
         this.price = price;
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+        this.address = address;
+        this.paymentStatus = paymentStatus;
+        this.orderStatus = orderStatus;
+        this.paymentMethod = paymentMethod;
+    }
+
+    public Order() {
+        
     }
 
     public int getId() {
@@ -62,6 +82,14 @@ public class Order {
         this.services = services;
     }
 
+    public ArrayList<Part> getParts() {
+        return parts;
+    }
+
+    public void setParts(ArrayList<Part> parts) {
+        this.parts = parts;
+    }
+
     public Date getCreatedDate() {
         return createdDate;
     }
@@ -84,6 +112,62 @@ public class Order {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
+
+    public String getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
     }
     
 }

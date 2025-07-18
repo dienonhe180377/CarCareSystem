@@ -1,8 +1,4 @@
-<%-- 
-    Document   : verify-change-otp
-    Created on : Jun 20, 2025, 9:31:09 AM
-    Author     : TRAN ANH HAI
---%>
+
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="entity.User" %>
