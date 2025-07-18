@@ -254,3 +254,19 @@ ALTER TABLE Feedback
 ADD CONSTRAINT FK_Feedback_Service FOREIGN KEY(serviceId) REFERENCES Service(id);
 
 
+CREATE TABLE [Notification](
+    id int identity(1,1),
+    [message] nvarchar(100) not null,
+    status bit not null,
+    createDate date not null DEFAULT GETDATE(),
+    recieverId int not null,
+    notification_type nvarchar(50) not null,
+    CONSTRAINT FK_Notification_User    FOREIGN KEY(recieverId)    REFERENCES [User](id)
+)
+
+CREATE TABLE [NotificationSetting](
+    id int identity(1,1),
+
+    recieverId int not null,
+    CONSTRAINT FK_Notification_User    FOREIGN KEY(recieverId)    REFERENCES [User](id)
+)

@@ -16,6 +16,10 @@
         <servlet-name>PartController</servlet-name>
         <servlet-class>controller.PartController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>NotificationController</servlet-name>
+        <servlet-class>controller.NotificationController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>CategoryServlet</servlet-name>
         <url-pattern>/CategoryController</url-pattern>
@@ -31,6 +35,10 @@
     <servlet-mapping>
         <servlet-name>PartController</servlet-name>
         <url-pattern>/PartController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>NotificationController</servlet-name>
+        <url-pattern>/NotificationController</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>home</welcome-file>

@@ -144,7 +144,7 @@
         <div class="container mt-5">
             <div class="row mb-3">
                 <div class="col">
-                    <h2>Product List</h2>
+                    <h2>Part List</h2>
                 </div>
                 <div class="col text-end">
                     <a href="${contextPath}/PartController?service=add&action=load" class="btn btn-primary">Add New Product</a>
