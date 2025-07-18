@@ -8,31 +8,48 @@ import java.util.Date;
 
 /**
  *
- * @author Admin
+ * @author NTN
  */
 public class Voucher {
+
     private int id;
     private String name;
-    private Campaign campaign;
-    private Service service;
+    private String description;
+    private float discount;
+    private String discountType; // PERCENTAGE hoặc FIXED_AMOUNT
+    private float maxDiscountAmount;
+    private float minOrderAmount;
     private Date startDate;
     private Date endDate;
-    private String description;
-    private int discount;
+    private int serviceId;
+    private int campaignId;
     private boolean status;
+    private Date createdDate;
+    private String voucherCode;
 
-    public Voucher(int id, String name, Campaign campaign, Service service, Date startDate, Date endDate, String description, int discount, boolean status) {
-        this.id = id;
-        this.name = name;
-        this.campaign = campaign;
-        this.service = service;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.description = description;
-        this.discount = discount;
-        this.status = status;
+    public Voucher() {
     }
 
+    public Voucher(int id, String name, String description, float discount, String discountType,
+            float maxDiscountAmount, float minOrderAmount, Date startDate, Date endDate,
+            int serviceId, int campaignId, boolean status, Date createdDate, String voucherCode) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.discount = discount;
+        this.discountType = discountType;
+        this.maxDiscountAmount = maxDiscountAmount;
+        this.minOrderAmount = minOrderAmount;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.serviceId = serviceId;
+        this.campaignId = campaignId;
+        this.status = status;
+        this.createdDate = createdDate;
+        this.voucherCode = voucherCode;
+    }
+
+    // Getters and Setters
     public int getId() {
         return id;
     }
@@ -49,20 +66,44 @@ public class Voucher {
         this.name = name;
     }
 
-    public Campaign getCampaign() {
-        return campaign;
+    public String getDescription() {
+        return description;
     }
 
-    public void setCampaign(Campaign campaign) {
-        this.campaign = campaign;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public Service getService() {
-        return service;
+    public float getDiscount() {
+        return discount;
     }
 
-    public void setService(Service service) {
-        this.service = service;
+    public void setDiscount(float discount) {
+        this.discount = discount;
+    }
+
+    public String getDiscountType() {
+        return discountType;
+    }
+
+    public void setDiscountType(String discountType) {
+        this.discountType = discountType;
+    }
+
+    public float getMaxDiscountAmount() {
+        return maxDiscountAmount;
+    }
+
+    public void setMaxDiscountAmount(float maxDiscountAmount) {
+        this.maxDiscountAmount = maxDiscountAmount;
+    }
+
+    public float getMinOrderAmount() {
+        return minOrderAmount;
+    }
+
+    public void setMinOrderAmount(float minOrderAmount) {
+        this.minOrderAmount = minOrderAmount;
     }
 
     public Date getStartDate() {
@@ -81,20 +122,20 @@ public class Voucher {
         this.endDate = endDate;
     }
 
-    public String getDescription() {
-        return description;
+    public int getServiceId() {
+        return serviceId;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setServiceId(int serviceId) {
+        this.serviceId = serviceId;
     }
 
-    public int getDiscount() {
-        return discount;
+    public int getCampaignId() {
+        return campaignId;
     }
 
-    public void setDiscount(int discount) {
-        this.discount = discount;
+    public void setCampaignId(int campaignId) {
+        this.campaignId = campaignId;
     }
 
     public boolean isStatus() {
@@ -104,5 +145,20 @@ public class Voucher {
     public void setStatus(boolean status) {
         this.status = status;
     }
-    
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public String getVoucherCode() {
+        return voucherCode;
+    }
+
+    public void setVoucherCode(String voucherCode) {
+        this.voucherCode = voucherCode;
+    }
 }

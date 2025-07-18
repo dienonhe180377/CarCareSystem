@@ -1,0 +1,97 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Jul 10, 2025, 1:45:21 PM
+    Author     : NTN
+*/
+
+/* ✅ VOUCHER SPECIFIC STYLES */
+.voucher-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.voucher-card {
+    transition: all 0.3s ease;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.voucher-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.voucher-discount {
+    font-size: 2rem;
+    font-weight: 800;
+    background: linear-gradient(45deg, #28a745, #20c997);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* ✅ FORM STYLES */
+.form-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.private-options {
+    display: none;
+    animation: slideDown 0.3s ease;
+}
+
+.private-options.show {
+    display: block;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ✅ USER SELECTION */
+#userMultiSelect {
+    font-family: 'SF Pro Display', -apple-system, sans-serif;
+    border-radius: 8px;
+    border: 2px solid #e9ecef;
+}
+
+#userMultiSelect option {
+    padding: 12px;
+    border-bottom: 1px solid #f8f9fa;
+    transition: all 0.2s ease;
+}
+
+#userMultiSelect option:hover {
+    background: linear-gradient(90deg, #f8f9fa, #e9ecef);
+}
+
+#userMultiSelect option:selected {
+    background: linear-gradient(90deg, #007bff, #0056b3) !important;
+    color: white !important;
+    font-weight: 600;
+}
+
+/* ✅ RESPONSIVE */
+@media (max-width: 768px) {
+    .voucher-card {
+        margin-bottom: 1rem;
+    }
+    
+    .voucher-discount {
+        font-size: 1.5rem;
+    }
+    
+    #userMultiSelect {
+        height: 150px !important;
+    }
+}

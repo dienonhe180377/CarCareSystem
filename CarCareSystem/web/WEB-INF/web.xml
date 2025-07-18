@@ -19,6 +19,24 @@
     <servlet>
         <servlet-name>NotificationController</servlet-name>
         <servlet-class>controller.NotificationController</servlet-class>
+        <servlet-name>BlogController</servlet-name>
+        <servlet-class>controller.BlogServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CampaignController</servlet-name>
+        <servlet-class>controller.CampaignServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CampaignListServlet</servlet-name>
+        <servlet-class>controller.CampaignListServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>BlogListServlet</servlet-name>
+        <servlet-class>controller.BlogListServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>VoucherServlet</servlet-name>
+        <servlet-class>controller.VoucherServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>CategoryServlet</servlet-name>
@@ -39,6 +57,24 @@
     <servlet-mapping>
         <servlet-name>NotificationController</servlet-name>
         <url-pattern>/NotificationController</url-pattern>
+        <servlet-name>BlogController</servlet-name>
+        <url-pattern>/blog</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CampaignController</servlet-name>
+        <url-pattern>/campaign</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CampaignListServlet</servlet-name>
+        <url-pattern>/campaignlist</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>BlogListServlet</servlet-name>
+        <url-pattern>/bloglist</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>VoucherServlet</servlet-name>
+        <url-pattern>/voucher</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>home</welcome-file>
