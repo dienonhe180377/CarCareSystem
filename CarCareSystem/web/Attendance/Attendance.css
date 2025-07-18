@@ -1,0 +1,181 @@
+/* ==== Style chung ==== */
+body {
+    background: linear-gradient(120deg, #e0eafc, #cfdef3 100%);
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.container {
+    background: #fff;
+    max-width: 700px;
+    margin: 50px auto;
+    padding: 36px 40px 28px 40px;
+    border-radius: 20px;
+    box-shadow: 0 6px 32px rgba(0, 0, 0, 0.12);
+    animation: floatIn 0.9s cubic-bezier(.55, .06, .68, .19);
+}
+
+@keyframes floatIn {
+    from {
+        transform: translateY(60px) scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+.attendance-title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 600;
+    color: #276678;
+    letter-spacing: 1px;
+    margin-bottom: 22px;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+    margin-bottom: 18px;
+}
+
+th, td {
+    text-align: center;
+    padding: 8px 0;
+}
+
+th {
+    background: #3895d3;
+    color: #fff;
+    font-weight: 600;
+    border-radius: 8px 8px 0 0;
+}
+
+tr {
+    background: #f7fbff;
+    border-radius: 8px;
+}
+
+/* ==== Nút chung ==== */
+.btn {
+    padding: 9px 30px;
+    border-radius: 8px;
+    border: none;
+    font-size: 1.06rem;
+    font-weight: 500;
+    cursor: pointer;
+    background: linear-gradient(90deg, #3895d3, #47b5ff);
+    color: #fff;
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 6px rgba(56, 149, 211, 0.09);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    white-space: nowrap;
+}
+
+.btn:hover {
+    background: linear-gradient(90deg, #47b5ff, #3895d3);
+    box-shadow: 0 4px 16px rgba(56, 149, 211, 0.16);
+}
+
+.success-message {
+    color: #28a745;
+    font-weight: bold;
+    margin-top: 16px;
+    text-align: center;
+}
+
+/* ==== Dùng riêng cho trạng thái ==== */
+.status-present {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.status-absent {
+    color: #e84545;
+    font-weight: 600;
+}
+
+/* ==== Responsive ==== */
+@media (max-width: 700px) {
+    .container {
+        padding: 18px 4px;
+    }
+    .attendance-title {
+        font-size: 1.3rem;
+    }
+    .btn {
+        padding: 8px 16px;
+        font-size: 1rem;
+    }
+    .action-bar {
+        flex-direction: column;
+        gap: 12px;
+    }
+    .action-buttons {
+        flex-direction: column;
+        gap: 12px;
+    }
+}
+
+/* ==== Dùng riêng cho listAttendance.jsp ==== */
+form input[type="date"] {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+form label {
+    font-weight: 500;
+    color: #276678;
+    font-size: 1rem;
+}
+
+form button[type="submit"].btn {
+    margin-left: 8px;
+}
+
+/* Hiển thị dòng không có dữ liệu */
+.no-attendance {
+    text-align: center;
+    color: #888;
+    font-style: italic;
+    margin-top: 16px;
+}
+
+/* ==== Căn hàng đầu - Nút và tìm kiếm ==== */
+.action-bar,
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+/* Form tìm kiếm nằm ngang */
+.search-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+}
+
+/* === Sửa nút "Xem lịch sử điểm danh" === */
+.btn-inline {
+    width: fit-content;
+    padding: 9px 24px;
+    display: inline-flex;
+    text-align: center;
+}
