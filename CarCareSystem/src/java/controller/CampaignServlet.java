@@ -109,7 +109,7 @@ public class CampaignServlet extends AuthorizationServlet {
 
             request.getSession().setAttribute("mainCampaignList", campaigns);
             request.setAttribute("campaigns", campaigns);
-            request.getRequestDispatcher("Campaign/CampaignList.jsp").forward(request, response);
+            request.getRequestDispatcher("Campaign/Campaign.jsp").forward(request, response);
 
         } catch (Exception ex) {
             handleError(request, response, "Không thể hiển thị form sửa", ex);
