@@ -1,4 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="entity.User" %>
 <%
     User user = (User) request.getAttribute("user");
@@ -13,34 +13,157 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         body { font-family: "Segoe UI", Arial, sans-serif; background: #f3f4f7; margin: 0; }
-        .main-container { display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 40px 20px; gap: 30px; flex-wrap: wrap; }
-        .sidebar { width: 260px; background: #fff; border-radius: 14px; box-shadow: 0 4px 30px rgba(0,0,0,0.06); padding: 28px 0; border-right: 1px solid #eee; }
-        .sidebar .profile-pic { display: flex; flex-direction: column; align-items: center; margin-bottom: 28px; }
-        .profile-initial { width: 68px; height: 68px; border-radius: 10px; background: #b5bdc8; color: #fff; font-size: 36px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; position: relative; }
-        .profile-pic .verified { position: absolute; bottom: 4px; right: 4px; background: #e53935; color: #fff; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 16px; border: 2px solid #fff; }
-        .profile-pic .display-name { font-size: 18px; font-weight: 600; color: #222; margin-bottom: 4px; }
-        .sidebar-menu { margin-top: 12px; }
-        .sidebar-menu a { display: flex; align-items: center; color: #333; padding: 10px 22px; text-decoration: none; font-size: 15px; border-radius: 6px; margin-bottom: 6px; transition: background 0.15s; }
+        .main-container { 
+            display: flex; 
+            justify-content: center; 
+            align-items: flex-start; 
+            min-height: 100vh; 
+            padding: 70px 40px; 
+            gap: 64px; 
+            flex-wrap: wrap; 
+        }
+        .sidebar { 
+            width: 380px;
+            background: #fff; 
+            border-radius: 22px; 
+            box-shadow: 0 6px 36px rgba(0,0,0,0.08); 
+            padding: 48px 0; 
+            border-right: 1.5px solid #eee; 
+        }
+        .sidebar .profile-pic { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            margin-bottom: 48px; 
+        }
+        .profile-initial { 
+            width: 120px;
+            height: 120px;
+            border-radius: 20px; 
+            background: #b5bdc8; 
+            color: #fff; 
+            font-size: 45px;
+            font-weight: 700; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            margin-bottom: 18px; 
+            position: relative; 
+        }
+        .profile-pic .verified { 
+            position: absolute; 
+            bottom: 10px; 
+            right: 10px; 
+            background: #e53935; 
+            color: #fff; 
+            border-radius: 50%; 
+            width: 32px;
+            height: 32px;
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 18px; 
+            border: 2.5px solid #fff; 
+        }
+        .profile-pic .display-name { 
+            font-size: 21px;
+            font-weight: 600; 
+            color: #222; 
+            margin-bottom: 4px; 
+        }
+        .sidebar-menu { margin-top: 18px; }
+        .sidebar-menu a { 
+            display: flex; 
+            align-items: center; 
+            color: #333; 
+            padding: 16px 48px; 
+            text-decoration: none; 
+            font-size: 17px; 
+            border-radius: 10px; 
+            margin-bottom: 10px; 
+            transition: background 0.15s; 
+        }
         .sidebar-menu .active, .sidebar-menu a:hover { background: #f5f7fa; color: #0077cc; }
-        .sidebar-menu i { margin-right: 14px; font-size: 17px; }
-        .profile-content { flex: 1; background: #fff; border-radius: 14px; box-shadow: 0 4px 30px rgba(0,0,0,0.06); padding: 32px; min-width: 360px; max-width: 600px; }
-        .profile-content h2 { font-size: 24px; font-weight: 700; margin-bottom: 20px; color: #323f51; }
+        .sidebar-menu i { margin-right: 20px; font-size: 19px; }
+        .profile-content { 
+            flex: 1; 
+            background: #fff; 
+            border-radius: 22px; 
+            box-shadow: 0 6px 36px rgba(0,0,0,0.08); 
+            padding: 60px 60px; 
+            min-width: 480px; 
+            max-width: 820px; 
+        }
+        .profile-content h2 { 
+            font-size: 28px; 
+            font-weight: 700; 
+            margin-bottom: 32px; 
+            color: #323f51; 
+        }
         .form-table { width: 100%; }
-        .form-table td { padding: 10px 6px; }
-        .form-label { width: 160px; color: #444; font-weight: 600; }
-        .form-input input { width: 100%; padding: 10px 14px; border: 1px solid #dde1e8; border-radius: 5px; font-size: 16px; background: #fff; color: #333; outline: none; transition: border 0.2s; }
+        .form-table td { padding: 16px 12px; }
+        .form-label { width: 200px; color: #444; font-weight: 600; }
+        .form-input input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid #dde1e8;
+            border-radius: 7px;
+            font-size: 16px;
+            background: #fff;
+            color: #333;
+            outline: none;
+            transition: border 0.2s;
+        }
         .form-input input:focus { border: 1.5px solid #0077cc; }
-        .btn-row { text-align: right; margin-top: 24px; }
-        .btn-action { background: #b71c1c; color: #fff; font-size: 16px; padding: 9px 28px; border: none; border-radius: 7px; font-weight: 600; cursor: pointer; transition: background 0.18s; text-decoration: none; }
+        .btn-row { text-align: right; margin-top: 30px;}
+        .btn-action {
+            background: #b71c1c;
+            color: #fff;
+            font-size: 18px;
+            padding: 13px 44px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.18s;
+            text-decoration: none;
+        }
         .btn-action:hover { background: #911616; color: #fff; }
-        .back-link { background: #eee; color: #333; padding: 9px 22px; border-radius: 7px; text-decoration: none; font-size: 15px; font-weight: 500; margin-left: 12px; transition: background 0.2s; border: 1px solid #ccc; display: inline-block; }
+        .back-link {
+            background: #eee;
+            color: #333;
+            padding: 13px 32px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            margin-left: 18px;
+            transition: background 0.2s;
+            border: 1px solid #ccc;
+            display: inline-block;
+        }
         .back-link:hover { background: #dedede; color: #0077cc; }
-        .message { color: #007700; text-align: center; margin-bottom: 10px; font-weight: bold; }
-        .error-message { color: red; text-align: center; margin-bottom: 10px; font-weight: bold; }
-        @media (max-width: 1024px) { .main-container { flex-direction: column; align-items: center; } .sidebar { width: 100%; max-width: 480px; margin-bottom: 24px; border-right: none; } .profile-content { width: 100%; max-width: 640px; padding: 24px 16px; } }
+        .message { color: #007700; text-align: center; margin-bottom: 14px; font-weight: bold; font-size: 17px;}
+        .error-message { color: red; text-align: center; margin-bottom: 14px; font-weight: bold; font-size: 17px;}
+        @media (max-width: 1100px) {
+            .main-container { flex-direction: column; align-items: center; }
+            .sidebar { width: 100%; max-width: 520px; margin-bottom: 36px; border-right: none; }
+            .profile-content { width: 100%; max-width: 980px; padding: 38px 12px 38px 12px; min-width: unset;}
+        }
+        @media (max-width: 700px) {
+            .profile-content { padding: 14px 2vw; }
+            .sidebar { padding: 12px 0; }
+            .profile-initial { width: 70px; height: 70px; font-size: 27px;}
+            .sidebar-menu a { padding: 10px 12px; font-size: 14px;}
+            .form-table td { padding: 10px 2px; }
+            .form-input input { padding: 8px 7px; }
+            .btn-action, .back-link { padding: 8px 18px; border-radius: 6px; font-size: 14px;}
+            .profile-content h2 { font-size: 20px; }
+        }
     </style>
 </head>
 <body>
+    <%@include file="/header_emp.jsp" %>
 <div class="main-container">
     <div class="sidebar">
         <% if (user != null) { %>

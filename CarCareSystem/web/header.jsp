@@ -17,6 +17,7 @@
                 margin: 0;
                 font-family: Arial, sans-serif;
                 background-color: #fff;
+                padding-top: 80px;
             }
 
             header {
@@ -252,7 +253,7 @@
                 <nav>
                     <a href="home.jsp">HOME</a>
                     <a href="ServiceServlet_JSP">SERVICES</a>
-                    <a href="accessories.jsp">ACCESSORIES</a>
+                    <a href="part">ACCESSORIES</a>
                     <a href="promotions.jsp">PROMOTIONS</a>
                     <a href="blog.jsp">BLOG</a>
                     <a href="ordertracking">TRACKING</a>
@@ -267,7 +268,7 @@
             <!-- Navigation menu left -->
             <nav class="nav-menu">
                 <a href="ServiceServlet_JSP">SERVICES</a>
-                <a href="accessories.jsp">ACCESSORIES</a>
+                <a href="part">ACCESSORIES</a>
                 <a href="promotions.jsp">PROMOTIONS</a>
             </nav>
 

@@ -9,41 +9,127 @@
         body { background: #f4f7fb; font-family: Arial, sans-serif; }
         .form-container {
             background: #fff;
-            max-width: 480px;
-            margin: 42px auto;
-            border-radius: 14px;
-            padding: 32px 32px 20px 32px;
-            box-shadow: 0 8px 32px 0 rgba(31,38,135,0.11);
+            max-width: 900px;
+            margin: 48px auto;
+            border-radius: 18px;
+            padding: 48px 56px 30px 56px;
+            box-shadow: 0 8px 32px 0 rgba(31,38,135,0.12);
         }
-        .form-title { font-size: 2rem; color: #2563eb; font-weight: 700; text-align: center; margin-bottom: 18px; }
-        .tieu-de { font-size: 1.3rem; color: #166bb3; font-weight: 600; text-align: center; margin-bottom: 20px; }
-        table { width: 100%; border-collapse: separate; border-spacing: 0 13px;}
-        .form-label { width: 110px; color: #333; font-weight: 500; vertical-align: top; }
-        .form-input[type="text"],
-        .form-input[type="number"] {
-            width: 100%; padding: 8px 10px; border-radius: 7px;
-            border: 1.3px solid #b7c7d7; font-size: 1.1rem;
+        .form-title { font-size: 2.5rem; color: #2563eb; font-weight: 700; text-align: center; margin-bottom: 28px; }
+        .tieu-de { font-size: 1.65rem; color: #166bb3; font-weight: 600; text-align: center; margin-bottom: 28px; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 20px; font-size: 1.22rem;}
+        .form-label { width: 170px; color: #333; font-weight: 500; vertical-align: top; font-size: 1.15rem; padding-top: 10px;}
+        .form-input[type="text"], .form-input[type="number"] {
+            width: 100%;
+            padding: 13px 18px;
+            border-radius: 10px;
+            border: 1.6px solid #b7c7d7;
+            font-size: 1.18rem;
         }
-        .form-input[type="file"] { font-size: 1rem; }
-        .form-actions { text-align: right; }
-        .btn { padding: 8px 22px; border-radius: 6px; border: none; font-size: 1rem; font-weight: 600; }
+        .form-input[type="file"] { font-size: 1.12rem; }
+        .form-actions { text-align: right; padding-top: 10px;}
+        .btn { padding: 12px 32px; border-radius: 8px; border: none; font-size: 1.15rem; font-weight: 700; }
         .btn-submit { background: #2563eb; color: #fff; }
         .btn-submit:hover { background: #1746a2; }
-        .btn-reset { background: #888; color: #fff; margin-left: 8px; }
-        .alert { text-align: center; margin-bottom: 12px;}
+        .btn-reset { background: #888; color: #fff; margin-left: 14px; }
+        .btn-back {
+            background: #2471a3;
+            color: #fff;
+            padding: 12px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            margin-left: 14px;
+            transition: background 0.2s;
+            display: inline-block;
+            font-size: 1.15rem;
+        }
+        .btn-back:hover { background: #15518d; }
+        .alert { text-align: center; margin-bottom: 18px; font-size: 1.12rem;}
         .alert-error { color: #e74c3c; }
         .alert-success { color: #27ae60; }
-        .checkbox-list { display: flex; flex-wrap: wrap; gap: 8px; }
-        .checkbox-item { background: #f1f6ff; border-radius: 6px; padding: 4px 8px; }
-        @media (max-width: 600px) {
-            .form-container { padding: 12px 3vw; max-width: 97vw;}
-            table { font-size: 0.98rem;}
-            .form-title { font-size: 1.2rem;}
-            .checkbox-list { flex-direction: column; }
+
+        /* Custom dropdown multi-select */
+        .multiselect-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        .multiselect-selected {
+            border: 1.6px solid #b7c7d7;
+            border-radius: 10px;
+            min-height: 44px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 10px 16px;
+            cursor: pointer;
+            font-size: 1.18rem;
+            position: relative;
+        }
+        .multiselect-selected:after {
+            content: '';
+            border: solid #2563eb;
+            border-width: 0 3px 3px 0;
+            display: inline-block;
+            padding: 7px;
+            transform: rotate(45deg);
+            position: absolute;
+            right: 24px;
+            top: 17px;
+            pointer-events: none;
+        }
+        .multiselect-dropdown {
+            display: none;
+            position: absolute;
+            top: 108%;
+            left: 0;
+            width: 100%;
+            background: #fff;
+            border: 1.6px solid #b7c7d7;
+            border-radius: 10px;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.09);
+            z-index: 10;
+            max-height: 280px;
+            overflow-y: auto;
+        }
+        .multiselect-dropdown.open {
+            display: block;
+        }
+        .multiselect-option {
+            padding: 12px 24px 12px 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            border-radius: 6px;
+            font-size: 1.13rem;
+        }
+        .multiselect-option:hover {
+            background: #e7f1fd;
+        }
+        .multiselect-option input {
+            margin-right: 10px;
+        }
+        .multiselect-badge {
+            background: #e0f0ff;
+            color: #166bb3;
+            border-radius: 13px;
+            padding: 4px 14px;
+            font-size: 1.08em;
+            margin-right: 5px;
+            margin-bottom: 3px;
+            display: inline-block;
+        }
+        @media (max-width: 900px) {
+            .form-container { padding: 12px 2vw; max-width: 98vw;}
+            table { font-size: 1.05rem;}
+            .form-title { font-size: 1.3rem; }
         }
     </style>
 </head>
 <body>
+     <%@include file="/header_emp.jsp" %>
     <div class="form-container">
         <div class="form-title">${pageTitle}</div>
         <c:if test="${not empty error}">
@@ -92,13 +178,18 @@
                         <tr>
                             <td class="form-label" style="vertical-align:top;">Phụ tùng liên quan</td>
                             <td>
-                                <div class="checkbox-list">
-                                    <c:forEach var="part" items="${allParts}">
-                                        <label class="checkbox-item">
-                                            <input type="checkbox" name="partIds" value="${part.id}">
-                                            ${part.name}
-                                        </label>
-                                    </c:forEach>
+                                <div class="multiselect-wrapper" id="multiPartSelect">
+                                    <div class="multiselect-selected" onclick="toggleDropdown()">
+                                        <span id="selectedPartsPlaceholder" style="color:#bbb;">Chọn phụ tùng liên quan</span>
+                                    </div>
+                                    <div class="multiselect-dropdown" id="dropdownList">
+                                        <c:forEach var="part" items="${allParts}">
+                                            <div class="multiselect-option">
+                                                <input type="checkbox" name="partIds" value="${part.id}" id="part_${part.id}" onchange="updateSelectedParts()">
+                                                <label for="part_${part.id}" style="margin-bottom:0">${part.name}</label>
+                                            </div>
+                                        </c:forEach>
+                                    </div>
                                 </div>
                             </td>
                         </tr>
@@ -106,6 +197,7 @@
                             <td colspan="2" class="form-actions">
                                 <input class="btn btn-submit" type="submit" name="submit" value="Thêm dịch vụ">
                                 <input class="btn btn-reset" type="reset" value="Làm lại">
+                                <a href="ServiceServlet_JSP?service=listService" class="btn btn-back">Quay lại danh sách</a>
                                 <input type="hidden" name="service" value="addService">
                             </td>
                         </tr>
@@ -119,5 +211,42 @@
             </c:otherwise>
         </c:choose>
     </div>
+    <script>
+        // Mở/đóng dropdown khi bấm vào khung
+        function toggleDropdown() {
+            var dropdown = document.getElementById("dropdownList");
+            dropdown.classList.toggle("open");
+        }
+        // Đóng dropdown khi bấm ra ngoài
+        document.addEventListener('click', function(event) {
+            var wrapper = document.getElementById("multiPartSelect");
+            if (!wrapper.contains(event.target)) {
+                document.getElementById("dropdownList").classList.remove("open");
+            }
+        });
+        // Hiển thị các phụ tùng đã chọn lên khung
+        function updateSelectedParts() {
+            var checked = document.querySelectorAll('.multiselect-dropdown input[type="checkbox"]:checked');
+            var container = document.querySelector('.multiselect-selected');
+            var placeholder = document.getElementById('selectedPartsPlaceholder');
+            // Xóa phần tử cũ (nếu có)
+            container.innerHTML = '';
+            if (checked.length === 0) {
+                placeholder.style.display = '';
+                container.appendChild(placeholder);
+            } else {
+                checked.forEach(function(item){
+                    var badge = document.createElement("span");
+                    badge.className = "multiselect-badge";
+                    badge.textContent = item.nextElementSibling.textContent;
+                    container.appendChild(badge);
+                });
+            }
+        }
+        // Khởi tạo placeholder
+        window.onload = function() {
+            updateSelectedParts();
+        };
+    </script>
 </body>
 </html>

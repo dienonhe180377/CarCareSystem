@@ -770,7 +770,7 @@
                         <i class="fas fa-user-circle Avatar-icon"></i>
                     </button>
                     <div id="userDropdown" class="Dropdown-content">
-                        <a href="profile.jsp">Profile</a>
+                        <a href="${pageContext.request.contextPath}/viewProfile">Profile</a>
                         <a href="orders.jsp">My Orders</a>
                         <a href="${pageContext.request.contextPath}/logout">Logout</a>
                     </div>
