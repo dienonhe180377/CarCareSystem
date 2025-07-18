@@ -90,7 +90,7 @@ body {
     position: relative;
     width: 100%;
     max-width: 600px;
-    margin: 0 auto; /* căn giữa */
+    margin: 90px auto; /* căn giữa */
 }
 
 /* Đặt lại position cho nút back, kéo ra ngoài khung trên */

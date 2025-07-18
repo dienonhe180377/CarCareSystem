@@ -156,12 +156,20 @@ public class PartController extends HttpServlet {
                     int categoryId = Integer.parseInt(request.getParameter("categoryId"));
                     double price = Double.parseDouble(request.getParameter("price"));
                     jakarta.servlet.http.Part image = request.getPart("image");
-                    String fileName = Paths.get(image.getSubmittedFileName()).getFileName().toString();
-                    String uploadDir = getServletContext().getRealPath("/image");
-                    String imageFilePath = uploadDir + File.separator + fileName;
+                    String fileName = "car-parts-icon-style-vector.jpg";
+                    String imageFilePath = "";
+                    if (image.getSize() > 0) {
+                        fileName = Paths.get(image.getSubmittedFileName()).getFileName().toString();
+                        String uploadDir = getServletContext().getRealPath("/image");
+                        imageFilePath = uploadDir + File.separator + fileName;
+                    }
                     int successCheck = partDAO.addPart(name, fileName, categoryId, price);
                     if (successCheck > 0) {
-                        image.write(imageFilePath);
+                        
+                        if(image.getSize() > 0){
+                            image.write(imageFilePath);
+                        }
+                        
                         ArrayList<Part> partList = partDAO.getAllPart();
                         int id = partList.get(partList.size() - 1).getId();
 
@@ -287,11 +295,13 @@ public class PartController extends HttpServlet {
                         }
 
                         request.setAttribute("successAdd", 2);
+                        request.setAttribute("choosedPart", part);
                         request.getRequestDispatcher("partDetail.jsp").forward(request, response);
 
                     } else {
 
                         request.setAttribute("successAdd", 0);
+                        request.setAttribute("choosedPart", part);
                         request.getRequestDispatcher("partDetail.jsp").forward(request, response);
 
                     }

@@ -5,14 +5,16 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>${product != null ? 'Sửa' : 'Thêm'} Linh Kiện</title>
+        <title>${choosedPart != null ? 'Sửa' : 'Thêm'} Linh Kiện</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
         <!-- TinyMCE CDN -->
         <script src="https://cdn.tiny.cloud/1/bpczrech1jam3gtdjv4btw4n34ryl064yvnd260pxmaonk1b/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </head>
-    <body style="margin-top: 115px;">
+    <body>
 
+        <jsp:include page="header_emp.jsp"></jsp:include>
+        
         <div class="container mt-5" style="margin-bottom: 5%;">
             <div class="row mb-3">
                 <div class="col">
@@ -160,7 +162,7 @@
                     if (successAdd > 0) {
                         Swal.fire({
                             icon: 'success',
-                            title: 'Thêm Thành Công!',
+                            title: '${choosedPart != null ? 'Sửa' : 'Thêm'} Thành Công!',
                             showConfirmButton: false,
                             timer: 1500
                         }).then(() => {

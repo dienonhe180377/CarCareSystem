@@ -17,6 +17,8 @@ import jakarta.servlet.http.Part;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -58,6 +60,17 @@ public class SupplierController extends HttpServlet {
                 request.getRequestDispatcher("supplierList.jsp").forward(request, response);
             }
 
+            if (service.equals("filter")) {
+                String filterValue = request.getParameter("filterValue");
+                ArrayList<Supplier> suppliers = supplierDAO.getAllSupplier();
+                if (filterValue.equals("newest")) {
+                    Collections.reverse(suppliers);
+                }
+                request.setAttribute("filteredValue", filterValue);
+                request.setAttribute("supplierList", suppliers);
+                request.getRequestDispatcher("supplierList.jsp").forward(request, response);
+            }
+
             if (service.equals("delete")) {
                 int id = Integer.parseInt(request.getParameter("id"));
                 int successDelete = supplierDAO.deleteSupplier(id);
@@ -77,15 +90,20 @@ public class SupplierController extends HttpServlet {
                 } else {
                     //Supplier Logo
                     Part logo = request.getPart("logo");
-                    String fileName = Paths.get(logo.getSubmittedFileName()).getFileName().toString();
-                    String uploadDir = getServletContext().getRealPath("/image");
-                    File uploadDirFile = new File(uploadDir);
-                    if (!uploadDirFile.exists()) {
-                        uploadDirFile.mkdirs();
+                    String fileName = "free-user-icon-3296-thumb.png";
+                    String logoFilePath = "";
+                    if (logo.getSize() > 0) {
+                        fileName = Paths.get(logo.getSubmittedFileName()).getFileName().toString();
+                        String uploadDir = getServletContext().getRealPath("/image");
+                        File uploadDirFile = new File(uploadDir);
+                        if (!uploadDirFile.exists()) {
+                            uploadDirFile.mkdirs();
+                        }
+                        logoFilePath = uploadDir + File.separator + fileName;
                     }
-                    String logoFilePath = uploadDir + File.separator + fileName;
+
                     int successCheck = supplierDAO.addSupplier(name, fileName, description, email, phone, address);
-                    if (successCheck > 0) {
+                    if (successCheck > 0 && logo.getSize() > 0) {
                         logo.write(logoFilePath);
                     }
                     request.setAttribute("successCheck", successCheck);
