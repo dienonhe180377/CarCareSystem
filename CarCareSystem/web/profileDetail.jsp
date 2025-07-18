@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="entity.User" %>
 <%
     User user = (User) request.getAttribute("user");
@@ -163,6 +163,7 @@
     </style>
 </head>
 <body>
+    <%@include file="/header_emp.jsp" %>
 <div class="main-container">
     <div class="sidebar">
         <% if (user != null) { %>

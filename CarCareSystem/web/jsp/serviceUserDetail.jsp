@@ -208,13 +208,14 @@
     </style>
 </head>
 <body>
+    <%@include file="/header.jsp" %>
     <div class="container">
         <!-- PHẦN ĐẦU: ẢNH VÀ THÔNG TIN DỊCH VỤ -->
         <div class="service-header">
             <div class="service-img">
                 <c:choose>
                     <c:when test="${not empty service.img}">
-                        <img src="${pageContext.request.contextPath}/uploads/${service.img}" alt="Ảnh dịch vụ"/>
+                        <img src="${pageContext.request.contextPath}/img/${service.img}" alt="Ảnh dịch vụ"/>
                     </c:when>
                     <c:otherwise>
                         <div class="img-note">Chưa có ảnh dịch vụ</div>

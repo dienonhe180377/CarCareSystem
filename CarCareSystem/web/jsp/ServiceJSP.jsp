@@ -1,4 +1,4 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+    <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -205,7 +205,7 @@
                             <td>
                                 <c:choose>
                                     <c:when test="${not empty se.img}">
-                                        <img class="service-img" src="${pageContext.request.contextPath}/uploads/${se.img}" alt="Service Image">
+                                        <img class="service-img" src="${pageContext.request.contextPath}/img/${se.img}" alt="Service Image">
                                     </c:when>
                                     <c:otherwise>
                                         <span class="empty-message">Không ảnh</span>

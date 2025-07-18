@@ -17,6 +17,7 @@
                 margin: 0;
                 font-family: Arial, sans-serif;
                 background-color: #fff;
+                padding-top: 80px;
             }
 
             header {

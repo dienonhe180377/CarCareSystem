@@ -116,6 +116,7 @@
     </style>
 </head>
 <body>
+     <%@include file="/header_emp.jsp" %>
     <div class="form-container">
         <div class="form-title">Chi tiết dịch vụ</div>
         <h2 class="tieu-de">Thông tin dịch vụ</h2>
@@ -132,7 +133,7 @@
                 <td class="form-label">Ảnh dịch vụ</td>
                 <td class="form-value">
                     <% if (se != null && se.getImg() != null && !se.getImg().isEmpty()) { %>
-                        <img src="<%= request.getContextPath() + "/uploads/" + se.getImg() %>" alt="Ảnh dịch vụ" class="service-img">
+                        <img src="<%= request.getContextPath() + "/img/" + se.getImg() %>" alt="Ảnh dịch vụ" class="service-img">
                     <% } else { %>
                         <span class="img-note">Chưa có ảnh</span>
                     <% } %>
@@ -196,10 +197,6 @@
             %>
         </table>
         <div class="form-actions">
-            <form action="OrderServlet" method="post" style="display:inline;">
-                <input type="hidden" name="serviceId" value="<%= se != null ? se.getId() : "" %>"/>
-                <button type="submit" class="btn-order">Đặt dịch vụ</button>
-            </form>
             <a href="ServiceServlet_JSP?service=listService" class="btn-back">Quay lại danh sách</a>
         </div>
     </div>

@@ -133,7 +133,8 @@ public class ServiceServlet_JSP extends HttpServlet {
                         String imgPath = oldImg;
                         if (filePart != null && filePart.getSize() > 0 && filePart.getSubmittedFileName() != null && !filePart.getSubmittedFileName().isEmpty()) {
                             String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-                            String uploadDir = getServletContext().getRealPath("/uploads");
+                            // SỬA Ở ĐÂY: chuyển uploads -> img
+                            String uploadDir = getServletContext().getRealPath("/img");
                             File uploadDirFile = new File(uploadDir);
                             if (!uploadDirFile.exists()) {
                                 uploadDirFile.mkdirs();
@@ -208,7 +209,8 @@ public class ServiceServlet_JSP extends HttpServlet {
                         String imgPath = "";
                         if (filePart != null && filePart.getSize() > 0 && filePart.getSubmittedFileName() != null && !filePart.getSubmittedFileName().isEmpty()) {
                             String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-                            String uploadDir = getServletContext().getRealPath("/uploads");
+                            // SỬA Ở ĐÂY: chuyển uploads -> img
+                            String uploadDir = getServletContext().getRealPath("/img");
                             File uploadDirFile = new File(uploadDir);
                             if (!uploadDirFile.exists()) {
                                 uploadDirFile.mkdirs();

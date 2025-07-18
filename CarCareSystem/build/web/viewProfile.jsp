@@ -1,5 +1,5 @@
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="entity.User" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     User user = (User) request.getAttribute("user");
     String success = (String) request.getAttribute("success");
@@ -34,7 +34,7 @@
             flex-direction: column; 
             align-items: center; 
             margin-bottom: 48px; 
-        }
+       }
         .profile-initial { 
             width: 120px;
             height: 120px;
@@ -125,6 +125,28 @@
             margin-left: 16px; 
         }
         .btn-action:hover { background: #911616; color: #fff; }
+
+        /* Giao diện nút quay lại */
+        .back-link {
+            display: inline-block;
+            background: #ededed;
+            color: #333;
+            font-size: 17px;
+            padding: 11px 32px;
+            border-radius: 9px;
+            font-weight: 600;
+            text-decoration: none;
+            border: 1.2px solid #bbb;
+            margin-left: 12px;
+            margin-right: 12px;
+            transition: background 0.18s, color 0.18s, border 0.18s;
+        }
+        .back-link:hover {
+            background: #0077cc;
+            color: #fff;
+            border-color: #0077cc;
+        }
+
         .success-message { color: #007700; font-weight: bold; text-align: center; margin-bottom: 14px; font-size: 17px;}
         @media (max-width: 1100px) { 
             .main-container { flex-direction: column; align-items: center; }
@@ -138,11 +160,13 @@
             .sidebar-menu a { padding: 10px 12px; font-size: 14px;}
             .info-table td { padding: 10px 2px; }
             .btn-action { padding: 8px 18px; border-radius: 6px; font-size: 14px;}
+            .back-link { padding: 7px 14px; font-size: 13px; border-radius: 5px;}
             .profile-content h2 { font-size: 20px; }
         }
     </style>
 </head>
-<body>  
+<body> 
+    <%@include file="/header_emp.jsp" %>
 <% if (user == null) { %>
     <div class="profile-content full-screen" style="margin: 80px auto; max-width: 500px;">
         <h2>THÔNG TIN TÀI KHOẢN</h2>
@@ -209,6 +233,7 @@
             </table>
             <div class="btn-row">
                 <a class="btn-action" href="profileDetail">Chỉnh sửa thông tin</a>
+                <a href="home" class="back-link"> Quay lại</a>
             </div>
         </div>
     </div>

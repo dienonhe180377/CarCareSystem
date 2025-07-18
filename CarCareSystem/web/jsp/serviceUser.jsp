@@ -76,7 +76,7 @@
     </style>
 </head>
 <body>
-    
+    <%@include file="/header.jsp" %>
     <div class="container">
         <div class="service-heading">DANH SÁCH DỊCH VỤ</div>
         <form class="service-search-bar" action="ServiceServlet_JSP" method="get">
@@ -95,7 +95,7 @@
                 <div class="service-card">
                     <c:choose>
                         <c:when test="${not empty se.img}">
-                            <img class="service-card-img" src="${pageContext.request.contextPath}/uploads/${se.img}" alt="${se.name}">
+                            <img class="service-card-img" src="${pageContext.request.contextPath}/img/${se.img}" alt="${se.name}">
                         </c:when>
                         <c:otherwise>
                             <img class="service-card-img" src="img/no-image.png" alt="Không ảnh">
@@ -136,7 +136,7 @@
                                     <div class="col-md-6 text-center">
                                         <c:choose>
                                             <c:when test="${not empty se.img}">
-                                                <img src="${pageContext.request.contextPath}/uploads/${se.img}" class="quickview-img" alt="Ảnh dịch vụ" />
+                                                <img src="${pageContext.request.contextPath}/img/${se.img}" class="quickview-img" alt="Ảnh dịch vụ" />
                                             </c:when>
                                             <c:otherwise>
                                                 <img src="img/no-image.png" class="quickview-img" alt="Không ảnh" />
@@ -186,7 +186,7 @@
                                     <div class="col-md-6 text-center">
                                         <c:choose>
                                             <c:when test="${not empty se.img}">
-                                                <img src="${pageContext.request.contextPath}/uploads/${se.img}" class="quickview-img" alt="Ảnh dịch vụ" />
+                                                <img src="${pageContext.request.contextPath}/img/${se.img}" class="quickview-img" alt="Ảnh dịch vụ" />
                                             </c:when>
                                             <c:otherwise>
                                                 <img src="img/no-image.png" class="quickview-img" alt="Không ảnh" />
