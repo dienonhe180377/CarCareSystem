@@ -6,6 +6,7 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -789,7 +790,7 @@
 
                 <div class="notification-settings-content">
                     <div class="email-info">
-                        <p>Email của bạn được gửi đến <strong>ongdien4@gmail.com</strong></p>
+                        <p>Email của bạn được gửi đến <strong>${user.email}</strong></p>
                     </div>
 
                     <div class="filter-section">
@@ -797,17 +798,18 @@
                         <div class="filter-select">
                             <select id="category-filter" name="filter">
                                 <option value="all">Tất cả danh mục</option>
-                                <option value="family">Gia đình</option>
-                                <option value="permissions">Quyền</option>
-                                <option value="preferences">Lựa chọn ưu tiên</option>
-                                <option value="premium">Nội dung cập nhật và YouTube Premium</option>
-                                <option value="language">Ngôn ngữ</option>
+                                <c:choose>
+                                    <c:when test="${user.userRole eq 'warehouse manager'}">
+                                        <option value="order">Đơn hàng</option>
+                                        <option value="part">Linh Kiện</option>
+                                    </c:when>
+                                </c:choose>
                             </select>
                         </div>
                     </div>
 
                     <div class="settings-section" data-category="family">
-                        <h3 class="section-title">Gia đình của bạn</h3>
+                        <h3 class="section-title">Hiển thị</h3>
                         <div class="setting-item">
                             <div class="toggle-container">
                                 <label class="toggle-switch">
