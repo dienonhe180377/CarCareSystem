@@ -5,6 +5,7 @@
 
 package controller;
 
+import dao.CarTypeDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -12,15 +13,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import entity.User;
 
 /**
  *
  * @author GIGABYTE
  */
-@WebServlet(name="AuthorizationServlet", urlPatterns={"/authorization"})
-public class AuthorizationServlet extends HttpServlet {
+@WebServlet(name="DeleteCarTypeServlet", urlPatterns={"/manager/deleteCarType"})
+public class DeleteCarTypeServlet extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -37,10 +36,10 @@ public class AuthorizationServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet AuthorizationServlet</title>");  
+            out.println("<title>Servlet DeleteCarTypeServlet</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet AuthorizationServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet DeleteCarTypeServlet at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -54,37 +53,10 @@ public class AuthorizationServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        HttpSession session = request.getSession(false);  
-        User user = (User) session.getAttribute("user");
-        String role = user.getUserRole().toLowerCase();
-        session.setAttribute("role", role);
-        
-        switch(role){
-            case "admin":
-                response.sendRedirect(request.getContextPath() + "/admin/userList");
-                break;
-            case "manager":
-                response.sendRedirect(request.getContextPath() + "/manager/carTypeList");
-                break;
-            case "repairer":
-                response.sendRedirect(request.getContextPath() + "/PartController?service=list");
-                break;
-            case "warehouse manager":
-                response.sendRedirect(request.getContextPath() + "/PartController?service=list");
-                break;
-            case "marketing":
-                response.sendRedirect(request.getContextPath() + "/insurance");
-                break;
-            default:
-                session.invalidate();
-                request.setAttribute("errorMessage", "You do not have permission to access.");
-                request.getRequestDispatcher("/views/auth/login.jsp").forward(request, response);
-                break;
-        }
+        processRequest(request, response);
     } 
 
     /** 
@@ -93,12 +65,17 @@ public class AuthorizationServlet extends HttpServlet {
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
-     */  
+     */
+    private CarTypeDAO ctDao = new CarTypeDAO();
     
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {       
-        processRequest(request, response);
+    throws ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        ctDao.delete(id);
+        
+        request.getSession().setAttribute("message", "Xóa carType thành công!");
+        response.sendRedirect(request.getContextPath() + "/manager/carTypeList");
     }
 
     /** 

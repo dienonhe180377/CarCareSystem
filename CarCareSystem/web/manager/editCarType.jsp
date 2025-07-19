@@ -65,13 +65,31 @@
             <h2>Chỉnh sửa loại xe</h2>
             <form method="post" action="${pageContext.request.contextPath}/manager/editCarType">
                 <input type="hidden" name="id" value="<%= carType.getId() %>" />
+
                 <label for="name">Tên loại xe:</label>
-                <input type="text" name="name" id="name" value="<%= carType.getName() != null ? carType.getName() : "" %>" required />
+                <input type="text" name="name" id="name"
+                       value="<%= request.getAttribute("name") != null ? request.getAttribute("name") : carType.getName() %>"
+                       required />
+
+                <label for="description">Mô tả:</label>
+                <input type="text" name="description" id="description"
+                       value="<%= request.getAttribute("description") != null ? request.getAttribute("description") : (carType.getDescription() != null ? carType.getDescription() : "") %>"
+                       required />
 
                 <label for="status">Trạng thái:</label>
-                <input type="checkbox" name="status" <%= carType.isStatus() ? "checked" : "" %> /><br/><br/>
+                <input type="checkbox" name="status"
+                       <%
+                           boolean statusChecked = false;
+                           if (request.getAttribute("status") != null) {
+                               statusChecked = (Boolean) request.getAttribute("status");
+                           } else {
+                               statusChecked = carType.isStatus();
+                           }
+                           if (statusChecked) out.print("checked");
+                       %> /> Kích hoạt<br/><br/>
 
                 <button type="submit">Lưu</button><br/><br/>
+
                 <div style="color:red;">
                     <%
                         String errorMessage = (String) request.getAttribute("errorMessage");
@@ -80,8 +98,10 @@
                         }
                     %>
                 </div>
+
                 <a href="${pageContext.request.contextPath}/manager/carTypeList">Quay lại danh sách</a>
             </form>
+
         </div>
     </body>
 </html>

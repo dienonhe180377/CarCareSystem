@@ -5,6 +5,9 @@
 
 package controller;
 
+import dao.SettingDAO;
+import entity.Setting;
+import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,14 +16,13 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import entity.User;
 
 /**
  *
  * @author GIGABYTE
  */
-@WebServlet(name="AuthorizationServlet", urlPatterns={"/authorization"})
-public class AuthorizationServlet extends HttpServlet {
+@WebServlet(name="SettingDetailServlet", urlPatterns={"/admin/settingDetail"})
+public class SettingDetailServlet extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -37,10 +39,10 @@ public class AuthorizationServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet AuthorizationServlet</title>");  
+            out.println("<title>Servlet SettingDetailServlet</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet AuthorizationServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet SettingDetailServlet at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -54,37 +56,21 @@ public class AuthorizationServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        HttpSession session = request.getSession(false);  
-        User user = (User) session.getAttribute("user");
-        String role = user.getUserRole().toLowerCase();
-        session.setAttribute("role", role);
-        
-        switch(role){
-            case "admin":
-                response.sendRedirect(request.getContextPath() + "/admin/userList");
-                break;
-            case "manager":
-                response.sendRedirect(request.getContextPath() + "/manager/carTypeList");
-                break;
-            case "repairer":
-                response.sendRedirect(request.getContextPath() + "/PartController?service=list");
-                break;
-            case "warehouse manager":
-                response.sendRedirect(request.getContextPath() + "/PartController?service=list");
-                break;
-            case "marketing":
-                response.sendRedirect(request.getContextPath() + "/insurance");
-                break;
-            default:
-                session.invalidate();
-                request.setAttribute("errorMessage", "You do not have permission to access.");
-                request.getRequestDispatcher("/views/auth/login.jsp").forward(request, response);
-                break;
+        HttpSession session = request.getSession(false);
+        User currentUser = (User) (session != null ? session.getAttribute("currentUser") : null);
+        if (currentUser == null || !currentUser.getUserRole().equalsIgnoreCase("admin")) {
+            response.sendRedirect(request.getContextPath() + "/accessDenied.jsp");
+            return;
         }
+        
+        int id = Integer.parseInt(request.getParameter("id"));
+        SettingDAO sDao = new SettingDAO();
+        Setting setting = sDao.getSettingById(id);
+        request.setAttribute("setting", setting);
+        request.getRequestDispatcher("/admin/settingDetail.jsp").forward(request, response);
     } 
 
     /** 
@@ -93,11 +79,10 @@ public class AuthorizationServlet extends HttpServlet {
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
-     */  
-    
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {       
+    throws ServletException, IOException {
         processRequest(request, response);
     }
 

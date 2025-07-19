@@ -74,10 +74,17 @@
             <h2>Thêm loại xe mới</h2>
             <form action="${pageContext.request.contextPath}/manager/addCarType" method="post">
                 <label>Tên loại xe:</label><br/>
-                <input type="text" name="name" value="<%= request.getAttribute("name") != null ? request.getAttribute("name") : "" %>" required/><br/>
+                <input type="text" name="name"
+                       value="<%= request.getAttribute("name") != null ? request.getAttribute("name") : "" %>" required/><br/>
+
+                <label>Mô tả:</label><br/>
+                <input type="text" name="description"
+                       value="<%= request.getAttribute("description") != null ? request.getAttribute("description") : "" %>" required/><br/>
 
                 <label>Trạng thái:</label>
-                <input type="checkbox" name="status" <%= (request.getAttribute("status") != null && (Boolean)request.getAttribute("status")) ? "checked" : "" %> /><br/><br/>
+                <input type="checkbox" name="status"
+                       <%= (request.getAttribute("status") != null && (Boolean) request.getAttribute("status")) ? "checked" : "" %> />
+                 Kích hoạt<br/><br/>
 
                 <button type="submit">Thêm loại xe</button><br/>
 

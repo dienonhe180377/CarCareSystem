@@ -431,3 +431,28 @@ INSERT INTO CarType (name, status) VALUES (N'Toyota Camry', 1);
 INSERT INTO CarType (name, status) VALUES (N'Mercedes C-Class', 1);
 INSERT INTO CarType (name, status) VALUES (N'BMW X5', 1);
 
+ALTER TABLE CarType
+ADD description NVARCHAR(255) NULL,
+created_at DATETIME NOT NULL DEFAULT GETDATE(),
+updated_at DATETIME NULL;
+
+CREATE TABLE [Setting] (
+    [id] INT IDENTITY(1,1) PRIMARY KEY,
+    [name] VARCHAR(100) NOT NULL,
+    [value] NVARCHAR(MAX) NOT NULL
+);
+
+INSERT INTO [Setting] (name, value) VALUES 
+('site_name', 'Car Care Centre'),
+('logo_url', 'img/logo.png'),
+('working_hours', 'Mon-Sat: 08:00 - 18:00'),
+('footer_text', '© 2025 Garage Pro. All rights reserved.'),
+('contact_email', 'support@carcarecentre.com'),
+('more_services', 'Click here for more...'),
+('service_exp1', 'Professional Maintenance'),
+('service_exp2', 'Authentic Products'),
+('service_exp3', 'Numerous Vouchers'),
+('hotline', '0123 456 789'),
+('header_color', 'lightblue'),
+('footer_color', 'lightblue');
+GO
