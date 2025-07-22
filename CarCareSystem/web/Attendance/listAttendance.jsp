@@ -13,7 +13,7 @@
 <div class="container">
     <h1 class="attendance-title">Lịch sử điểm danh</h1>
 <div class="action-bar">
-    <a href="http://localhost:9988/CarCareSystemTest/attendance" class="btn">Điểm danh hôm nay</a>
+    <a href="${pageContext.request.contextPath}/attendance" class="btn">Điểm danh hôm nay</a>
     <form method="get" action="attendance" class="search-form">
         <input type="hidden" name="action" value="list">
         <input type="date" id="date" name="date" value="${selectedDate}" required>
