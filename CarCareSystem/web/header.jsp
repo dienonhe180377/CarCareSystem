@@ -255,19 +255,19 @@
                 <button class="menu-toggle" onclick="openSidebar()">☰ MENU</button>
                 <nav class="nav-menu">
                     <a href="ServiceServlet_JSP">SERVICES</a>
-                    <a href="accessories.jsp">ACCESSORIES</a>
-                    <a href="promotions.jsp">PROMOTIONS</a>
+                    <a href="part">ACCESSORIES</a>
+                    <a href="insurance">INSURANCE</a>
                 </nav>
             </div>
 
             <div class="logo">
-                <a href="home.jsp"><img src="<%= settingMap.get("logo_url") %>" alt="<%= settingMap.get("site_name") %>"></a>
+                <a href="home"><img src="<%= settingMap.get("logo_url") %>" alt="<%= settingMap.get("site_name") %>"></a>
             </div>
 
             <div class="header-right">
                 <nav class="nav-menu">
                     <a href="blog.jsp">BLOG</a>
-                    <a href="booking.jsp">TRACKING</a>
+                    <a href="ordertracking">TRACKING</a>
                     <a href="contact.jsp">CONTACT</a>
                 </nav>
                 <!-- Đoạn login/avatar -->
@@ -288,8 +288,8 @@
                     <div class="dropdown">
                         <i class="fas fa-user-circle avatar-icon" onclick="toggleUserDropdown()"></i>
                         <div id="userDropdown" class="dropdown-content">
-                            <a href="profile.jsp">Profile</a>
-                            <a href="orders.jsp">My Orders</a>
+                            <a href="viewProfile">Profile</a>
+                            <a href="myorder">My Orders</a>
                             <a href="${pageContext.request.contextPath}/logout">Logout</a>
                         </div>
                     </div>
@@ -303,10 +303,10 @@
                 <nav>
                     <a href="home">HOME</a>
                     <a href="ServiceServlet_JSP">SERVICES</a>
-                    <a href="accessories.jsp">ACCESSORIES</a>
+                    <a href="part">ACCESSORIES</a>
                     <a href="promotions.jsp">PROMOTIONS</a>
-                    <a href="blog.jsp">BLOG</a>
-                    <a href="booking.jsp">TRACKING</a>
+                    <a href="blog">BLOG</a>
+                    <a href="ordertracking">TRACKING</a>
                     <a href="contact.jsp">CONTACT</a>
                     <br>
                 </nav>
@@ -315,57 +315,7 @@
             <!-- Optional overlay -->
             <div id="overlay" class="overlay" onclick="closeSidebar()"></div>
 
-            <!-- Navigation menu left -->
-            <nav class="nav-menu">
-                <a href="ServiceServlet_JSP">SERVICES</a>
-                <a href="part">ACCESSORIES</a>
-                <a href="promotions.jsp">PROMOTIONS</a>
-            </nav>
-
-            <!-- Logo -->
-            <div class="logo">
-                <a href="home"><img src="img/logo.png " alt="CAR CARE Centre"></a>
-            </div>
-
-            <!-- Navigation menu right -->
-            <nav class="nav-menu">
-                <a href="blog.jsp">BLOG</a>
-                <a href="ordertracking">TRACKING</a>
-                <a href="contact.jsp">CONTACT</a>
-            </nav>
-
-            <!-- After login: avatar with dropdown -->
-            <%
-                User user = (User) session.getAttribute("user");
-            %>
-
-            <div class="menu-right">
-                <% if (user == null) { %>
-                <!-- Nếu chưa login -->
-                <a href="login"><button class="login-button">Login</button></a>
-                <% } else { %>
-                <!-- Nếu đã login -->
-
-                <!-- Icon chuông thông báo -->
-                <div class="dropdown">
-                    <i class="fas fa-bell notification-icon" onclick="toggleNotificationDropdown()"></i>
-                    <div id="notificationDropdown" class="dropdown-content">
-                        <a href="#">You have 3 new messages</a>
-                        <a href="#">Booking confirmed</a>
-                        <a href="#">Promotion: 20% off service</a>
-                    </div>
-                </div>
-
-                <div class="dropdown">
-                    <i class="fas fa-user-circle avatar-icon" onclick="toggleUserDropdown()"></i>
-                    <div id="userDropdown" class="dropdown-content">
-                        <a href="viewProfile">Profile</a>
-                        <a href="myorder">My Orders</a>
-                        <a href="${pageContext.request.contextPath}/logout">Logout</a>
-                    </div>
-                </div>
-                <% } %>
-            </div>
+            
 
             <script>
                 function openSidebar() {

@@ -402,9 +402,11 @@
         <!-- Quick Action Buttons: 2 cột to, mỗi bên 1 nút chuyển trang -->
         <div class="quick-action-row">
             <div class="quick-action-col">
-                <a href="quick-booking.jsp" class="quick-action-btn quick-booking-btn">
-                    <i class="fas fa-calendar-check me-3"></i> Đặt lịch nhanh
-                </a>
+                <form action="order" method = "post">
+                    <button class="quick-action-btn quick-booking-btn">
+                        <i class="fas fa-calendar-check me-3"></i> Đặt lịch nhanh
+                    </button>
+                </form>
             </div>
             <div class="quick-action-col">
                 <a href="voucher.jsp" class="quick-action-btn voucher-btn">

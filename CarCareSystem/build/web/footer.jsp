@@ -5,6 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="java.util.Map" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -124,26 +125,26 @@
                     <div class="footer-column">
                         <h4>SERVICE & SUPPORT</h4>
                         <ul>
-                            <li>Terms & Conditions</li>
-                            <li>Delivery & Returns</li>
-                            <li>Training Academy</li>
-                            <a href="ServiceServlet_JSP"><li>Car Care Services</li></a>
+                            <li><%= settingMap.get("service_exp1") %></li>
+                            <li><%= settingMap.get("service_exp2") %></li>
+                            <li><%= settingMap.get("service_exp3") %></li>
+                            <a href="ServiceServlet_JSP"><li><%= settingMap.get("more_services") %></li></a>
                         </ul>
                     </div>
 
                     <div class="footer-column">
                         <h4>CONTACT</h4>
                         <ul>
-                            <li><span>A.</span> Car Care Centre</li>
-                            <li><span>T.</span> Service Booking</li>
-                            <li><span>T.</span> Product Order</li>
-                            <li><span>E.</span> Hotline:0328728197</li>
+                            <li><span>N.</span> <%= settingMap.get("site_name") %></li>
+                            <li><span>T.</span> <%= settingMap.get("hotline") %></li>
+                            <li><span>E.</span> <%= settingMap.get("contact_email") %></li>
+                            <li><span>H.</span> <%= settingMap.get("working_hours") %></li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="footer-bottom">
-                    ©Car Care Centre © 2025. All rights reserved
+                    <%= settingMap.get("footer_text") %>
                 </div>
             </footer>
         </div>

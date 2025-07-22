@@ -143,7 +143,7 @@
     <c:if test="${order == null}">
         <p style="color: #d32f2f; text-align:center;">Không tìm thấy đơn hàng.</p>
     </c:if>
-    <a class="back-link" href="orderList">← Quay lại danh sách đơn hàng</a>
+    <a class="back-link" href="ordermanagement">← Quay lại danh sách đơn hàng</a>
 </div>
 </body>
 </html>

@@ -321,23 +321,6 @@ ALTER TABLE [Order]
 ADD CONSTRAINT FK_Order_User FOREIGN KEY(userId) REFERENCES [User](id);
 GO
 
-select * from [Order]
-SELECT * FROM [OrderService] 
-DELETE FROM [Order]
-
-INSERT INTO Service (name, description, price, img) VALUES
-(N'Rửa xe', N'Rửa ngoài', 50000, N'svc1.jpg'),
-(N'Vệ sinh nội thất', N'Nội thất sạch', 90000, N'svc2.jpg'),
-(N'Bảo dưỡng tổng thể', N'Bảo dưỡng xe', 200000, N'svc3.jpg'),
-(N'Kiểm tra động cơ', N'Kiểm tra chi tiết', 150000, N'svc4.jpg'),
-(N'Đánh bóng sơn', N'Làm mới ngoại thất', 120000, N'svc5.jpg'),
-(N'Thay dầu', N'Dầu nhớt xe', 100000, N'svc6.jpg'),
-(N'Lắp lốp mới', N'Lốp chất lượng', 800000, N'svc7.jpg'),
-(N'Sửa điện', N'Sửa chữa điện', 50000, N'svc8.jpg'),
-(N'Thay ắc quy', N'Ắc quy mới', 350000, N'svc9.jpg'),
-(N'Sửa điều hòa', N'Điều hòa mát', 250000, N'svc10.jpg');
-GO
-
 INSERT INTO [dbo].[User]
            ([username], [password], [email], [phone], [address], [createDate], [role])
 VALUES
@@ -360,6 +343,7 @@ INSERT INTO Category (name, description, status) VALUES
 ('Exhaust System',   N'Hệ thống xả khí thải, ống pô và bộ lọc khí thải',              1),
 ('Steering',         N'Hệ thống lái gồm tay lái, trục lái và trợ lực lái',              1),
 ('Tires & Wheels',   N'Vỏ, mâm và van xe đảm bảo bám đường và chịu tải trọng',         1);
+GO
 
 -- Insert bảng Parts (liên kết với Service, Category, Supplier)
 INSERT INTO Parts (name, image, categoryId, price) VALUES
@@ -425,18 +409,22 @@ INSERT INTO CarType (name, status) VALUES (N'VinFast Lux A2.0', 1);
 INSERT INTO CarType (name, status) VALUES (N'Toyota Camry', 1);
 INSERT INTO CarType (name, status) VALUES (N'Mercedes C-Class', 1);
 INSERT INTO CarType (name, status) VALUES (N'BMW X5', 1);
-
+GO
 
 ALTER TABLE CarType
 ADD description NVARCHAR(255) NULL,
 created_at DATETIME NOT NULL DEFAULT GETDATE(),
 updated_at DATETIME NULL;
+GO
 
 CREATE TABLE [Setting] (
     [id] INT IDENTITY(1,1) PRIMARY KEY,
     [name] VARCHAR(100) NOT NULL,
     [value] NVARCHAR(MAX) NOT NULL
 );
+GO
+
+select * from [User]
 
 INSERT INTO [Setting] (name, value) VALUES 
 ('site_name', 'Car Care Centre'),
@@ -453,7 +441,6 @@ INSERT INTO [Setting] (name, value) VALUES
 ('footer_color', 'lightblue');
 GO
 
-GO
 INSERT INTO Supplier ([name], logo, [description], email, phone, [address]) VALUES
 ('AutoPlus Co., Ltd.', 'Auto_Care.jpg', N'Nhà cung cấp phụ tùng ô tô chính hãng', 'contact@autoplus.vn', '0912345678', N'123 Đường Lớn, Quận 1, TP. HCM'),
 ('CarCare Vietnam', '1600w-B1MIRD2zskY.webp', N'Dịch vụ chăm sóc xe chuyên nghiệp', 'support@carcare.vn', '0987654321', N'456 Phố Xe Hơi, Quận 7, TP. HCM'),
@@ -818,3 +805,21 @@ VALUES (
     1, -- blog
     1  -- voucher
 );
+GO
+INSERT INTO Service (name, description, price, img) VALUES
+(N'Rửa xe', N'Rửa ngoài', 50000, N'rua_xe_oto.jpg'),
+(N'Vệ sinh nội thất', N'Nội thất sạch', 90000, N've_sinh_noi_that.jpg'),
+(N'Bảo dưỡng tổng thể', N'Bảo dưỡng xe', 200000, N'bao_duong.jpg'),
+(N'Kiểm tra động cơ', N'Kiểm tra chi tiết', 150000, N'bao_duong_dong_co.jpg'),
+(N'Đánh bóng sơn', N'Làm mới ngoại thất', 120000, N'danh_bong.jpg'),
+(N'Thay dầu', N'Dầu nhớt xe', 100000, N'thay_dau.jpg'),
+(N'Lắp lốp mới', N'Lốp chất lượng', 800000, N'thay_nop.jpg'),
+(N'Sửa điện', N'Sửa chữa điện', 90000, N'sua_dien.jpg'),
+(N'Thay ắc quy', N'Ắc quy mới', 350000, N'thay_acquy.jpg'),
+(N'Sửa điều hòa', N'Điều hòa mát', 250000, N'sua_dieuhoa.jpg');
+GO
+
+INSERT INTO PartsService (serviceId, partId) VALUES
+(1,1),(2,2),(3,3),(4,4),(5,5),(6,6),(7,7),(8,8),(9,9),(10,10);
+
+select * from [PartsService]

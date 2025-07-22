@@ -53,16 +53,17 @@ public class OrderDetailServlet extends HttpServlet {
             boolean isOwner = (order.getUser() != null) && (order.getUser().getId() == loginUser.getId());
             boolean isManager = "manager".equalsIgnoreCase(role);
             boolean isRepairer = "repairer".equalsIgnoreCase(role);
+            boolean isMarketing = "marketing".equalsIgnoreCase(role);
 
             // Quyền: manager, repairer, hoặc chính chủ đơn hàng (customer)
-            if (!(isManager || isRepairer || isOwner)) {
+            if (!(isManager || isRepairer || isOwner || isMarketing)) {
                 response.sendError(HttpServletResponse.SC_FORBIDDEN, "Bạn không có quyền xem đơn hàng này");
                 return;
             }
 
             request.setAttribute("order", order);
 
-            if (isManager || isRepairer) {
+            if (isManager || isRepairer || isMarketing) {
                 request.setAttribute("role", role);
                 request.getRequestDispatcher("orderDetailStaff.jsp").forward(request, response);
             } else {

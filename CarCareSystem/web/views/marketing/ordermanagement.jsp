@@ -230,7 +230,7 @@
                                                 Đặt lại lịch hẹn
                                             </button>  
                                         </c:if>        
-                                        <a href="${pageContext.request.contextPath}/order/detail?id=${order.id}" 
+                                        <a href="${pageContext.request.contextPath}/orderDetail?orderId=${order.id}" 
                                             class="btn btn-info btn-sm">Details</a>
                                     </div>
     

@@ -17,6 +17,24 @@ import java.util.List;
  */
 public class CarTypeDAO extends DBConnection {
 
+    public List<CarType> getAllCarTypes() {
+        List<CarType> carTypes = new ArrayList<>();
+        String sql = "SELECT * FROM CarType";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                CarType carType = new CarType();
+                carType.setId(rs.getInt("id"));
+                carType.setName(rs.getString("name"));
+                carType.setStatus(rs.getBoolean("status"));
+                carTypes.add(carType);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return carTypes;
+    }
+    
     public CarType getCarTypeById(int id) {
         String sql = "SELECT * FROM CarType WHERE id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
