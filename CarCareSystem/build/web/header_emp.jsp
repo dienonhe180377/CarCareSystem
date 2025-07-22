@@ -692,6 +692,7 @@
             <a href="${pageContext.request.contextPath}/admin/userList">Quản lý người dùng</a>
             <a href="${pageContext.request.contextPath}/insurance">Quản lý bảo hiểm</a>
             <a href="${pageContext.request.contextPath}/ServiceServlet_JSP">Quản lý dịch vụ</a>
+            <a href="${pageContext.request.contextPath}/admin/settingList">Quản lý cài đặt</a>
             <% } else if ("manager".equals(role)) { %>
             <h2>Manager</h2>
             <a href="${pageContext.request.contextPath}/categoryList.jsp">Quản lý category</a>
@@ -703,6 +704,7 @@
             <% } else if ("repairer".equals(role)) { %>
             <h2>Repairer</h2>
             <a href="${pageContext.request.contextPath}/orderList.jsp">Quản lý đơn</a>
+            <a href="${pageContext.request.contextPath}/PartController?service=list">Quản lý bộ phận</a>
             <% } else if ("warehouse manager".equals(role)) { %>
             <h2>Warehouse Manager</h2>
             <a href="${pageContext.request.contextPath}/categoryList.jsp">Quản lý category</a>
