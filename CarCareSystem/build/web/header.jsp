@@ -148,7 +148,7 @@
             }
 
             .notification-icon {
-                font-size: 24px;
+                font-size: 32px;
                 color: black;
                 cursor: pointer;
                 margin-right: 15px;
