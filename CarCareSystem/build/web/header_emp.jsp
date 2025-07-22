@@ -705,7 +705,7 @@
             <a href="${pageContext.request.contextPath}/orderList.jsp">Quản lý đơn</a>
             <% } else if ("warehouse manager".equals(role)) { %>
             <h2>Warehouse Manager</h2>
-            <a href="${pageContext.request.contextPath}/categoryList.jsp">Quản lý category</a>
+            <a href="${pageContext.request.contextPath}/CategoryController?service=list">Quản lý category</a>
             <a href="${pageContext.request.contextPath}/SupplierController?service=list">Quản lý nhà cung cấp</a>
             <a href="${pageContext.request.contextPath}/PartController?service=list">Quản lý bộ phận</a>
             <% } else if ("marketing".equals(role)) { %>
@@ -730,7 +730,15 @@
                 <div class="Dropdown">
                     <div class="Notification-icon" onclick="toggleNotificationDropdown()">
                         <i class="fas fa-bell"></i>
-                        <div class="notification-badge">3</div>
+
+                        <c:set var="unreadCount" value="0"></c:set>
+                        <c:forEach var="noti" items="${notification}">
+                            <c:if test="${!noti.status}">
+                                <c:set var="unreadCount" value="${unreadCount + 1}" />
+                            </c:if>
+                        </c:forEach>
+
+                        <div class="notification-badge">${unreadCount}</div>
                     </div>
                     <div id="notificationDropdown" class="Dropdown-content">
                         <div class="notification-header">
@@ -742,25 +750,36 @@
                         <div class="notification-content">
                             <!-- Thêm 3 thông báo mẫu -->
                             <c:forEach var="notification" items="${notification}">
-                                <a href="#" 
+                                <a href="${pageContext.request.contextPath}/NotificationController?service=load&id=${notification.id}" 
                                    <c:choose>
-                                       <c:when test="${notification.status == true}">
+                                       <c:when test="${notification.status == true && notiSetting.notificationStatus == true}">
                                            class="notification-item"
                                        </c:when>
                                        <c:otherwise>
-                                           class="notification-item unread"
+                                           <c:if test="${notiSetting.notificationStatus == true}">
+                                               class="notification-item unread"
+                                           </c:if>
                                        </c:otherwise>
                                    </c:choose>>
                                     <div class="notification-details">
                                         <div class="notification-title">${notification.message}</div>
-                                        <div class="notification-time">${notification.createDate}</div>
+                                        <div class="notification-time">
+                                            <c:if test="${notiSetting.notificationTime == true}">
+                                                ${notification.createDate}
+                                            </c:if>
+                                        </div>
                                     </div>
                                 </a>
                             </c:forEach>
                         </div>
+
                         <div class="notification-footer">
-                            Xóa tất cả thông báo
+                            <a href="${pageContext.request.contextPath}/NotificationController?service=delete&user=${user.id}">
+                                Xóa tất cả thông báo
+                            </a>
                         </div>
+
+
                     </div>
                 </div>
 
@@ -778,162 +797,323 @@
             </div>
         </header>
 
-        <!-- Notification Settings Popup -->
-        <div id="notificationSettingsPopup" class="notification-settings-popup">
-            <div class="notification-settings-container">
-                <div class="notification-settings-header">
-                    <h2>Thông báo</h2>
-                    <button class="close-btn">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
 
-                <div class="notification-settings-content">
-                    <div class="email-info">
-                        <p>Email của bạn được gửi đến <strong>${user.email}</strong></p>
+        <form action="${pageContext.request.contextPath}/NotificationController?service=filter" method="post">
+            <!-- Notification Settings Popup -->
+            <div id="notificationSettingsPopup" class="notification-settings-popup">
+                <div class="notification-settings-container">
+                    <div class="notification-settings-header">
+                        <h2>Thông báo</h2>
+                        <button type="button" class="close-btn">
+                            <i class="fas fa-times"></i>
+                        </button>
                     </div>
 
-                    <div class="filter-section">
-                        <label for="category-filter">Lọc theo:</label>
-                        <div class="filter-select">
-                            <select id="category-filter" name="filter">
-                                <option value="all">Tất cả danh mục</option>
-                                <c:choose>
-                                    <c:when test="${user.userRole eq 'warehouse manager'}">
-                                        <option value="order">Đơn hàng</option>
-                                        <option value="part">Linh Kiện</option>
-                                    </c:when>
-                                </c:choose>
-                            </select>
+                    <div class="notification-settings-content">
+                        <div class="email-info">
+                            <p>Email của bạn được gửi đến <strong>${user.email}</strong></p>
+                        </div>
+
+                        <div class="filter-section">
+                            <label for="category-filter">Lọc theo:</label>
+                            <div class="filter-select">
+                                <select id="category-filter" name="filter">
+                                    <option value="all">Tất cả danh mục</option>
+                                    <option value="view">Hiển Thị</option>
+                                    <option value="change">Các thay đổi</option>
+                                    <option value="additional">Cài Đặt Bổ Sung</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!--Setting hiển thị cho thông báo-->
+                        <div class="settings-section" data-category="view">
+                            <h3 class="section-title">Hiển Thị</h3>
+                            <div class="setting-item">
+                                <div class="toggle-container">
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" name="notiTime" value="yes" <c:if test="${notiSetting.notificationTime == true}">checked</c:if>>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    <div class="setting-content">
+                                        <div class="setting-title">Ngày thông báo</div>
+                                        <div class="setting-description">Cho phép hiển thị ngày của thông báo</div>
+                                    </div>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="toggle-container">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" name="notiStatus" value="yes" <c:if test="${notiSetting.notificationStatus == true}">checked</c:if>>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    <div class="setting-content">
+                                        <div class="setting-title">Trạng thái của thông báo</div>
+                                        <div class="setting-description">Cho phép hiển thị trạng thái đọc/chưa đọc</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--Settting các thông báo thay đổi-->
+                            <div class="settings-section" data-category="change">
+                                <h3 class="section-title">Các Thay Đổi</h3>
+                                <div class="setting-item">
+                                    <div class="toggle-container">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" name="profile" value="yes" <c:if test="${notiSetting.profile == true}">checked</c:if> >
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    <div class="setting-content">
+                                        <div class="setting-title">Thông báo về thông tin cá nhân</div>
+                                        <div class="setting-description">Bật chế độ này để nhận các thông báo các thay đổi thông tin cá nhân</div>
+                                    </div>
+                                </div>
+
+                            <c:if test="${user.userRole eq 'admin'}">
+                                <div class="setting-item">
+                                    <div class="toggle-container">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" name="settingChange" value="yes" <c:if test="${notiSetting.settingChange == true}">checked</c:if>>
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                        </div>
+                                        <div class="setting-content">
+                                            <div class="setting-title">Thông báo về các thay đổi trang web</div>
+                                            <div class="setting-description">Bật chế độ này để nhận các thông báo các thay đổi trang web</div>
+                                        </div>
+                                    </div>
+                            </c:if>
+                            <c:if test="${user.userRole eq 'customer'}">
+                                <div class="setting-item">
+                                    <div class="toggle-container">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" name="order" value="yes" <c:if test="${notiSetting.orderChange == true}">checked</c:if>>
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                        </div>
+                                        <div class="setting-content">
+                                            <div class="setting-title">Thông báo về các thay đổi đơn hàng</div>
+                                            <div class="setting-description">Bật chế độ này để nhận các thông báo các thay đổi đơn hàng</div>
+                                        </div>
+                                    </div>
+                                    <div class="setting-item">
+                                        <div class="toggle-container">
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" name="blog" value="yes" <c:if test="${notiSetting.blog == true}">checked</c:if>>
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                        </div>
+                                        <div class="setting-content">
+                                            <div class="setting-title">Thông báo về các bài viết mới</div>
+                                            <div class="setting-description">Bật chế độ này để nhận các thông báo các bài viết mới</div>
+                                        </div>
+                                    </div>
+                            </c:if>
+                            <c:if test="${user.userRole eq 'warehouse manager'}">
+                                <div class="setting-item">
+                                    <div class="toggle-container">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" name="category" value="yes" <c:if test="${notiSetting.category == true}">checked</c:if>>
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                        </div>
+                                        <div class="setting-content">
+                                            <div class="setting-title">Thông báo về các thay đổi Category</div>
+                                            <div class="setting-description">Bật chế độ này để nhận các thông báo các thay đổi Category</div>
+                                        </div>
+                                    </div>
+                                    <div class="setting-item">
+                                        <div class="toggle-container">
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" name="supplier" value="yes" <c:if test="${notiSetting.supplier == true}">checked</c:if>>
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                        </div>
+                                        <div class="setting-content">
+                                            <div class="setting-title">Thông báo về các thay đổi nhà cung cấp</div>
+                                            <div class="setting-description">Bật chế độ này để nhận các thông báo các thay đổi nhà cung cấp</div>
+                                        </div>
+                                    </div>
+                                    <div class="setting-item">
+                                        <div class="toggle-container">
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" name="part" value="yes" <c:if test="${notiSetting.parts == true}">checked</c:if>>
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                        </div>
+                                        <div class="setting-content">
+                                            <div class="setting-title">Thông báo về các thay đổi linh kiện</div>
+                                            <div class="setting-description">Bật chế độ này để nhận các thông báo các thay đổi linh kiện</div>
+                                        </div>
+                                    </div>
+                            </c:if>
+                            <c:if test="${user.userRole eq 'manager'}">
+                                <div class="setting-item">
+                                    <div class="toggle-container">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" name="order" value="yes" <c:if test="${notiSetting.orderChange == true}">checked</c:if>>
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                        </div>
+                                        <div class="setting-content">
+                                            <div class="setting-title">Thông báo về các thay đổi đơn hàng</div>
+                                            <div class="setting-description">Bật chế độ này để nhận các thông báo các thay đổi đơn hàng</div>
+                                        </div>
+                                    </div>
+                                    <div class="setting-item">
+                                        <div class="toggle-container">
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" name="attendance" value="yes" <c:if test="${notiSetting.attendance == true}">checked</c:if>>
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                        </div>
+                                        <div class="setting-content">
+                                            <div class="setting-title">Thông báo về các thay đổi điểm danh</div>
+                                            <div class="setting-description">Bật chế độ này để nhận các thông báo các thay đổi điểm danh</div>
+                                        </div>
+                                    </div>
+                                    <div class="setting-item">
+                                        <div class="toggle-container">
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" name="insurance" value="yes" <c:if test="${notiSetting.insurance == true}">checked</c:if>>
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                        </div>
+                                        <div class="setting-content">
+                                            <div class="setting-title">Thông báo về các thay đổi bảo hiểm</div>
+                                            <div class="setting-description">Bật chế độ này để nhận các thông báo các thay đổi bảo hiểm</div>
+                                        </div>
+                                    </div>
+                            </c:if>
+                            <c:if test="${user.userRole eq 'repairer'}">
+                                <div class="setting-item">
+                                    <div class="toggle-container">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" name="order" value="yes" <c:if test="${notiSetting.orderChange == true}">checked</c:if>>
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                        </div>
+                                        <div class="setting-content">
+                                            <div class="setting-title">Thông báo về các thay đổi đơn hàng</div>
+                                            <div class="setting-description">Bật chế độ này để nhận các thông báo các thay đổi đơn hàng</div>
+                                        </div>
+                                    </div>
+                                    <div class="setting-item">
+                                        <div class="toggle-container">
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" name="attendance" value="yes" <c:if test="${notiSetting.attendance == true}">checked</c:if>>
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                        </div>
+                                        <div class="setting-content">
+                                            <div class="setting-title">Thông báo về các thay đổi điểm danh</div>
+                                            <div class="setting-description">Bật chế độ này để nhận các thông báo các thay đổi điểm danh</div>
+                                        </div>
+                                    </div>
+                                    <div class="setting-item">
+                                        <div class="toggle-container">
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" name="serviceChanges" value="yes" <c:if test="${notiSetting.service == true}">checked</c:if>>
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                        </div>
+                                        <div class="setting-content">
+                                            <div class="setting-title">Thông báo về các thay đổi dịch vụ</div>
+                                            <div class="setting-description">Bật chế độ này để nhận các thông báo các thay đổi dịch vụ</div>
+                                        </div>
+                                    </div>
+                                    <div class="setting-item">
+                                        <div class="toggle-container">
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" name="carType" value="yes" <c:if test="${notiSetting.carType == true}">checked</c:if>>
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                        </div>
+                                        <div class="setting-content">
+                                            <div class="setting-title">Thông báo về các thay đổi loại xe</div>
+                                            <div class="setting-description">Bật chế độ này để nhận các thông báo các thay đổi loại xe</div>
+                                        </div>
+                                    </div>
+                            </c:if>
+                            <c:if test="${user.userRole eq 'marketing'}">
+                                <div class="setting-item">
+                                    <div class="toggle-container">
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" name="campaign" value="yes" <c:if test="${notiSetting.campaign == true}">checked</c:if>>
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                        </div>
+                                        <div class="setting-content">
+                                            <div class="setting-title">Thông báo về các thay đổi chiến dịch</div>
+                                            <div class="setting-description">Bật chế độ này để nhận các thông báo các thay đổi chiến dịch</div>
+                                        </div>
+                                    </div>
+                                    <div class="setting-item">
+                                        <div class="toggle-container">
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" name="attendance" value="yes" <c:if test="${notiSetting.attendance == true}">checked</c:if>>
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                        </div>
+                                        <div class="setting-content">
+                                            <div class="setting-title">Thông báo về các thay đổi điểm danh</div>
+                                            <div class="setting-description">Bật chế độ này để nhận các thông báo các thay đổi điểm danh</div>
+                                        </div>
+                                    </div>
+                                    <div class="setting-item">
+                                        <div class="toggle-container">
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" name="blog" value="yes" <c:if test="${notiSetting.blog == true}">checked</c:if>>
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                        </div>
+                                        <div class="setting-content">
+                                            <div class="setting-title">Thông báo về các thay đổi bài viết</div>
+                                            <div class="setting-description">Bật chế độ này để nhận các thông báo các thay đổi bài viết</div>
+                                        </div>
+                                    </div>
+                                    <div class="setting-item">
+                                        <div class="toggle-container">
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" name="voucher" value="yes" <c:if test="${notiSetting.voucher == true}">checked</c:if>>
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                        </div>
+                                        <div class="setting-content">
+                                            <div class="setting-title">Thông báo về các thay đổi Voucher</div>
+                                            <div class="setting-description">Bật chế độ này để nhận các thông báo các thay đổi Voucher</div>
+                                        </div>
+                                    </div>
+                            </c:if>
+                        </div>
+
+                        <!-- Thêm nội dung mẫu để kiểm tra khả năng cuộn -->
+                        <div class="settings-section" data-category="additional">
+                            <h3 class="section-title">Cài đặt bổ sung</h3>
+                            <div class="setting-item">
+                                <div class="toggle-container">
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" name="email" value="yes" <c:if test="${notiSetting.email == true}">checked</c:if>>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-content">
+                                    <div class="setting-title">Thông báo về các thay đổi qua email</div>
+                                    <div class="setting-description">Nhận email về các thay đổi</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="settings-section" data-category="family">
-                        <h3 class="section-title">Hiển thị</h3>
-                        <div class="setting-item">
-                            <div class="toggle-container">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" checked>
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                            <div class="setting-content">
-                                <div class="setting-title">Gửi email cập nhật cho tôi và thông tin dành cho gia đình và thông tin và sản phẩm YouTube hoặc YouTube Kids</div>
-                                <div class="setting-description">Bằng việc bật chế độ cài đặt này, bạn chọn nhận email về các mục, thông tin cập nhật sản phẩm và nội dung đề xuất dành cho gia đình</div>
-                            </div>
-                        </div>
+                    <div class="notification-settings-footer">
+                        <button class="confirm-btn">Xác nhận</button>
                     </div>
 
-                    <div class="settings-section" data-category="permissions">
-                        <h3 class="section-title">Quyền</h3>
-                        <div class="setting-item">
-                            <div class="toggle-container">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" checked>
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                            <div class="setting-content">
-                                <div class="setting-title">Gửi cho tôi email về hoạt động của tôi trên YouTube và thông tin cập nhật mà tôi đã yêu cầu</div>
-                                <div class="setting-description">Nếu bạn tắt tùy chọn cài đặt này, YouTube vẫn có thể gửi thư cho bạn liên quan đến tài khoản của bạn, thông báo bắt buộc về dịch vụ, thông báo pháp lý và các vấn đề về quyền riêng tư</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="settings-section" data-category="preferences">
-                        <h3 class="section-title">Lựa chọn ưu tiên của bạn</h3>
-                        <div class="setting-item">
-                            <div class="toggle-container">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" checked>
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                            <div class="setting-content">
-                                <div class="setting-title">Thông báo cập nhật chung và sản phẩm</div>
-                                <div class="setting-description">Thông báo và nội dung đề xuất</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="settings-section" data-category="premium">
-                        <h3 class="section-title">Nội dung cập nhật và YouTube Premium</h3>
-                        <div class="setting-item">
-                            <div class="toggle-container">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" checked>
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                            <div class="setting-content">
-                                <div class="setting-title">Thông báo, nội dung cập nhật và đề xuất từ YouTube Premium và YouTube Music Premium</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="settings-section" data-category="language">
-                        <h3 class="section-title">Ngôn ngữ</h3>
-                        <div class="setting-item">
-                            <div class="toggle-container">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" checked>
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                            <div class="setting-content">
-                                <div class="setting-title">Thông báo và bản tin cập nhật cho nhà sáng tạo</div>
-                                <div class="setting-description">Thông báo và sản phẩm, sự kiện cho người sáng tạo và các mục đặc biệt dành cho bạn để phát triển kênh YouTube</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Thêm nội dung mẫu để kiểm tra khả năng cuộn -->
-                    <div class="settings-section" data-category="additional">
-                        <h3 class="section-title">Cài đặt bổ sung</h3>
-                        <div class="setting-item">
-                            <div class="toggle-container">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" checked>
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                            <div class="setting-content">
-                                <div class="setting-title">Thông báo về các sự kiện đặc biệt</div>
-                                <div class="setting-description">Nhận email về các sự kiện, chương trình khuyến mãi và cập nhật đặc biệt từ YouTube</div>
-                            </div>
-                        </div>
-                        <div class="setting-item">
-                            <div class="toggle-container">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" checked>
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                            <div class="setting-content">
-                                <div class="setting-title">Thông báo về nội dung được đề xuất</div>
-                                <div class="setting-description">Nhận email về các video và kênh được đề xuất dựa trên sở thích xem của bạn</div>
-                            </div>
-                        </div>
-                        <div class="setting-item">
-                            <div class="toggle-container">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" checked>
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                            <div class="setting-content">
-                                <div class="setting-title">Thông báo về nhận xét và tương tác</div>
-                                <div class="setting-description">Nhận email khi có người nhận xét hoặc tương tác với nội dung của bạn</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="notification-settings-footer">
-                    <button class="confirm-btn">Xác nhận</button>
                 </div>
             </div>
-        </div>
+        </form>
+
 
 
         <script>
@@ -1018,6 +1198,20 @@
                         parentItem.style.opacity = 1;
                     } else {
                         parentItem.style.opacity = 0.7;
+                    }
+                });
+            });
+
+            // Filter settings by category
+            document.getElementById('category-filter').addEventListener('change', function () {
+                const selectedCategory = this.value;
+                const allSections = document.querySelectorAll('.settings-section');
+
+                allSections.forEach(section => {
+                    if (selectedCategory === 'all' || section.dataset.category === selectedCategory) {
+                        section.style.display = 'block';
+                    } else {
+                        section.style.display = 'none';
                     }
                 });
             });
