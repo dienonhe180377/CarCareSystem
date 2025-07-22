@@ -60,7 +60,7 @@ public class SettingDetailServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         HttpSession session = request.getSession(false);
-        User currentUser = (User) (session != null ? session.getAttribute("currentUser") : null);
+        User currentUser = (User) (session != null ? session.getAttribute("user") : null);
         if (currentUser == null || !currentUser.getUserRole().equalsIgnoreCase("admin")) {
             response.sendRedirect(request.getContextPath() + "/accessDenied.jsp");
             return;
