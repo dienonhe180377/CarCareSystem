@@ -19,7 +19,22 @@ public class PartUserServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         ServiceDAO serviceDAO = new ServiceDAO();
-        Vector<Part> allParts = serviceDAO.getAllParts(); // Lấy toàn bộ phụ tùng
+
+        // Lấy từ khóa tìm kiếm từ request (nếu có)
+        String keyword = request.getParameter("keyword");
+        Vector<Part> allParts;
+
+        // Nếu có từ khóa, lọc phụ tùng theo tên chứa keyword
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            allParts = new Vector<>();
+            for (Part p : serviceDAO.getAllParts()) {
+                if (p.getName() != null && p.getName().toLowerCase().contains(keyword.trim().toLowerCase())) {
+                    allParts.add(p);
+                }
+            }
+        } else {
+            allParts = serviceDAO.getAllParts();
+        }
 
         // Lấy số trang hiện tại từ request
         int page = 1;
@@ -40,9 +55,8 @@ public class PartUserServlet extends HttpServlet {
 
         Vector<Part> partsPage = new Vector<>();
         if (start < end && start >= 0) {
-            // Đảm bảo mọi Part đều có đúng đường dẫn image là "image/[tên file]"
             for (Part p : allParts.subList(start, end)) {
-                // Nếu trường image chỉ là tên file, thêm "image/" vào phía trước (nếu chưa có)
+                // Đảm bảo mọi Part đều có đúng đường dẫn image là "image/[tên file]"
                 if (p.getImage() != null && !p.getImage().startsWith("image/")) {
                     p.setImage("image/" + p.getImage());
                 }
@@ -54,6 +68,7 @@ public class PartUserServlet extends HttpServlet {
         request.setAttribute("parts", partsPage);        // Danh sách phụ tùng trang hiện tại
         request.setAttribute("currentPage", page);       // Trang hiện tại
         request.setAttribute("totalPage", totalPage);    // Tổng số trang
+        request.setAttribute("keyword", keyword);        // Để giữ lại keyword khi chuyển trang
 
         // Forward sang trang JSP
         request.getRequestDispatcher("partUser.jsp").forward(request, response);

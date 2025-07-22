@@ -251,7 +251,7 @@
             <div id="sidebar" class="sidebar">
                 <button class="close-btn" onclick="closeSidebar()">✖</button>
                 <nav>
-                    <a href="home.jsp">HOME</a>
+                    <a href="home">HOME</a>
                     <a href="ServiceServlet_JSP">SERVICES</a>
                     <a href="part">ACCESSORIES</a>
                     <a href="promotions.jsp">PROMOTIONS</a>
@@ -274,7 +274,7 @@
 
             <!-- Logo -->
             <div class="logo">
-                <a href="home.jsp"><img src="img/logo.png " alt="CAR CARE Centre"></a>
+                <a href="home"><img src="img/logo.png " alt="CAR CARE Centre"></a>
             </div>
 
             <!-- Navigation menu right -->

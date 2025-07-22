@@ -2,6 +2,9 @@ package dao;
 
 import entity.Service;
 import entity.Part;
+import entity.Order;
+import entity.CarType;
+import entity.User;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,6 +14,136 @@ import java.util.Vector;
 
 public class ServiceDAO extends DBConnection {
 
+    // ----------- ORDER DETAIL FUNCTIONALITY -----------
+    /**
+     * Lấy chi tiết đơn hàng (OrderDetail) bao gồm cả User, CarType, Service,
+     * Part
+     */
+    public Order getOrderDetail(int orderId) throws SQLException {
+        Order order = null;
+        String sql = "SELECT o.id, o.name, o.email, o.phone, o.address, o.createDate, o.appointmentDate, o.price, "
+                + "o.paymentStatus, o.orderStatus, o.paymentMethod, "
+                + "ct.id AS car_type_id, ct.name AS car_type_name, "
+                + "u.id AS user_id, u.username, u.email AS user_email, u.role AS user_role "
+                + "FROM [Order] o "
+                + "LEFT JOIN CarType ct ON o.carTypeId = ct.id "
+                + "LEFT JOIN [User] u ON o.userId = u.id "
+                + "WHERE o.id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, orderId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    order = new Order();
+                    order.setId(rs.getInt("id"));
+                    order.setName(rs.getString("name"));
+                    order.setEmail(rs.getString("email"));
+                    order.setPhone(rs.getString("phone"));
+                    order.setAddress(rs.getString("address"));
+                    order.setCreatedDate(rs.getTimestamp("createDate"));
+                    order.setAppointmentDate(rs.getTimestamp("appointmentDate"));
+                    order.setPrice(rs.getDouble("price"));
+                    order.setPaymentStatus(rs.getString("paymentStatus"));
+                    order.setOrderStatus(rs.getString("orderStatus"));
+                    order.setPaymentMethod(rs.getString("paymentMethod"));
+
+                    // Set CarType
+                    CarType carType = new CarType();
+                    carType.setId(rs.getInt("car_type_id"));
+                    carType.setName(rs.getString("car_type_name"));
+                    order.setCarType(carType);
+
+                    // Set User
+                    User user = new User();
+                    user.setId(rs.getInt("user_id"));
+                    user.setUsername(rs.getString("username"));
+                    user.setEmail(rs.getString("user_email"));
+                    user.setUserRole(rs.getString("user_role"));
+                    order.setUser(user);
+
+                    // Set Services & Parts
+                    ArrayList<Service> services = getServicesForOrder(orderId);
+                    ArrayList<Part> parts = getPartsForOrder(orderId);
+                    order.setServices(services);
+                    order.setParts(parts);
+
+                    // ----------- TÍNH LẠI TỔNG TIỀN -----------
+                    double total = 0;
+                    if (services != null) {
+                        for (Service sv : services) {
+                            double serviceTotal = sv.getPrice();
+                            if (sv.getParts() != null) {
+                                for (Part p : sv.getParts()) {
+                                    serviceTotal += p.getPrice();
+                                }
+                            }
+                            total += serviceTotal;
+                        }
+                    }
+                    if (parts != null) {
+                        for (Part pt : parts) {
+                            total += pt.getPrice();
+                        }
+                    }
+                    order.setPrice(total);
+                }
+            }
+        }
+        return order;
+    }
+
+    /**
+     * Lấy danh sách Service của một Order
+     */
+    private ArrayList<Service> getServicesForOrder(int orderId) throws SQLException {
+        ArrayList<Service> services = new ArrayList<>();
+        String sql = "SELECT s.id, s.name, s.description, s.price, s.img "
+                + "FROM OrderService os "
+                + "JOIN Service s ON os.serviceId = s.id "
+                + "WHERE os.orderId = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, orderId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Service service = new Service(
+                            rs.getInt("id"),
+                            rs.getString("name"),
+                            rs.getString("description"),
+                            rs.getDouble("price"),
+                            rs.getString("img")
+                    );
+                    service.setParts(new ArrayList<>(getPartsByServiceId(service.getId())));
+                    services.add(service);
+                }
+            }
+        }
+        return services;
+    }
+
+    /**
+     * Lấy danh sách Part của một Order
+     */
+    private ArrayList<Part> getPartsForOrder(int orderId) throws SQLException {
+        ArrayList<Part> parts = new ArrayList<>();
+        String sql = "SELECT p.id, p.name, p.image, p.price "
+                + "FROM OrderParts op "
+                + "JOIN Parts p ON op.partId = p.id "
+                + "WHERE op.orderId = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, orderId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Part part = new Part(
+                            rs.getInt("id"),
+                            rs.getString("name"),
+                            rs.getString("image"),
+                            rs.getDouble("price")
+                    );
+                    parts.add(part);
+                }
+            }
+        }
+        return parts;
+    }
     // Lấy tất cả Service, mỗi Service đều set đầy đủ parts
     public Vector<Service> getAllService() {
         Vector<Service> listService = new Vector<>();
@@ -331,4 +464,3 @@ public class ServiceDAO extends DBConnection {
         return parts;
     }
 }
-
