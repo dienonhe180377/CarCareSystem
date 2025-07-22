@@ -26,6 +26,13 @@
             background: #2596ff; color: #fff; cursor: pointer; transition: background 0.2s;
         }
         .service-search-bar button:hover { background: #1976d2; }
+        .service-search-bar .reset-btn {
+            background: #e67e22 !important;
+            color: #fff !important;
+        }
+        .service-search-bar .reset-btn:hover {
+            background: #c96a0a !important;
+        }
         .service-cards-row {
             display: flex; flex-wrap: wrap; gap: 32px; justify-content: center;
         }
@@ -79,11 +86,22 @@
     <%@include file="/header.jsp" %>
     <div class="container">
         <div class="service-heading">DANH SÁCH DỊCH VỤ</div>
-        <form class="service-search-bar" action="ServiceServlet_JSP" method="get">
+        <form class="service-search-bar" action="ServiceServlet_JSP" method="get" id="searchForm">
             <input type="hidden" name="service" value="listService">
             <input type="text" name="name" value="${param.name}" placeholder="Tìm kiếm dịch vụ">
             <button type="submit">Tìm</button>
+            <c:if test="${not empty param.name}">
+                <button type="button" class="reset-btn" id="resetBtn">Reset</button>
+            </c:if>
         </form>
+        <script>
+        // Chỉ gắn sự kiện nếu nút reset tồn tại
+        if (document.getElementById('resetBtn')) {
+            document.getElementById('resetBtn').onclick = function() {
+                window.location.href = 'ServiceServlet_JSP?service=listService';
+            };
+        }
+        </script>
         <c:if test="${not empty error}">
             <div class="alert alert-danger text-center">${error}</div>
         </c:if>

@@ -29,20 +29,23 @@ public class DashboardServlet extends HttpServlet {
         LocalDate fromDate = null;
 
         if (range != null) {
-            switch (range) {
-                case "1":
-                    fromDate = LocalDate.now().minusDays(1);
-                    break;
-                case "7":
-                    fromDate = LocalDate.now().minusDays(7);
-                    break;
-                case "30":
-                    fromDate = LocalDate.now().minusDays(30);
-                    break;
-                default:
-                    break;
-            }
-        }
+    switch (range) {
+        case "1":
+            fromDate = LocalDate.now().minusDays(1);
+            break;
+        case "7":
+            fromDate = LocalDate.now().minusDays(7);
+            break;
+        case "30":
+            fromDate = LocalDate.now().minusDays(30);
+            break;
+        case "all":
+        default:
+            fromDate = null;
+            break;
+    }
+}
+
 
         DashboardDAO dao = new DashboardDAO();
 

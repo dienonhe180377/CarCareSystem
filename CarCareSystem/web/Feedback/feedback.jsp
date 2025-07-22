@@ -10,11 +10,20 @@
     <body>
         <div class="fb-container">
             <h2>Gửi feedback</h2>
-            <form method="post" action="feedback" class="fb-form">
-                <textarea name="description" rows="3" placeholder="Feedback của bạn..." required></textarea>
-                <br>
-                <button type="submit" class="btn">Gửi</button>
-            </form>
+            <!-- FORM GỬI FEEDBACK: chỉ cho user đã đăng nhập -->
+<c:if test="${not empty sessionScope.user}">
+    <h2>Gửi feedback</h2>
+    <form method="post" action="feedback" class="fb-form">
+        <textarea name="description" rows="3" placeholder="Feedback của bạn..." required></textarea>
+        <br>
+        <button type="submit" class="btn">Gửi</button>
+    </form>
+</c:if>
+
+<!-- GỢI Ý ĐĂNG NHẬP nếu chưa đăng nhập -->
+<c:if test="${empty sessionScope.user}">
+    <p>Bạn cần đăng nhập để gửi feedback.</p>
+</c:if>
             <hr>
             <h3>Danh sách feedback</h3>
             <c:forEach var="fb" items="${feedbackList}">

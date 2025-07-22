@@ -39,7 +39,7 @@
                         </c:if>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="name" class="form-label">Product Name</label>
+                                <label for="name" class="form-label">Tên Linh Kiện</label>
                                 <input type="text" class="form-control" id="name" name="name" value="${choosedPart != null ? choosedPart.name : ''}" maxlength="25" required>
                             </div>
                             <div class="col-md-3">
@@ -51,7 +51,7 @@
                                 </select>
                             </div>
                             <div class="col-md-3">
-                                <label for="typeId" class="form-label">Supplier</label>
+                                <label for="typeId" class="form-label">Nhà cung cấp</label>
                                 <select class="form-select" name="supplierId" multiple size="5" required>
                                     <c:forEach var="supplier" items="${supplierList}">
                                         <option value="${supplier.id}"
@@ -76,20 +76,19 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="productImage" class="form-label">Product Image</label>
+                            <label for="productImage" class="form-label">Ảnh Linh Kiện</label>
                             <input type="file" class="form-control" id="productImage" name="image" accept="image/*">
-                            <small class="text-muted">You can select multiple images</small>
                         </div>
 
                         <c:if test="${not empty choosedPart}">
                             <div class="mb-3">
-                                <label class="form-label">Current Image</label>
+                                <label class="form-label">Ảnh hiện tại</label>
                                 <div class="row">
                                     <div class="col-md-2 mb-2">
                                         <img src="${contextPath}/image/${choosedPart.image}" class="img-thumbnail" alt="Product Image">
                                     </div>
                                 </div>
-                                <small class="text-muted">Uploading new images will replace the current ones</small>
+                                <small class="text-muted">Thêm ảnh mới sẽ thay thế ảnh hiện tại</small>
                             </div>
                         </c:if>
 

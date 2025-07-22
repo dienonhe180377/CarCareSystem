@@ -18,7 +18,7 @@
     </div>
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 18px;">
     <c:if test="${role == 'admin' || role == 'manager' || role == 'maketing'}">
-        <a href="insurance?service=addInsurance" class="btn add-link">Thêm mới bảo hiểm</a>
+        <a href="insurance?service=addInsurance" class="btn add-link">Thêm bảo hiểm cho khách</a>
     </c:if>
     <form action="insurance" method="get" style="display: flex; gap: 8px; align-items: center;">
         <input type="hidden" name="service" value="listInsurance">

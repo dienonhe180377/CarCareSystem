@@ -301,7 +301,7 @@
             <div id="sidebar" class="sidebar">
                 <button class="close-btn" onclick="closeSidebar()">✖</button>
                 <nav>
-                    <a href="home.jsp">HOME</a>
+                    <a href="home">HOME</a>
                     <a href="ServiceServlet_JSP">SERVICES</a>
                     <a href="accessories.jsp">ACCESSORIES</a>
                     <a href="promotions.jsp">PROMOTIONS</a>
@@ -314,6 +314,58 @@
 
             <!-- Optional overlay -->
             <div id="overlay" class="overlay" onclick="closeSidebar()"></div>
+
+            <!-- Navigation menu left -->
+            <nav class="nav-menu">
+                <a href="ServiceServlet_JSP">SERVICES</a>
+                <a href="part">ACCESSORIES</a>
+                <a href="promotions.jsp">PROMOTIONS</a>
+            </nav>
+
+            <!-- Logo -->
+            <div class="logo">
+                <a href="home"><img src="img/logo.png " alt="CAR CARE Centre"></a>
+            </div>
+
+            <!-- Navigation menu right -->
+            <nav class="nav-menu">
+                <a href="blog.jsp">BLOG</a>
+                <a href="ordertracking">TRACKING</a>
+                <a href="contact.jsp">CONTACT</a>
+            </nav>
+
+            <!-- After login: avatar with dropdown -->
+            <%
+                User user = (User) session.getAttribute("user");
+            %>
+
+            <div class="menu-right">
+                <% if (user == null) { %>
+                <!-- Nếu chưa login -->
+                <a href="login"><button class="login-button">Login</button></a>
+                <% } else { %>
+                <!-- Nếu đã login -->
+
+                <!-- Icon chuông thông báo -->
+                <div class="dropdown">
+                    <i class="fas fa-bell notification-icon" onclick="toggleNotificationDropdown()"></i>
+                    <div id="notificationDropdown" class="dropdown-content">
+                        <a href="#">You have 3 new messages</a>
+                        <a href="#">Booking confirmed</a>
+                        <a href="#">Promotion: 20% off service</a>
+                    </div>
+                </div>
+
+                <div class="dropdown">
+                    <i class="fas fa-user-circle avatar-icon" onclick="toggleUserDropdown()"></i>
+                    <div id="userDropdown" class="dropdown-content">
+                        <a href="viewProfile">Profile</a>
+                        <a href="myorder">My Orders</a>
+                        <a href="${pageContext.request.contextPath}/logout">Logout</a>
+                    </div>
+                </div>
+                <% } %>
+            </div>
 
             <script>
                 function openSidebar() {

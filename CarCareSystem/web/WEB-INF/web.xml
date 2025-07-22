@@ -19,6 +19,8 @@
     <servlet>
         <servlet-name>NotificationController</servlet-name>
         <servlet-class>controller.NotificationController</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>BlogController</servlet-name>
         <servlet-class>controller.BlogServlet</servlet-class>
     </servlet>
@@ -57,6 +59,8 @@
     <servlet-mapping>
         <servlet-name>NotificationController</servlet-name>
         <url-pattern>/NotificationController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>BlogController</servlet-name>
         <url-pattern>/blog</url-pattern>
     </servlet-mapping>
