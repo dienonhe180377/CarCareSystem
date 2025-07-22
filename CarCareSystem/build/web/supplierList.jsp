@@ -23,10 +23,10 @@
                         <!-- Dropdown filter -->
                         <select name="sort" id="sortSelect" onchange="filterRedirect(this.value)">
                             <option value="oldest" <c:if test="${not empty filteredValue and filteredValue eq 'oldest'}">selected</c:if>>
-                                Oldest
+                                Cũ nhất
                             </option>
                             <option value="newest" <c:if test="${not empty filteredValue and filteredValue eq 'newest'}">selected</c:if>>
-                                Newest
+                                Mới nhất
                             </option>
                         </select>
 
@@ -51,11 +51,11 @@
                 <table id="supplierTable">
                     <thead>
                         <tr>
-                            <th style="width: 180px;">Supplier</th>
-                            <th style="width: 250px;">Description</th>
+                            <th style="width: 180px;">Nhà cung cấp</th>
+                            <th style="width: 250px;">Mô tả</th>
                             <th style="width: 80px;">Logo</th>
                             <th>Email</th>
-                            <th style="width: 180px;">Manage</th>
+                            <th style="width: 180px;">Chức năng</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -83,7 +83,7 @@
                                         Edit
                                     </button>
                                     <button class="btn-delete" data-id="${supplier.id}">
-                                        Delete
+                                        Xóa
                                     </button>
                                 </td>
                             </tr>
