@@ -3,9 +3,12 @@
     Created on : May 30, 2025, 2:05:47 PM
     Author     : GIGABYTE
 --%>
-
+<%
+    Map<String, String> settingMap = (Map<String, String>) application.getAttribute("settingMap");
+%>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="java.util.Map" %>
 <%@page import="entity.User"%>
 <!DOCTYPE html>
 <html>
@@ -25,25 +28,31 @@
                 top: 0;
                 left: 0;
                 width: 100%;
-                background-color: lightblue;
+                background-color: <%= settingMap.get("header_color") %>;
                 color: #fff;
-                display: flex;
+                display: grid;
+                grid-template-columns: 1fr auto 1fr;
                 align-items: center;
-                justify-content: space-between;
                 padding: 10px 20px;
-                flex-wrap: wrap;
                 z-index: 1000;
+                box-sizing: border-box;
             }
 
-            .menu-left,
-            .menu-right {
+            .header-left {
                 display: flex;
                 align-items: center;
-                gap: 20px;
+                gap: 48px;
+                justify-content: flex-start;
             }
 
-            .menu-toggle,
-            .search-icon {
+            .header-right {
+                display: flex;
+                align-items: center;
+                gap: 120px;
+                justify-content: flex-end;
+            }
+
+            .menu-toggle {
                 background: none;
                 border: none;
                 color: black;
@@ -242,9 +251,50 @@
     </head>
     <body>
         <header>
-            <!-- Menu icon -->
-            <div class="menu-left">
+            <div class="header-left">
                 <button class="menu-toggle" onclick="openSidebar()">☰ MENU</button>
+                <nav class="nav-menu">
+                    <a href="ServiceServlet_JSP">SERVICES</a>
+                    <a href="accessories.jsp">ACCESSORIES</a>
+                    <a href="promotions.jsp">PROMOTIONS</a>
+                </nav>
+            </div>
+
+            <div class="logo">
+                <a href="home.jsp"><img src="<%= settingMap.get("logo_url") %>" alt="<%= settingMap.get("site_name") %>"></a>
+            </div>
+
+            <div class="header-right">
+                <nav class="nav-menu">
+                    <a href="blog.jsp">BLOG</a>
+                    <a href="booking.jsp">TRACKING</a>
+                    <a href="contact.jsp">CONTACT</a>
+                </nav>
+                <!-- Đoạn login/avatar -->
+                <% User user = (User) session.getAttribute("user"); %>
+                <div class="menu-right">
+                    <% if (user == null) { %>
+                    <a href="login"><button class="login-button">Login</button></a>
+                    <% } else { %>
+                    <div class="dropdown">
+                        <i class="fas fa-bell notification-icon" onclick="toggleNotificationDropdown()"></i>
+                        <div id="notificationDropdown" class="dropdown-content">
+                            <a href="#">You have 3 new messages</a>
+                            <a href="#">Booking confirmed</a>
+                            <a href="#">Promotion: 20% off service</a>
+                        </div>
+                    </div>
+
+                    <div class="dropdown">
+                        <i class="fas fa-user-circle avatar-icon" onclick="toggleUserDropdown()"></i>
+                        <div id="userDropdown" class="dropdown-content">
+                            <a href="profile.jsp">Profile</a>
+                            <a href="orders.jsp">My Orders</a>
+                            <a href="${pageContext.request.contextPath}/logout">Logout</a>
+                        </div>
+                    </div>
+                    <% } %>
+                </div>
             </div>
 
             <!-- Sidebar -->
@@ -253,10 +303,10 @@
                 <nav>
                     <a href="home.jsp">HOME</a>
                     <a href="ServiceServlet_JSP">SERVICES</a>
-                    <a href="part">ACCESSORIES</a>
+                    <a href="accessories.jsp">ACCESSORIES</a>
                     <a href="promotions.jsp">PROMOTIONS</a>
-                    <a href="blog">BLOG</a>
-                    <a href="ordertracking">TRACKING</a>
+                    <a href="blog.jsp">BLOG</a>
+                    <a href="booking.jsp">TRACKING</a>
                     <a href="contact.jsp">CONTACT</a>
                     <br>
                 </nav>
@@ -264,58 +314,6 @@
 
             <!-- Optional overlay -->
             <div id="overlay" class="overlay" onclick="closeSidebar()"></div>
-
-            <!-- Navigation menu left -->
-            <nav class="nav-menu">
-                <a href="ServiceServlet_JSP">SERVICES</a>
-                <a href="part">ACCESSORIES</a>
-                <a href="promotions.jsp">PROMOTIONS</a>
-            </nav>
-
-            <!-- Logo -->
-            <div class="logo">
-                <a href="home.jsp"><img src="img/logo.png " alt="CAR CARE Centre"></a>
-            </div>
-
-            <!-- Navigation menu right -->
-            <nav class="nav-menu">
-                <a href="blog.jsp">BLOG</a>
-                <a href="ordertracking">TRACKING</a>
-                <a href="contact.jsp">CONTACT</a>
-            </nav>
-
-            <!-- After login: avatar with dropdown -->
-            <%
-                User user = (User) session.getAttribute("user");
-            %>
-
-            <div class="menu-right">
-                <% if (user == null) { %>
-                <!-- Nếu chưa login -->
-                <a href="login"><button class="login-button">Login</button></a>
-                <% } else { %>
-                <!-- Nếu đã login -->
-
-                <!-- Icon chuông thông báo -->
-                <div class="dropdown">
-                    <i class="fas fa-bell notification-icon" onclick="toggleNotificationDropdown()"></i>
-                    <div id="notificationDropdown" class="dropdown-content">
-                        <a href="#">You have 3 new messages</a>
-                        <a href="#">Booking confirmed</a>
-                        <a href="#">Promotion: 20% off service</a>
-                    </div>
-                </div>
-
-                <div class="dropdown">
-                    <i class="fas fa-user-circle avatar-icon" onclick="toggleUserDropdown()"></i>
-                    <div id="userDropdown" class="dropdown-content">
-                        <a href="viewProfile">Profile</a>
-                        <a href="myorder">My Orders</a>
-                        <a href="${pageContext.request.contextPath}/logout">Logout</a>
-                    </div>
-                </div>
-                <% } %>
-            </div>
 
             <script>
                 function openSidebar() {

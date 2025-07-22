@@ -6,6 +6,10 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="entity.User" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%
+    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+%>
 <html>
     <head>
         <title>Chi tiết User</title>
@@ -95,7 +99,7 @@
                 <p><strong>Phone:</strong> <%= user.getPhone() %></p>
                 <p><strong>Address:</strong> <%= user.getAddress() %></p>
                 <p><strong>Role:</strong> <%= user.getUserRole() %></p>
-                <p><strong>Ngày tạo:</strong> <%= user.getCreatedDate() %></p>
+                <p><strong>Ngày tạo:</strong> <%= user.getCreatedDate() != null ? sdf.format(user.getCreatedDate()) : "" %></p>
             </div>
             <%
                 }
