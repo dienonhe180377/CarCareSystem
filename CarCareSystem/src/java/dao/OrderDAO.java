@@ -162,44 +162,309 @@ public class OrderDAO extends DBConnection {
         return parts;
     }
     
-public ArrayList<Order> getOrdersByEmail(String email) throws SQLException {
-    ArrayList<Order> orders = new ArrayList<>();
-    String sql = "SELECT o.id, o.name, o.email, o.phone, o.address, o.createDate, "
-               + "o.appointmentDate, o.price, o.paymentStatus, o.orderStatus, o.paymentMethod, "
-               + "ct.id AS car_type_id, ct.name AS car_type_name "
-               + "FROM [Order] o "
-               + "LEFT JOIN CarType ct ON o.carTypeId = ct.id "
-               + "WHERE o.email = ? "
-               + "ORDER BY o.id DESC";
+    public ArrayList<Order> getOrdersByEmail(String email) throws SQLException {
+        ArrayList<Order> orders = new ArrayList<>();
+        String sql = "SELECT o.id, o.name, o.email, o.phone, o.address, o.createDate, "
+                    + "o.appointmentDate, o.price, o.paymentStatus, o.orderStatus, o.paymentMethod, "
+                    + "ct.id AS car_type_id, ct.name AS car_type_name "
+                    + "FROM [Order] o "
+                    + "LEFT JOIN CarType ct ON o.carTypeId = ct.id "
+                    + "WHERE o.email = ? "
+                    + "ORDER BY o.id DESC";
 
-    try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-        stmt.setString(1, email);
-        ResultSet rs = stmt.executeQuery();
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
 
-        while (rs.next()) {
-            Order order = new Order();
-            order.setId(rs.getInt("id"));
-            order.setName(rs.getString("name"));
-            order.setEmail(rs.getString("email"));
-            order.setPhone(rs.getString("phone"));
-            order.setAddress(rs.getString("address"));
-            order.setCreatedDate(rs.getTimestamp("createDate"));
-            order.setAppointmentDate(rs.getTimestamp("appointmentDate"));
-            order.setPrice(rs.getDouble("price"));
-            order.setPaymentStatus(rs.getString("paymentStatus"));
-            order.setOrderStatus(rs.getString("orderStatus"));
-            order.setPaymentMethod(rs.getString("paymentMethod"));
+            while (rs.next()) {
+                Order order = new Order();
+                order.setId(rs.getInt("id"));
+                order.setName(rs.getString("name"));
+                order.setEmail(rs.getString("email"));
+                order.setPhone(rs.getString("phone"));
+                order.setAddress(rs.getString("address"));
+                order.setCreatedDate(rs.getTimestamp("createDate"));
+                order.setAppointmentDate(rs.getTimestamp("appointmentDate"));
+                order.setPrice(rs.getDouble("price"));
+                order.setPaymentStatus(rs.getString("paymentStatus"));
+                order.setOrderStatus(rs.getString("orderStatus"));
+                order.setPaymentMethod(rs.getString("paymentMethod"));
 
-            CarType carType = new CarType();
-            carType.setId(rs.getInt("car_type_id"));
-            carType.setName(rs.getString("car_type_name"));
-            order.setCarType(carType);
+                CarType carType = new CarType();
+                carType.setId(rs.getInt("car_type_id"));
+                carType.setName(rs.getString("car_type_name"));
+                order.setCarType(carType);
 
-            orders.add(order);
+                orders.add(order);
+            }
+        }
+        return orders;
+    }
+    
+    public ArrayList<Order> getAllOrders() throws SQLException {
+        ArrayList<Order> orders = new ArrayList<>();
+        String sql = "SELECT o.id, o.name, o.email, o.phone, o.address, o.createDate, "
+                    + "o.appointmentDate, o.price, o.paymentStatus, o.orderStatus, o.paymentMethod, "
+                    + "ct.id AS car_type_id, ct.name AS car_type_name "
+                    + "FROM [Order] o "
+                    + "LEFT JOIN CarType ct ON o.carTypeId = ct.id "
+                    + "ORDER BY o.createDate DESC";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Order order = new Order();
+                order.setId(rs.getInt("id"));
+                order.setName(rs.getString("name"));
+                order.setEmail(rs.getString("email"));
+                order.setPhone(rs.getString("phone"));
+                order.setAddress(rs.getString("address"));
+                order.setCreatedDate(rs.getTimestamp("createDate"));
+                order.setAppointmentDate(rs.getTimestamp("appointmentDate"));
+                order.setPrice(rs.getDouble("price"));
+                order.setPaymentStatus(rs.getString("paymentStatus"));
+                order.setOrderStatus(rs.getString("orderStatus"));
+                order.setPaymentMethod(rs.getString("paymentMethod"));
+
+                CarType carType = new CarType();
+                carType.setId(rs.getInt("car_type_id"));
+                carType.setName(rs.getString("car_type_name"));
+                order.setCarType(carType);
+
+                orders.add(order);
+            } 
+        }
+        return orders;
+    }
+
+    public ArrayList<Order> getOrdersByStatus(String status) throws SQLException {
+        ArrayList<Order> orders = new ArrayList<>();
+        String sql = "SELECT o.id, o.name, o.email, o.phone, o.address, o.createDate, "
+                    + "o.appointmentDate, o.price, o.paymentStatus, o.orderStatus, o.paymentMethod, "
+                    + "ct.id AS car_type_id, ct.name AS car_type_name "
+                    + "FROM [Order] o "
+                    + "LEFT JOIN CarType ct ON o.carTypeId = ct.id "
+                    + "WHERE o.orderStatus = ? "
+                    + "ORDER BY o.createDate DESC";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, status);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Order order = new Order();
+                order.setId(rs.getInt("id"));
+                order.setName(rs.getString("name"));
+                order.setEmail(rs.getString("email"));
+                order.setPhone(rs.getString("phone"));
+                order.setAddress(rs.getString("address"));
+                order.setCreatedDate(rs.getTimestamp("createDate"));
+                order.setAppointmentDate(rs.getTimestamp("appointmentDate"));
+                order.setPrice(rs.getDouble("price"));
+                order.setPaymentStatus(rs.getString("paymentStatus"));
+                order.setOrderStatus(rs.getString("orderStatus"));
+                order.setPaymentMethod(rs.getString("paymentMethod"));
+
+                CarType carType = new CarType();
+                carType.setId(rs.getInt("car_type_id"));
+                carType.setName(rs.getString("car_type_name"));
+                order.setCarType(carType);
+
+                orders.add(order);
+            }
+        }
+        return orders;
+    }
+
+    public ArrayList<Order> getOrdersByPaymentStatus(String paymentStatus) throws SQLException {
+        ArrayList<Order> orders = new ArrayList<>();
+        String sql = "SELECT o.id, o.name, o.email, o.phone, o.address, o.createDate, "
+                    + "o.appointmentDate, o.price, o.paymentStatus, o.orderStatus, o.paymentMethod, "
+                    + "ct.id AS car_type_id, ct.name AS car_type_name "
+                    + "FROM [Order] o "
+                    + "LEFT JOIN CarType ct ON o.carTypeId = ct.id "
+                    + "WHERE o.paymentStatus = ? "
+                    + "ORDER BY o.createDate DESC";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, paymentStatus);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Order order = new Order();
+                order.setId(rs.getInt("id"));
+                order.setName(rs.getString("name"));
+                order.setEmail(rs.getString("email"));
+                order.setPhone(rs.getString("phone"));
+                order.setAddress(rs.getString("address"));
+                order.setCreatedDate(rs.getTimestamp("createDate"));
+                order.setAppointmentDate(rs.getTimestamp("appointmentDate"));
+                order.setPrice(rs.getDouble("price"));
+                order.setPaymentStatus(rs.getString("paymentStatus"));
+                order.setOrderStatus(rs.getString("orderStatus"));
+                order.setPaymentMethod(rs.getString("paymentMethod"));
+
+                CarType carType = new CarType();
+                carType.setId(rs.getInt("car_type_id"));
+                carType.setName(rs.getString("car_type_name"));
+                order.setCarType(carType);
+
+                orders.add(order);
+            }
+        }
+        return orders;
+    }
+
+    public ArrayList<Order> searchOrders(String query) throws SQLException {
+        ArrayList<Order> orders = new ArrayList<>();
+        String sql = "SELECT o.id, o.name, o.email, o.phone, o.address, o.createDate, "
+                    + "o.appointmentDate, o.price, o.paymentStatus, o.orderStatus, o.paymentMethod, "
+                    + "ct.id AS car_type_id, ct.name AS car_type_name "
+                    + "FROM [Order] o "
+                    + "LEFT JOIN CarType ct ON o.carTypeId = ct.id "
+                    + "WHERE o.name LIKE ? OR o.email LIKE ? OR o.phone LIKE ? OR o.id = ? "
+                    + "ORDER BY o.createDate DESC";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            String searchParam = "%" + query + "%";
+            stmt.setString(1, searchParam);
+            stmt.setString(2, searchParam);
+            stmt.setString(3, searchParam);
+        
+            try {
+                int idQuery = Integer.parseInt(query);
+                stmt.setInt(4, idQuery);
+            } catch (NumberFormatException e) {
+                stmt.setInt(4, -1); 
+            }
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Order order = new Order();
+                order.setId(rs.getInt("id"));
+                order.setName(rs.getString("name"));
+                order.setEmail(rs.getString("email"));
+                order.setPhone(rs.getString("phone"));
+                order.setAddress(rs.getString("address"));
+                order.setCreatedDate(rs.getTimestamp("createDate"));
+                order.setAppointmentDate(rs.getTimestamp("appointmentDate"));
+                order.setPrice(rs.getDouble("price"));
+                order.setPaymentStatus(rs.getString("paymentStatus"));
+                order.setOrderStatus(rs.getString("orderStatus"));
+                order.setPaymentMethod(rs.getString("paymentMethod"));
+
+                CarType carType = new CarType();
+                carType.setId(rs.getInt("car_type_id"));
+                carType.setName(rs.getString("car_type_name"));
+                order.setCarType(carType);
+
+                orders.add(order);
+            }
+        }
+        return orders;
+    }
+
+    public boolean updateOrderStatus(int orderId, String newStatus) {
+        String sql = "UPDATE [Order] SET orderStatus = ? WHERE id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, newStatus);
+            ps.setInt(2, orderId);
+    
+            int rowsUpdated = ps.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
     }
-    return orders;
-}
+    
+    public boolean checkAndUpdateMissedAppointments() {
+        String sql = "UPDATE [Order] SET orderStatus = ? " +
+                    "WHERE orderStatus NOT IN ('Đã Nhận Xe', 'Lỡ hẹn') " +
+                    "AND appointmentDate < GETDATE()";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setNString(1, "Lỡ hẹn");
+            return ps.executeUpdate() >= 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public boolean rescheduleOrder(int orderId, Timestamp newAppointmentDate) {
+            String sql = "UPDATE [Order] SET appointmentDate = ?, orderStatus = ? WHERE id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setTimestamp(1, newAppointmentDate);
+            ps.setNString(2, "Chưa xác nhận");
+            ps.setInt(3, orderId);
+    
+            int rowsUpdated = ps.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public boolean removeAllServicesFromOrder(int orderId) {
+        String sql = "DELETE FROM OrderService WHERE orderId = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, orderId);
+            return ps.executeUpdate() >= 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public boolean removeAllPartsFromOrder(int orderId) {
+        String sql = "DELETE FROM OrderParts WHERE orderId = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, orderId);
+            return ps.executeUpdate() >= 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public boolean updateOrderPrice(int orderId, double newPrice) {
+        String sql = "UPDATE [Order] SET price = ? WHERE id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setDouble(1, newPrice);
+            ps.setInt(2, orderId);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public boolean removeServiceFromOrder(int orderId, int serviceId) {
+    String sql = "DELETE FROM OrderService WHERE orderId = ? AND serviceId = ?";
+    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        ps.setInt(1, orderId);
+        ps.setInt(2, serviceId);
+        return ps.executeUpdate() > 0;
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
+    }
+    }
+    
+    public boolean removePartFromOrder(int orderId, int partId) {
+    String sql = "DELETE FROM OrderParts WHERE orderId = ? AND partId = ?";
+    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        ps.setInt(1, orderId);
+        ps.setInt(2, partId);
+        return ps.executeUpdate() > 0;
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
+    }
+    }
     
     public static void main(String[] args) throws Exception {
         OrderDAO dao = new OrderDAO();

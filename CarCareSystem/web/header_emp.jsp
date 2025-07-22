@@ -204,8 +204,8 @@
             <a href="${pageContext.request.contextPath}/ServiceServlet_JSP">Quản lý dịch vụ</a>
             <% } else if ("repairer".equals(role)) { %>
             <h2>Repairer</h2>
-            <a href="${pageContext.request.contextPath}/orderList.jsp">Quản lý đơn</a>
-            <% } else if ("warehouse_manager".equals(role)) { %>
+            <a href="${pageContext.request.contextPath}/order_repair">Quản lý đơn</a>
+            <% } else if ("warehouse manager".equals(role)) { %>
             <h2>Warehouse Manager</h2>
             <a href="${pageContext.request.contextPath}/categoryList.jsp">Quản lý category</a>
             <a href="${pageContext.request.contextPath}/supplierList.jsp">Quản lý nhà cung cấp</a>
@@ -214,6 +214,7 @@
             <h2>Marketing</h2>
             <a href="${pageContext.request.contextPath}/insurance">Quản lý bảo hiểm</a>
             <a href="${pageContext.request.contextPath}/ServiceServlet_JSP">Quản lý dịch vụ</a>
+            <a href="${pageContext.request.contextPath}/ordermanagement">Quan lý đơn đặt lịch</a>
             <% } %>
         </div>
 

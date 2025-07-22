@@ -266,8 +266,9 @@ ADD CONSTRAINT FK_Feedback_Service FOREIGN KEY(serviceId) REFERENCES Service(id)
 ALTER TABLE [Order] 
 ADD CONSTRAINT FK_Order_User FOREIGN KEY(userId) REFERENCES [User](id);
 
-select * from [Parts]
-SELECT * FROM [PartsService] 
+
+select * from [Order]
+SELECT * FROM [OrderService] 
 DELETE FROM [Order]
 
 INSERT INTO Service (name, description, price, img) VALUES
