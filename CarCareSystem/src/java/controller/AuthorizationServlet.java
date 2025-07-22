@@ -74,7 +74,7 @@ public class AuthorizationServlet extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/order_repair");
                 break;
             case "warehouse manager":
-                response.sendRedirect(request.getContextPath() + "/dashboard");
+                response.sendRedirect(request.getContextPath() + "/PartController?service=list");
                 break;
             case "marketing":
                 response.sendRedirect(request.getContextPath() + "/ordermanagement");

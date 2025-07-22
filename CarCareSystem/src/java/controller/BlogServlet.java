@@ -14,8 +14,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class BlogController extends HttpServlet {
-    private static final Logger LOGGER = Logger.getLogger(BlogController.class.getName());
+public class BlogServlet extends AuthorizationServlet {
+
+    private static final Logger LOGGER = Logger.getLogger(BlogServlet.class.getName());
     private CampaignDAO campaignDAO;
 
     @Override
@@ -23,9 +24,32 @@ public class BlogController extends HttpServlet {
         campaignDAO = new CampaignDAO();
     }
 
+    private boolean isUnauthorized(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            return true;
+        }
+
+        Object userObj = session.getAttribute("user");
+        if (userObj == null) {
+            return true;
+        }
+
+        entity.User user = (entity.User) userObj;
+        String role = user.getUserRole().toLowerCase();
+
+        // Nếu role là "user" thì không cho phép
+        return role.equals("user");
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        if (isUnauthorized(request)) {
+            response.setContentType("text/plain;charset=UTF-8");
+            response.getWriter().write("Bạn không có quyền truy cập trang này.");
+            return;
+        }
         String service = request.getParameter("service");
         String editId = request.getParameter("editId");
 
@@ -35,6 +59,8 @@ public class BlogController extends HttpServlet {
                 showEditForm(id, request, response);
             } else if ("delete".equalsIgnoreCase(service)) {
                 deleteBlog(request, response);
+            } else if ("detail".equalsIgnoreCase(service)) {
+                showBlogDetail(request, response);
             } else {
                 showBlogList(request, response);
             }
@@ -46,14 +72,23 @@ public class BlogController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        if (isUnauthorized(request)) {
+            response.setContentType("text/plain;charset=UTF-8");
+            response.getWriter().write("Bạn không có quyền thực hiện thao tác này.");
+            return;
+        }
         String service = request.getParameter("service");
 
         try {
             switch (service.toLowerCase()) {
-                case "add" -> addOrUpdateBlog(request, response, false);
-                case "edit" -> addOrUpdateBlog(request, response, true);
-                case "delete" -> deleteBlog(request, response);
-                default -> showBlogList(request, response);
+                case "add" ->
+                    addOrUpdateBlog(request, response, false);
+                case "edit" ->
+                    addOrUpdateBlog(request, response, true);
+                case "delete" ->
+                    deleteBlog(request, response);
+                default ->
+                    showBlogList(request, response);
             }
         } catch (Exception ex) {
             handleError(request, response, "Lỗi xử lý POST", ex);
@@ -65,7 +100,7 @@ public class BlogController extends HttpServlet {
         try {
             DBConnection dbConn = new DBConnection();
             BlogDAO blogDAO = new BlogDAO(dbConn.getConnection());
-            
+
             List<Blog> blogs = blogDAO.getAllBlogs();
             List<Campaign> campaigns = campaignDAO.getAllCampaigns();
 
@@ -84,7 +119,7 @@ public class BlogController extends HttpServlet {
             request.getSession().setAttribute("mainBlogList", blogs);
             request.setAttribute("blogs", blogs);
             request.setAttribute("campaigns", campaigns);
-            request.getRequestDispatcher("Blog/BlogList.jsp").forward(request, response);
+            request.getRequestDispatcher("Blog/Blog.jsp").forward(request, response);
 
         } catch (Exception ex) {
             handleError(request, response, "Không thể hiển thị form sửa", ex);
@@ -95,14 +130,48 @@ public class BlogController extends HttpServlet {
             throws ServletException, IOException {
         DBConnection dbConn = new DBConnection();
         BlogDAO blogDAO = new BlogDAO(dbConn.getConnection());
-        
+
         List<Blog> blogs = blogDAO.getAllBlogs();
         List<Campaign> campaigns = campaignDAO.getAllCampaigns();
-        
+
         request.getSession().setAttribute("mainBlogList", blogs);
         request.setAttribute("blogs", blogs);
         request.setAttribute("campaigns", campaigns);
-        request.getRequestDispatcher("Blog/BlogList.jsp").forward(request, response);
+        request.getRequestDispatcher("Blog/Blog.jsp").forward(request, response);
+    }
+
+    private void showBlogDetail(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String idStr = request.getParameter("id");
+
+        if (idStr == null || idStr.trim().isEmpty()) {
+            request.setAttribute("errorMessage", "Thiếu ID blog");
+            showBlogList(request, response);
+            return;
+        }
+
+        try {
+            int id = Integer.parseInt(idStr);
+            DBConnection dbConn = new DBConnection();
+            BlogDAO blogDAO = new BlogDAO(dbConn.getConnection());
+
+            Blog blog = blogDAO.getBlogById(id); // Sử dụng method đã thêm
+
+            if (blog != null) {
+                request.setAttribute("blog", blog);
+                request.getRequestDispatcher("Blog/BlogDetail.jsp").forward(request, response);
+            } else {
+                request.setAttribute("errorMessage", "Không tìm thấy blog với ID: " + id);
+                showBlogList(request, response);
+            }
+
+        } catch (NumberFormatException e) {
+            LOGGER.log(Level.WARNING, "ID blog không hợp lệ: " + idStr, e);
+            request.setAttribute("errorMessage", "ID blog không hợp lệ");
+            showBlogList(request, response);
+        } catch (Exception ex) {
+            handleError(request, response, "Không thể hiển thị chi tiết blog", ex);
+        }
     }
 
     private void addOrUpdateBlog(HttpServletRequest request, HttpServletResponse response, boolean isEdit)
@@ -110,7 +179,7 @@ public class BlogController extends HttpServlet {
         try {
             DBConnection dbConn = new DBConnection();
             BlogDAO blogDAO = new BlogDAO(dbConn.getConnection());
-            
+
             int id = isEdit ? Integer.parseInt(request.getParameter("id")) : 0;
             String title = request.getParameter("title");
             String content = request.getParameter("content");
@@ -122,7 +191,7 @@ public class BlogController extends HttpServlet {
             String error = validateBlog(title, campaignId, id, isEdit);
             if (error != null) {
                 request.setAttribute("errorMessage", error);
-                showBlogList(request, response); 
+                showBlogList(request, response);
                 return;
             }
 
@@ -167,7 +236,7 @@ public class BlogController extends HttpServlet {
         try {
             DBConnection dbConn = new DBConnection();
             BlogDAO blogDAO = new BlogDAO(dbConn.getConnection());
-            
+
             int id = Integer.parseInt(request.getParameter("id"));
             blogDAO.deleteBlog(id);
             request.setAttribute("successMessage", "Xóa blog thành công");
@@ -182,7 +251,7 @@ public class BlogController extends HttpServlet {
         if (title == null || title.trim().isEmpty()) {
             return "Tiêu đề không được để trống";
         }
-        
+
         if (campaignId <= 0) {
             return "Vui lòng chọn campaign";
         }

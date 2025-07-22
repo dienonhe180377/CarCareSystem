@@ -5,7 +5,10 @@
 
 package controller.auth;
 
+import dao.NotificationDAO;
 import dao.UserDAO;
+import entity.Notification;
+import entity.NotificationSetting;
 import entity.User;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
@@ -14,6 +17,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -30,7 +36,7 @@ public class LoginServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+    throws ServletException, IOException, Exception {
         response.setContentType("text/html;charset=UTF-8");
         // Lấy username & password từ request
         String username = request.getParameter("username");
@@ -43,6 +49,7 @@ public class LoginServlet extends HttpServlet {
         }
         
         UserDAO userDAO = new UserDAO();
+        NotificationDAO notificationDAO = new NotificationDAO();
         User userA = userDAO.authenticationUserLogin(username, password);
         
         if (userA == null) {
@@ -58,7 +65,115 @@ public class LoginServlet extends HttpServlet {
             session = request.getSession(true); // Tạo session mới
 
             // Lưu thông tin user vào session
+            ArrayList<Notification> notifications = notificationDAO.getAllNotificationById(userA.getId());
+            NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(userA.getId());
+            if(!notiSetting.isProfile()){
+                for (int i = notifications.size() - 1; i >= 0; i--) {
+                    if(notifications.get(i).getType().equals("Profile")){
+                        notifications.remove(i);
+                    }
+                }
+            }
+            
+            if(!notiSetting.isOrderChange()){
+                for (int i = notifications.size() - 1; i >= 0; i--) {
+                    if(notifications.get(i).getType().equals("Order Change")){
+                        notifications.remove(i);
+                    }
+                }
+            }
+            
+            if(!notiSetting.isAttendance()){
+                for (int i = notifications.size() - 1; i >= 0; i--) {
+                    if(notifications.get(i).getType().equals("Attendance")){
+                        notifications.remove(i);
+                    }
+                }
+            }
+            
+            if(!notiSetting.isService()){
+                for (int i = notifications.size() - 1; i >= 0; i--) {
+                    if(notifications.get(i).getType().equals("Service")){
+                        notifications.remove(i);
+                    }
+                }
+            }
+            
+            if(!notiSetting.isInsurance()){
+                for (int i = notifications.size() - 1; i >= 0; i--) {
+                    if(notifications.get(i).getType().equals("Insurance")){
+                        notifications.remove(i);
+                    }
+                }
+            }
+            
+            if(!notiSetting.isCategory()){
+                for (int i = notifications.size() - 1; i >= 0; i--) {
+                    if(notifications.get(i).getType().equals("Category")){
+                        notifications.remove(i);
+                    }
+                }
+            }
+            
+            if(!notiSetting.isSupplier()){
+                for (int i = notifications.size() - 1; i >= 0; i--) {
+                    if(notifications.get(i).getType().equals("Supplier")){
+                        notifications.remove(i);
+                    }
+                }
+            }
+            
+            if(!notiSetting.isParts()){
+                for (int i = notifications.size() - 1; i >= 0; i--) {
+                    if(notifications.get(i).getType().equals("Part")){
+                        notifications.remove(i);
+                    }
+                }
+            }
+            
+            if(!notiSetting.isSettingChange()){
+                for (int i = notifications.size() - 1; i >= 0; i--) {
+                    if(notifications.get(i).getType().equals("Setting Change")){
+                        notifications.remove(i);
+                    }
+                }
+            }
+            
+            if(!notiSetting.isCarType()){
+                for (int i = notifications.size() - 1; i >= 0; i--) {
+                    if(notifications.get(i).getType().equals("Car Type")){
+                        notifications.remove(i);
+                    }
+                }
+            }
+            
+            if(!notiSetting.isCampaign()){
+                for (int i = notifications.size() - 1; i >= 0; i--) {
+                    if(notifications.get(i).getType().equals("Campaign")){
+                        notifications.remove(i);
+                    }
+                }
+            }
+            
+            if(!notiSetting.isBlog()){
+                for (int i = notifications.size() - 1; i >= 0; i--) {
+                    if(notifications.get(i).getType().equals("Blog")){
+                        notifications.remove(i);
+                    }
+                }
+            }
+            
+            if(!notiSetting.isVoucher()){
+                for (int i = notifications.size() - 1; i >= 0; i--) {
+                    if(notifications.get(i).getType().equals("Voucher")){
+                        notifications.remove(i);
+                    }
+                }
+            }
+            
             session.setAttribute("user", userA);
+            session.setAttribute("notification", notifications);
+            session.setAttribute("notiSetting", notiSetting);
             session.setAttribute("roleID", userA.getUserRole()); // Lưu role vào session để Filter kiểm tra
 
             // Điều hướng theo quyền
@@ -81,7 +196,11 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     } 
 
     /** 
@@ -94,7 +213,11 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
     }
 

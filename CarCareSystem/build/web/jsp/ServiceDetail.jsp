@@ -8,7 +8,6 @@
         totalPartPrice += part.getPrice();
     }
     double totalPrice = (se != null ? se.getPrice() : 0) + totalPartPrice;
-
     User currentUser = (User) session.getAttribute("user");
 %>
 <!DOCTYPE html>
@@ -69,7 +68,7 @@
             margin-top: 24px;
             text-align: right;
         }
-        .btn-back {
+        .btn-back, .btn-order {
             background: #2471a3;
             color: #fff;
             padding: 8px 18px;
@@ -77,9 +76,18 @@
             text-decoration: none;
             font-weight: 500;
             transition: background 0.2s;
+            border: none;
+            cursor: pointer;
         }
-        .btn-back:hover {
+        .btn-back:hover, .btn-order:hover {
             background: #15518d;
+        }
+        .btn-order {
+            background: #e74c3c;
+            margin-right: 16px;
+        }
+        .btn-order:hover {
+            background: #b62a13;
         }
         .service-img {
             max-width: 180px;
@@ -89,44 +97,30 @@
             margin: 3px 0 3px 0;
         }
         .part-img {
-            max-width: 60px;
-            max-height: 40px;
+            max-width: 100px;
+            max-height: 70px;
             border-radius: 4px;
             border: 1px solid #ececec;
         }
         .img-note {
             color: #999; font-size: 12px; font-style: italic;
         }
-        /* Feedback link */
-        .feedback-link {
-            display: block;
-            margin: 34px auto 10px auto;
-            width: fit-content;
-            background: #f7fbff;
-            color: #1161b5;
-            padding: 12px 30px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-size: 1.15rem;
-            font-weight: 600;
-            border: 1px solid #b3cef6;
-            transition: background 0.2s, color 0.2s;
+        @media (max-width: 900px) {
+            .form-container { width: 96vw; padding: 12px 2vw; }
         }
-        .feedback-link:hover {
-            background: #1161b5;
-            color: #fff;
+        @media (max-width: 600px) {
+            .form-title { font-size: 20px; }
+            .tieu-de { font-size: 17px; }
+            table, th, td { font-size: 13px; }
         }
     </style>
 </head>
 <body>
+     <%@include file="/header_emp.jsp" %>
     <div class="form-container">
         <div class="form-title">Chi tiết dịch vụ</div>
         <h2 class="tieu-de">Thông tin dịch vụ</h2>
         <table>
-            <tr>
-                <td class="form-label">ID</td>
-                <td class="form-value"><%= se != null ? se.getId() : "" %></td>
-            </tr>
             <tr>
                 <td class="form-label">Tên dịch vụ</td>
                 <td class="form-value"><%= se != null ? se.getName() : "" %></td>
@@ -139,7 +133,7 @@
                 <td class="form-label">Ảnh dịch vụ</td>
                 <td class="form-value">
                     <% if (se != null && se.getImg() != null && !se.getImg().isEmpty()) { %>
-                        <img src="<%= request.getContextPath() + "/" + se.getImg() %>" alt="Ảnh dịch vụ" class="service-img">
+                        <img src="<%= request.getContextPath() + "/img/" + se.getImg() %>" alt="Ảnh dịch vụ" class="service-img">
                     <% } else { %>
                         <span class="img-note">Chưa có ảnh</span>
                     <% } %>
@@ -155,30 +149,39 @@
             </tr>
             <tr>
                 <td class="form-label"><b>Giá dịch vụ (gồm phụ tùng)</b></td>
-                <td class="form-value"><b><%= String.format("%,.0f", totalPrice) %> VND</b></td>
+                <td class="form-value"><b style="color:#e74c3c;"><%= String.format("%,.0f", totalPrice) %> VND</b></td>
             </tr>
         </table>
         <h2 class="tieu-de" style="margin-top:32px;">Phụ tùng liên quan</h2>
         <table class="table-parts">
             <tr>
-                <th>ID</th>
+                <th>STT</th>
                 <th>Tên phụ tùng</th>
                 <th>Ảnh</th>
                 <th>Giá</th>
             </tr>
             <%
                 if (parts != null && !parts.isEmpty()) {
+                    int stt = 1;
                     for (Part part : parts) {
             %>
             <tr>
-                <td><%= part.getId() %></td>
+                <td style="text-align:center;"><%= stt++ %></td>
                 <td><%= part.getName() %></td>
                 <td>
-                    <% if (part.getImage() != null && !part.getImage().isEmpty()) { %>
-                        <img src="<%= request.getContextPath() + "/" + part.getImage() %>" class="part-img" alt="Ảnh phụ tùng"/>
-                    <% } else { %>
+                    <%
+                        String partImgPath = part.getImage();
+                        if (partImgPath != null && !partImgPath.trim().isEmpty()) {
+                            String finalPartImgUrl = request.getContextPath() + "/image/" + partImgPath;
+                    %>
+                        <img src="<%= finalPartImgUrl %>" class="part-img" alt="Ảnh phụ tùng"/>
+                    <%
+                        } else {
+                    %>
                         <span class="img-note">Chưa có ảnh</span>
-                    <% } %>
+                    <%
+                        }
+                    %>
                 </td>
                 <td><%= String.format("%,.0f", part.getPrice()) %> VND</td>
             </tr>
@@ -193,14 +196,6 @@
                 }
             %>
         </table>
-
-        <!-- ĐƯỜNG DẪN XEM FEEDBACK -->
-        <% if (se != null) { %>
-            <a href="FeedbackServlet?serviceId=<%= se.getId() %>" class="feedback-link">
-                Xem đánh giá &amp; phản hồi của khách hàng
-            </a>
-        <% } %>
-
         <div class="form-actions">
             <a href="ServiceServlet_JSP?service=listService" class="btn-back">Quay lại danh sách</a>
         </div>

@@ -11,12 +11,26 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </head>
     <body>
-        <div class="container">
-            <!-- Header -->
-            <div class="header">
-                <h1>Danh sách nhà cung cấp</h1>
-                <div class="search-box">
-                    <form action="${contextPath}/SupplierController" method="get">
+
+        <jsp:include page="header_emp.jsp"></jsp:include>
+
+            <div class="container">
+                <!-- Header -->
+                <div class="header">
+                    <h1>Danh sách nhà cung cấp</h1>
+                    <div class="search-box">
+
+                        <!-- Dropdown filter -->
+                        <select name="sort" id="sortSelect" onchange="filterRedirect(this.value)">
+                            <option value="oldest" <c:if test="${not empty filteredValue and filteredValue eq 'oldest'}">selected</c:if>>
+                                Cũ nhất
+                            </option>
+                            <option value="newest" <c:if test="${not empty filteredValue and filteredValue eq 'newest'}">selected</c:if>>
+                                Mới nhất
+                            </option>
+                        </select>
+
+                        <form action="${contextPath}/SupplierController" method="get">
                         <input type="hidden" name="service" value="search" />
                         <input
                             type="text"
@@ -37,11 +51,11 @@
                 <table id="supplierTable">
                     <thead>
                         <tr>
-                            <th style="width: 180px;">Supplier</th>
-                            <th style="width: 250px;">Description</th>
+                            <th style="width: 180px;">Nhà cung cấp</th>
+                            <th style="width: 250px;">Mô tả</th>
                             <th style="width: 80px;">Logo</th>
                             <th>Email</th>
-                            <th style="width: 180px;">Manage</th>
+                            <th style="width: 180px;">Chức năng</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -69,7 +83,7 @@
                                         Edit
                                     </button>
                                     <button class="btn-delete" data-id="${supplier.id}">
-                                        Delete
+                                        Xóa
                                     </button>
                                 </td>
                             </tr>
@@ -101,6 +115,8 @@
                     </c:if>
                     </tbody>
                 </table>
+                <div id="pagination" class="pagination"></div>
+
             </div>
 
             <!-- View Modal -->
@@ -188,6 +204,14 @@
                     }
                 });
             });
+
+            function filterRedirect(selectedValue) {
+                if (!selectedValue) {
+                    return;
+                }
+                window.location.href = '${contextPath}/SupplierController?service=filter&filterValue=' + selectedValue;
+            }
         </script>
+        <script src="js/supplierList.js"></script>
     </body>
 </html>

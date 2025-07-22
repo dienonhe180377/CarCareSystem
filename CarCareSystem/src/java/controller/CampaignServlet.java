@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class CampaignController extends HttpServlet {
+public class CampaignServlet extends AuthorizationServlet {
 
-    private static final Logger LOGGER = Logger.getLogger(CampaignController.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(CampaignServlet.class.getName());
     private CampaignDAO campaignDAO;
 
     @Override
@@ -21,9 +21,32 @@ public class CampaignController extends HttpServlet {
         campaignDAO = new CampaignDAO();
     }
 
+    private boolean isUnauthorized(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            return true;
+        }
+
+        Object userObj = session.getAttribute("user");
+        if (userObj == null) {
+            return true;
+        }
+
+        entity.User user = (entity.User) userObj;
+        String role = user.getUserRole().toLowerCase();
+
+        // Nếu role là "user" thì không cho phép
+        return role.equals("user");
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        if (isUnauthorized(request)) {
+            response.setContentType("text/plain;charset=UTF-8");
+            response.getWriter().write("Bạn không có quyền truy cập trang này.");
+            return;
+        }
         String service = request.getParameter("service");
         String editId = request.getParameter("editId");
 
@@ -44,6 +67,11 @@ public class CampaignController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        if (isUnauthorized(request)) {
+            response.setContentType("text/plain;charset=UTF-8");
+            response.getWriter().write("Bạn không có quyền thực hiện thao tác này.");
+            return;
+        }
         String service = request.getParameter("service");
 
         try {
@@ -81,7 +109,7 @@ public class CampaignController extends HttpServlet {
 
             request.getSession().setAttribute("mainCampaignList", campaigns);
             request.setAttribute("campaigns", campaigns);
-            request.getRequestDispatcher("Campaign/CampaignList.jsp").forward(request, response);
+            request.getRequestDispatcher("Campaign/Campaign.jsp").forward(request, response);
 
         } catch (Exception ex) {
             handleError(request, response, "Không thể hiển thị form sửa", ex);
@@ -93,7 +121,7 @@ public class CampaignController extends HttpServlet {
         List<Campaign> campaigns = campaignDAO.getAllCampaigns();
         request.getSession().setAttribute("mainCampaignList", campaigns);
         request.setAttribute("campaigns", campaigns);
-        request.getRequestDispatcher("Campaign/CampaignList.jsp").forward(request, response);
+        request.getRequestDispatcher("Campaign/Campaign.jsp").forward(request, response);
     }
 
     private void addOrUpdateCampaign(HttpServletRequest request, HttpServletResponse response, boolean isEdit)

@@ -5,7 +5,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Product Management</title>
+        <title>Part Management</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
         <style>
             /* Container phân trang */
@@ -137,16 +137,17 @@
         </style>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </head>
-    <body style="margin-top: 116px;">
+    <body>
         
+        <jsp:include page="header_emp.jsp"></jsp:include>
 
         <div class="container mt-5">
             <div class="row mb-3">
                 <div class="col">
-                    <h2>Product List</h2>
+                    <h2>Danh sách linh kiện</h2>
                 </div>
                 <div class="col text-end">
-                    <a href="${contextPath}/PartController?service=add&action=load" class="btn btn-primary">Add New Product</a>
+                    <a href="${contextPath}/PartController?service=add&action=load" class="btn btn-primary">Thêm Linh Kiện</a>
                 </div>
             </div>
 
@@ -155,7 +156,7 @@
                 <input type="hidden" name="service" value="filter" />
                 <div class="row g-3">
                     <div class="col-md-3">
-                        <input type="text" name="search" class="form-control" placeholder="Search by name" value="${textInputted}">
+                        <input type="text" name="search" class="form-control" placeholder="Tìm theo tên" value="${textInputted}">
                     </div>
                     <div class="col-md-3">
                         <select name="categoryId" class="form-select">
@@ -183,7 +184,7 @@
                                 class="form-check-input" 
                                 id="outOfStock"
                                 <c:if test="${not empty outOfStock}">checked</c:if>/>
-                                <label class="form-check-label" for="outOfStock">Out of Stock</label>
+                                <label class="form-check-label" for="outOfStock">Hết hàng</label>
                             </div>
                         </div>
                         <div class="col-md-1">
@@ -196,12 +197,12 @@
                 <table id="productTable" class="table table-striped table-hover">
                     <thead>
                         <tr>
-                            <th>Name</th>
-                            <th>Image</th>
+                            <th>Tên linh kiện</th>
+                            <th>Ảnh linh kiện</th>
                             <th>Category</th>
-                            <th>Suppliers</th>
-                            <th>Size Quantity</th>
-                            <th>Actions</th>
+                            <th>Nhà cung cấp</th>
+                            <th>Các kích cỡ</th>
+                            <th>Chức năng</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -219,7 +220,7 @@
                                     type="button"
                                     data-bs-toggle="popover"
                                     data-bs-trigger="focus"
-                                    title="Supplier"
+                                    title="Các nhà cung cấp"
                                     data-bs-html="true"
                                     data-bs-content="
                                     <ul class='list-unstyled mb-0'>
@@ -228,7 +229,7 @@
                                     </c:forEach>
                                     </ul>
                                     ">
-                                    ${part.suppliers.size()} Supplier
+                                    ${part.suppliers.size()} Nhà cung cấp
                                 </button>
                             </td>
                             <td>
@@ -238,7 +239,7 @@
                                     type="button"
                                     data-bs-toggle="popover"
                                     data-bs-trigger="focus"
-                                    title="Available Sizes"
+                                    title="Các kích cỡ"
                                     data-bs-html="true"
                                     data-bs-content="
                                     <ul class='list-unstyled mb-0'>
@@ -253,11 +254,11 @@
                             <td>
                                 <!-- Chuyển View thành button test-btn-view để mở popup -->
                                 <a href="${contextPath}/PartController?service=view&id=${part.id}" type="button" class="btn btn-info btn-sm test-btn-view">View</a>
-                                <a href="${contextPath}/PartController?service=edit&action=load&id=${part.id}" class="btn btn-warning btn-sm">Edit</a>
+                                <a href="${contextPath}/PartController?service=edit&action=load&id=${part.id}" class="btn btn-warning btn-sm">Sửa</a>
                                 <a href="${contextPath}/PartController?service=delete&id=${part.id}" 
                                    class="btn btn-danger btn-sm" 
                                    onclick="return confirm('Are you sure you want to delete this product?')">
-                                    Delete
+                                    Xóa
                                 </a>
                             </td>
                         </tr>

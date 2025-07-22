@@ -11,14 +11,16 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </head>
     <body>
-        <div class="container-wrapper">
-            <!-- Nút Quay về danh sách, nằm ngoài .form-container -->
-            <a href="${contextPath}/SupplierController?service=list" class="btn-back">
+        <jsp:include page="header_emp.jsp"></jsp:include>
+
+            <div class="container-wrapper">
+                <!-- Nút Quay về danh sách, nằm ngoài .form-container -->
+                <a href="${contextPath}/SupplierController?service=list" class="btn-back">
                 ← Quay về danh sách
             </a>
 
             <div class="form-container">
-                <h2>Thêm Nhà Cung Cấp</h2>
+                <h2>${supplier != null ? 'Sửa' : 'Thêm'} Nhà Cung Cấp</h2>
                 <form id="addSupplierForm"
                       action="<c:choose>
                           <c:when test='${not empty supplier}'>
@@ -88,11 +90,11 @@
                             </div>
                         </div>
 
-                        <button type="submit" class="btn-submit">Thêm nhà cung cấp</button>
-                    </form>
-                </div> <!-- /.form-container -->
+                        <button type="submit" class="btn-submit">${supplier != null ? 'Sửa' : 'Thêm'} nhà cung cấp</button>
+                </form>
+            </div> <!-- /.form-container -->
 
-                <!-- Xử lý thông báo kết quả -->
+            <!-- Xử lý thông báo kết quả -->
             <c:if test="${successCheck != null}">
                 <script>
                     document.addEventListener("DOMContentLoaded", function () {
