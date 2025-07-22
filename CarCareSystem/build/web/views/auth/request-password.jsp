@@ -1,8 +1,4 @@
-<%-- 
-    Document   : request-password
-    Created on : Jun 3, 2025, 11:49:21 PM
-    Author     : TRAN ANH HAI
---%>
+
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>

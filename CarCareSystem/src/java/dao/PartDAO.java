@@ -584,4 +584,29 @@ public class PartDAO extends DBConnection {
             closeConnection(conn);
         }
     }
+    
+    // Lay price theo id
+    public double getPriceById(int partId) throws Exception {
+        Connection conn = null;
+        PreparedStatement pre = null;
+        ResultSet rs = null;
+        String sql = "SELECT price FROM Parts WHERE id = ?";
+        try{
+            conn = getConnection();
+            pre = conn.prepareStatement(sql);
+            pre.setInt(1, partId);
+            
+            rs = pre.executeQuery();
+            if (rs.next()) {
+                return rs.getDouble("price");
+            }
+        return 0;
+        } catch(Exception e){
+            throw e;
+        } finally {
+            closeResultSet(rs);
+            closePreparedStatement(pre);
+            closeConnection(conn);
+        }
+    }
 }

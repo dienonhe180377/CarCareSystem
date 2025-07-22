@@ -8,6 +8,7 @@ public class Insurance {
     private int id;
     private int userId;
     private int carTypeId;
+    private int insuranceTypeId;
     private Date startDate;
     private Date endDate;
     private double price;
@@ -22,6 +23,32 @@ public class Insurance {
         this.price = price;
         this.description = description;
     }
+
+    public Insurance(int id, int userId, int carTypeId, int insuranceTypeId, Date startDate, Date endDate) {
+        this.id = id;
+        this.userId = userId;
+        this.carTypeId = carTypeId;
+        this.insuranceTypeId = insuranceTypeId;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
+    public Insurance(int userId, int carTypeId, int insuranceTypeId, Date startDate, Date endDate) {
+        this.userId = userId;
+        this.carTypeId = carTypeId;
+        this.insuranceTypeId = insuranceTypeId;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
+    public int getInsuranceTypeId() {
+        return insuranceTypeId;
+    }
+
+    public void setInsuranceTypeId(int insuranceTypeId) {
+        this.insuranceTypeId = insuranceTypeId;
+    }
+    
 
     public Insurance(int userId, int carTypeId, Date startDate, Date endDate, double price, String description) {
         this.userId = userId;

@@ -12,6 +12,9 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </head>
     <body>
+        
+        <jsp:include page="header_emp.jsp"></jsp:include>
+        
         <div class="wrap">
             <div class="heading">
                 <h1>Categories</h1>

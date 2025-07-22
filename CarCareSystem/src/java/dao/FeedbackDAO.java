@@ -76,4 +76,23 @@ public class FeedbackDAO extends DBConnection {
             ex.printStackTrace();
         }
     }
+    public Feedback getFeedbackById(int id) {
+    String sql = "SELECT * FROM Feedback WHERE id = ?";
+    try {
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setInt(1, id);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            return new Feedback(
+                rs.getInt("id"),
+                rs.getInt("userId"),
+                rs.getString("description"),
+                rs.getTimestamp("createDate")
+            );
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+    return null;
+}
 }

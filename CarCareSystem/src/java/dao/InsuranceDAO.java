@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package dao;
 
 import entity.CarType;
@@ -12,29 +8,30 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
 import java.sql.Date;
-import java.text.SimpleDateFormat;
 
 /**
- *
- * @author ADMIN
+ * DAO cho các thao tác liên quan đến bảng Insurance, User, CarType.
  */
 public class InsuranceDAO extends DBConnection {
 
+    /**
+     * Lấy danh sách bảo hiểm theo câu SQL truyền vào.
+     */
     public Vector<Insurance> getAllInsurance(String sql) {
         Vector<Insurance> listInsurance = new Vector<>();
         try {
             PreparedStatement ptm = connection.prepareStatement(sql);
             ResultSet rs = ptm.executeQuery();
             while (rs.next()) {
-                Insurance i = new Insurance(rs.getInt(1),
-                        rs.getInt(2),
-                        rs.getInt(3),
-                        rs.getDate(4),
-                        rs.getDate(5),
-                        rs.getDouble(6),
-                        rs.getString(7));
+                Insurance i = new Insurance(
+                        rs.getInt("id"),
+                        rs.getInt("userId"),
+                        rs.getInt("carTypeId"),
+                        rs.getInt("insuranceTypeId"),
+                        rs.getDate("startDate"),
+                        rs.getDate("endDate")
+                );
                 listInsurance.add(i);
-
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -42,59 +39,50 @@ public class InsuranceDAO extends DBConnection {
         return listInsurance;
     }
 
+    /**
+     * Thêm mới một bảo hiểm vào database.
+     */
     public void addInsurance(Insurance i) {
-        String sql = "INSERT INTO [dbo].[Insurance]\n"
-                + "           ([userId]\n"
-                + "           ,[carTypeId]\n"
-                + "           ,[startDate]\n"
-                + "           ,[endDate]\n"
-                + "           ,[price]\n"
-                + "           ,[description])\n"
-                + "     VALUES(?,?,?,?,?,?)";
+        String sql = "INSERT INTO [dbo].[Insurance] ([userId],[carTypeId],[insuranceTypeId],[startDate],[endDate]) VALUES (?,?,?,?,?)";
         try {
             PreparedStatement ptm = connection.prepareStatement(sql);
             ptm.setInt(1, i.getUserId());
             ptm.setInt(2, i.getCarTypeId());
-            ptm.setDate(3, i.getStartDate());
-            ptm.setDate(4, i.getEndDate());
-            ptm.setDouble(5, i.getPrice());
-            ptm.setString(6, i.getDescription());
+            ptm.setInt(3, i.getInsuranceTypeId());
+            ptm.setDate(4, i.getStartDate());
+            ptm.setDate(5, i.getEndDate());
             ptm.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
 
+    /**
+     * Cập nhật thông tin bảo hiểm theo id.
+     */
     public void updateInsurance(Insurance i) {
-        String sql = "UPDATE [dbo].[Insurance]\n"
-                + "   SET [userId] = ?\n"
-                + "      ,[carTypeId] = ?\n"
-                + "      ,[startDate] = ?\n"
-                + "      ,[endDate] = ?\n"
-                + "      ,[price] = ?\n"
-                + "      ,[description] = ?\n"
-                + " WHERE id=?";
+        String sql = "UPDATE [dbo].[Insurance] SET [userId]=?, [carTypeId]=?, [insuranceTypeId]=?, [startDate]=?, [endDate]=? WHERE id=?";
         try {
             PreparedStatement ptm = connection.prepareStatement(sql);
             ptm.setInt(1, i.getUserId());
             ptm.setInt(2, i.getCarTypeId());
-            ptm.setDate(3, i.getStartDate());
-            ptm.setDate(4, i.getEndDate());
-            ptm.setDouble(5, i.getPrice());
-            ptm.setString(6, i.getDescription());
-            ptm.setInt(7, i.getId());
+            ptm.setInt(3, i.getInsuranceTypeId());
+            ptm.setDate(4, i.getStartDate());
+            ptm.setDate(5, i.getEndDate());
+            ptm.setInt(6, i.getId());
             ptm.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
 
+    /**
+     * Xóa bảo hiểm theo id.
+     */
     public void deleteInsurance(int id) {
-        String sql = "DELETE FROM [dbo].[Insurance]\n"
-                + "      WHERE id=?";
-        PreparedStatement ptm;
+        String sql = "DELETE FROM [dbo].[Insurance] WHERE id=?";
         try {
-            ptm = connection.prepareStatement(sql);
+            PreparedStatement ptm = connection.prepareStatement(sql);
             ptm.setInt(1, id);
             ptm.executeUpdate();
         } catch (Exception ex) {
@@ -102,22 +90,28 @@ public class InsuranceDAO extends DBConnection {
         }
     }
 
+    /**
+     * Lấy toàn bộ user (chỉ lấy id và username).
+     */
     public Vector<User> getAllUsers() {
-    Vector<User> list = new Vector<>();
-    String sql = "SELECT id, username FROM [dbo].[User]";
-    try {
-        PreparedStatement ptm = connection.prepareStatement(sql);
-        ResultSet rs = ptm.executeQuery();
-        while (rs.next()) {
-            User u = new User(rs.getInt("id"), rs.getString("username"));
-            list.add(u);
+        Vector<User> list = new Vector<>();
+        String sql = "SELECT id, username FROM [dbo].[User]";
+        try {
+            PreparedStatement ptm = connection.prepareStatement(sql);
+            ResultSet rs = ptm.executeQuery();
+            while (rs.next()) {
+                User u = new User(rs.getInt("id"), rs.getString("username"));
+                list.add(u);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
-    } catch (SQLException ex) {
-        ex.printStackTrace();
+        return list;
     }
-    return list;
-}
 
+    /**
+     * Lấy toàn bộ loại xe (chỉ lấy id và name).
+     */
     public Vector<CarType> getAllCarTypes() {
         Vector<CarType> list = new Vector<>();
         String sql = "SELECT id, name FROM [dbo].[CarType]";
@@ -134,44 +128,126 @@ public class InsuranceDAO extends DBConnection {
         return list;
     }
 
+    /**
+     * Tìm bảo hiểm theo id.
+     */
     public Insurance searchInsurance(int id) {
-        String sql = "SELECT * FROM [dbo].[Insurance]\n"
-                + "      WHERE id=?";
-
+        String sql = "SELECT * FROM [dbo].[Insurance] WHERE id=?";
         try {
             PreparedStatement ptm = connection.prepareStatement(sql);
             ptm.setInt(1, id);
             ResultSet rs = ptm.executeQuery();
             if (rs.next()) {
-                Insurance i = new Insurance(rs.getInt(1),
-                        rs.getInt(2), rs.getInt(3),
-                        rs.getDate(4), rs.getDate(5),
-                        rs.getDouble(6), rs.getString(7));
+                Insurance i = new Insurance(
+                        rs.getInt("id"),
+                        rs.getInt("userId"),
+                        rs.getInt("carTypeId"),
+                        rs.getInt("insuranceTypeId"),
+                        rs.getDate("startDate"),
+                        rs.getDate("endDate")
+                );
                 return i;
             }
-
         } catch (SQLException ex) {
-            ex.getStackTrace();
+            ex.printStackTrace();
         }
         return null;
     }
-    
+
+    /**
+     * Lấy danh sách bảo hiểm theo userId.
+     */
     public Vector<Insurance> getInsuranceByUserId(int userId) {
+        Vector<Insurance> list = new Vector<>();
+        String sql = "SELECT * FROM [dbo].[Insurance] WHERE userId = ?";
+        try {
+            PreparedStatement ptm = connection.prepareStatement(sql);
+            ptm.setInt(1, userId);
+            ResultSet rs = ptm.executeQuery();
+            while (rs.next()) {
+                Insurance i = new Insurance(
+                        rs.getInt("id"),
+                        rs.getInt("userId"),
+                        rs.getInt("carTypeId"),
+                        rs.getInt("insuranceTypeId"),
+                        rs.getDate("startDate"),
+                        rs.getDate("endDate")
+                );
+                list.add(i);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return list;
+    }
+
+    /**
+     * Đếm tổng số bảo hiểm.
+     */
+    public int getTotalInsuranceCount() {
+        String sql = "SELECT COUNT(*) FROM [dbo].[Insurance]";
+        try {
+            PreparedStatement ptm = connection.prepareStatement(sql);
+            ResultSet rs = ptm.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return 0;
+    }
+
+    /**
+     * Lấy danh sách bảo hiểm theo phân trang.
+     */
+    public Vector<Insurance> getInsuranceByPage(int page, int pageSize) {
+        Vector<Insurance> list = new Vector<>();
+        String sql = "SELECT * FROM [dbo].[Insurance] ORDER BY id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        try {
+            PreparedStatement ptm = connection.prepareStatement(sql);
+            ptm.setInt(1, (page - 1) * pageSize);
+            ptm.setInt(2, pageSize);
+            ResultSet rs = ptm.executeQuery();
+            while (rs.next()) {
+                Insurance i = new Insurance(
+                        rs.getInt("id"),
+                        rs.getInt("userId"),
+                        rs.getInt("carTypeId"),
+                        rs.getInt("insuranceTypeId"),
+                        rs.getDate("startDate"),
+                        rs.getDate("endDate")
+                );
+                list.add(i);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return list;
+    }
+    /**
+     * tìm kiếm theo tên khách hoặc loại xe
+     */
+    public Vector<Insurance> searchInsuranceByUserOrCarType(String keyword) {
     Vector<Insurance> list = new Vector<>();
-    String sql = "SELECT * FROM [dbo].[Insurance] WHERE userId = ?";
+    String sql = "SELECT i.* FROM [dbo].[Insurance] i " +
+                 "JOIN [dbo].[User] u ON i.userId = u.id " +
+                 "JOIN [dbo].[CarType] c ON i.carTypeId = c.id " +
+                 "WHERE u.username LIKE ? OR c.name LIKE ?";
     try {
         PreparedStatement ptm = connection.prepareStatement(sql);
-        ptm.setInt(1, userId);
+        String likeKeyword = "%" + keyword + "%";
+        ptm.setString(1, likeKeyword);
+        ptm.setString(2, likeKeyword);
         ResultSet rs = ptm.executeQuery();
         while (rs.next()) {
             Insurance i = new Insurance(
-                rs.getInt(1),
-                rs.getInt(2),
-                rs.getInt(3),
-                rs.getDate(4),
-                rs.getDate(5),
-                rs.getDouble(6),
-                rs.getString(7)
+                rs.getInt("id"),
+                rs.getInt("userId"),
+                rs.getInt("carTypeId"),
+                rs.getInt("insuranceTypeId"),
+                rs.getDate("startDate"),
+                rs.getDate("endDate")
             );
             list.add(i);
         }
@@ -180,63 +256,25 @@ public class InsuranceDAO extends DBConnection {
     }
     return list;
 }
-    // Đếm tổng số bản ghi
-public int getTotalInsuranceCount() {
-    String sql = "SELECT COUNT(*) FROM [dbo].[Insurance]";
+//    lấy role của user
+    public Vector<User> getUsersByRole(String role) {
+    Vector<User> list = new Vector<>();
+    String sql = "SELECT id, username, role FROM [dbo].[User] WHERE LOWER(role) = ?";
     try {
         PreparedStatement ptm = connection.prepareStatement(sql);
-        ResultSet rs = ptm.executeQuery();
-        if (rs.next()) return rs.getInt(1);
-    } catch (SQLException ex) {
-        ex.printStackTrace();
-    }
-    return 0;
-}
-
-// Lấy danh sách theo trang
-public Vector<Insurance> getInsuranceByPage(int page, int pageSize) {
-    Vector<Insurance> list = new Vector<>();
-    String sql = "SELECT * FROM [dbo].[Insurance] ORDER BY id OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
-    try {
-        PreparedStatement ptm = connection.prepareStatement(sql);
-        ptm.setInt(1, (page - 1) * pageSize);
-        ptm.setInt(2, pageSize);
+        ptm.setString(1, role.toLowerCase());
         ResultSet rs = ptm.executeQuery();
         while (rs.next()) {
-            Insurance i = new Insurance(
-                rs.getInt(1),
-                rs.getInt(2),
-                rs.getInt(3),
-                rs.getDate(4),
-                rs.getDate(5),
-                rs.getDouble(6),
-                rs.getString(7)
+            User u = new User(
+                rs.getInt("id"),
+                rs.getString("username"),
+                rs.getString("role")
             );
-            list.add(i);
+            list.add(u);
         }
     } catch (SQLException ex) {
         ex.printStackTrace();
     }
     return list;
 }
-
-    public static void main(String[] args) {
-        InsuranceDAO iDAO = new InsuranceDAO();
-        //Insurance i = new Insurance(1, 1, new Date(20, 5, 29), new Date(25, 5, 30), 1234, "test");
-        //iDAO.deleteInsurance(5);
-        Insurance iSearch = iDAO.searchInsurance(6);
-        if (iSearch != null) {
-            iDAO.updateInsurance(new Insurance(
-                    iSearch.getId(),
-                    1,
-                    1,
-                    Date.valueOf("2025-06-29"),
-                    Date.valueOf("2025-06-30"),
-                    678,
-                    "test"
-            ));
-            System.out.println("update ok");
-        }
-
-    }
 }

@@ -17,6 +17,8 @@
         <servlet-class>controller.PartController</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>NotificationController</servlet-name>
+        <servlet-class>controller.NotificationController</servlet-class>
         <servlet-name>BlogController</servlet-name>
         <servlet-class>controller.BlogServlet</servlet-class>
     </servlet>
@@ -53,6 +55,8 @@
         <url-pattern>/PartController</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>NotificationController</servlet-name>
+        <url-pattern>/NotificationController</url-pattern>
         <servlet-name>BlogController</servlet-name>
         <url-pattern>/blog</url-pattern>
     </servlet-mapping>

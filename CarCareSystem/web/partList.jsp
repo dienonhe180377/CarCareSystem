@@ -137,13 +137,14 @@
         </style>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </head>
-    <body style="margin-top: 116px;">
+    <body>
         
+        <jsp:include page="header_emp.jsp"></jsp:include>
 
         <div class="container mt-5">
             <div class="row mb-3">
                 <div class="col">
-                    <h2>Product List</h2>
+                    <h2>Part List</h2>
                 </div>
                 <div class="col text-end">
                     <a href="${contextPath}/PartController?service=add&action=load" class="btn btn-primary">Add New Product</a>
