@@ -6,90 +6,97 @@ import entity.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
+
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.Vector;
 
 @WebServlet(name = "FeedbackServlet", urlPatterns = {"/feedback"})
 public class FeedbackServlet extends HttpServlet {
 
-    /**
-     * Xử lý các request GET và POST cho chức năng feedback.
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-    try {
-        String method = request.getMethod();
-        FeedbackDAO feedbackDAO = new FeedbackDAO();
+    private final FeedbackDAO feedbackDAO = new FeedbackDAO();
 
-        if (method.equalsIgnoreCase("POST")) {
-            String action = request.getParameter("action");
-            HttpSession session = request.getSession();
-            User user = (User) session.getAttribute("user");
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
+        String serviceIdStr = request.getParameter("serviceId");
+        Vector<Feedback> feedbackList;
+
+        if (serviceIdStr != null) {
+            try {
+                int serviceId = Integer.parseInt(serviceIdStr);
+                feedbackList = feedbackDAO.getFeedbackByServiceId(serviceId);
+            } catch (NumberFormatException e) {
+                feedbackList = new Vector<>();
+            }
+        } else {
+            feedbackList = feedbackDAO.getAllFeedback();
+        }
+
+        request.setAttribute("feedbackList", feedbackList);
+        request.getRequestDispatcher("Feedback/feedback.jsp").forward(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        request.setCharacterEncoding("UTF-8");
+        HttpSession session = request.getSession();
+        
+        User user = (User) session.getAttribute("user");
+
+        // Nếu chưa đăng nhập thì chuyển về trang login
+        if (user == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
+
+        String action = request.getParameter("action");
+
+        try {
             if ("delete".equals(action)) {
                 int id = Integer.parseInt(request.getParameter("id"));
                 Feedback feedback = feedbackDAO.getFeedbackById(id);
 
-                if (feedback != null && user != null && feedback.getUserId() == user.getId()) {
+                if (feedback != null && feedback.getUserId() == user.getId()) {
                     feedbackDAO.deleteFeedback(id);
-                } else {
-                    System.out.println("Không có quyền xóa hoặc feedback không tồn tại.");
                 }
                 response.sendRedirect("feedback");
                 return;
-            } else if ("update".equals(action)) {
+            }
+
+            if ("update".equals(action)) {
                 int id = Integer.parseInt(request.getParameter("id"));
                 String description = request.getParameter("description");
+                int rating = Integer.parseInt(request.getParameter("rating"));
                 Feedback feedback = feedbackDAO.getFeedbackById(id);
 
-                if (feedback != null && user != null && feedback.getUserId() == user.getId()) {
-                    feedbackDAO.updateFeedback(id, description);
-                } else {
-                    System.out.println("Không có quyền cập nhật hoặc feedback không tồn tại.");
+                if (feedback != null && feedback.getUserId() == user.getId()) {
+                    feedbackDAO.updateFeedback(id, description, rating);
                 }
                 response.sendRedirect("feedback");
                 return;
             }
 
-            // THÊM FEEDBACK
-            if (user == null) {
-                user = new User(1, "admin01", "123");
-                session.setAttribute("user", user);
-            }
+            // Thêm feedback mới
             String description = request.getParameter("description");
-            if (description != null && !description.trim().isEmpty()) {
-                feedbackDAO.addFeedback(user.getId(), description);
+            String ratingStr = request.getParameter("rating");
+            String serviceIdStr = request.getParameter("serviceId");
+
+            if (description != null && ratingStr != null && serviceIdStr != null
+                    && !description.trim().isEmpty()) {
+                int rating = Integer.parseInt(ratingStr);
+                int serviceId = Integer.parseInt(serviceIdStr);
+
+                feedbackDAO.addFeedback(user.getId(), serviceId, description, rating);
             }
-            response.sendRedirect("feedback");
-        } else {
-            Vector<Feedback> feedbackList = feedbackDAO.getAllFeedback();
-            request.setAttribute("feedbackList", feedbackList);
-            request.setAttribute("feedbackDAO", feedbackDAO);
-            request.getRequestDispatcher("Feedback/feedback.jsp").forward(request, response);
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-    } catch (Exception e) {
-        e.printStackTrace(); // In lỗi ra console
-        response.getWriter().println("<h3>Lỗi hệ thống:</h3><pre>" + e.getMessage() + "</pre>");
-    }
-}
-
-
-    /**
-     * Xử lý request GET.
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    /**
-     * Xử lý request POST.
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
+        response.sendRedirect("feedback");
     }
 }

@@ -38,8 +38,8 @@ public class InsuranceServlet extends HttpServlet {
         }
         String role = currentUser.getUserRole();
 
-        // Chỉ admin, manager, maketing mới được thêm/sửa/xóa
-        boolean canEdit = "admin".equals(role) || "manager".equals(role) || "maketing".equals(role);
+        // Chỉ manager mới được thêm/sửa/xóa
+        boolean canEdit ="manager".equals(role);
 
         // Hiển thị danh sách bảo hiểm (phân trang)
         if (service.equals("listInsurance")) {

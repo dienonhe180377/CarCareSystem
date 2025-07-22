@@ -33,6 +33,12 @@ body {
     position: relative;
     margin-bottom: 18px;
 }
+
+.stars {
+    color: gold; /* Hoặc #FFD700 */
+    font-size: 18px;
+}
+
 .fb-username {
     font-weight: bold;
     color: #276678;
