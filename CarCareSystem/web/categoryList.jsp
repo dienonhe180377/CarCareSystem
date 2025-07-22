@@ -80,9 +80,9 @@
                         <select name="bulk-action-top" id="bulk-action-top" onchange="filterRedirect(this.value)">
                             <option value="all" <c:if test="${not empty all}">selected</c:if>>Tất cả trạng thái</option>
                             <option value="active" <c:if test="${not empty active}">selected</c:if>>Đang Hoạt Động</option>
-                            <option value="inactive" <c:if test="${not empty inactive}">selected</c:if>>Inactive</option>
+                            <option value="inactive" <c:if test="${not empty inactive}">selected</c:if>>Không Hoạt Động</option>
                             <option value="newest" <c:if test="${not empty newest}">selected</c:if>>Mới nhất</option>
-                            <option value="oldest" <c:if test="${not empty oldest}">selected</c:if>>Oldest</option>
+                            <option value="oldest" <c:if test="${not empty oldest}">selected</c:if>>Cũ nhất</option>
                             </select>
                         </div>
 
