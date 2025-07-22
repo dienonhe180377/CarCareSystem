@@ -49,7 +49,7 @@ public class VoucherServlet extends AuthorizationServlet {
         Object userObj = session.getAttribute("user");
         if (userObj == null) return false;
         
-        entity.User user = (entity.User) userObj;
+        User user = (User) userObj;
         String role = user.getUserRole().toLowerCase();
         
         return role.equals("admin") || role.equals("marketing") || role.equals("manager");
@@ -157,13 +157,12 @@ public class VoucherServlet extends AuthorizationServlet {
         }
     }
     
-    // Method mới: Hiển thị voucher detail cho user thường (không hiển thị owners)
     private void showUserVoucherDetail(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
             int voucherId = Integer.parseInt(request.getParameter("id"));
             HttpSession session = request.getSession();
-            entity.User currentUser = (entity.User) session.getAttribute("user");
+            User currentUser = (User) session.getAttribute("user");
             
             // Kiểm tra user có voucher này không
             List<UserVoucher> userVouchers = userVoucherDAO.getUserVouchersByUserId(currentUser.getId());
@@ -186,7 +185,6 @@ public class VoucherServlet extends AuthorizationServlet {
         }
     }
     
-    // Các method khác giữ nguyên...
     private void showVoucherList(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         List<Voucher> vouchers = voucherDAO.getAllVouchers();
@@ -225,7 +223,7 @@ public class VoucherServlet extends AuthorizationServlet {
     private void showUserVouchers(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        entity.User user = (entity.User) session.getAttribute("user");
+        User user = (User) session.getAttribute("user");
         
         if (user != null) {
             List<UserVoucher> userVouchers = userVoucherDAO.getUserVouchersByUserId(user.getId());
@@ -248,7 +246,6 @@ public class VoucherServlet extends AuthorizationServlet {
         showVoucherList(request, response);
     }
     
-    // Các method process khác giữ nguyên...
     private void processAddByUser(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
