@@ -279,7 +279,7 @@
         </c:choose>
 
         <div class="action-row">
-            <form action="OrderServlet" method="post" style="margin:0;">
+            <form action="order" method="post" style="margin:0;">
                 <input type="hidden" name="serviceId" value="${service.id}"/>
                 <button type="submit" class="order-btn">Đặt dịch vụ</button>
             </form>

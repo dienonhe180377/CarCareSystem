@@ -210,7 +210,7 @@
             </c:if>
             <h2 class="tieu-de">Cập nhật dịch vụ</h2>
             <c:choose>
-                <c:when test="${role == 'admin' || role == 'manager' || role == 'maketing'}">
+                <c:when test="${role == 'admin' || role == 'manager' || role == 'marketing'}">
                     <form action="ServiceServlet_JSP" method="POST" enctype="multipart/form-data" autocomplete="off">
                         <input type="hidden" name="id" value="${service.id}">
                         <table>
