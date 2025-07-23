@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class OrderDAO extends DBConnection {
 
     public int createOrder(String fullName, String email, String phone, String address, int carTypeId,
-                           Timestamp appointmentDate, double price, String paymentStatus, String orderStatus, String paymentMethod) throws SQLException {
+                           Date appointmentDate, double price, String paymentStatus, String orderStatus, String paymentMethod) throws SQLException {
         String sql = "INSERT INTO [Order] (name, email, phone, address, carTypeId, appointmentDate, price, paymentStatus, orderStatus, paymentMethod) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -29,7 +29,7 @@ public class OrderDAO extends DBConnection {
             ps.setString(3, phone);
             ps.setString(4, address);
             ps.setInt(5, carTypeId);
-            ps.setTimestamp(6, appointmentDate);
+            ps.setDate(6, appointmentDate);
             ps.setDouble(7, price);
             ps.setString(8, paymentStatus);
             ps.setString(9, orderStatus);
@@ -382,8 +382,9 @@ public class OrderDAO extends DBConnection {
     
     public boolean checkAndUpdateMissedAppointments() {
         String sql = "UPDATE [Order] SET orderStatus = ? " +
-                    "WHERE orderStatus NOT IN ('Đã Nhận Xe', 'Lỡ hẹn') " +
-                    "AND appointmentDate < GETDATE()";
+                "WHERE orderStatus = 'Chưa xác nhận' " +  
+                "AND CONVERT(DATE, appointmentDate) < CONVERT(DATE, GETDATE())";  
+    
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setNString(1, "Lỡ hẹn");
             return ps.executeUpdate() >= 0;
@@ -393,10 +394,10 @@ public class OrderDAO extends DBConnection {
         }
     }
     
-    public boolean rescheduleOrder(int orderId, Timestamp newAppointmentDate) {
+    public boolean rescheduleOrder(int orderId, Date newAppointmentDate) {
             String sql = "UPDATE [Order] SET appointmentDate = ?, orderStatus = ? WHERE id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setTimestamp(1, newAppointmentDate);
+            ps.setDate(1, newAppointmentDate);
             ps.setNString(2, "Chưa xác nhận");
             ps.setInt(3, orderId);
     
