@@ -26,15 +26,15 @@ public class ServiceServlet_JSP extends HttpServlet {
 
     private static final Pattern VALID_DESC_PATTERN = Pattern.compile("^[\\p{L}0-9 ]+$");
 
-    // Phân quyền chi tiết đúng yêu cầu
+    // Phân quyền: KHÔNG phân biệt hoa thường!
     private boolean isAdmin(String role) {
-        return "admin".equals(role);
+        return role != null && "admin".equalsIgnoreCase(role);
     }
     private boolean isManager(String role) {
-        return "manager".equals(role);
+        return role != null && "manager".equalsIgnoreCase(role);
     }
     private boolean isMarketing(String role) {
-        return "marketing".equals(role);
+        return role != null && "marketing".equalsIgnoreCase(role);
     }
     // Thêm, sửa: admin, manager, marketing được
     private boolean canAdd(String role) {
@@ -279,7 +279,7 @@ public class ServiceServlet_JSP extends HttpServlet {
                         request.getRequestDispatcher("jsp/serviceUserDetail.jsp").forward(request, response);
                     } else if (isAdmin(role) || isManager(role) || isMarketing(role)) {
                         request.getRequestDispatcher("jsp/ServiceDetail.jsp").forward(request, response);
-                    } else if ("customer".equals(role)) {
+                    } else if ("customer".equalsIgnoreCase(role)) {
                         request.getRequestDispatcher("jsp/serviceUserDetail.jsp").forward(request, response);
                     } else {
                         request.getRequestDispatcher("jsp/serviceUserDetail.jsp").forward(request, response);
