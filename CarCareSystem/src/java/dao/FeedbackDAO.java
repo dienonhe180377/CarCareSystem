@@ -1,7 +1,10 @@
     package dao;
 
     import entity.Feedback;
+import entity.Service;
     import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
     import java.util.Vector;
 
     public class FeedbackDAO extends DBConnection {
@@ -154,4 +157,22 @@
         }
         return "Unknown Service";
     }
+    public List<Service> getAllServices() {
+    List<Service> list = new ArrayList<>();
+    try {
+        String sql = "SELECT * FROM Service";
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            Service s = new Service();
+            s.setId(rs.getInt("id"));
+            s.setName(rs.getString("name"));
+            list.add(s);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return list;
+}
+
     }

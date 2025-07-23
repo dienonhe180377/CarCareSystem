@@ -1,14 +1,16 @@
 package controller;
 
 import dao.FeedbackDAO;
+import dao.ServiceDAO;
 import entity.Feedback;
+import entity.Service;
 import entity.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 
 import java.io.IOException;
-import java.sql.Timestamp;
+import java.util.List;
 import java.util.Vector;
 
 @WebServlet(name = "FeedbackServlet", urlPatterns = {"/feedback"})
@@ -23,6 +25,7 @@ public class FeedbackServlet extends HttpServlet {
         String serviceIdStr = request.getParameter("serviceId");
         Vector<Feedback> feedbackList;
 
+        // Lấy danh sách feedback theo serviceId nếu có
         if (serviceIdStr != null) {
             try {
                 int serviceId = Integer.parseInt(serviceIdStr);
@@ -34,6 +37,10 @@ public class FeedbackServlet extends HttpServlet {
             feedbackList = feedbackDAO.getAllFeedback();
         }
 
+        // Load danh sách dịch vụ cho dropdown
+        List<Service> serviceList = feedbackDAO.getAllServices();
+
+        request.setAttribute("serviceList", serviceList);
         request.setAttribute("feedbackList", feedbackList);
         request.getRequestDispatcher("Feedback/feedback.jsp").forward(request, response);
     }
@@ -44,10 +51,8 @@ public class FeedbackServlet extends HttpServlet {
 
         request.setCharacterEncoding("UTF-8");
         HttpSession session = request.getSession();
-        
         User user = (User) session.getAttribute("user");
 
-        // Nếu chưa đăng nhập thì chuyển về trang login
         if (user == null) {
             response.sendRedirect("login.jsp");
             return;
@@ -59,7 +64,6 @@ public class FeedbackServlet extends HttpServlet {
             if ("delete".equals(action)) {
                 int id = Integer.parseInt(request.getParameter("id"));
                 Feedback feedback = feedbackDAO.getFeedbackById(id);
-
                 if (feedback != null && feedback.getUserId() == user.getId()) {
                     feedbackDAO.deleteFeedback(id);
                 }
@@ -72,7 +76,6 @@ public class FeedbackServlet extends HttpServlet {
                 String description = request.getParameter("description");
                 int rating = Integer.parseInt(request.getParameter("rating"));
                 Feedback feedback = feedbackDAO.getFeedbackById(id);
-
                 if (feedback != null && feedback.getUserId() == user.getId()) {
                     feedbackDAO.updateFeedback(id, description, rating);
                 }
@@ -87,6 +90,7 @@ public class FeedbackServlet extends HttpServlet {
 
             if (description != null && ratingStr != null && serviceIdStr != null
                     && !description.trim().isEmpty()) {
+
                 int rating = Integer.parseInt(ratingStr);
                 int serviceId = Integer.parseInt(serviceIdStr);
 
@@ -94,9 +98,10 @@ public class FeedbackServlet extends HttpServlet {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(); // log lỗi
         }
 
+        // Redirect lại để hiển thị cập nhật mới
         response.sendRedirect("feedback");
     }
 }
