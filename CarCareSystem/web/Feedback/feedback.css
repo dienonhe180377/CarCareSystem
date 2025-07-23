@@ -2,6 +2,24 @@ body {
     background: #f7fbff;
     font-family: 'Segoe UI', Arial, sans-serif;
 }
+
+.star-rating {
+    font-size: 24px;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.star {
+    color: #ccc;
+    margin-right: 5px;
+    transition: color 0.2s ease;
+}
+
+.star:hover,
+.star:hover ~ .star {
+    color: gold;
+}
+
 .fb-container {
     max-width: 600px;
     margin: 40px auto;

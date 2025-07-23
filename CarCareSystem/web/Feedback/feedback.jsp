@@ -29,12 +29,17 @@
                     <br>
 
                     <!-- Chọn đánh giá -->
-                    <label for="rating">Đánh giá:</label>
-                    <select name="rating" required>
-                        <c:forEach var="i" begin="1" end="5">
-                            <option value="${i}">${i} ★</option>
-                        </c:forEach>
-                    </select>
+                    <!-- Chọn đánh giá bằng sao -->
+<label for="rating">Đánh giá:</label>
+<input type="hidden" name="rating" id="rating-value" value="0"/>
+<div class="star-rating" id="rating-stars">
+    <span class="star" data-value="1">★</span>
+    <span class="star" data-value="2">★</span>
+    <span class="star" data-value="3">★</span>
+    <span class="star" data-value="4">★</span>
+    <span class="star" data-value="5">★</span>
+</div>
+
                     <br><br>
 
                     <button type="submit" class="btn">Gửi</button>
@@ -93,12 +98,8 @@
                         <input type="hidden" name="id" value="${fb.id}"/>
                         <textarea name="description" rows="2" required>${fb.description}</textarea>
                         <br>
-                        <label>Đánh giá:</label>
-                        <select name="rating" required>
-                            <c:forEach var="i" begin="1" end="5">
-                                <option value="${i}" ${fb.rating == i ? 'selected' : ''}>${i} ★</option>
-                            </c:forEach>
-                        </select>
+                        
+                        <input type="hidden" name="rating" value="${fb.rating}"/>
                         <br>
                         <button type="submit" class="btn">Lưu</button>
                         <button type="button" class="btn" onclick="hideEditForm(${fb.id})">Hủy</button>
@@ -108,6 +109,23 @@
                 </div>
             </c:forEach>
         </div>
+<script>
+    // Rating bằng sao cho form gửi feedback mới
+    const ratingStars = document.querySelectorAll("#rating-stars .star");
+    const ratingValue = document.getElementById("rating-value");
+
+    ratingStars.forEach(star => {
+        star.addEventListener("click", () => {
+            const value = parseInt(star.dataset.value);
+            ratingValue.value = value;
+
+            // Tô màu sao đã chọn
+            ratingStars.forEach(s => {
+                s.style.color = (parseInt(s.dataset.value) <= value) ? "gold" : "#ccc";
+            });
+        });
+    });
+</script>
 
         <script src="Feedback/feedback.js"></script>
     </body>
