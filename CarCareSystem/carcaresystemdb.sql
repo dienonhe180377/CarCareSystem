@@ -41,10 +41,10 @@ GO
 -- 5. Bảng Supplier
 CREATE TABLE Supplier (
     id     INT          IDENTITY(1,1) PRIMARY KEY,
-    [name]   NVARCHAR(150) NOT NULL UNIQUE,
+    [name]   NVARCHAR(150) NOT NULL,
     logo NVARCHAR(255),
     [description] NVARCHAR(255),
-    email NVARCHAR(150) not null,
+    email NVARCHAR(150) not null UNIQUE,
     phone NVARCHAR(20) not null,
     [address] NVARCHAR(255)
 );
@@ -159,32 +159,49 @@ CREATE TABLE Blog (
 GO
 
 -- 16. Bảng Voucher
-CREATE TABLE Voucher (
-    id          INT           IDENTITY(1,1) PRIMARY KEY,
-    name        NVARCHAR(150) NOT NULL,
-    campaignId  INT           NULL,
-    serviceId   INT           NULL,
-    startDate   DATE          NOT NULL,
-    endDate     DATE          NOT NULL,
-    description NVARCHAR(500) NULL,
-    discount    INT  NOT NULL,
-    status      BIT           NOT NULL DEFAULT 1,
-
+CREATE TABLE [dbo].[Voucher](
+    [id]                [int] IDENTITY(1,1) NOT NULL,
+    [name]              [nvarchar](150) NOT NULL,
+    [description]       [nvarchar](500) NULL,
+    [discount]          [float] NOT NULL,
+    [discountType]      [nvarchar](20) NOT NULL DEFAULT 'PERCENTAGE',
+    [maxDiscountAmount] [float] NULL,
+    [minOrderAmount]    [float] NULL,
+    [startDate]         [date] NOT NULL,
+    [endDate]           [date] NOT NULL,
+    [serviceId]         [int] NULL,
+    [campaignId]        [int] NULL,
+    [status]            [bit] NOT NULL DEFAULT ((1)),
+    [createdDate]       [datetime] NOT NULL DEFAULT (getdate()),
+    [voucherCode]       [nvarchar](50) NOT NULL,
+    
+    PRIMARY KEY CLUSTERED ([id] ASC),
+    UNIQUE NONCLUSTERED ([voucherCode] ASC),
+    
+    CONSTRAINT [CK_Voucher_DiscountType] CHECK ([discountType] IN ('PERCENTAGE', 'FIXED_AMOUNT')),
     CONSTRAINT FK_Voucher_Campaign FOREIGN KEY(campaignId) REFERENCES Campaign(id),
     CONSTRAINT FK_Voucher_Service  FOREIGN KEY(serviceId)  REFERENCES Service(id)
-);
+) ON [PRIMARY]
 GO
 
--- 17. Bảng UserVoucher
-CREATE TABLE UserVoucher (
-    id        INT      IDENTITY(1,1) PRIMARY KEY,
-    userId    INT      NOT NULL,
-    voucherId INT      NOT NULL,
-
+-- 17. Bảng UserVoucher (CẤU TRÚC MỚI)
+CREATE TABLE [dbo].[UserVoucher](
+    [id]          [int] IDENTITY(1,1) NOT NULL,
+    [userId]      [int] NOT NULL,
+    [voucherId]   [int] NOT NULL,
+    [isUsed]      [bit] NOT NULL DEFAULT ((0)),
+    [voucherCode] [nvarchar](50) NOT NULL,
+    [usedDate]    [datetime] NULL,
+    [orderId]     [int] NULL,
+    
+    PRIMARY KEY CLUSTERED ([id] ASC),
+    
     CONSTRAINT FK_UserVoucher_User    FOREIGN KEY(userId)    REFERENCES [User](id),
-    CONSTRAINT FK_UserVoucher_Voucher FOREIGN KEY(voucherId) REFERENCES Voucher(id)
-);
+    CONSTRAINT FK_UserVoucher_Voucher FOREIGN KEY(voucherId) REFERENCES Voucher(id),
+    CONSTRAINT FK_UserVoucher_Order   FOREIGN KEY(orderId)   REFERENCES [Order](id)
+) ON [PRIMARY]
 GO
+
 
 -- 18. Bảng PartsSupplier
 CREATE TABLE PartsSupplier (
@@ -305,7 +322,7 @@ GO
 
 
 CREATE TABLE [Notification](
-    id int identity(1,1),
+    id int identity(1,1) primary key,
     [message] nvarchar(100) not null,
     status bit not null,
     createDate date not null DEFAULT GETDATE(),
@@ -313,35 +330,12 @@ CREATE TABLE [Notification](
     notification_type nvarchar(50) not null,
     CONSTRAINT FK_Notification_User    FOREIGN KEY(recieverId)    REFERENCES [User](id)
 )
-GO
 
-CREATE TABLE [NotificationSetting](
-    id int identity(1,1),
 
-    recieverId int not null,
-    CONSTRAINT FK_Notification_User    FOREIGN KEY(recieverId)    REFERENCES [User](id)
-)
 GO
 
 ALTER TABLE [Order] 
 ADD CONSTRAINT FK_Order_User FOREIGN KEY(userId) REFERENCES [User](id);
-GO
-
-select * from [Notification]
-SELECT * FROM [PartsService] 
-DELETE FROM [Order]
-
-INSERT INTO Service (name, description, price, img) VALUES
-(N'Rửa xe', N'Rửa ngoài', 50000, N'svc1.jpg'),
-(N'Vệ sinh nội thất', N'Nội thất sạch', 90000, N'svc2.jpg'),
-(N'Bảo dưỡng tổng thể', N'Bảo dưỡng xe', 200000, N'svc3.jpg'),
-(N'Kiểm tra động cơ', N'Kiểm tra chi tiết', 150000, N'svc4.jpg'),
-(N'Đánh bóng sơn', N'Làm mới ngoại thất', 120000, N'svc5.jpg'),
-(N'Thay dầu', N'Dầu nhớt xe', 100000, N'svc6.jpg'),
-(N'Lắp lốp mới', N'Lốp chất lượng', 800000, N'svc7.jpg'),
-(N'Sửa điện', N'Sửa chữa điện', 50000, N'svc8.jpg'),
-(N'Thay ắc quy', N'Ắc quy mới', 350000, N'svc9.jpg'),
-(N'Sửa điều hòa', N'Điều hòa mát', 250000, N'svc10.jpg');
 GO
 
 INSERT INTO [dbo].[User]
@@ -366,6 +360,7 @@ INSERT INTO Category (name, description, status) VALUES
 ('Exhaust System',   N'Hệ thống xả khí thải, ống pô và bộ lọc khí thải',              1),
 ('Steering',         N'Hệ thống lái gồm tay lái, trục lái và trợ lực lái',              1),
 ('Tires & Wheels',   N'Vỏ, mâm và van xe đảm bảo bám đường và chịu tải trọng',         1);
+GO
 
 -- Insert bảng Parts (liên kết với Service, Category, Supplier)
 INSERT INTO Parts (name, image, categoryId, price) VALUES
@@ -418,8 +413,9 @@ INSERT INTO Parts (name, image, categoryId, price) VALUES
   (N'Alloy Wheel 17\"',  'BDVOLK012-01-1.jpg'    ,             10, 120.00),
   (N'Tire 225/45R17',   'BDVOLK012-01-1.jpg'    ,              10,  90.00),
   (N'Valve Stem',    'BDVOLK012-01-1.jpg'    ,                 10,   5.00);
-GO
 
+
+GO
 INSERT INTO CarType (name, status) VALUES (N'Toyota Vios', 1);
 INSERT INTO CarType (name, status) VALUES (N'Honda Civic', 1);
 INSERT INTO CarType (name, status) VALUES (N'Hyundai Accent', 1);
@@ -430,4 +426,417 @@ INSERT INTO CarType (name, status) VALUES (N'VinFast Lux A2.0', 1);
 INSERT INTO CarType (name, status) VALUES (N'Toyota Camry', 1);
 INSERT INTO CarType (name, status) VALUES (N'Mercedes C-Class', 1);
 INSERT INTO CarType (name, status) VALUES (N'BMW X5', 1);
+GO
 
+ALTER TABLE CarType
+ADD description NVARCHAR(255) NULL,
+created_at DATETIME NOT NULL DEFAULT GETDATE(),
+updated_at DATETIME NULL;
+GO
+
+CREATE TABLE [Setting] (
+    [id] INT IDENTITY(1,1) PRIMARY KEY,
+    [name] VARCHAR(100) NOT NULL,
+    [value] NVARCHAR(MAX) NOT NULL
+);
+GO
+
+select * from [User]
+
+INSERT INTO [Setting] (name, value) VALUES 
+('site_name', 'Car Care Centre'),
+('logo_url', 'img/logo.png'),
+('working_hours', 'Mon-Sat: 08:00 - 18:00'),
+('footer_text', '© 2025 Garage Pro. All rights reserved.'),
+('contact_email', 'support@carcarecentre.com'),
+('more_services', 'Click here for more...'),
+('service_exp1', 'Professional Maintenance'),
+('service_exp2', 'Authentic Products'),
+('service_exp3', 'Numerous Vouchers'),
+('hotline', '0123 456 789'),
+('header_color', 'lightblue'),
+('footer_color', 'lightblue');
+GO
+
+INSERT INTO Supplier ([name], logo, [description], email, phone, [address]) VALUES
+('AutoPlus Co., Ltd.', 'Auto_Care.jpg', N'Nhà cung cấp phụ tùng ô tô chính hãng', 'contact@autoplus.vn', '0912345678', N'123 Đường Lớn, Quận 1, TP. HCM'),
+('CarCare Vietnam', '1600w-B1MIRD2zskY.webp', N'Dịch vụ chăm sóc xe chuyên nghiệp', 'support@carcare.vn', '0987654321', N'456 Phố Xe Hơi, Quận 7, TP. HCM'),
+('Speedy Parts', 'car-logo-automotive-wash-sign-600nw-2289579553.webp', N'Cung cấp phụ tùng thay thế nhanh chóng', 'sales@speedyparts.vn', '0909123456', N'789 Lê Lợi, Quận 3, TP. HCM'),
+('ProDetailer', 'automotive-auto-care-logo-template-modern-sport-car-automotive-auto-care-logo-template-modern-sport-car-vector-illustration-191268375.webp', N'Sản phẩm chăm sóc xe cao cấp', 'info@prodetailer.vn', '0911222333', N'12 Nguyễn Huệ, Quận 1, TP. HCM'),
+('VietAuto Supplies', 'Auto_Care.jpg', N'Đại lý phụ tùng và phụ kiện ô tô', 'order@vietautosupplies.vn', '0988777666', N'34 Trần Hưng Đạo, Quận 5, TP. HCM'),
+('PremiumCar Care', '1600w-B1MIRD2zskY.webp', N'Chăm sóc xe hạng sang', 'hello@premiumcar.vn', '0900765432', N'56 Nguyễn Trãi, Quận 5, TP. HCM'),
+('Quality Garage', 'car-logo-automotive-wash-sign-600nw-2289579553.webp', N'Nhà phân phối phụ tùng chính hãng', 'contact@qualitygarage.vn', '0911333444', N'78 Tôn Đức Thắng, Quận 1, TP. HCM'),
+('Express Wash', 'Auto_Care.jpg', N'Dịch vụ rửa xe nhanh – gọn – lẹ', 'service@expresswash.vn', '0977888999', N'90 Bạch Đằng, Quận Bình Thạnh, TP. HCM'),
+('EliteParts', 'Auto_Care.jpg', N'Phụ tùng xe hơi cao cấp nhập khẩu', 'support@eliteparts.vn', '0933555777', N'101 Nguyễn Văn Trỗi, Quận Phú Nhuận, TP. HCM'),
+('SafeDrive Supplies', 'Auto_Care.jpg', N'Phụ kiện an toàn và đồ bảo hộ lái xe', 'info@safedrive.vn', '0922666888', N'202 Hoàng Văn Thụ, Quận Tân Bình, TP. HCM');
+
+
+GO
+INSERT INTO PartsSupplier (partId, supplierId) VALUES
+  -- partId 1–10 chia đều cho supplierId 1–10
+  ( 1,  1),
+  ( 2,  2),
+  ( 3,  3),
+  ( 4,  4),
+  ( 5,  5),
+  ( 6,  6),
+  ( 7,  7),
+  ( 8,  8),
+  ( 9,  9),
+  (10, 10),
+
+  -- partId 11–20 lặp lại supplierId 1–10
+  (11,  1),
+  (12,  2),
+  (13,  3),
+  (14,  4),
+  (15,  5),
+  (16,  6),
+  (17,  7),
+  (18,  8),
+  (19,  9),
+  (20, 10),
+
+  -- partId 21–30 tiếp tục chia tuần tự
+  (21,  1),
+  (22,  2),
+  (23,  3),
+  (24,  4),
+  (25,  5),
+  (26,  6),
+  (27,  7),
+  (28,  8),
+  (29,  9),
+  (30, 10);
+
+GO
+
+INSERT INTO Size (name, partId, quantity) VALUES
+  ('S',  1,   0), ('M',  1,   0),
+  ('S',  2,   0), ('M',  2,   0),
+  ('S',  3,   0), ('M',  3, 300),
+  ('S',  4, 300), ('M',  4, 300),
+  ('S',  5, 300), ('M',  5, 300),
+  ('S',  6, 300), ('M',  6, 300),
+  ('S',  7, 300), ('M',  7, 300),
+  ('S',  8, 300), ('M',  8, 300),
+  ('S',  9, 300), ('M',  9, 300),
+  ('S', 10, 300), ('M', 10, 300),
+  ('S', 11, 300), ('M', 11, 300),
+  ('S', 12, 300), ('M', 12, 300),
+  ('S', 13, 300), ('M', 13, 300),
+  ('S', 14, 300), ('M', 14, 300),
+  ('S', 15, 300), ('M', 15, 300);
+GO
+
+-- PART 16–30 (3 size mỗi part): tất cả quantity = 300
+INSERT INTO Size (name, partId, quantity) VALUES
+  ('S', 16, 300), ('M', 16, 300), ('L', 16, 300),
+  ('S', 17, 300), ('M', 17, 300), ('L', 17, 300),
+  ('S', 18, 300), ('M', 18, 300), ('L', 18, 300),
+  ('S', 19, 300), ('M', 19, 300), ('L', 19, 300),
+  ('S', 20, 300), ('M', 20, 300), ('L', 20, 300),
+  ('S', 21, 300), ('M', 21, 300), ('L', 21, 300),
+  ('S', 22, 300), ('M', 22, 300), ('L', 22, 300),
+  ('S', 23, 300), ('M', 23, 300), ('L', 23, 300),
+  ('S', 24, 300), ('M', 24, 300), ('L', 24, 300),
+  ('S', 25, 300), ('M', 25, 300), ('L', 25, 300),
+  ('S', 26, 300), ('M', 26, 300), ('L', 26, 300),
+  ('S', 27, 300), ('M', 27, 300), ('L', 27, 300),
+  ('S', 28, 300), ('M', 28, 300), ('L', 28, 300),
+  ('S', 29, 300), ('M', 29, 300), ('L', 29, 300),
+  ('S', 30, 300), ('M', 30, 300), ('L', 30, 300);
+
+GO
+INSERT INTO [Notification] ([message], status, recieverId, notification_type)
+VALUES 
+(N'Linh Kiện Tank vừa được sửa', 1, 5, N'Part'),
+(N'Nhà cung cấp Auto vừa bị xóa', 0, 5, N'Supplier'),
+(N'Tài khoản của bạn đã được cập nhật', 1, 5, N'Part'),
+(N'Có lời mời kết bạn mới', 0, 5, N'Profile'),
+(N'Sự kiện mới sắp diễn ra', 0, 5, N'Part');
+
+GO
+CREATE TABLE [NotificationSetting](
+    id int identity(1,1) primary key,
+    recieverId int not null UNIQUE,
+    [notification_time] bit,
+    [notification_status] bit,
+    [profile] bit,
+    [order_change] bit,
+    attendance bit,
+    email bit,
+    [service] bit,
+    insurance bit,
+    category bit,
+    supplier bit,
+    parts bit,
+    [setting_change] bit,
+    car_type bit,
+    campaign bit,
+    blog bit,
+    voucher bit,
+    CONSTRAINT FK_NotificationSetting_User FOREIGN KEY(recieverId) REFERENCES [User](id)
+)
+
+GO
+INSERT INTO [NotificationSetting] (
+    recieverId,
+    notification_time,
+    notification_status,
+    profile,
+    order_change,
+    attendance,
+    email,
+    service,
+    insurance,
+    category,
+    supplier,
+    parts,
+    setting_change,
+    car_type,
+    campaign,
+    blog,
+    voucher
+)
+VALUES (
+    5, -- recieverId
+    1, -- notification_time
+    1, -- notification_status
+    0, -- profile
+    0, -- order_change
+    0, -- attendance
+    1, -- email
+    0, -- service
+    0, -- insurance
+    1, -- category
+    1, -- supplier
+    1, -- parts
+    0, -- setting_change
+    0, -- car_type
+    0, -- campaign
+    0, -- blog
+    0  -- voucher
+);
+
+
+
+GO
+INSERT INTO [NotificationSetting] (
+    recieverId,
+    notification_time,
+    notification_status,
+    profile,
+    order_change,
+    attendance,
+    email,
+    service,
+    insurance,
+    category,
+    supplier,
+    parts,
+    setting_change,
+    car_type,
+    campaign,
+    blog,
+    voucher
+)
+VALUES (
+    4, -- recieverId
+    1, -- notification_time
+    1, -- notification_status
+    1, -- profile
+    1, -- order_change
+    0, -- attendance
+    1, -- email
+    0, -- service
+    0, -- insurance
+    0, -- category
+    0, -- supplier
+    0, -- parts
+    0, -- setting_change
+    0, -- car_type
+    0, -- campaign
+    1, -- blog
+    0  -- voucher
+);
+
+
+GO
+INSERT INTO [NotificationSetting] (
+    recieverId,
+    notification_time,
+    notification_status,
+    profile,
+    order_change,
+    attendance,
+    email,
+    service,
+    insurance,
+    category,
+    supplier,
+    parts,
+    setting_change,
+    car_type,
+    campaign,
+    blog,
+    voucher
+)
+VALUES (
+    1, -- recieverId
+    1, -- notification_time
+    1, -- notification_status
+    1, -- profile
+    0, -- order_change
+    0, -- attendance
+    1, -- email
+    0, -- service
+    0, -- insurance
+    0, -- category
+    0, -- supplier
+    0, -- parts
+    1, -- setting_change
+    0, -- car_type
+    0, -- campaign
+    0, -- blog
+    0  -- voucher
+);
+
+GO
+INSERT INTO [NotificationSetting] (
+    recieverId,
+    notification_time,
+    notification_status,
+    profile,
+    order_change,
+    attendance,
+    email,
+    service,
+    insurance,
+    category,
+    supplier,
+    parts,
+    setting_change,
+    car_type,
+    campaign,
+    blog,
+    voucher
+)
+VALUES (
+    2, -- recieverId
+    1, -- notification_time
+    1, -- notification_status
+    1, -- profile
+    1, -- order_change
+    1, -- attendance
+    1, -- email
+    0, -- service
+    1, -- insurance
+    0, -- category
+    0, -- supplier
+    0, -- parts
+    0, -- setting_change
+    0, -- car_type
+    0, -- campaign
+    0, -- blog
+    0  -- voucher
+);
+
+
+GO
+INSERT INTO [NotificationSetting] (
+    recieverId,
+    notification_time,
+    notification_status,
+    profile,
+    order_change,
+    attendance,
+    email,
+    service,
+    insurance,
+    category,
+    supplier,
+    parts,
+    setting_change,
+    car_type,
+    campaign,
+    blog,
+    voucher
+)
+VALUES (
+    3, -- recieverId
+    1, -- notification_time
+    1, -- notification_status
+    1, -- profile
+    1, -- order_change
+    1, -- attendance
+    1, -- email
+    1, -- service
+    0, -- insurance
+    0, -- category
+    0, -- supplier
+    0, -- parts
+    0, -- setting_change
+    1, -- car_type
+    0, -- campaign
+    0, -- blog
+    0  -- voucher
+);
+
+GO
+INSERT INTO [NotificationSetting] (
+    recieverId,
+    notification_time,
+    notification_status,
+    profile,
+    order_change,
+    attendance,
+    email,
+    service,
+    insurance,
+    category,
+    supplier,
+    parts,
+    setting_change,
+    car_type,
+    campaign,
+    blog,
+    voucher
+)
+VALUES (
+    6, -- recieverId
+    1, -- notification_time
+    1, -- notification_status
+    1, -- profile
+    0, -- order_change
+    1, -- attendance
+    0, -- email
+    0, -- service
+    0, -- insurance
+    0, -- category
+    0, -- supplier
+    0, -- parts
+    0, -- setting_change
+    0, -- car_type
+    1, -- campaign
+    1, -- blog
+    1  -- voucher
+);
+GO
+INSERT INTO Service (name, description, price, img) VALUES
+(N'Rửa xe', N'Rửa ngoài', 50000, N'rua_xe_oto.jpg'),
+(N'Vệ sinh nội thất', N'Nội thất sạch', 90000, N've_sinh_noi_that.jpg'),
+(N'Bảo dưỡng tổng thể', N'Bảo dưỡng xe', 200000, N'bao_duong.jpg'),
+(N'Kiểm tra động cơ', N'Kiểm tra chi tiết', 150000, N'bao_duong_dong_co.jpg'),
+(N'Đánh bóng sơn', N'Làm mới ngoại thất', 120000, N'danh_bong.jpg'),
+(N'Thay dầu', N'Dầu nhớt xe', 100000, N'thay_dau.jpg'),
+(N'Lắp lốp mới', N'Lốp chất lượng', 800000, N'thay_nop.jpg'),
+(N'Sửa điện', N'Sửa chữa điện', 90000, N'sua_dien.jpg'),
+(N'Thay ắc quy', N'Ắc quy mới', 350000, N'thay_acquy.jpg'),
+(N'Sửa điều hòa', N'Điều hòa mát', 250000, N'sua_dieuhoa.jpg');
+GO
+
+INSERT INTO PartsService (serviceId, partId) VALUES
+(1,1),(2,2),(3,3),(4,4),(5,5),(6,6),(7,7),(8,8),(9,9),(10,10);
+
+select * from [PartsService]

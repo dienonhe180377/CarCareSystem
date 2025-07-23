@@ -9,34 +9,201 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        :root {
+            --primary-blue: #add8e6;
+            --secondary-blue: #87ceeb;
+            --light-blue: #e6f3ff;
+            --dark-blue: #4682b4;
+            --accent-blue: #b0e0e6;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .main-header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            color: #333;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(173, 216, 230, 0.3);
+            border-radius: 0 0 20px 20px;
+        }
+
+        .main-header h1 {
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .form-section {
+            background: linear-gradient(135deg, #FFFFFF 0%, var(--light-blue) 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(173, 216, 230, 0.2);
+            border: 2px solid var(--accent-blue);
+        }
+
+        .form-section h3 {
+            color: var(--dark-blue);
+            font-weight: bold;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--primary-blue);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            border: none;
+            color: #333;
+            font-weight: bold;
+            padding: 10px 25px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(173, 216, 230, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--secondary-blue) 0%, var(--dark-blue) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(173, 216, 230, 0.4);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            border: none;
+            color: white;
+            font-weight: bold;
+            padding: 10px 25px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--primary-blue) 100%);
+            border: none;
+            color: #333;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            border: none;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
         .table-container {
-            margin-top: 20px;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(173, 216, 230, 0.2);
+            border: 2px solid var(--light-blue);
         }
-        .btn-group {
-            gap: 5px;
+
+        .table-container h3 {
+            color: var(--dark-blue);
+            font-weight: bold;
+            margin-bottom: 20px;
         }
+
+        .table-dark {
+            background: linear-gradient(135deg, var(--dark-blue) 0%, var(--secondary-blue) 100%);
+            color: white;
+        }
+
+        .table-dark th {
+            border-color: var(--primary-blue);
+            font-weight: bold;
+        }
+
+        .table-striped > tbody > tr:nth-of-type(odd) > td {
+            background-color: var(--light-blue);
+        }
+
+        .table-hover > tbody > tr:hover > td {
+            background-color: var(--accent-blue);
+            transition: all 0.3s ease;
+        }
+
+        .badge {
+            font-size: 0.8em;
+            padding: 8px 12px;
+            border-radius: 15px;
+        }
+
+        .badge.bg-info {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%) !important;
+            color: #333;
+        }
+
+        .badge.bg-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%) !important;
+        }
+
+        .badge.bg-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+        }
+
+        .badge.bg-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #d4edda 0%, var(--light-blue) 100%);
+            border-color: var(--primary-blue);
+            color: #155724;
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, #f8d7da 0%, #ffebee 100%);
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 0.2rem rgba(173, 216, 230, 0.25);
+        }
+
+        .form-select:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 0.2rem rgba(173, 216, 230, 0.25);
+        }
+
         .content-preview {
             max-width: 200px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-        .form-section {
-            background-color: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+
+        .btn-group {
+            gap: 5px;
+        }
+
+        .fa-blog, .fa-heading, .fa-campaign, .fa-align-left, .fa-eye {
+            color: var(--secondary-blue);
+            margin-right: 5px;
         }
     </style>
 </head>
 <body>
+    <div class="main-header">
+        <div class="container-fluid">
+            <h1 class="text-center">
+                <i class="fas fa-blog"></i> Quản Lý Blog
+            </h1>
+        </div>
+    </div>
+
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
-                <h1 class="text-center mb-4">
-                    <i class="fas fa-blog"></i> Quản Lý Blog
-                </h1>
-
                 <!-- Thông báo -->
                 <c:if test="${not empty errorMessage}">
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
