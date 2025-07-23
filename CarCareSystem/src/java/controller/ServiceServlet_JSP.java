@@ -69,8 +69,24 @@ public class ServiceServlet_JSP extends HttpServlet {
                         return;
                     }
                     int seid = Integer.parseInt(request.getParameter("id"));
-                    dao.deleteService(seid);
-                    response.sendRedirect("ServiceServlet_JSP");
+                    String confirm = request.getParameter("confirm");
+                    
+                    if (confirm == null || !"true".equals(confirm)) {
+                        // First step: Show confirmation page
+                        Service serviceToDelete = dao.getServiceDetail(seid);
+                        if (serviceToDelete == null) {
+                            request.setAttribute("error", "Không tìm thấy dịch vụ cần xóa.");
+                            response.sendRedirect("ServiceServlet_JSP?service=listService");
+                            return;
+                        }
+                        request.setAttribute("service", serviceToDelete);
+                        request.setAttribute("role", role);
+                        request.getRequestDispatcher("jsp/confirmDeleteService.jsp").forward(request, response);
+                    } else {
+                        // Second step: Actually delete the service
+                        dao.deleteService(seid);
+                        response.sendRedirect("ServiceServlet_JSP?service=listService");
+                    }
                     break;
                 }
                 case "updateService": {
@@ -107,6 +123,12 @@ public class ServiceServlet_JSP extends HttpServlet {
                             errorMsg = "Mô tả phải từ 3 đến 29 ký tự và không chứa ký tự đặc biệt!";
                         } else if (!isValidPrice(priceStr)) {
                             errorMsg = "Giá dịch vụ phải là số nguyên dương nhỏ hơn 1.000.000.000!";
+                        } else {
+                            // Check for duplicate name, but exclude current service
+                            Service existingService = dao.getServiceByName(name);
+                            if (existingService != null && existingService.getId() != id) {
+                                errorMsg = "Tên dịch vụ đã tồn tại! Vui lòng chọn tên khác.";
+                            }
                         }
                         if (errorMsg != null) {
                             double price;
@@ -186,6 +208,8 @@ public class ServiceServlet_JSP extends HttpServlet {
                             errorMsg = "Mô tả phải từ 3 đến 29 ký tự và không chứa ký tự đặc biệt!";
                         } else if (!isValidPrice(priceStr)) {
                             errorMsg = "Giá dịch vụ phải là số nguyên dương nhỏ hơn 1.000.000.000!";
+                        } else if (dao.getServiceByName(name) != null) {
+                            errorMsg = "Tên dịch vụ đã tồn tại! Vui lòng chọn tên khác.";
                         }
                         if (errorMsg != null) {
                             double price;

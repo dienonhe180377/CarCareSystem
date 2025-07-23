@@ -224,7 +224,7 @@
                                 <a class="btn btn-warning" href="ServiceServlet_JSP?service=updateService&id=${se.id}">Sửa</a>
                             </td>
                             <td>
-                                <a class="btn btn-danger" href="ServiceServlet_JSP?service=deleteService&id=${se.id}" onclick="return confirm('Bạn chắc chắn muốn xóa?');">Xóa</a>
+                                <a class="btn btn-danger" href="ServiceServlet_JSP?service=deleteService&id=${se.id}">Xóa</a>
                             </td>
                         </tr>
                     </c:forEach>
