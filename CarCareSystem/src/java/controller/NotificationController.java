@@ -63,27 +63,27 @@ public class NotificationController extends HttpServlet {
                 } else if (notification.getType().equals("Profile")) {
                     request.getRequestDispatcher("/viewProfile").forward(request, response);
                 } else if (notification.getType().equals("Order Change")) {
-                    request.getRequestDispatcher("/viewProfile").forward(request, response);
+                    request.getRequestDispatcher("/ordermanagement").forward(request, response);
                 } else if (notification.getType().equals("Attendance")) {
-                    request.getRequestDispatcher("/viewProfile").forward(request, response);
+                    request.getRequestDispatcher("/attendance").forward(request, response);
                 } else if (notification.getType().equals("Service")) {
-                    request.getRequestDispatcher("/viewProfile").forward(request, response);
+                    request.getRequestDispatcher("/ServiceServlet_JSP").forward(request, response);
                 } else if (notification.getType().equals("Insurance")) {
-                    request.getRequestDispatcher("/viewProfile").forward(request, response);
+                    request.getRequestDispatcher("/insurance").forward(request, response);
                 } else if (notification.getType().equals("Category")) {
                     request.getRequestDispatcher("/CategoryController?service=list").forward(request, response);
                 } else if (notification.getType().equals("Supplier")) {
                     request.getRequestDispatcher("/SupplierController?service=list").forward(request, response);
                 } else if (notification.getType().equals("Setting Change")) {
-                    request.getRequestDispatcher("/viewProfile").forward(request, response);
+                    request.getRequestDispatcher("/admin/settingList").forward(request, response);
                 } else if (notification.getType().equals("Car Type")) {
-                    request.getRequestDispatcher("/viewProfile").forward(request, response);
+                    request.getRequestDispatcher("/manager/carTypeList").forward(request, response);
                 } else if (notification.getType().equals("Campaign")) {
-                    request.getRequestDispatcher("/viewProfile").forward(request, response);
+                    request.getRequestDispatcher("/campaign").forward(request, response);
                 } else if (notification.getType().equals("Blog")) {
-                    request.getRequestDispatcher("/viewProfile").forward(request, response);
+                    request.getRequestDispatcher("/blog").forward(request, response);
                 } else {
-                    request.getRequestDispatcher("/viewProfile").forward(request, response);
+                    request.getRequestDispatcher("/voucher").forward(request, response);
                 }
 
             }
@@ -94,17 +94,17 @@ public class NotificationController extends HttpServlet {
                 ArrayList<Notification> notifications = notificationDAO.getAllNotificationById(userId);
                 session.setAttribute("notification", notifications);
                 if (user.getUserRole().equals("admin")) {
-                    request.getRequestDispatcher("/viewProfile").forward(request, response);
+                    response.sendRedirect(request.getContextPath() + "/dashboard");
                 } else if (user.getUserRole().equals("manager")) {
-                    request.getRequestDispatcher("/viewProfile").forward(request, response);
+                    response.sendRedirect(request.getContextPath() + "/attendance");
                 } else if (user.getUserRole().equals("repairer")) {
-                    request.getRequestDispatcher("/viewProfile").forward(request, response);
+                    response.sendRedirect(request.getContextPath() + "/ordermanagement");
                 } else if (user.getUserRole().equals("customer")) {
-                    request.getRequestDispatcher("/viewProfile").forward(request, response);
+                    response.sendRedirect(request.getContextPath() + "/home");
                 } else if (user.getUserRole().equals("warehouse manager")) {
-                    request.getRequestDispatcher("/PartController?service=list").forward(request, response);
+                    response.sendRedirect(request.getContextPath() + "/PartController?service=list");
                 } else {
-                    request.getRequestDispatcher("/viewProfile").forward(request, response);
+                    response.sendRedirect(request.getContextPath() + "/blog");
                 }
             }
 
@@ -125,11 +125,128 @@ public class NotificationController extends HttpServlet {
                 String blog = request.getParameter("blog");
                 String voucher = request.getParameter("voucher");
                 String email = request.getParameter("email");
-
                 int successCheck = notificationDAO.editNotificationSetting(user.getId(), notiTime, notiStatus, profile, order, attendance, email, serviceChanges, insurance, category, supplier, part, settingChange, carType, campaign, blog, voucher);
-                
-                
-                
+                ArrayList<Notification> notifications = notificationDAO.getAllNotificationById(user.getId());
+                NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(user.getId());
+                if (!notiSetting.isProfile()) {
+                    for (int i = notifications.size() - 1; i >= 0; i--) {
+                        if (notifications.get(i).getType().equals("Profile")) {
+                            notifications.remove(i);
+                        }
+                    }
+                }
+
+                if (!notiSetting.isOrderChange()) {
+                    for (int i = notifications.size() - 1; i >= 0; i--) {
+                        if (notifications.get(i).getType().equals("Order Change")) {
+                            notifications.remove(i);
+                        }
+                    }
+                }
+
+                if (!notiSetting.isAttendance()) {
+                    for (int i = notifications.size() - 1; i >= 0; i--) {
+                        if (notifications.get(i).getType().equals("Attendance")) {
+                            notifications.remove(i);
+                        }
+                    }
+                }
+
+                if (!notiSetting.isService()) {
+                    for (int i = notifications.size() - 1; i >= 0; i--) {
+                        if (notifications.get(i).getType().equals("Service")) {
+                            notifications.remove(i);
+                        }
+                    }
+                }
+
+                if (!notiSetting.isInsurance()) {
+                    for (int i = notifications.size() - 1; i >= 0; i--) {
+                        if (notifications.get(i).getType().equals("Insurance")) {
+                            notifications.remove(i);
+                        }
+                    }
+                }
+
+                if (!notiSetting.isCategory()) {
+                    for (int i = notifications.size() - 1; i >= 0; i--) {
+                        if (notifications.get(i).getType().equals("Category")) {
+                            notifications.remove(i);
+                        }
+                    }
+                }
+
+                if (!notiSetting.isSupplier()) {
+                    for (int i = notifications.size() - 1; i >= 0; i--) {
+                        if (notifications.get(i).getType().equals("Supplier")) {
+                            notifications.remove(i);
+                        }
+                    }
+                }
+
+                if (!notiSetting.isParts()) {
+                    for (int i = notifications.size() - 1; i >= 0; i--) {
+                        if (notifications.get(i).getType().equals("Part")) {
+                            notifications.remove(i);
+                        }
+                    }
+                }
+
+                if (!notiSetting.isSettingChange()) {
+                    for (int i = notifications.size() - 1; i >= 0; i--) {
+                        if (notifications.get(i).getType().equals("Setting Change")) {
+                            notifications.remove(i);
+                        }
+                    }
+                }
+
+                if (!notiSetting.isCarType()) {
+                    for (int i = notifications.size() - 1; i >= 0; i--) {
+                        if (notifications.get(i).getType().equals("Car Type")) {
+                            notifications.remove(i);
+                        }
+                    }
+                }
+
+                if (!notiSetting.isCampaign()) {
+                    for (int i = notifications.size() - 1; i >= 0; i--) {
+                        if (notifications.get(i).getType().equals("Campaign")) {
+                            notifications.remove(i);
+                        }
+                    }
+                }
+
+                if (!notiSetting.isBlog()) {
+                    for (int i = notifications.size() - 1; i >= 0; i--) {
+                        if (notifications.get(i).getType().equals("Blog")) {
+                            notifications.remove(i);
+                        }
+                    }
+                }
+
+                if (!notiSetting.isVoucher()) {
+                    for (int i = notifications.size() - 1; i >= 0; i--) {
+                        if (notifications.get(i).getType().equals("Voucher")) {
+                            notifications.remove(i);
+                        }
+                    }
+                }
+
+                session.setAttribute("notification", notifications);
+                session.setAttribute("notiSetting", notiSetting);
+                if (user.getUserRole().equals("admin")) {
+                    response.sendRedirect(request.getContextPath() + "/dashboard");
+                } else if (user.getUserRole().equals("manager")) {
+                    response.sendRedirect(request.getContextPath() + "/attendance");
+                } else if (user.getUserRole().equals("repairer")) {
+                    response.sendRedirect(request.getContextPath() + "/ordermanagement");
+                } else if (user.getUserRole().equals("customer")) {
+                    response.sendRedirect(request.getContextPath() + "/home");
+                } else if (user.getUserRole().equals("warehouse manager")) {
+                    response.sendRedirect(request.getContextPath() + "/PartController?service=list");
+                } else {
+                    response.sendRedirect(request.getContextPath() + "/blog");
+                }
             }
 
         }

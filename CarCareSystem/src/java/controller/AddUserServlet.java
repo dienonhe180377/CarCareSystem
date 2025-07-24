@@ -98,6 +98,7 @@ public class AddUserServlet extends HttpServlet {
         User newUser = new User(0, username, password, email, phone, address, createDate, role);
         
         boolean success = uDao.addUser(newUser);
+        
         if(success){
             response.sendRedirect(request.getContextPath() + "/admin/userList");
         } else{

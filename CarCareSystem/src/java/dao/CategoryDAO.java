@@ -137,7 +137,7 @@ public class CategoryDAO extends DBConnection{
             int successCheck = pre.executeUpdate();
             return successCheck;
         } catch (Exception e) {
-            throw e;
+            return 0;
         } finally {
             closeConnection(conn);
             closePreparedStatement(pre);
@@ -163,7 +163,7 @@ public class CategoryDAO extends DBConnection{
             int success = pre.executeUpdate();
             return success;
         } catch (Exception e) {
-            throw e;
+            return 0;
         } finally {
             closeConnection(conn);
             closePreparedStatement(pre);

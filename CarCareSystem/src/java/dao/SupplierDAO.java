@@ -93,7 +93,7 @@ public class SupplierDAO extends DBConnection {
             int successCheck = pre.executeUpdate();
             return successCheck;
         } catch (Exception e) {
-            throw e;
+            return 0;
         } finally {
             closeConnection(conn);
             closePreparedStatement(pre);

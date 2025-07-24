@@ -28,17 +28,25 @@ public class NotificationSetting {
     private boolean blog;
     private boolean voucher;
 
-    //Warehouse manager constructor
-    public NotificationSetting(int id, User reciever, boolean notificationTime, boolean notificationStatus, boolean profile, boolean email, boolean category, boolean supplier, boolean parts) {
+    public NotificationSetting(int id, User reciever, boolean notificationTime, boolean notificationStatus, boolean profile, boolean orderChange, boolean attendance, boolean email, boolean service, boolean insurance, boolean category, boolean supplier, boolean parts, boolean settingChange, boolean carType, boolean campaign, boolean blog, boolean voucher) {
         this.id = id;
         this.reciever = reciever;
         this.notificationTime = notificationTime;
         this.notificationStatus = notificationStatus;
         this.profile = profile;
+        this.orderChange = orderChange;
+        this.attendance = attendance;
         this.email = email;
+        this.service = service;
+        this.insurance = insurance;
         this.category = category;
         this.supplier = supplier;
         this.parts = parts;
+        this.settingChange = settingChange;
+        this.carType = carType;
+        this.campaign = campaign;
+        this.blog = blog;
+        this.voucher = voucher;
     }
 
     public int getId() {
@@ -184,11 +192,14 @@ public class NotificationSetting {
     public void setVoucher(boolean voucher) {
         this.voucher = voucher;
     }
+    
+    
 
     @Override
     public String toString() {
-        return "NotificationSetting{" + "id=" + id + ", reciever=" + reciever + ", notificationTime=" + notificationTime + ", notificationStatus=" + notificationStatus + ", profile=" + profile + ", orderChange=" + orderChange + ", attendance=" + attendance + ", email=" + email + ", service=" + service + ", insurance=" + insurance + ", category=" + category + ", supplier=" + supplier + ", parts=" + parts + ", settingChange=" + settingChange + ", carType=" + carType + ", campaign=" + campaign + ", blog=" + blog + ", voucher=" + voucher + '}' + "\n";
+        return "NotificationSetting{" + "id=" + id + ", reciever=" + reciever + ", notificationTime=" + notificationTime + ", notificationStatus=" + notificationStatus + ", profile=" + profile + ", orderChange=" + orderChange + ", attendance=" + attendance + ", email=" + email + ", service=" + service + ", insurance=" + insurance + ", category=" + category + ", supplier=" + supplier + ", parts=" + parts + ", settingChange=" + settingChange + ", carType=" + carType + ", campaign=" + campaign + ", blog=" + blog + ", voucher=" + voucher + '}';
     }
+
     
     
 }

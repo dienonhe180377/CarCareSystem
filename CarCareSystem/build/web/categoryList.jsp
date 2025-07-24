@@ -12,21 +12,21 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </head>
     <body>
-        
+
         <jsp:include page="header_emp.jsp"></jsp:include>
-        
-        <div class="wrap">
-            <div class="heading">
-                <h1>Categories</h1>
-                <div class="search-box">
-                    <form>
-                        <input type="search" name="search" placeholder="Tìm Categories" <c:if test="${not empty categorySearch}">value="${categorySearch}"</c:if>/>
+
+            <div class="wrap">
+                <div class="heading">
+                    <h1>Categories</h1>
+                    <div class="search-box">
+                        <form>
+                            <input type="search" name="search" placeholder="Tìm Categories" <c:if test="${not empty categorySearch}">value="${categorySearch}"</c:if>/>
                             <input type="hidden" name="service" value="search"/>
                             <button type="submit">Tìm Kiếm</button>
                         </form>
                     </div>
                 </div>
-                
+
                 <div class="main-columns">
                     <!--ADD-->
                     <div class="left-column">
@@ -75,7 +75,7 @@
 
                 <!--TABLE-->
                 <div class="right-column">
-                    
+
                     <div class="bulk-actions">
                         <select name="bulk-action-top" id="bulk-action-top" onchange="filterRedirect(this.value)">
                             <option value="all" <c:if test="${not empty all}">selected</c:if>>Tất cả trạng thái</option>
@@ -195,6 +195,20 @@
                         });
                     </script>
                 </c:if>
+                <c:if test="${editCheck == 0}">
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Có Lỗi Xảy Ra Hoặc Category Đã Tồn Tại!',
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(() => {
+                                window.location.href = '${contextPath}/CategoryController?service=list';
+                            });
+                        });
+                    </script>
+                </c:if>
             </div>
         </div>
 
@@ -213,7 +227,7 @@
                     if (ok) {
                         const rawId = this.id;                   // e.g. "delete-btn-123"
                         const categoryId = rawId.split('delete-btn-')[1];
-                        
+
                         window.location.href = '${contextPath}/CategoryController?service=delete&categoryId=' + categoryId;
                     }
                 });

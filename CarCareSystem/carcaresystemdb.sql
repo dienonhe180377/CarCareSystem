@@ -33,7 +33,7 @@ GO
 -- 4. Bảng Category
 CREATE TABLE Category (
     id     INT          IDENTITY(1,1) PRIMARY KEY,
-    name   NVARCHAR(100) NOT NULL,
+    name   NVARCHAR(100) NOT NULL UNIQUE,
     status BIT          NOT NULL DEFAULT 1
 );
 GO
@@ -328,7 +328,7 @@ VALUES
            (N'manager01', N'123', N'manager@example.com', N'0900000002', N'Hồ Chí Minh', GETDATE(), N'manager'),
            (N'repairer01', N'123', N'repairer@example.com', N'0900000003', N'Đà Nẵng', GETDATE(), N'repairer'),
            (N'customer01', N'123', N'customer@example.com', N'0900000004', N'Cần Thơ', GETDATE(), N'customer'),
-           (N'warehouse01', N'123', N'warehouse@example.com', N'0900000005', N'Bình Dương', GETDATE(), N'warehouse manager'),
+           (N'warehouse01', N'123', N'ongdien4@gmail.com', N'0900000005', N'Bình Dương', GETDATE(), N'warehouse manager'),
            (N'marketing01', N'123', N'marketing@example.com', N'0900000006', N'Nha Trang', GETDATE(), N'marketing');
 GO
 
