@@ -433,7 +433,6 @@ CREATE TABLE [Setting] (
 );
 GO
 
-
 select * from [Order]
 
 INSERT INTO [Setting] (name, value) VALUES 

@@ -315,7 +315,6 @@ public class OrderServlet extends HttpServlet {
                 session.setAttribute("appointmentDate", appointmentDate);
                 session.setAttribute("totalPrice", price);
                 session.setAttribute("paymentStatus", paymentStatus);
-                response.sendRedirect("GenerateQRCode?orderId=" + orderId);
                 DecimalFormat df = new DecimalFormat("#");
                 String priceFormatted = df.format(price);
                 response.sendRedirect("GenerateQRCode?orderId=" + orderId 
