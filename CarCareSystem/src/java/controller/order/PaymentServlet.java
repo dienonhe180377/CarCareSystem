@@ -34,19 +34,58 @@ public class PaymentServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        String orderIdParam = request.getParameter("orderId");
+        
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet PaymentServlet</title>");  
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet PaymentServlet at " + request.getContextPath () + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+            if (orderIdParam == null || orderIdParam.isEmpty()) {
+                out.print("{\"success\":false,\"message\":\"Thiếu thông tin đơn hàng\"}");
+                return;
+            }
+            
+            int orderId = Integer.parseInt(orderIdParam);
+            OrderDAO dao = new OrderDAO();
+            Order order = dao.getOrderById(orderId);
+            
+            if (order == null) {
+                out.print("{\"success\":false,\"message\":\"Không tìm thấy đơn hàng\"}");
+                return;
+            }
+            
+            // Kiểm tra quyền truy cập
+            boolean hasPermission = checkPaymentPermission(user, session, order);
+            if (!hasPermission) {
+                out.print("{\"success\":false,\"message\":\"Bạn không có quyền thanh toán đơn này\"}");
+                return;
+            }
+            
+            
+            boolean success = dao.updatePaymentStatus(orderId, "Đã thanh toán");
+            
+            if (success) {
+                out.print("{\"success\":true,\"redirectUrl\":\"success.jsp?orderId=" + orderId + "\"}");
+                
+                session.removeAttribute("currentOrderId");
+            } else {
+                out.print("{\"success\":false,\"message\":\"Cập nhật thanh toán thất bại\"}");
+            }
+            
+        } catch (Exception e) {
+            response.getWriter().print("{\"success\":false,\"message\":\"Lỗi hệ thống: " + e.getMessage() + "\"}");
         }
-    } 
+        
+    }
+    
+    private boolean checkPaymentPermission(User user, HttpSession session, Order order) {
+        if (user != null) {
+            return order.getEmail().equalsIgnoreCase(user.getEmail());
+        } else {
+            Integer sessionOrderId = (Integer) session.getAttribute("currentOrderId");
+            return sessionOrderId != null && sessionOrderId == order.getId();
+        }
+    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 
@@ -72,59 +111,7 @@ public class PaymentServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-//        processRequest(request, response);
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
-        
-        String orderIdParam = request.getParameter("orderId");
-        if (orderIdParam == null || orderIdParam.isEmpty()) {
-            request.setAttribute("message", "Thiếu thông tin đơn hàng");
-            request.getRequestDispatcher("/views/order/payment.jsp").forward(request, response);
-            return;
-        }
-        
-        try {
-            int orderId = Integer.parseInt(orderIdParam);
-            OrderDAO dao = new OrderDAO();
-            Order order = dao.getOrderById(orderId);
-            if (order == null) {
-                request.setAttribute("message", "Không tìm thấy đơn hàng với ID: " + orderId);
-                request.getRequestDispatcher("/views/order/payment.jsp").forward(request, response);
-                return;
-            }
-            
-            boolean hasPermission = false;
-        
-            if (user != null) {
-                hasPermission = order.getEmail().equalsIgnoreCase(user.getEmail());
-            } else {
-                Integer sessionOrderId = (Integer) session.getAttribute("currentOrderId");
-                hasPermission = sessionOrderId != null && sessionOrderId == orderId;
-            }
-        
-            if (!hasPermission) {
-                request.setAttribute("message", "Bạn không có quyền thanh toán đơn này");
-                request.getRequestDispatcher("/views/order/payment.jsp").forward(request, response);
-                return;
-            }
-            
-            boolean success = dao.updatePaymentStatus(orderId, "Đã thanh toán");
-            
-            if (success) {
-                request.setAttribute("currentOrderId", orderId);
-                request.setAttribute("appointmentDate", order.getAppointmentDate());
-                request.setAttribute("totalPrice", order.getPrice());
-                request.setAttribute("paymentStatus", "Đã thanh toán");
-                
-                request.getRequestDispatcher("/views/order/success.jsp").forward(request, response);
-            } else {
-                request.setAttribute("message", "Cập nhật thanh toán thất bại");
-                request.getRequestDispatcher("/views/order/payment.jsp").forward(request, response);
-            }
-        } catch (Exception e) {
-            request.setAttribute("message", "Lỗi hệ thống: " + e.getMessage());
-            request.getRequestDispatcher("/views/order/payment.jsp").forward(request, response);
-        }
+        processRequest(request, response);            
     }
     
     /** 

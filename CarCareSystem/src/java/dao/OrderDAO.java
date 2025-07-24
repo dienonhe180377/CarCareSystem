@@ -74,14 +74,14 @@ public class OrderDAO extends DBConnection {
         }
     }
     
-    public Order getOrderById(int orderId) throws SQLException{
+    public Order getOrderById(int orderId) throws SQLException {
         String sql = "SELECT "
-               + "o.id, o.name, o.email, o.phone, o.address, "
-               + "o.appointmentDate, o.price, o.paymentStatus, o.orderStatus, o.paymentMethod, "
-               + "ct.id AS car_type_id, ct.name AS car_type_name "
-               + "FROM [Order] o "
-               + "LEFT JOIN CarType ct ON o.carTypeId = ct.id "
-               + "WHERE o.id = ?";
+                + "o.id, o.name, o.email, o.phone, o.address, "
+                + "o.appointmentDate, o.price, o.paymentStatus, o.orderStatus, o.paymentMethod, "
+                + "ct.id AS car_type_id, ct.name AS car_type_name "
+                + "FROM [Order] o "
+                + "LEFT JOIN CarType ct ON o.carTypeId = ct.id "
+                + "WHERE o.id = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, orderId);
@@ -89,13 +89,12 @@ public class OrderDAO extends DBConnection {
 
             if (rs.next()) {
                 Order order = new Order();
-            
                 order.setId(rs.getInt("id"));
                 order.setName(rs.getString("name"));
                 order.setEmail(rs.getString("email"));
                 order.setPhone(rs.getString("phone"));
                 order.setAddress(rs.getString("address"));
-                order.setAppointmentDate(rs.getTimestamp("appointmentDate"));
+                order.setAppointmentDate(rs.getDate("appointmentDate"));
                 order.setPrice(rs.getDouble("price"));
                 order.setPaymentStatus(rs.getString("paymentStatus"));
                 order.setOrderStatus(rs.getString("orderStatus"));
@@ -110,11 +109,12 @@ public class OrderDAO extends DBConnection {
                 order.setParts(getPartsForOrder(orderId));
 
                 return order;
+            } else {
+                throw new SQLException("Không tìm thấy đơn hàng với ID: " + orderId);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new SQLException("Lỗi khi lấy thông tin đơn hàng: " + e.getMessage(), e);
         }
-        return null;
     }
     
     private ArrayList<Service> getServicesForOrder(int orderId) throws SQLException {
@@ -123,22 +123,49 @@ public class OrderDAO extends DBConnection {
                     + "FROM OrderService os "
                     + "JOIN Service s ON os.serviceId = s.id "
                     + "WHERE os.orderId = ?";
-    
+
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, orderId);
             ResultSet rs = stmt.executeQuery();
-        
+    
             while (rs.next()) {
                 Service service = new Service();
                 service.setId(rs.getInt("id"));
                 service.setName(rs.getString("name"));
                 service.setDescription(rs.getString("description"));
                 service.setPrice(rs.getDouble("price"));
+            
+                service.setParts(getPartsForService(service.getId()));
+            
                 services.add(service);
             }
         }
         return services;
     }
+    
+    private ArrayList<Part> getPartsForService(int serviceId) throws SQLException {
+        ArrayList<Part> parts = new ArrayList<>();
+        String sql = "SELECT p.id, p.name, p.price "
+                    + "FROM PartsService ps "
+                    + "JOIN Parts p ON ps.partId = p.id "
+                    + "WHERE ps.serviceId = ?";
+    
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, serviceId);
+            ResultSet rs = stmt.executeQuery();
+    
+            while (rs.next()) {
+                Part part = new Part(
+                    rs.getInt("id"),
+                    rs.getString("name"),
+                    rs.getDouble("price")
+                );
+                parts.add(part);
+            }
+        }
+        return parts;
+    }
+
 
     private ArrayList<Part> getPartsForOrder(int orderId) throws SQLException {
         ArrayList<Part> parts = new ArrayList<>();
@@ -184,7 +211,7 @@ public class OrderDAO extends DBConnection {
                 order.setPhone(rs.getString("phone"));
                 order.setAddress(rs.getString("address"));
                 order.setCreatedDate(rs.getTimestamp("createDate"));
-                order.setAppointmentDate(rs.getTimestamp("appointmentDate"));
+                order.setAppointmentDate(rs.getDate("appointmentDate"));
                 order.setPrice(rs.getDouble("price"));
                 order.setPaymentStatus(rs.getString("paymentStatus"));
                 order.setOrderStatus(rs.getString("orderStatus"));
@@ -221,7 +248,7 @@ public class OrderDAO extends DBConnection {
                 order.setPhone(rs.getString("phone"));
                 order.setAddress(rs.getString("address"));
                 order.setCreatedDate(rs.getTimestamp("createDate"));
-                order.setAppointmentDate(rs.getTimestamp("appointmentDate"));
+                order.setAppointmentDate(rs.getDate("appointmentDate"));
                 order.setPrice(rs.getDouble("price"));
                 order.setPaymentStatus(rs.getString("paymentStatus"));
                 order.setOrderStatus(rs.getString("orderStatus"));
@@ -238,6 +265,7 @@ public class OrderDAO extends DBConnection {
         return orders;
     }
 
+    
     public ArrayList<Order> getOrdersByStatus(String status) throws SQLException {
         ArrayList<Order> orders = new ArrayList<>();
         String sql = "SELECT o.id, o.name, o.email, o.phone, o.address, o.createDate, "
@@ -260,7 +288,7 @@ public class OrderDAO extends DBConnection {
                 order.setPhone(rs.getString("phone"));
                 order.setAddress(rs.getString("address"));
                 order.setCreatedDate(rs.getTimestamp("createDate"));
-                order.setAppointmentDate(rs.getTimestamp("appointmentDate"));
+                order.setAppointmentDate(rs.getDate("appointmentDate"));
                 order.setPrice(rs.getDouble("price"));
                 order.setPaymentStatus(rs.getString("paymentStatus"));
                 order.setOrderStatus(rs.getString("orderStatus"));
@@ -271,6 +299,10 @@ public class OrderDAO extends DBConnection {
                 carType.setName(rs.getString("car_type_name"));
                 order.setCarType(carType);
 
+                int orderId = order.getId();
+                order.setServices(getServicesForOrder(orderId));
+                order.setParts(getPartsForOrder(orderId));
+                
                 orders.add(order);
             }
         }
@@ -299,7 +331,7 @@ public class OrderDAO extends DBConnection {
                 order.setPhone(rs.getString("phone"));
                 order.setAddress(rs.getString("address"));
                 order.setCreatedDate(rs.getTimestamp("createDate"));
-                order.setAppointmentDate(rs.getTimestamp("appointmentDate"));
+                order.setAppointmentDate(rs.getDate("appointmentDate"));
                 order.setPrice(rs.getDouble("price"));
                 order.setPaymentStatus(rs.getString("paymentStatus"));
                 order.setOrderStatus(rs.getString("orderStatus"));
@@ -349,7 +381,7 @@ public class OrderDAO extends DBConnection {
                 order.setPhone(rs.getString("phone"));
                 order.setAddress(rs.getString("address"));
                 order.setCreatedDate(rs.getTimestamp("createDate"));
-                order.setAppointmentDate(rs.getTimestamp("appointmentDate"));
+                order.setAppointmentDate(rs.getDate("appointmentDate"));
                 order.setPrice(rs.getDouble("price"));
                 order.setPaymentStatus(rs.getString("paymentStatus"));
                 order.setOrderStatus(rs.getString("orderStatus"));
@@ -365,6 +397,20 @@ public class OrderDAO extends DBConnection {
         }
         return orders;
     }
+    
+    public String getPaymentStatus(int orderId) {
+    String sql = "SELECT paymentStatus FROM Order WHERE id = ?";
+    try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        stmt.setInt(1, orderId);
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+            return rs.getString("paymentStatus");
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return null;
+}
 
     public boolean updateOrderStatus(int orderId, String newStatus) {
         String sql = "UPDATE [Order] SET orderStatus = ? WHERE id = ?";

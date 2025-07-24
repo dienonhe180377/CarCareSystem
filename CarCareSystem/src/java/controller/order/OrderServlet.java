@@ -19,7 +19,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.sql.*;
 
 /**
  *
@@ -172,7 +171,11 @@ public class OrderServlet extends HttpServlet {
                 session.setAttribute("appointmentDate", appointmentDate);
                 session.setAttribute("totalPrice", price);
                 session.setAttribute("paymentStatus", paymentStatus);
-                request.getRequestDispatcher("/views/order/payment.jsp").forward(request, response);
+                response.sendRedirect("GenerateQRCode?orderId=" + orderId 
+                        + "&totalAmount=" + price
+                        + "&bankAccount=1013367685"
+                        + "&bankName=Vietcombank"
+                        + "&accountName=TRAN THANH HAI");
             } else {
                 request.setAttribute("currentOrderId", orderId);
                 request.setAttribute("appointmentDate", appointmentDate);
