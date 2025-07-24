@@ -1,21 +1,37 @@
 package controller;
 
 import dao.InsTypeDAO;
+import dao.NotificationDAO;
+import dao.UserDAO;
 import entity.InsuranceType;
+import entity.Notification;
+import entity.NotificationSetting;
 import entity.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import util.SendMailService;
 
 @WebServlet(name = "InsTypeServlet", urlPatterns = {"/instype"})
 public class InsTypeServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, Exception {
+//NOTIFICATION
+        UserDAO userDAO = new UserDAO();
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        NotificationDAO notificationDAO = new NotificationDAO();
+//NOTIFICATION
         InsTypeDAO dao = new InsTypeDAO();
         String action = request.getParameter("action");
         if (action == null) {
@@ -106,6 +122,130 @@ public class InsTypeServlet extends HttpServlet {
                 } else {
                     InsuranceType type = new InsuranceType(name, description, price);
                     dao.addInsuranceType(type);
+
+                    //NOTIFICATION ADD INSURANCE
+                    String message = "Bảo hiểm " + name + " vừa được thêm vào hệ thống";
+
+                    List<User> users = userDAO.getAllUser();
+                    for (int i = 0; i < users.size(); i++) {
+                        if (users.get(i).getUserRole().equals("manager")) {
+                            NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(users.get(i).getId());
+                            if (notiSetting.isEmail() && notiSetting.isInsurance()) {
+                                SendMailService.sendNotification(users.get(i).getEmail(), message);
+                            }
+                            int addNoti = notificationDAO.addNotification(users.get(i).getId(), message, "Insurance");
+                        }
+                    }
+                    ArrayList<Notification> notifications = notificationDAO.getAllNotificationById(user.getId());
+                    NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(user.getId());
+                    if (!notiSetting.isProfile()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Profile")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isOrderChange()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Order Change")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isAttendance()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Attendance")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isService()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Service")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isInsurance()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Insurance")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isCategory()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Category")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isSupplier()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Supplier")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isParts()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Part")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isSettingChange()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Setting Change")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isCarType()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Car Type")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isCampaign()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Campaign")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isBlog()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Blog")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isVoucher()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Voucher")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    session.setAttribute("notification", notifications);
+                    session.setAttribute("notiSetting", notiSetting);
+//                        NOTIFICATION
+
                     response.sendRedirect("instype?action=list");
                 }
             }
@@ -149,11 +289,261 @@ public class InsTypeServlet extends HttpServlet {
             } else {
                 InsuranceType type = new InsuranceType(id, name, description, price);
                 dao.updateInsuranceType(type);
+
+                //NOTIFICATION EDIT INSURANCE
+                
+                String message = "Bảo hiểm " + name + " vừa được sửa";
+
+                    List<User> users = userDAO.getAllUser();
+                    for (int i = 0; i < users.size(); i++) {
+                        if (users.get(i).getUserRole().equals("manager")) {
+                            NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(users.get(i).getId());
+                            if (notiSetting.isEmail() && notiSetting.isInsurance()) {
+                                SendMailService.sendNotification(users.get(i).getEmail(), message);
+                            }
+                            int addNoti = notificationDAO.addNotification(users.get(i).getId(), message, "Insurance");
+                        }
+                    }
+                    ArrayList<Notification> notifications = notificationDAO.getAllNotificationById(user.getId());
+                    NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(user.getId());
+                    if (!notiSetting.isProfile()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Profile")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isOrderChange()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Order Change")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isAttendance()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Attendance")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isService()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Service")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isInsurance()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Insurance")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isCategory()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Category")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isSupplier()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Supplier")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isParts()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Part")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isSettingChange()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Setting Change")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isCarType()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Car Type")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isCampaign()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Campaign")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isBlog()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Blog")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isVoucher()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Voucher")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    session.setAttribute("notification", notifications);
+                    session.setAttribute("notiSetting", notiSetting);
+//                        NOTIFICATION
+                
                 response.sendRedirect("instype?action=list");
             }
         } else if (canEdit && action.equals("delete")) {
             int id = Integer.parseInt(request.getParameter("id"));
             dao.deleteInsuranceType(id);
+
+            //NOTIFICATION DELETE INSURANCE
+            
+            String message = "Bảo hiểm Id " + id + " vừa bị xóa khỏi hệ thống";
+
+                    List<User> users = userDAO.getAllUser();
+                    for (int i = 0; i < users.size(); i++) {
+                        if (users.get(i).getUserRole().equals("manager")) {
+                            NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(users.get(i).getId());
+                            if (notiSetting.isEmail() && notiSetting.isInsurance()) {
+                                SendMailService.sendNotification(users.get(i).getEmail(), message);
+                            }
+                            int addNoti = notificationDAO.addNotification(users.get(i).getId(), message, "Insurance");
+                        }
+                    }
+                    ArrayList<Notification> notifications = notificationDAO.getAllNotificationById(user.getId());
+                    NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(user.getId());
+                    if (!notiSetting.isProfile()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Profile")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isOrderChange()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Order Change")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isAttendance()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Attendance")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isService()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Service")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isInsurance()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Insurance")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isCategory()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Category")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isSupplier()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Supplier")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isParts()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Part")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isSettingChange()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Setting Change")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isCarType()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Car Type")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isCampaign()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Campaign")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isBlog()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Blog")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isVoucher()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Voucher")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    session.setAttribute("notification", notifications);
+                    session.setAttribute("notiSetting", notiSetting);
+//                        NOTIFICATION
+            
             response.sendRedirect("instype?action=list");
 
         } else {
@@ -165,12 +555,20 @@ public class InsTypeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(InsTypeServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(InsTypeServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

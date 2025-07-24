@@ -61,6 +61,10 @@ public class SupplierController extends HttpServlet {
             NotificationDAO notificationDAO = new NotificationDAO();
 //NOTIFICATION
 
+            if(!user.getUserRole().equals("warehouse manager")){
+                response.sendRedirect("filterPage.jsp");
+            }
+
             if (service.equals("list")) {
                 ArrayList<Supplier> suppliers = supplierDAO.getAllSupplier();
                 request.setAttribute("supplierList", suppliers);

@@ -76,7 +76,7 @@ public class UserDAO extends DBConnection {
         return null;
     }
 
-    public User checkUserExist(String username) {
+    public User checkUserExistByUserName(String username) {
         String sql = "SELECT *\n"
                 + "FROM [User]\n"
                 + "WHERE username = ?";
@@ -97,6 +97,47 @@ public class UserDAO extends DBConnection {
         }
         return null;
     }
+    
+    public User checkUserExistByEmail(String email) {
+        String sql = "SELECT * FROM [User] WHERE email = ?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, email);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                User u = new User();
+                u.setId(rs.getInt("id"));
+                u.setUsername(rs.getString("username"));
+                u.setEmail(rs.getString("email"));
+                u.setUserRole(rs.getString("role"));
+                return u;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error in checkUserExistByEmail: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public User checkUserExistByPhone(String phone) {
+        String sql = "SELECT * FROM [User] WHERE phone = ?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, phone);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                User u = new User();
+                u.setId(rs.getInt("id"));
+                u.setUsername(rs.getString("username"));
+                u.setEmail(rs.getString("email"));
+                u.setUserRole(rs.getString("role"));
+                return u;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error in checkUserExistByPhone: " + e.getMessage());
+        }
+        return null;
+    }
+
 
     public void registerUser(String username, String password, String email, String phone, String address) {
         String sql = "INSERT INTO [User](username, password, email, phone, address, role) VALUES (?, ?, ?, ?, ?, 'customer')";
@@ -212,6 +253,30 @@ public class UserDAO extends DBConnection {
         return false;
     }
 
+    public boolean isEmailTaken(String email) {
+        String sql = "SELECT 1 FROM [User] WHERE email = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean isPhoneTaken(String phone) {
+        String sql = "SELECT 1 FROM [User] WHERE phone = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, phone);
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
     public List<User> searchUsersByName(String keyword) {
         List<User> list = new ArrayList<>();
         String sql = "SELECT * FROM [User] WHERE username LIKE ?";
@@ -261,6 +326,21 @@ public class UserDAO extends DBConnection {
             ps.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Error in deleteUser: " + e.getMessage());
+        }
+    }
+    
+    public void registerUserFromGoogle(String email, String name) {
+        String username = email.split("@")[0];
+        String password = "google_temp_password"; // Nên tạo password ngẫu nhiên
+        String sql = "INSERT INTO [User](username, password, email, role) VALUES (?, ?, ?, 'customer')";
+
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
+            st.setString(1, username);
+            st.setString(2, password);
+            st.setString(3, email);
+            st.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Error registering Google user: " + e.getMessage());
         }
     }
 }

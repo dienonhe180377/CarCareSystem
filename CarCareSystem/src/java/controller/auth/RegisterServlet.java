@@ -47,14 +47,35 @@ public class RegisterServlet extends HttpServlet {
             request.setAttribute("email", email);
             request.setAttribute("phone", phone);
             request.setAttribute("address", address);
+            
             request.getRequestDispatcher("/views/auth/register.jsp").forward(request, response);
             return;
         }
         
         // Check if user already exists
-        User user = udao.checkUserExist(userName);
+        User user = udao.checkUserExistByUserName(userName);
         if(user != null){
             request.setAttribute("error", "User đã tồn tại!!!");
+            request.getRequestDispatcher("views/auth/register.jsp").forward(request, response);
+            return;
+        }
+        
+        if (!isValidPassword(passWord)) {
+            request.setAttribute("error", "Mật khẩu phải có ít nhất 8 ký tự, chữ cái đầu viết hoa và chứa ký tự đặc biệt.");
+            request.getRequestDispatcher("views/auth/register.jsp").forward(request, response);
+            return;
+        }
+        
+        user = udao.checkUserExistByEmail(email);
+        if(user != null){
+            request.setAttribute("error", "Email đã tồn tại!!!");
+            request.getRequestDispatcher("views/auth/register.jsp").forward(request, response);
+            return;
+        }
+        
+        user = udao.checkUserExistByPhone(phone);
+        if(user != null){
+            request.setAttribute("error", "Phone đã tồn tại!!!");
             request.getRequestDispatcher("views/auth/register.jsp").forward(request, response);
             return;
         }
@@ -80,7 +101,13 @@ public class RegisterServlet extends HttpServlet {
             request.setAttribute("error", "Không thể gửi OTP đến email của bạn.");
             request.getRequestDispatcher("/views/auth/register.jsp").forward(request, response);
         }
-    } 
+    }
+    
+    private boolean isValidPassword(String password) {
+        String regex = "^[A-Z][A-Za-z0-9!@#$%^&*()_+=<>?{}\\[\\]-]{7,}$";
+        return password != null && password.matches(regex);
+    }
+
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 

@@ -141,7 +141,7 @@ public class EditCarTypeServlet extends HttpServlet {
         updatedCarType.setDescription(description.trim());
         ctDao.update(updatedCarType);
 
-        request.getSession().setAttribute("message", "Cập nhật carType thành công!");
+        request.getSession().setAttribute("message", "Cập nhật loại xe thành công!");
         response.sendRedirect(request.getContextPath() + "/manager/carTypeList");
     }
 

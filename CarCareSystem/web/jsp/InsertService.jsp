@@ -1,5 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -140,7 +141,7 @@
         </c:if>
         <h2 class="tieu-de">Thêm dịch vụ</h2>
         <c:choose>
-            <c:when test="${role == 'admin' || role == 'manager' || role == 'maketing'}">
+            <c:when test="${fn:toLowerCase(role) eq 'admin' || fn:toLowerCase(role) eq 'manager' || fn:toLowerCase(role) eq 'marketing'}">
                 <form action="ServiceServlet_JSP" method="POST" enctype="multipart/form-data" autocomplete="off">
                     <table>
                         <tr>
@@ -171,9 +172,16 @@
                         </tr>
                         <tr>
                             <td class="form-label">Ảnh dịch vụ</td>
-                            <td>
-                                <input class="form-input" type="file" name="img" accept="image/*">
-                            </td>
+                           <td>
+                                    <input class="form-input" type="file" name="img" accept="image/*">
+                                    <c:if test="${not empty service.img}">
+                                        <div>
+                                            <img src="${pageContext.request.contextPath}/img/${service.img}" class="service-img-preview" alt="Ảnh dịch vụ hiện tại">
+                                            <div style="font-size:13px;color:#888;margin-top:5px;">Ảnh hiện tại</div>
+                                        </div>
+                                    </c:if>
+                                    <input type="hidden" name="imgOld" value="${service.img}" />
+                                </td>
                         </tr>
                         <tr>
                             <td class="form-label" style="vertical-align:top;">Phụ tùng liên quan</td>

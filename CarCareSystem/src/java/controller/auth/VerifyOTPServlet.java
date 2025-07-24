@@ -5,7 +5,9 @@
 
 package controller.auth;
 
+import dao.NotificationDAO;
 import dao.UserDAO;
+import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,6 +16,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -30,7 +34,7 @@ public class VerifyOTPServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+    throws ServletException, IOException, Exception {
         response.setContentType("text/html;charset=UTF-8");
         String inputOtp = request.getParameter("otp");
         HttpSession session = request.getSession();
@@ -45,6 +49,11 @@ public class VerifyOTPServlet extends HttpServlet {
             
             UserDAO dao = new UserDAO();
             dao.registerUser(username, password, email, phone, address);
+            //Notification
+            NotificationDAO notificationDAO = new NotificationDAO();
+            User user = dao.getUserByEmail(email);
+            notificationDAO.addNotificationSetting(user.getId(), true, true, true, true, true, false, true, true, true, true, true, true, true, true, true, true);
+            int addNoti = notificationDAO.addNotification(user.getId(), "Bạn đã tạo tài khoản thành công", "Profile");
 
             session.invalidate();
             request.setAttribute("success", "Tạo tài khoản thành công!");
@@ -66,7 +75,11 @@ public class VerifyOTPServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(VerifyOTPServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     } 
 
     /** 
@@ -79,7 +92,11 @@ public class VerifyOTPServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(VerifyOTPServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /** 

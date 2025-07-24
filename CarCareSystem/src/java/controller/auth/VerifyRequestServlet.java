@@ -44,6 +44,12 @@ public class VerifyRequestServlet extends HttpServlet {
             request.getRequestDispatcher("/views/auth/verify-request-otp.jsp").forward(request, response);
             return;
         }
+        
+        if (!isValidPassword(newPassword)) {
+            request.setAttribute("error", "Mật khẩu phải có ít nhất 8 ký tự, chữ cái đầu viết hoa và chứa ký tự đặc biệt.");
+            request.getRequestDispatcher("/views/auth/verify-request-otp.jsp").forward(request, response);
+            return;
+        }
 
         UserDAO dao = new UserDAO();
         dao.updatePassword(email, newPassword);
@@ -54,7 +60,12 @@ public class VerifyRequestServlet extends HttpServlet {
         request.setAttribute("message", "Mật khẩu đã được thay đổi thành công!");
         request.getRequestDispatcher("/views/auth/login.jsp").forward(request, response);
 
-    } 
+    }
+    
+    private boolean isValidPassword(String password) {
+        String regex = "^[A-Z][A-Za-z0-9!@#$%^&*()_+=<>?{}\\[\\]-]{7,}$";
+        return password != null && password.matches(regex);
+    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 
