@@ -66,7 +66,7 @@ public class CarTypeListServlet extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession(false);
         User currentUser = (session != null) ? (User) session.getAttribute("user") : null;
-        if (currentUser == null || !currentUser.getUserRole().equalsIgnoreCase("manager")) {
+        if (currentUser == null || !currentUser.getUserRole().equalsIgnoreCase("repairer")) {
             response.sendRedirect(request.getContextPath() + "/accessDenied.jsp");
             return;
         }
