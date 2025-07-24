@@ -32,8 +32,6 @@ import util.SendMailService;
 import java.text.DecimalFormat;
 
 
-
-
 /**
  *
  * @author TRAN ANH HAI
