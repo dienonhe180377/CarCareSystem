@@ -383,7 +383,7 @@
 <body>
     <!-- Set current date for comparison -->
     <jsp:useBean id="now" class="java.util.Date" />
-    
+    <jsp:include page="/header_emp.jsp"></jsp:include>
     <div class="container">
         <!-- Page Header -->
         <div class="page-header">

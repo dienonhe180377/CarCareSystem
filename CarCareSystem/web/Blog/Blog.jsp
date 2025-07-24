@@ -193,6 +193,7 @@
     </style>
 </head>
 <body>
+    <jsp:include page="/header_emp.jsp"></jsp:include>
     <div class="main-header">
         <div class="container-fluid">
             <h1 class="text-center">

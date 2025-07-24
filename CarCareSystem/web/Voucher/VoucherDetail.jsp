@@ -17,6 +17,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
+    <jsp:include page="/header_emp.jsp"></jsp:include>
     <div class="container mt-4">
         <div class="row justify-content-center">
             <div class="col-md-10">
