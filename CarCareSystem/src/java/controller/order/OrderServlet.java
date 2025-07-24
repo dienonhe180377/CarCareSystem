@@ -25,9 +25,13 @@ import jakarta.servlet.http.HttpSession;
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import java.util.ArrayList;
 import java.util.List;
 import util.SendMailService;
+=======
+import java.text.DecimalFormat;
+>>>>>>> Stashed changes
 =======
 import java.text.DecimalFormat;
 >>>>>>> Stashed changes
@@ -329,8 +333,11 @@ public class OrderServlet extends HttpServlet {
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                 response.sendRedirect("GenerateQRCode?orderId=" + orderId
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
