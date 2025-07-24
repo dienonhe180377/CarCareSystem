@@ -16,14 +16,14 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Car Care Centre</title>
         <style>
-            body {
+            Body {
                 margin: 0;
                 font-family: Arial, sans-serif;
                 background-color: #fff;
                 padding-top: 80px;
             }
 
-            header {
+            Header {
                 position: fixed;
                 top: 0;
                 left: 0;
@@ -38,21 +38,21 @@
                 box-sizing: border-box;
             }
 
-            .header-left {
+            .Header-left {
                 display: flex;
                 align-items: center;
                 gap: 96px;
                 justify-content: flex-start;
             }
 
-            .header-right {
+            .Header-right {
                 display: flex;
                 align-items: center;
                 gap: 56px;
                 justify-content: flex-end;
             }
 
-            .menu-toggle {
+            .Menu-toggle {
                 background: none;
                 border: none;
                 color: black;
@@ -60,13 +60,13 @@
                 cursor: pointer;
             }
 
-            .nav-menu {
+            .Nav-menu {
                 display: flex;
                 align-items: center;
                 gap: 40px;
             }
 
-            .nav-menu a {
+            .Nav-menu a {
                 text-decoration: none;
                 color: black;
                 font-weight: bold;
@@ -75,7 +75,7 @@
                 padding: 6px 0;
             }
 
-            .nav-menu .active::after {
+            .Nav-menu .active::after {
                 content: "";
                 display: block;
                 width: 100%;
@@ -86,14 +86,14 @@
                 left: 0;
             }
 
-            .logo img {
+            .Logo img {
                 height: 70px;
                 transform: scale(1.75);
                 transform-origin: center center;
             }
 
             /* Sidebar styles */
-            .sidebar {
+            .Sidebar {
                 position: fixed;
                 top: 0;
                 left: 0;
@@ -107,11 +107,11 @@
                 z-index: 999;
             }
 
-            .sidebar.open {
+            .Sidebar.open {
                 transform: translateX(0);
             }
 
-            .sidebar .close-btn {
+            .Sidebar .close-btn {
                 background: none;
                 border: none;
                 color: black;
@@ -122,7 +122,7 @@
                 cursor: pointer;
             }
 
-            .sidebar nav a {
+            .Sidebar nav a {
                 display: block;
                 color: #000;
                 text-decoration: none;
@@ -132,7 +132,7 @@
             }
 
 
-            .login-button {
+            .Login-button {
                 background-color: #fff;
                 color: #000;
                 border: none;
@@ -143,11 +143,11 @@
                 transition: background-color 0.3s ease;
             }
 
-            .login-button:hover {
+            .Login-button:hover {
                 background-color: #ccc;
             }
 
-            .notification-icon {
+            .Notification-icon {
                 font-size: 32px;
                 color: black;
                 cursor: pointer;
@@ -155,11 +155,11 @@
                 position: relative;
             }
 
-            .notification-icon:hover {
+            .Notification-icon:hover {
                 color: red;
             }
 
-            .notification-count {
+            .Notification-count {
                 position: absolute;
                 top: -6px;
                 right: -8px;
@@ -171,7 +171,7 @@
             }
 
             /* Optional: badge */
-            .notification-icon .notification-count {
+            .Notification-icon .Notification-count {
                 position: absolute;
                 top: -6px;
                 right: -8px;
@@ -184,19 +184,19 @@
 
             /* Responsive (optional) */
             @media (max-width: 768px) {
-                header {
+                Header {
                     flex-direction: column;
                     gap: 15px;
                 }
 
-                .nav-menu {
+                .Nav-menu {
                     flex-wrap: wrap;
                     justify-content: center;
                 }
             }
 
             /* Optional overlay */
-            .overlay {
+            .Overlay {
                 position: fixed;
                 top: 0;
                 left: 0;
@@ -207,23 +207,23 @@
                 display: none;
             }
 
-            .overlay.active {
+            .Overlay.active {
                 display: block;
             }
 
             /* Avatar and dropdown */
-            .avatar-icon {
+            .Avatar-icon {
                 font-size: 36px;
                 color: black;
                 cursor: pointer;
             }
 
-            .dropdown {
+            .Dropdown {
                 position: relative;
                 display: inline-block;
             }
 
-            .dropdown-content {
+            .Dropdown-content {
                 display: none;
                 position: absolute;
                 right: 0;
@@ -233,39 +233,39 @@
                 z-index: 1000;
             }
 
-            .dropdown-content a {
+            .Dropdown-content a {
                 color: black;
                 padding: 10px 16px;
                 text-decoration: none;
                 display: block;
             }
 
-            .dropdown-content a:hover {
+            .Dropdown-content a:hover {
                 background-color: #ddd;
             }
 
-            .show {
+            .Show {
                 display: block;
             }
         </style>
     </head>
     <body>
         <header>
-            <div class="header-left">
-                <button class="menu-toggle" onclick="openSidebar()">☰ MENU</button>
-                <nav class="nav-menu">
+            <div class="Header-left">
+                <button class="Menu-toggle" onclick="openSidebar()">☰ MENU</button>
+                <nav class="Nav-menu">
                     <a href="ServiceServlet_JSP">DỊCH VỤ</a>
                     <a href="part">PHỤ TÙNG</a>
                     <a href="instype?action=list">BẢO HIỂM</a>
                 </nav>
             </div>
 
-            <div class="logo">
+            <div class="Logo">
                 <a href="home"><img src="<%= settingMap.get("logo_url") %>" alt="<%= settingMap.get("site_name") %>"></a>
             </div>
 
-            <div class="header-right">
-                <nav class="nav-menu">
+            <div class="Header-right">
+                <nav class="Nav-menu">
                     <a href="blog">BLOG</a>
                     <a href="ordertracking">VẬN ĐƠN</a>
                     <a href="contact.jsp">LIÊN HỆ</a>
@@ -273,22 +273,22 @@
                 </nav>
                 <!-- Đoạn login/avatar -->
                 <% User user = (User) session.getAttribute("user"); %>
-                <div class="menu-right">
+                <div class="Menu-right">
                     <% if (user == null) { %>
-                    <a href="login"><button class="login-button">Login</button></a>
+                    <a href="login"><button class="Login-button">Login</button></a>
                     <% } else { %>
-                    <div class="dropdown">
-                        <i class="fas fa-bell notification-icon" onclick="toggleNotificationDropdown()"></i>
-                        <div id="notificationDropdown" class="dropdown-content">
+                    <div class="Dropdown">
+                        <i class="fas fa-bell Notification-icon" onclick="toggleNotificationDropdown()"></i>
+                        <div id="notificationDropdown" class="Dropdown-content">
                             <a href="#">You have 3 new messages</a>
                             <a href="#">Booking confirmed</a>
                             <a href="#">Promotion: 20% off service</a>
                         </div>
                     </div>
 
-                    <div class="dropdown">
-                        <i class="fas fa-user-circle avatar-icon" onclick="toggleUserDropdown()"></i>
-                        <div id="userDropdown" class="dropdown-content">
+                    <div class="Dropdown">
+                        <i class="fas fa-user-circle Avatar-icon" onclick="toggleUserDropdown()"></i>
+                        <div id="userDropdown" class="Dropdown-content">
                             <a href="viewProfile">Thông tin cá nhân</a>
                             <a href="myorder">Đơn hàng của tôi</a>
                             <a href="${pageContext.request.contextPath}/logout">Đăng xuất</a>
@@ -299,7 +299,7 @@
             </div>
 
             <!-- Sidebar -->
-            <div id="sidebar" class="sidebar">
+            <div id="sidebar" class="Sidebar">
                 <button class="close-btn" onclick="closeSidebar()">✖</button>
                 <nav>
                     <a href="home">TRANG CHỦ</a>
@@ -315,7 +315,7 @@
             </div>
 
             <!-- Optional overlay -->
-            <div id="overlay" class="overlay" onclick="closeSidebar()"></div>
+            <div id="overlay" class="Overlay" onclick="closeSidebar()"></div>
 
             
 
@@ -331,15 +331,15 @@
                 }
 
                 function toggleDropdown(dropdownId) {
-                    const allDropdowns = document.querySelectorAll('.dropdown-content');
+                    const allDropdowns = document.querySelectorAll('.Dropdown-content');
                     allDropdowns.forEach(drop => {
                         if (drop.id !== dropdownId) {
-                            drop.classList.remove('show');
+                            drop.classList.remove('Show');
                         }
                     });
 
                     const target = document.getElementById(dropdownId);
-                    target.classList.toggle('show');
+                    target.classList.toggle('Show');
                 }
 
                 function toggleUserDropdown() {
@@ -351,9 +351,9 @@
                 }
 
                 window.onclick = function (event) {
-                    if (!event.target.closest('.dropdown') && !event.target.matches('.avatar-icon') && !event.target.matches('.notification-icon')) {
-                        document.querySelectorAll('.dropdown-content').forEach(dropdown => {
-                            dropdown.classList.remove('show');
+                    if (!event.target.closest('.Dropdown') && !event.target.matches('.Avatar-icon') && !event.target.matches('.Notification-icon')) {
+                        document.querySelectorAll('.Dropdown-content').forEach(dropdown => {
+                            dropdown.classList.remove('Show');
                         });
                     }
                 }
