@@ -64,7 +64,7 @@ public class VoucherServlet extends AuthorizationServlet {
         User user = (User) userObj;
         String role = user.getUserRole().toLowerCase();
 
-        return role.equals("admin") || role.equals("marketing") || role.equals("manager");
+        return role.equals("marketing");
     }
 
     @Override
@@ -363,30 +363,35 @@ public class VoucherServlet extends AuthorizationServlet {
         }
     }
 
-    private Voucher createVoucherFromRequest(HttpServletRequest request) {
-        Voucher voucher = new Voucher();
+    private Voucher createVoucherFromRequest(HttpServletRequest request)
+            throws IllegalArgumentException {
+        try {
+            Voucher voucher = new Voucher();
 
-        voucher.setName(request.getParameter("name"));
-        voucher.setDescription(request.getParameter("description"));
-        voucher.setVoucherCode(request.getParameter("voucherCode"));
-        voucher.setDiscountType(request.getParameter("discountType"));
-        voucher.setDiscount(Float.parseFloat(request.getParameter("discount")));
-        voucher.setServiceId(Integer.parseInt((request.getParameter("serviceId"))));
-        voucher.setCampaignId(Integer.parseInt((request.getParameter("serviceId"))));
-        String maxDiscountStr = request.getParameter("maxDiscountAmount");
-        if (maxDiscountStr != null && !maxDiscountStr.trim().isEmpty()) {
-            voucher.setMaxDiscountAmount(Float.parseFloat(maxDiscountStr));
+            voucher.setName(request.getParameter("name"));
+            voucher.setDescription(request.getParameter("description"));
+            voucher.setVoucherCode(request.getParameter("voucherCode"));
+            voucher.setDiscountType(request.getParameter("discountType"));
+            voucher.setDiscount(Float.parseFloat(request.getParameter("discount")));
+            voucher.setServiceId(Integer.parseInt((request.getParameter("serviceId"))));
+            voucher.setCampaignId(Integer.parseInt((request.getParameter("campaignId"))));
+            String maxDiscountStr = request.getParameter("maxDiscountAmount");
+            if (maxDiscountStr != null && !maxDiscountStr.trim().isEmpty()) {
+                voucher.setMaxDiscountAmount(Float.parseFloat(maxDiscountStr));
+            }
+
+            String minOrderStr = request.getParameter("minOrderAmount");
+            if (minOrderStr != null && !minOrderStr.trim().isEmpty()) {
+                voucher.setMinOrderAmount(Float.parseFloat(minOrderStr));
+            }
+
+            voucher.setStartDate(Date.valueOf(request.getParameter("startDate")));
+            voucher.setEndDate(Date.valueOf(request.getParameter("endDate")));
+            voucher.setStatus(true);
+            return voucher;
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Định dạng ngày không hợp lệ!");
         }
-
-        String minOrderStr = request.getParameter("minOrderAmount");
-        if (minOrderStr != null && !minOrderStr.trim().isEmpty()) {
-            voucher.setMinOrderAmount(Float.parseFloat(minOrderStr));
-        }
-
-        voucher.setStartDate(Date.valueOf(request.getParameter("startDate")));
-        voucher.setEndDate(Date.valueOf(request.getParameter("endDate")));
-        voucher.setStatus(true);
-        return voucher;
     }
 
     private String validateVoucher(Voucher voucher) {
@@ -405,11 +410,14 @@ public class VoucherServlet extends AuthorizationServlet {
         if (voucherDAO.isVoucherCodeExists(voucher.getVoucherCode())) {
             return "Mã voucher đã tồn tại!";
         }
+        Date currentDate = new Date(System.currentTimeMillis());
 
         if (voucher.getStartDate().after(voucher.getEndDate())) {
             return "Ngày bắt đầu phải trước ngày kết thúc!";
         }
-
+        if (voucher.getEndDate().before(currentDate)) {
+            return "Ngày kết thúc không được nhỏ hơn ngày hiện tại!";
+        }
         if (voucher.getDiscount() <= 0) {
             return "Giá trị giảm giá phải lớn hơn 0!";
         }

@@ -54,7 +54,7 @@
                                 <div class="mb-3">
                                     <label for="serviceId" class="form-label">Dịch vụ</label>
                                     <select class="form-select" id="serviceId" name="serviceId" >
-                                        <option value="">Tất cả các dịch vụ</option>
+                                        <option value="0">Tất cả các dịch vụ</option>
                                         <c:forEach var="service" items="${services}">
                                             <option value="${service.id}">${service.name}</option>
                                         </c:forEach>

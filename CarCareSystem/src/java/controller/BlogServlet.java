@@ -10,10 +10,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.sql.Date;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import entity.User;
 
 public class BlogServlet extends AuthorizationServlet {
 
@@ -37,12 +37,14 @@ public class BlogServlet extends AuthorizationServlet {
             return true;
         }
 
-        entity.User user = (entity.User) userObj;
+        User user = (User) userObj;
         String role = user.getUserRole().toLowerCase();
 
         // Nếu role là "customer repairer warehouse manager" thì không cho phép
-        List<String> restrictedRoles = Arrays.asList("customer", "repairer", "warehouse manager");
-        return restrictedRoles.contains(role);
+        if("marketing".equals(role)){
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -62,10 +64,7 @@ public class BlogServlet extends AuthorizationServlet {
                 showEditForm(id, request, response);
             } else if ("delete".equalsIgnoreCase(service)) {
                 deleteBlog(request, response);
-            } else //                if ("detail".equalsIgnoreCase(service)) {
-            //                showBlogDetail(request, response);
-            //            } else 
-            {
+            } else {
                 showBlogList(request, response);
             }
         } catch (Exception ex) {

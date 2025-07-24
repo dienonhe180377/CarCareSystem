@@ -39,9 +39,11 @@ public class CampaignServlet extends AuthorizationServlet {
         User user = (User) userObj;
         String role = user.getUserRole().toLowerCase();
 
-        // Nếu role là "user repairer warehouse manager" thì không cho phép
-        List<String> restrictedRoles = Arrays.asList("customer", "repairer", "warehouse manager");
-        return restrictedRoles.contains(role);
+        // Nếu role là "marketing" thì cho phép
+        if("marketing".equals(role)){
+            return false; // khong unathozied
+        }
+        return true;
     }
 
     @Override
@@ -61,11 +63,7 @@ public class CampaignServlet extends AuthorizationServlet {
                 showEditForm(id, request, response);
             } else if ("delete".equalsIgnoreCase(service)) {
                 deleteCampaign(request, response);
-            } else //                if ("detail".equalsIgnoreCase(service)){
-            //                showCampaignDetail(request, response);
-            //            } 
-            //                else 
-            {
+            } else {
                 showCampaignList(request, response);
             }
         } catch (Exception ex) {
