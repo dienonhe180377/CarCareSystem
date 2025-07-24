@@ -155,7 +155,6 @@
                                 <th>Nội dung</th>
                                 <th>Ngày tạo</th>
                                 <th>Ngày cập nhật</th>
-                                <th>Trạng thái</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -170,20 +169,6 @@
                                     <td><div class="content-preview" title="${blog.content}">${blog.content}</div></td>
                                     <td><fmt:formatDate value="${blog.createDate}" pattern="dd/MM/yyyy"/></td>
                                     <td><fmt:formatDate value="${blog.updatedDate}" pattern="dd/MM/yyyy"/></td>
-                                    <td>
-                                        <c:choose>
-                                            <c:when test="${blog.status}">
-                                                <span class="badge bg-success">
-                                                    <i class="fas fa-check"></i> Kích hoạt
-                                                </span>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <span class="badge bg-danger">
-                                                    <i class="fas fa-times"></i> Tắt
-                                                </span>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </td>
                                 </tr>
                             </c:forEach>
                             <c:if test="${empty blogs}">

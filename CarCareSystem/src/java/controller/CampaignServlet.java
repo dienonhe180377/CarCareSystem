@@ -2,7 +2,7 @@ package controller;
 
 import dao.CampaignDAO;
 import entity.Campaign;
-
+import entity.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import java.io.IOException;
@@ -10,12 +10,14 @@ import java.sql.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class CampaignServlet extends AuthorizationServlet {
 
     private static final Logger LOGGER = Logger.getLogger(CampaignServlet.class.getName());
     private CampaignDAO campaignDAO;
-
+    Date currentDate = new Date(System.currentTimeMillis());
+    
     @Override
     public void init() {
         campaignDAO = new CampaignDAO();
@@ -32,11 +34,11 @@ public class CampaignServlet extends AuthorizationServlet {
             return true;
         }
 
-        entity.User user = (entity.User) userObj;
+        User user = (User) userObj;
         String role = user.getUserRole().toLowerCase();
 
         // Nếu role là "user" thì không cho phép
-        return role.equals("user");
+        return role.equals("customer");
     }
 
     @Override
@@ -115,15 +117,16 @@ public class CampaignServlet extends AuthorizationServlet {
             handleError(request, response, "Không thể hiển thị form sửa", ex);
         }
     }
-
+    
     private void showCampaignList(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        List<Campaign> campaigns = campaignDAO.getAllCampaigns();
-        request.getSession().setAttribute("mainCampaignList", campaigns);
-        request.setAttribute("campaigns", campaigns);
+        List<Campaign> allCampaigns = campaignDAO.getAllCampaigns();
+        request.getSession().setAttribute("mainCampaignList", allCampaigns);
+        request.setAttribute("campaigns", allCampaigns);
         request.getRequestDispatcher("Campaign/Campaign.jsp").forward(request, response);
     }
-
+    
+    
     private void addOrUpdateCampaign(HttpServletRequest request, HttpServletResponse response, boolean isEdit)
             throws ServletException, IOException {
         try {
@@ -182,7 +185,6 @@ public class CampaignServlet extends AuthorizationServlet {
             return "Ngày bắt đầu phải trước ngày kết thúc";
         }
 
-        java.sql.Date currentDate = new java.sql.Date(System.currentTimeMillis());
         if (end.before(currentDate)) {
             return "Ngày kết thúc phải sau thời gian hiện tại";
         }

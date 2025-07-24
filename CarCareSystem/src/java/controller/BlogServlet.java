@@ -38,8 +38,8 @@ public class BlogServlet extends AuthorizationServlet {
         entity.User user = (entity.User) userObj;
         String role = user.getUserRole().toLowerCase();
 
-        // Nếu role là "user" thì không cho phép
-        return role.equals("user");
+        // Nếu role là "customer" thì không cho phép
+        return role.equals("customer");
     }
 
     @Override

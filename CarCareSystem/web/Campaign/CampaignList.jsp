@@ -203,7 +203,6 @@
                         <thead>
                             <tr>
                                 <th>Tên Campaign</th>
-                                <th>Trạng thái</th>
                                 <th>Mô tả</th>
                                 <th>Ngày bắt đầu</th>
                                 <th>Ngày kết thúc</th>
@@ -213,18 +212,6 @@
                             <c:forEach var="c" items="${campaigns}">
                                 <tr>
                                     <td class="campaign-name">${c.name}</td>
-                                    <td>
-                                        <span class="${c.status ? 'status-active' : 'status-inactive'}">
-                                            <c:choose>
-                                                <c:when test="${c.status}">
-                                                    <i class="fas fa-check"></i> Kích hoạt
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <i class="fas fa-times"></i> Tạm dừng
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </span>
-                                    </td>
                                     <td>
                                         <div class="description-cell" title="${c.description}">
                                             ${c.description}
