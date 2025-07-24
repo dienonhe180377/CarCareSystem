@@ -1,5 +1,7 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page import="java.util.*, entity.CarType, entity.Service, entity.Part" %>
 <%@ page import="dao.CarTypeDAO, dao.ServiceDAO, dao.PartDAO" %>
 <%@ page import="entity.User" %>
@@ -158,7 +160,8 @@ for (Service s : services) {
                 <% } %>
 
                 <label>Ngày hẹn:</label>
-                <input type="datetime-local" name="appointmentDate" required>
+                <input type="date" name="appointmentDate" required 
+                       min="<fmt:formatDate value="<%= new java.util.Date() %>" pattern="yyyy-MM-dd"/>">
 
                 <div class="checkbox-group">
                     <label>Dịch vụ muốn đặt:</label>
