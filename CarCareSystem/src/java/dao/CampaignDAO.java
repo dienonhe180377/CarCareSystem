@@ -83,6 +83,31 @@ public class CampaignDAO extends DBConnection {
         }
     }
 
+    public Campaign getCampaignById(int id) {
+    Campaign campaign = null;
+    String sql = "SELECT [id], [name], [status], [description], [startDate], [endDate] FROM [dbo].[Campaign] WHERE [id] = ?";
+    
+    try (PreparedStatement ptm = connection.prepareStatement(sql)) {
+        ptm.setInt(1, id);
+        ResultSet rs = ptm.executeQuery();
+        
+        if (rs.next()) {
+            campaign = new Campaign(
+                rs.getInt("id"),
+                rs.getString("name"),
+                rs.getBoolean("status"),
+                rs.getString("description"),
+                rs.getDate("startDate"),
+                rs.getDate("endDate")
+            );
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+    
+    return campaign;
+}
+
     public static void main(String[] args) {
         System.out.println("getAllCampaigns");
         CampaignDAO instance = new CampaignDAO();

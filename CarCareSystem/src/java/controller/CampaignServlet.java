@@ -16,6 +16,7 @@ public class CampaignServlet extends AuthorizationServlet {
 
     private static final Logger LOGGER = Logger.getLogger(CampaignServlet.class.getName());
     private CampaignDAO campaignDAO;
+    
     Date currentDate = new Date(System.currentTimeMillis());
     
     @Override
@@ -58,7 +59,12 @@ public class CampaignServlet extends AuthorizationServlet {
                 showEditForm(id, request, response);
             } else if ("delete".equalsIgnoreCase(service)) {
                 deleteCampaign(request, response);
-            } else {
+            } else 
+//                if ("detail".equalsIgnoreCase(service)){
+//                showCampaignDetail(request, response);
+//            } 
+//                else 
+                {
                 showCampaignList(request, response);
             }
         } catch (Exception ex) {

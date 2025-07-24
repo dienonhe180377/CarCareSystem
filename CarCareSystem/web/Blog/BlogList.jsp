@@ -161,7 +161,7 @@
                             <c:forEach items="${blogs}" var="blog">
                                 <tr>
                                     <td>
-                                        <a href="blog?service=detail&id=${blog.id}" class="blog-title-link">
+                                        <a href="bloglist?id=${blog.id}" class="blog-title-link">
                                             <i class="fas fa-blog"></i> ${blog.title}
                                         </a>
                                     </td>
