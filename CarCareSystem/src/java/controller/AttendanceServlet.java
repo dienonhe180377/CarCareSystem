@@ -107,8 +107,8 @@ public class AttendanceServlet extends HttpServlet {
             }
 
         } else if ("POST".equalsIgnoreCase(method)) {
-            // ======== 3. Admin/Manager gửi điểm danh hôm nay ========
-            if ("admin".equals(role) || "manager".equals(role)) {
+            // ======== Manager gửi điểm danh hôm nay ========
+            if ("manager".equals(role)) {
                 Vector<User> users = dao.getAllUsersForAttendance();
                 Date today = new Date(System.currentTimeMillis());
 

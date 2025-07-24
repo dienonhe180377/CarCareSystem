@@ -277,7 +277,32 @@
                 <div class="no-parts-row">Không có phụ tùng liên quan</div>
             </c:otherwise>
         </c:choose>
-
+<!-- PHẢN HỒI TỪ NGƯỜI DÙNG -->
+<div class="service-section-title">Phản hồi từ người dùng</div>
+<c:choose>
+    <c:when test="${not empty feedbackList}">
+        <ul style="list-style: none; padding: 0;">
+            <c:forEach var="fb" items="${feedbackList}">
+                <li style="margin-bottom: 16px; border-bottom: 1px solid #ddd; padding-bottom: 10px;">
+                    <div><strong>${fb.username}</strong> - 
+                        <fmt:formatDate value="${fb.createDate}" pattern="dd/MM/yyyy"/></div>
+                    <div style="color: #f39c12;">
+                        <c:forEach var="i" begin="1" end="5">
+                            <c:choose>
+                                <c:when test="${i <= fb.rating}">★</c:when>
+                                <c:otherwise>☆</c:otherwise>
+                            </c:choose>
+                        </c:forEach>
+                    </div>
+                    <div style="margin-top: 6px;">${fb.description}</div>
+                </li>
+            </c:forEach>
+        </ul>
+    </c:when>
+    <c:otherwise>
+        <div class="no-parts-row">Chưa có phản hồi nào cho dịch vụ này.</div>
+    </c:otherwise>
+</c:choose>
         <div class="action-row">
             <form action="OrderServlet" method="post" style="margin:0;">
                 <input type="hidden" name="serviceId" value="${service.id}"/>

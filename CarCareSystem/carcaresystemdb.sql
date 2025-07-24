@@ -293,15 +293,7 @@ CREATE TABLE InsuranceType (
 );
 GO
 
--- Bước 1: Xóa khóa ngoại liên quan đến serviceId
-ALTER TABLE Feedback
-DROP CONSTRAINT FK_Feedback_Service;
-GO
 
--- Bước 2: Xóa 2 cột serviceId và rating
-ALTER TABLE Feedback
-DROP COLUMN serviceId, rating;
-GO
 
 
 CREATE TABLE [Notification](
