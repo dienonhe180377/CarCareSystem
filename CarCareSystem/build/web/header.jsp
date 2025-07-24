@@ -41,14 +41,14 @@
             .header-left {
                 display: flex;
                 align-items: center;
-                gap: 48px;
+                gap: 96px;
                 justify-content: flex-start;
             }
 
             .header-right {
                 display: flex;
                 align-items: center;
-                gap: 120px;
+                gap: 56px;
                 justify-content: flex-end;
             }
 
@@ -269,6 +269,7 @@
                     <a href="blog">BLOG</a>
                     <a href="ordertracking">VẬN ĐƠN</a>
                     <a href="contact.jsp">LIÊN HỆ</a>
+                    <a href="campaignlist">CHƯƠNG TRÌNH</a>
                 </nav>
                 <!-- Đoạn login/avatar -->
                 <% User user = (User) session.getAttribute("user"); %>
@@ -308,6 +309,7 @@
                     <a href="blog">BLOG</a>
                     <a href="ordertracking">VẬN ĐƠN</a>
                     <a href="contact.jsp">LIÊN HỆ</a>
+                    <a href="campaignlist">CHƯƠNG TRÌNH</a>
                     <br>
                 </nav>
             </div>
