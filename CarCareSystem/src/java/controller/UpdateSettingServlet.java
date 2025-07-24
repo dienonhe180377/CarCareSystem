@@ -5,7 +5,10 @@
 
 package controller;
 
-import dao.CarTypeDAO;
+import dao.SettingDAO;
+import entity.Setting;
+import entity.User;
+import jakarta.servlet.ServletContext;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,13 +16,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  *
  * @author GIGABYTE
  */
-@WebServlet(name="DeleteCarTypeServlet", urlPatterns={"/manager/deleteCarType"})
-public class DeleteCarTypeServlet extends HttpServlet {
+@WebServlet(name="UpdateSettingServlet", urlPatterns={"/admin/updateSetting"})
+public class UpdateSettingServlet extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -36,10 +40,10 @@ public class DeleteCarTypeServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet DeleteCarTypeServlet</title>");  
+            out.println("<title>Servlet UpdateSettingServlet</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet DeleteCarTypeServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet UpdateSettingServlet at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -56,7 +60,12 @@ public class DeleteCarTypeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        HttpSession session = request.getSession(false);
+        User currentUser = (User) (session != null ? session.getAttribute("currentUser") : null);
+        if (currentUser == null || !currentUser.getUserRole().equalsIgnoreCase("admin")) {
+            response.sendRedirect(request.getContextPath() + "/accessDenied.jsp");
+            return;
+        }
     } 
 
     /** 
@@ -66,16 +75,31 @@ public class DeleteCarTypeServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    private CarTypeDAO ctDao = new CarTypeDAO();
-    
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
-        ctDao.delete(id);
+        HttpSession session = request.getSession(false);
+        User currentUser = (User) (session != null ? session.getAttribute("user") : null);
+        if (currentUser == null || !currentUser.getUserRole().equalsIgnoreCase("admin")) {
+            response.sendRedirect(request.getContextPath() + "/accessDenied.jsp");
+            return;
+        }
         
-        request.getSession().setAttribute("message", "Xóa loại xe thành công!");
-        response.sendRedirect(request.getContextPath() + "/manager/carTypeList");
+        int id = Integer.parseInt(request.getParameter("id"));
+        String value = request.getParameter("value");
+        
+        Setting setting = new Setting();
+        setting.setId(id);
+        setting.setValue(value);
+        
+        SettingDAO sDao = new SettingDAO();
+        sDao.updateSetting(setting);
+        
+        ServletContext context = getServletContext();
+        sDao.reloadSettingMap(context);
+        
+        request.getSession().setAttribute("success", "Cập nhật cài đặt thành công!");
+        response.sendRedirect("settingList");
     }
 
     /** 

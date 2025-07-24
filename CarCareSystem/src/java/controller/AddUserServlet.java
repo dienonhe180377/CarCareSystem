@@ -91,17 +91,55 @@ public class AddUserServlet extends HttpServlet {
         String password = request.getParameter("password");
         String email = request.getParameter("email");
         String phone = request.getParameter("phone");
-        String address = request.getParameter("address");       
+        String address = request.getParameter("address");
         Date createDate = new Date();
         String role = request.getParameter("userRole");
-        
+
+        String error = null;
+        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
+        String phoneRegex = "^0\\d{9}$";
+
+        if (username.length() > 50) {
+            error = "Username quá dài!";
+        } else if (password.length() < 6) {
+            error = "Mật khẩu phải có ít nhất 6 ký tự!";
+        } else if (!email.matches(emailRegex)) {
+            error = "Email không hợp lệ!";
+        } else if (uDao.isEmailTaken(email)) {
+            error = "Email đã tồn tại!";
+        } else if (email.length() > 100) {
+            error = "Email quá dài!";
+        } else if (!phone.matches(phoneRegex)) {
+            error = "Số điện thoại không hợp lệ! (phải bắt đầu bằng 0 và có 10 chữ số)";
+        } else if (uDao.isPhoneTaken(phone)) {
+            error = "Số điện thoại đã tồn tại!";
+        } else if (phone.length() > 20) {
+            error = "Số điện thoại quá dài!";
+        } else if (address.length() > 200) {
+            error = "Địa chỉ quá dài!";
+        }
+
+        if (error != null) {
+            request.setAttribute("errorMessage", error);
+            request.setAttribute("username", username);
+            request.setAttribute("password", password);
+            request.setAttribute("email", email);
+            request.setAttribute("phone", phone);
+            request.setAttribute("address", address);
+            request.setAttribute("userRole", role);
+            request.getRequestDispatcher("addUser.jsp").forward(request, response);
+            return;
+        }
+
         User newUser = new User(0, username, password, email, phone, address, createDate, role);
-        
+
         boolean success = uDao.addUser(newUser);
-        if(success){
+        if (success) {
+            request.getSession().setAttribute("message", "Thêm user thành công!");
             response.sendRedirect(request.getContextPath() + "/admin/userList");
-        } else{
-            request.setAttribute("errorMessage", "Thêm user thất bại!");
+        } else {
+            error = "Thêm user thất bại!";
+            request.setAttribute("errorMessage", error);
             request.getRequestDispatcher("admin/addUser.jsp").forward(request, response);
         }
     }
