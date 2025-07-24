@@ -1,4 +1,4 @@
-<%@page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE html>
@@ -11,6 +11,24 @@
     <style>
         body { background: #f5f8fa; font-family: Arial, sans-serif; }
         .part-heading { font-size: 2.2rem; font-weight: bold; color: #b9001f; text-align: center; margin: 40px 0 30px 0; letter-spacing: 1px;}
+        .part-search-bar {
+            max-width: 450px; margin: 0 auto 30px auto; display: flex; gap: 10px; justify-content: center;
+        }
+        .part-search-bar input[type="text"] {
+            font-size: 1.1rem; padding: 8px 15px; border-radius: 8px; border: 1.5px solid #b7c7d7; flex: 1;
+        }
+        .part-search-bar button {
+            font-size: 1.1rem; padding: 8px 22px; border-radius: 8px; border: none;
+            background: #b9001f; color: #fff; cursor: pointer; transition: background 0.2s;
+        }
+        .part-search-bar button:hover { background: #900016; }
+        .part-search-bar .reset-btn {
+            background: #e67e22 !important;
+            color: #fff !important;
+        }
+        .part-search-bar .reset-btn:hover {
+            background: #c96a0a !important;
+        }
         .part-cards-row { display: flex; flex-wrap: wrap; gap: 32px; justify-content: center;}
         .part-card { background: #fff; border-radius: 1.1rem; box-shadow: 0 2px 16px #e1e8f0; width: 320px; overflow: hidden; display: flex; flex-direction: column; margin-bottom: 30px; transition: transform 0.2s, box-shadow 0.2s; position: relative;}
         .part-card:hover { transform: translateY(-8px) scale(1.03); box-shadow: 0 8px 32px #bdbdbd;}
@@ -31,14 +49,30 @@
     </style>
 </head>
 <body>
+      <%@include file="/header.jsp" %>
 <div class="container">
     <div class="part-heading">MUA PHỤ TÙNG</div>
+    <!-- Thanh tìm kiếm phụ tùng -->
+    <form class="part-search-bar" action="part" method="get" id="partSearchForm">
+        <input type="text" name="keyword" value="${keyword}" placeholder="Tìm kiếm phụ tùng">
+        <button type="submit">Tìm</button>
+        <c:if test="${not empty keyword}">
+            <button type="button" class="reset-btn" id="resetBtn">Reset</button>
+        </c:if>
+    </form>
+    <script>
+    if (document.getElementById('resetBtn')) {
+        document.getElementById('resetBtn').onclick = function() {
+            window.location.href = 'part';
+        };
+    }
+    </script>
     <div class="part-cards-row">
         <c:forEach var="part" items="${parts}">
             <div class="part-card">
                 <c:choose>
                     <c:when test="${not empty part.image}">
-                      <img class="part-card-img" src="${pageContext.request.contextPath}/${part.image}" alt="${part.name}">
+                        <img class="part-card-img" src="${pageContext.request.contextPath}/${part.image}" alt="${part.name}">
                     </c:when>
                     <c:otherwise>
                         <img class="part-card-img" src="img/no-image.png" alt="Không ảnh">
@@ -46,11 +80,9 @@
                 </c:choose>
                 <!-- Overlay icons -->
                 <div class="overlay-icons">
-                    <!-- Xem nhanh (Quick view) -->
                     <button type="button" class="part-icon-btn" title="Xem nhanh" data-bs-toggle="modal" data-bs-target="#quickViewModal${part.id}">
                         <i class="fas fa-eye"></i>
                     </button>
-                    <!-- Mua hàng nhanh -->
                     <button type="button" class="part-icon-btn" title="Mua ngay" data-bs-toggle="modal" data-bs-target="#buyModal${part.id}">
                         <i class="fas fa-cart-plus"></i>
                     </button>
@@ -126,15 +158,15 @@
         <nav>
             <ul class="pagination">
                 <li class="page-item <c:if test='${currentPage == 1}'>disabled</c:if>'">
-                    <a class="page-link" href="?page=${currentPage - 1}">&laquo;</a>
+                    <a class="page-link" href="part?page=${currentPage - 1}<c:if test='${not empty keyword}'>&keyword=${keyword}</c:if>">&laquo;</a>
                 </li>
                 <c:forEach var="i" begin="1" end="${totalPage}">
                     <li class="page-item <c:if test='${i == currentPage}'>active</c:if>'">
-                        <a class="page-link" href="?page=${i}">${i}</a>
+                        <a class="page-link" href="part?page=${i}<c:if test='${not empty keyword}'>&keyword=${keyword}</c:if>">${i}</a>
                     </li>
                 </c:forEach>
                 <li class="page-item <c:if test='${currentPage == totalPage}'>disabled</c:if>'">
-                    <a class="page-link" href="?page=${currentPage + 1}">&raquo;</a>
+                    <a class="page-link" href="part?page=${currentPage + 1}<c:if test='${not empty keyword}'>&keyword=${keyword}</c:if>">&raquo;</a>
                 </li>
             </ul>
         </nav>

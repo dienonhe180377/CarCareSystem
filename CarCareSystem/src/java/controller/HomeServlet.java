@@ -19,6 +19,8 @@ public class HomeServlet extends HttpServlet {
         Vector<Service> top3Services = homeDAO.getTop3BestServices();
         Vector<Part> top5Parts = homeDAO.getTop5FeaturedParts();
 
+        // Không cần for này nữa, vì trong DAO đã set parts cho Service rồi!
+
         request.setAttribute("top3Services", top3Services);
         request.setAttribute("top5Parts", top5Parts);
         request.getRequestDispatcher("home.jsp").forward(request, response);

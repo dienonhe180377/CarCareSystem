@@ -246,7 +246,7 @@
                                     <input class="form-input" type="file" name="img" accept="image/*">
                                     <c:if test="${not empty service.img}">
                                         <div>
-                                            <img src="${pageContext.request.contextPath}/uploads/${service.img}" class="service-img-preview" alt="Ảnh dịch vụ hiện tại">
+                                            <img src="${pageContext.request.contextPath}/img/${service.img}" class="service-img-preview" alt="Ảnh dịch vụ hiện tại">
                                             <div style="font-size:13px;color:#888;margin-top:5px;">Ảnh hiện tại</div>
                                         </div>
                                     </c:if>

@@ -99,8 +99,8 @@ public class EditCarTypeServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String idStr = request.getParameter("id");
-        int id = Integer.parseInt(idStr);
         String name = request.getParameter("name");
+        String description = request.getParameter("description");
         String statusStr = request.getParameter("status");
         boolean status = "on".equals(statusStr);
 
@@ -109,32 +109,39 @@ public class EditCarTypeServlet extends HttpServlet {
             return;
         }
 
+        int id = Integer.parseInt(idStr);
+
+        // Kiểm tra hợp lệ
         if (name == null || name.trim().isEmpty()) {
             request.setAttribute("errorMessage", "Tên loại xe không được để trống hoặc chỉ chứa khoảng trắng!");
-            CarType carType = new CarType(id, name, status);
-            request.setAttribute("carType", carType);
-            request.getRequestDispatcher("/manager/editCarType.jsp").forward(request, response);
-            return;
-        }
-
-        if (name.trim().length() > 50) {
+        } else if (name.trim().length() > 50) {
             request.setAttribute("errorMessage", "Tên loại xe không được vượt quá 50 ký tự!");
-            CarType carType = new CarType(id, name, status);
-            request.setAttribute("carType", carType);
-            request.getRequestDispatcher("/manager/editCarType.jsp").forward(request, response);
-            return;
-        }
-
-        // Kiểm tra trùng tên (ngoại trừ chính bản ghi đang sửa)
-        if (ctDao.isNameExistsForOtherId(name, id)) {
+        } else if (description == null || description.trim().isEmpty()) {
+            request.setAttribute("errorMessage", "Mô tả không được để trống!");
+        } else if (description.trim().length() > 100) {
+            request.setAttribute("errorMessage", "Mô tả không được vượt quá 100 ký tự!");
+        } else if (ctDao.isNameExistsForOtherId(name, id)) {
             request.setAttribute("errorMessage", "Tên loại xe đã tồn tại, vui lòng chọn tên khác!");
+        }
+
+        if (request.getAttribute("errorMessage") != null) {
+            // Gửi lại dữ liệu nếu có lỗi
             CarType carType = new CarType(id, name, status);
+            carType.setDescription(description);
             request.setAttribute("carType", carType);
+            request.setAttribute("name", name);
+            request.setAttribute("description", description);
+            request.setAttribute("status", status);
             request.getRequestDispatcher("/manager/editCarType.jsp").forward(request, response);
             return;
         }
 
-        ctDao.update(new CarType(id, name, status));
+        // Cập nhật dữ liệu
+        CarType updatedCarType = new CarType(id, name, status);
+        updatedCarType.setDescription(description.trim());
+        ctDao.update(updatedCarType);
+
+        request.getSession().setAttribute("message", "Cập nhật carType thành công!");
         response.sendRedirect(request.getContextPath() + "/manager/carTypeList");
     }
 

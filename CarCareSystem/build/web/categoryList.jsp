@@ -20,9 +20,9 @@
                 <h1>Categories</h1>
                 <div class="search-box">
                     <form>
-                        <input type="search" name="search" placeholder="Search Categories" <c:if test="${not empty categorySearch}">value="${categorySearch}"</c:if>/>
+                        <input type="search" name="search" placeholder="Tìm Categories" <c:if test="${not empty categorySearch}">value="${categorySearch}"</c:if>/>
                             <input type="hidden" name="service" value="search"/>
-                            <button type="submit">Search Categories</button>
+                            <button type="submit">Tìm Kiếm</button>
                         </form>
                     </div>
                 </div>
@@ -30,21 +30,21 @@
                 <div class="main-columns">
                     <!--ADD-->
                     <div class="left-column">
-                        <h2>Add New Category</h2>
+                        <h2>Thêm Category</h2>
                         <form action="${contextPath}/CategoryController" method="post">
-                        <label for="cat-name">Name</label>
+                        <label for="cat-name">Tên</label>
                         <input type="text" id="cat-name" name="name" placeholder="Tên category" required/>
 
-                        <label for="cat-status">Status</label>
+                        <label for="cat-status">Trạng thái</label>
                         <select id="cat-status" name="status">
-                            <option value="active">Active</option>
-                            <option value="inactive">Inactive</option>
+                            <option value="active">Hoạt Động</option>
+                            <option value="inactive">Không Hoạt Động</option>
                         </select>
 
-                        <label for="cat-description">Description</label>
+                        <label for="cat-description">Mô tả</label>
                         <textarea id="cat-description" name="description" placeholder="Mô tả (tùy chọn)" required></textarea>
                         <input type="hidden" name="service" value="add"/>
-                        <button type="submit">Add New Category</button>
+                        <button type="submit">Thêm mới</button>
                     </form>
                 </div>
                 <c:if test="${not empty checkError}">
@@ -79,20 +79,20 @@
                     <div class="bulk-actions">
                         <select name="bulk-action-top" id="bulk-action-top" onchange="filterRedirect(this.value)">
                             <option value="all" <c:if test="${not empty all}">selected</c:if>>Tất cả trạng thái</option>
-                            <option value="active" <c:if test="${not empty active}">selected</c:if>>Active</option>
-                            <option value="inactive" <c:if test="${not empty inactive}">selected</c:if>>Inactive</option>
-                            <option value="newest" <c:if test="${not empty newest}">selected</c:if>>Newest</option>
-                            <option value="oldest" <c:if test="${not empty oldest}">selected</c:if>>Oldest</option>
+                            <option value="active" <c:if test="${not empty active}">selected</c:if>>Đang Hoạt Động</option>
+                            <option value="inactive" <c:if test="${not empty inactive}">selected</c:if>>Không Hoạt Động</option>
+                            <option value="newest" <c:if test="${not empty newest}">selected</c:if>>Mới nhất</option>
+                            <option value="oldest" <c:if test="${not empty oldest}">selected</c:if>>Cũ nhất</option>
                             </select>
                         </div>
 
                         <table class="category-table" id="categoryTable">
                             <thead>
                                 <tr>
-                                    <th width="28%">Name</th>
-                                    <th width="30%">Description</th>
-                                    <th width="20%">Status</th>
-                                    <th width="20%">Manage</th>
+                                    <th width="28%">Tên</th>
+                                    <th width="30%">Mô tả</th>
+                                    <th width="20%">Trạng Thái</th>
+                                    <th width="20%">Chức năng</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -102,15 +102,15 @@
                                     <td>${category.name}</td>
                                     <td>${category.description}</td>
                                     <c:if test="${category.status}">
-                                        <td>Active</td>
+                                        <td>Đang hoạt động</td>
                                     </c:if>
                                     <c:if test="${!category.status}">
-                                        <td>Inactive</td>
+                                        <td>Không hoạt động</td>
                                     </c:if>
                                     <td>
                                         <div class="manage-buttons">
-                                            <button class="btn-edit" type="button">Edit</button>
-                                            <button id="delete-btn-${category.id}" class="btn-delete" type="button">Delete</button>
+                                            <button class="btn-edit" type="button">Sửa</button>
+                                            <button id="delete-btn-${category.id}" class="btn-delete" type="button">Xóa</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -150,7 +150,7 @@
                     <!-- Note bên dưới bảng -->
                     <div class="note">
                         Category không đính với linh kiện nào mới có thể xóa.
-                        <a href="#">Xem các linh kiện tại đây</a>.
+                        <a href="${contextPath}/PartController?service=list">Xem các linh kiện tại đây</a>.
                     </div>
                 </div>
             </div>
@@ -160,26 +160,26 @@
         <div class="modal-overlay" id="modalOverlay">
             <div class="modal-content">
                 <span class="close-btn" id="closeModal">&times;</span>
-                <h2>Category Detail</h2>
+                <h2>Chi tiết Category</h2>
                 <form id="detail-form" action="${contextPath}/CategoryController" method="post">
                     <input type="hidden" name="service" value="edit"/>
 
                     <input type="hidden" name="detail-id" id="detail-id"/>
 
-                    <label for="detail-name">Name</label>
+                    <label for="detail-name">Tên</label>
                     <input type="text" id="detail-name" name="detail-name" placeholder="Tên category" required/>
 
-                    <label for="detail-status">Status</label>
+                    <label for="detail-status">Trạng thái</label>
                     <select id="detail-status" name="detail-status">
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
+                        <option value="active">Đang Hoạt Động</option>
+                        <option value="inactive">Không Hoạt Động</option>
                     </select>
 
-                    <label for="detail-description">Description</label>
+                    <label for="detail-description">Mô tả</label>
                     <textarea id="detail-description" name="detail-description" placeholder="Mô tả (tùy chọn)" required></textarea>
 
-                    <button type="submit">Save Changes</button>
-                    <button class="btn-cancel" type="button" id="cancelModal">Cancel</button>
+                    <button type="submit">Lưu</button>
+                    <button class="btn-cancel" type="button" id="cancelModal">Hủy</button>
                 </form>
                 <c:if test="${editCheck > 0}">
                     <script>

@@ -34,7 +34,7 @@ public class CarTypeDAO extends DBConnection {
         }
         return carTypes;
     }
-
+    
     public CarType getCarTypeById(int id) {
         String sql = "SELECT * FROM CarType WHERE id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -44,7 +44,10 @@ public class CarTypeDAO extends DBConnection {
                 CarType carType = new CarType();
                 carType.setId(rs.getInt("id"));
                 carType.setName(rs.getString("name"));
+                carType.setDescription(rs.getString("description"));
                 carType.setStatus(rs.getBoolean("status"));
+                carType.setCreatedAt(rs.getTimestamp("created_at"));
+                carType.setUpdatedAt(rs.getTimestamp("updated_at"));
                 return carType;
             }
         } catch (SQLException e) {
@@ -54,10 +57,11 @@ public class CarTypeDAO extends DBConnection {
     }
 
     public boolean addCarType(CarType carType) {
-        String sql = "INSERT INTO CarType (name, status) VALUES (?, ?)";
+        String sql = "INSERT INTO CarType (name, description, status, created_at) VALUES (?, ?, ?, GETDATE())";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, carType.getName());
-            ps.setBoolean(2, carType.isStatus());
+            ps.setString(2, carType.getDescription());
+            ps.setBoolean(3, carType.isStatus());
             int rows = ps.executeUpdate();
             return rows > 0;
         } catch (SQLException e) {
@@ -67,11 +71,12 @@ public class CarTypeDAO extends DBConnection {
     }
 
     public void update(CarType carType) {
-        String sql = "UPDATE CarType SET name = ?, status = ? WHERE id = ?";
+        String sql = "UPDATE CarType SET name = ?, description = ?, status = ?, updated_at = GETDATE() WHERE id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, carType.getName());
-            ps.setBoolean(2, carType.isStatus());
-            ps.setInt(3, carType.getId());
+            ps.setString(2, carType.getDescription());
+            ps.setBoolean(3, carType.isStatus());
+            ps.setInt(4, carType.getId());
             ps.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e);
@@ -117,18 +122,42 @@ public class CarTypeDAO extends DBConnection {
         return false;
     }
 
-    public List<CarType> searchCarTypes(String keyword) {
+    public List<CarType> searchAndSortCarTypes(String keyword, String sortBy) {
         List<CarType> list = new ArrayList<>();
         String sql = "SELECT * FROM CarType WHERE name LIKE ?";
+        
+        if (sortBy != null) {
+        switch (sortBy) {
+            case "nameAsc":
+                sql += " ORDER BY name ASC";
+                break;
+            case "nameDesc":
+                sql += " ORDER BY name DESC";
+                break;
+            case "createdAtAsc":
+                sql += " ORDER BY created_at ASC";
+                break;
+            case "createdAtDesc":
+                sql += " ORDER BY created_at DESC";
+                break;
+            case "updatedAtDesc":
+                sql += " ORDER BY updated_at DESC";
+                break;
+            }
+        }
+        
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, "%" + (keyword != null ? keyword : "") + "%");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                list.add(new CarType(
-                        rs.getInt("id"),
-                        rs.getString("name"),
-                        rs.getBoolean("status")
-                ));
+                CarType carType = new CarType();
+                carType.setId(rs.getInt("id"));
+                carType.setName(rs.getString("name"));
+                carType.setDescription(rs.getString("description"));
+                carType.setStatus(rs.getBoolean("status"));
+                carType.setCreatedAt(rs.getTimestamp("created_at"));
+                carType.setUpdatedAt(rs.getTimestamp("updated_at"));
+                list.add(carType);
             }
         } catch (SQLException e) {
             e.printStackTrace();

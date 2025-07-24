@@ -21,9 +21,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.sql.*;
 
-
-
-
 /**
  *
  * @author TRAN ANH HAI

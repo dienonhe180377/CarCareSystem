@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
+import java.util.ArrayList;
 
 public class HomeDAO extends DBConnection {
     // Lấy top 3 dịch vụ nổi bật (bán chạy nhất)
@@ -26,6 +27,8 @@ public class HomeDAO extends DBConnection {
                         rs.getDouble("price"),
                         rs.getString("img")
                 );
+                // LẤY VÀ GÁN PHỤ TÙNG CHO TỪNG DỊCH VỤ
+                se.setParts(new ArrayList<>(getPartsByServiceId(se.getId())));
                 listService.add(se);
             }
         } catch (SQLException ex) {
@@ -33,7 +36,35 @@ public class HomeDAO extends DBConnection {
         }
         return listService;
     }
-     public Vector<Part> getTop5FeaturedParts() {
+    
+    // Lấy danh sách phụ tùng của 1 dịch vụ (dùng bảng PartsService!)
+    public Vector<Part> getPartsByServiceId(int serviceId) {
+        Vector<Part> parts = new Vector<>();
+        String sql = "SELECT p.id, p.name, p.image, p.price " +
+                     "FROM Parts p " +
+                     "JOIN PartsService ps ON p.id = ps.partId " +
+                     "WHERE ps.serviceId = ?";
+        try (PreparedStatement ptm = connection.prepareStatement(sql)) {
+            ptm.setInt(1, serviceId);
+            try (ResultSet rs = ptm.executeQuery()) {
+                while (rs.next()) {
+                    Part part = new Part(
+                            rs.getInt("id"),
+                            rs.getString("name"),
+                            rs.getString("image"),
+                            rs.getDouble("price")
+                    );
+                    parts.add(part);
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return parts;
+    }
+
+    // Lấy top 5 phụ tùng nổi bật
+    public Vector<Part> getTop5FeaturedParts() {
         Vector<Part> partList = new Vector<>();
         String sql = "SELECT TOP 5 id, name, image, price FROM Parts ORDER BY id DESC";
         try (PreparedStatement ptm = connection.prepareStatement(sql); ResultSet rs = ptm.executeQuery()) {

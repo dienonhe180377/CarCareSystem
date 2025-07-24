@@ -6,6 +6,15 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="entity.CarType" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Date" %>
+<%
+    CarType carType = (CarType) request.getAttribute("carType");
+    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+
+    String createdAt = (carType.getCreatedAt() != null) ? sdf.format(new Date(carType.getCreatedAt().getTime())) : "";
+    String updatedAt = (carType.getUpdatedAt() != null) ? sdf.format(new Date(carType.getUpdatedAt().getTime())) : "";
+%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -42,14 +51,20 @@
                 margin-bottom: 30px;
             }
 
-            .detail {
-                font-size: 16px;
+            .row {
+                display: flex;
                 margin-bottom: 20px;
             }
 
-            .detail strong {
-                display: inline-block;
+            .label {
                 width: 150px;
+                font-weight: bold;
+                color: #333;
+            }
+
+            .value {
+                flex: 1;
+                line-height: 1.2;
             }
 
             a.btn-back {
@@ -65,15 +80,15 @@
     </head>
     <body>
         <%@include file="/header_emp.jsp" %>
-        <%
-            CarType carType = (CarType) request.getAttribute("carType");
-        %>
-
         <div class="container">
             <h2>Chi tiết loại xe</h2>
-            <div class="detail"><strong>ID:</strong> <%= carType.getId() %></div>
-            <div class="detail"><strong>Tên loại xe:</strong> <%= carType.getName() %></div>
-            <div class="detail"><strong>Trạng thái:</strong> <%= carType.isStatus() ? "Kích hoạt" : "Không kích hoạt" %></div>
+
+            <div class="row"><div class="label">ID:</div><div class="value"><%= carType.getId() %></div></div>
+            <div class="row"><div class="label">Tên loại xe:</div><div class="value"><%= carType.getName() %></div></div>
+            <div class="row"><div class="label">Mô tả:</div><div class="value"><%= carType.getDescription() != null ? carType.getDescription() : "Không có" %></div></div>
+            <div class="row"><div class="label">Trạng thái:</div><div class="value"><%= carType.isStatus() ? "Kích hoạt" : "Không kích hoạt" %></div></div>
+            <div class="row"><div class="label">Ngày tạo:</div><div class="value"><%= createdAt %></div></div>
+            <div class="row"><div class="label">Cập nhật gần nhất:</div><div class="value"><%= updatedAt %></div></div>
 
             <a class="btn-back" href="${pageContext.request.contextPath}/manager/carTypeList">Quay lại danh sách</a>
         </div>
