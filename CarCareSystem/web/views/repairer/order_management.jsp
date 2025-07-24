@@ -10,6 +10,15 @@
         <title>Repairer - Order Management</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <style>
+            .btn-group {
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                border-radius: 6px;
+                overflow: hidden;
+            }
+            .btn-group .btn {
+                border-radius: 0;
+                font-weight: 500;
+            }
             .container {
                 max-width: 95%;
                 margin: 0 auto;
@@ -80,29 +89,54 @@
     </head>
     <body>
         <%@include file="/header_emp.jsp" %>
-        
+
         <div class="container">
             <h1>Quản Lý Đơn Hàng Đã Nhận Xe</h1>
-            
+
+            <div class="mb-4">
+                <div class="btn-group" role="group">
+                    <a href="${pageContext.request.contextPath}/order_repair?status=Đã Nhận Xe" 
+                       class="btn ${param.status eq 'Đã Nhận Xe' or empty param.status ? 'btn-primary' : 'btn-outline-primary'}">
+                        Đã Nhận Xe
+                    </a>
+                    <a href="${pageContext.request.contextPath}/order_repair?status=Đang Sửa Chữa" 
+                       class="btn ${param.status eq 'Đang Sửa Chữa' ? 'btn-primary' : 'btn-outline-primary'}">
+                        Đang Sửa Chữa
+                    </a>
+                    <a href="${pageContext.request.contextPath}/order_repair?status=Hoàn Thành" 
+                       class="btn ${param.status eq 'Hoàn Thành' ? 'btn-primary' : 'btn-outline-primary'}">
+                        Hoàn Thành
+                    </a>
+                    <a href="${pageContext.request.contextPath}/order_repair?status=Đã Trả Xe" 
+                       class="btn ${param.status eq 'Đã Trả Xe' ? 'btn-primary' : 'btn-outline-primary'}">
+                        Đã Trả Xe
+                    </a>
+                    <a href="${pageContext.request.contextPath}/order_repair" 
+                       class="btn btn-outline-secondary">
+                        Tất Cả
+                    </a>
+                </div>
+            </div>
+
             <c:if test="${not empty message}">
                 <div class="alert alert-success alert-dismissible fade show">
                     ${message}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             </c:if>
-        
+
             <c:if test="${not empty error}">
                 <div class="alert alert-danger alert-dismissible fade show">
                     ${error}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             </c:if>
-        
+
             <div class="table-responsive">
                 <table class="order-table table-striped">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>STT</th>
                             <th>Khách Hàng</th>
                             <th>Liên Hệ</th>
                             <th>Loại Xe</th>
@@ -113,9 +147,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <c:forEach items="${orders}" var="order">
+                        <c:forEach items="${orders}" var="order" varStatus="loop">
                             <tr>
-                                <td>#${order.id}</td>
+                                <td>${loop.index + 1}</td>
                                 <td>${order.name}</td>
                                 <td>
                                     <div>${order.phone}</div>
@@ -143,7 +177,7 @@
                                             </c:otherwise>
                                         </c:choose>
                                     </div>
-                                    
+
                                     <!-- Phụ tùng -->
                                     <div>
                                         <span class="fw-bold">Phụ tùng:</span>
@@ -178,7 +212,7 @@
                                                 data-bs-toggle="modal" data-bs-target="#editServicesModal${order.id}">
                                             <i class="bi bi-pencil"></i> Sửa DV
                                         </button>
-                                        
+
                                         <!-- Nút chỉnh sửa phụ tùng -->
                                         <button class="btn btn-sm btn-outline-success" 
                                                 data-bs-toggle="modal" data-bs-target="#editPartsModal${order.id}">
@@ -187,137 +221,147 @@
                                     </div>
                                 </td>
                             </tr>
-                            
+
                             <!-- Modal Chi tiết Dịch vụ -->
                             <c:forEach items="${order.services}" var="service">
-                                <div class="modal fade" id="serviceDetailModal${service.id}" tabindex="-1" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">Chi tiết dịch vụ: ${service.name}</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <p><strong>Mô tả:</strong> ${service.description}</p>
-                                                <p><strong>Giá dịch vụ:</strong> 
-                                                    <fmt:formatNumber value="${service.price}" type="currency" currencyCode="VND"/>
-                                                </p>
-                                                <c:if test="${not empty service.parts}">
-                                                    <h6>Phụ tùng sử dụng:</h6>
-                                                    <ul>
-                                                        <c:forEach items="${service.parts}" var="part">
-                                                            <li>${part.name} - 
-                                                                <fmt:formatNumber value="${part.price}" type="currency" currencyCode="VND"/>
-                                                            </li>
-                                                        </c:forEach>
-                                                    </ul>
-                                                </c:if>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </c:forEach>
-                            
-                            <!-- Modal Sửa Dịch Vụ -->
-                            <div class="modal fade" id="editServicesModal${order.id}" tabindex="-1" aria-hidden="true">
-                                <div class="modal-dialog modal-lg">
+                            <div class="modal fade" id="serviceDetailModal${service.id}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title">Chỉnh sửa dịch vụ - Đơn #${order.id}</h5>
+                                            <h5 class="modal-title">Chi tiết dịch vụ: ${service.name}</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
-                                        <form action="${pageContext.request.contextPath}/order_repair" method="POST">
-                                            <input type="hidden" name="action" value="updateServices">
-                                            <input type="hidden" name="orderId" value="${order.id}">
-                                            <div class="modal-body">
-                                                <div class="service-list">
-                                                    <c:forEach items="${allServices}" var="service">
-                                                        <div class="service-item form-check">
-                                                            <input class="form-check-input" type="checkbox" 
-                                                                   name="serviceIds" value="${service.id}"
-                                                                   id="service${service.id}_order${order.id}"
-                                                                   <c:if test="${order.services.stream().anyMatch(s -> s.id == service.id)}">checked</c:if>>
-                                                            <label class="form-check-label w-100" for="service${service.id}_order${order.id}">
-                                                                <div class="d-flex justify-content-between">
-                                                                    <span>
-                                                                        <strong>${service.name}</strong> - 
-                                                                        <fmt:formatNumber value="${service.price}" type="currency" currencyCode="VND"/>
-                                                                    </span>
-                                                                    <button type="button" class="btn btn-sm btn-outline-info" 
-                                                                            data-bs-toggle="modal" data-bs-target="#serviceDetailModal${service.id}">
-                                                                        Chi tiết
-                                                                    </button>
-                                                                </div>
-                                                                <small class="text-muted">${service.description}</small>
-                                                            </label>
-                                                        </div>
+                                        <div class="modal-body">
+                                            <p><strong>Mô tả:</strong> ${service.description}</p>
+                                            <p><strong>Giá dịch vụ:</strong> 
+                                                <c:set var="totalServicePrice" value="${service.price}"/>
+                                                <c:forEach items="${service.parts}" var="part">
+                                                    <c:set var="totalServicePrice" value="${totalServicePrice + part.price}"/>
+                                                </c:forEach>
+                                                <fmt:formatNumber value="${totalServicePrice}" type="currency" currencyCode="VND"/>
+                                            </p>
+                                            <c:if test="${not empty service.parts}">
+                                                <h6>Phụ tùng sử dụng:</h6>
+                                                <ul>
+                                                    <c:forEach items="${service.parts}" var="part">
+                                                        <li>${part.name} - 
+                                                            <fmt:formatNumber value="${part.price}" type="currency" currencyCode="VND"/>
+                                                        </li>
                                                     </c:forEach>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                                                <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Modal Sửa Phụ Tùng -->
-                            <div class="modal fade" id="editPartsModal${order.id}" tabindex="-1" aria-hidden="true">
-                                <div class="modal-dialog modal-lg">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Chỉnh sửa phụ tùng - Đơn #${order.id}</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </ul>
+                                            </c:if>
                                         </div>
-                                        <form action="${pageContext.request.contextPath}/order_repair" method="POST">
-                                            <input type="hidden" name="action" value="updateParts">
-                                            <input type="hidden" name="orderId" value="${order.id}">
-                                            <div class="modal-body">
-                                                <div class="part-list">
-                                                    <c:forEach items="${allParts}" var="part">
-                                                        <div class="part-item form-check">
-                                                            <input class="form-check-input" type="checkbox" 
-                                                                   name="partIds" value="${part.id}"
-                                                                   id="part${part.id}_order${order.id}"
-                                                                   <c:if test="${order.parts.stream().anyMatch(p -> p.id == part.id)}">checked</c:if>>
-                                                            <label class="form-check-label" for="part${part.id}_order${order.id}">
-                                                                <strong>${part.name}</strong> - 
-                                                                <fmt:formatNumber value="${part.price}" type="currency" currencyCode="VND"/>
-                                                            </label>
-                                                        </div>
-                                                    </c:forEach>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                                                <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
-                                            </div>
-                                        </form>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </c:forEach>
+
+                        <!-- Modal Sửa Dịch Vụ -->
+                        <div class="modal fade" id="editServicesModal${order.id}" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Chỉnh sửa dịch vụ - Đơn #${order.id}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <form action="${pageContext.request.contextPath}/order_repair" method="POST">
+                                        <input type="hidden" name="action" value="updateServices">
+                                        <input type="hidden" name="orderId" value="${order.id}">
+                                        <div class="modal-body">
+                                            <div class="service-list">
+                                                <c:forEach items="${allServices}" var="service">
+                                                    <div class="service-item form-check">
+                                                        <input class="form-check-input" type="checkbox" name="serviceIds" value="${service.id}"
+                                                               id="service${service.id}_order${order.id}"
+                                                               <c:forEach items="${order.services}" var="ordService">
+                                                                   <c:if test="${ordService.id eq service.id}">checked</c:if>
+                                                               </c:forEach>>
+                                                        <label class="form-check-label w-100" for="service${service.id}_order${order.id}">
+                                                            <div class="d-flex justify-content-between">
+                                                                <span>
+                                                                    <strong>${service.name}</strong> - 
+                                                                    <c:set var="totalServicePrice" value="${service.price}"/>
+                                                                    <c:forEach items="${service.parts}" var="part">
+                                                                        <c:set var="totalServicePrice" value="${totalServicePrice + part.price}"/>
+                                                                    </c:forEach>
+                                                                    <fmt:formatNumber value="${totalServicePrice}" type="currency" currencyCode="VND"/>
+                                                                </span>
+                                                                <button type="button" class="btn btn-sm btn-outline-info" 
+                                                                        data-bs-toggle="modal" data-bs-target="#serviceDetailModal${service.id}">
+                                                                    Chi tiết
+                                                                </button>
+                                                            </div>
+                                                            <small class="text-muted">${service.description}</small>
+                                                        </label>
+                                                    </div>
+                                                </c:forEach>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                            <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal Sửa Phụ Tùng -->
+                        <div class="modal fade" id="editPartsModal${order.id}" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Chỉnh sửa phụ tùng - Đơn #${order.id}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <form action="${pageContext.request.contextPath}/order_repair" method="POST">
+                                        <input type="hidden" name="action" value="updateParts">
+                                        <input type="hidden" name="orderId" value="${order.id}">
+                                        <div class="modal-body">
+                                            <div class="part-list">
+                                                <c:forEach items="${allParts}" var="part">
+                                                    <div class="part-item form-check">
+                                                        <input class="form-check-input" type="checkbox" name="partIds" value="${part.id}"
+                                                               id="part${part.id}_order${order.id}"
+                                                               <c:forEach items="${order.parts}" var="ordPart">
+                                                                   <c:if test="${ordPart.id eq part.id}">checked</c:if>
+                                                               </c:forEach>>
+                                                        <label class="form-check-label" for="part${part.id}_order${order.id}">
+                                                            <strong>${part.name}</strong> - 
+                                                            <fmt:formatNumber value="${part.price}" type="currency" currencyCode="VND"/>
+                                                        </label>
+                                                    </div>
+                                                </c:forEach>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                            <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </c:forEach>
                     </tbody>
                 </table>
             </div>
         </div>
-        
+
         <!-- Bootstrap Icons -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-            // Tự động đóng thông báo sau 5 giây
-            setTimeout(() => {
-                const alerts = document.querySelectorAll('.alert');
-                alerts.forEach(alert => {
-                    new bootstrap.Alert(alert).close();
-                });
-            }, 5000);
+                                            // Tự động đóng thông báo sau 5 giây
+                                            setTimeout(() => {
+                                                const alerts = document.querySelectorAll('.alert');
+                                                alerts.forEach(alert => {
+                                                    new bootstrap.Alert(alert).close();
+                                                });
+                                            }, 5000);
         </script>
     </body>
 </html>
