@@ -65,19 +65,19 @@ public class AuthorizationServlet extends HttpServlet {
         
         switch(role){
             case "admin":
-                response.sendRedirect(request.getContextPath() + "/admin/userList");
+                response.sendRedirect(request.getContextPath() + "/dashboard");
                 break;
             case "manager":
-                response.sendRedirect(request.getContextPath() + "/manager/carTypeList");
+                response.sendRedirect(request.getContextPath() + "/attendance");
                 break;
             case "repairer":
-                response.sendRedirect(request.getContextPath() + "/order_repair");
+                response.sendRedirect(request.getContextPath() + "/ordermanagement");
                 break;
             case "warehouse manager":
                 response.sendRedirect(request.getContextPath() + "/PartController?service=list");
                 break;
             case "marketing":
-                response.sendRedirect(request.getContextPath() + "/ordermanagement");
+                response.sendRedirect(request.getContextPath() + "/blog");
                 break;
             default:
                 session.invalidate();

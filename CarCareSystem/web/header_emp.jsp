@@ -688,23 +688,21 @@
                 Object role = session.getAttribute("role");
                 if ("admin".equals(role)) { %>
             <h2>Admin</h2>
-            <a href="${pageContext.request.contextPath}/attendance">Quản lý điểm danh</a>
             <a href="${pageContext.request.contextPath}/admin/userList">Quản lý người dùng</a>
-            <a href="${pageContext.request.contextPath}/insurance">Quản lý bảo hiểm</a>
-            <a href="${pageContext.request.contextPath}/ServiceServlet_JSP">Quản lý dịch vụ</a>
             <a href="${pageContext.request.contextPath}/admin/settingList">Quản lý cài đặt</a>
+            <a href="${pageContext.request.contextPath}/dashboard">Dashboard</a>
             <% } else if ("manager".equals(role)) { %>
             <h2>Manager</h2>
-            <a href="${pageContext.request.contextPath}/categoryList.jsp">Quản lý category</a>
-            <a href="${pageContext.request.contextPath}/supplierList.jsp">Quản lý nhà cung cấp</a>
-            <a href="${pageContext.request.contextPath}/partList.jsp">Quản lý bộ phận</a>
-            <a href="${pageContext.request.contextPath}/manager/carTypeList">Quản lý loại xe</a>
+            <a href="${pageContext.request.contextPath}/attendance">Quản lý điểm danh</a>
+            <a href="${pageContext.request.contextPath}/ordermanagement">Quản lý đơn hàng</a>
             <a href="${pageContext.request.contextPath}/insurance">Quản lý bảo hiểm</a>
             <a href="${pageContext.request.contextPath}/ServiceServlet_JSP">Quản lý dịch vụ</a>
+            <a href="${pageContext.request.contextPath}/manager/carTypeList">Quản lý loại xe</a>
+            <a href="${pageContext.request.contextPath}/dashboard">Dashboard</a>
             <% } else if ("repairer".equals(role)) { %>
             <h2>Repairer</h2>
-            <a href="${pageContext.request.contextPath}/PartController?service=list">Quản lý bộ phận</a>
-            <a href="${pageContext.request.contextPath}/order_repair">Quản lý đơn</a>
+            <a href="${pageContext.request.contextPath}/attendance">Xem điểm danh</a>
+            <a href="${pageContext.request.contextPath}/ordermanagement">Quản lý đơn hàng</a>
             <% } else if ("warehouse manager".equals(role)) { %>
             <h2>Warehouse Manager</h2>
             <a href="${pageContext.request.contextPath}/CategoryController?service=list">Quản lý category</a>
@@ -712,9 +710,10 @@
             <a href="${pageContext.request.contextPath}/PartController?service=list">Quản lý bộ phận</a>
             <% } else if ("marketing".equals(role)) { %>
             <h2>Marketing</h2>
-            <a href="${pageContext.request.contextPath}/insurance">Quản lý bảo hiểm</a>
-           <a href="${pageContext.request.contextPath}/ServiceServlet_JSP">Quản lý dịch vụ</a>
-            <a href="${pageContext.request.contextPath}/ordermanagement">Quan lý đơn đặt lịch</a>
+            <a href="${pageContext.request.contextPath}/attendance">Xem điểm danh</a>
+            <a href="${pageContext.request.contextPath}/campaign">Quản lý Campaign</a>
+            <a href="${pageContext.request.contextPath}/blog">Quản lý Blog</a>
+            <a href="${pageContext.request.contextPath}/voucher">Quản lý Voucher</a>
             <% } %>
         </div>
 
@@ -979,6 +978,18 @@
                                     <div class="setting-item">
                                         <div class="toggle-container">
                                             <label class="toggle-switch">
+                                                <input type="checkbox" name="serviceChanges" value="yes" <c:if test="${notiSetting.service == true}">checked</c:if>>
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                        </div>
+                                        <div class="setting-content">
+                                            <div class="setting-title">Thông báo về các thay đổi dịch vụ</div>
+                                            <div class="setting-description">Bật chế độ này để nhận các thông báo các thay đổi dịch vụ</div>
+                                        </div>
+                                    </div>
+                                    <div class="setting-item">
+                                        <div class="toggle-container">
+                                            <label class="toggle-switch">
                                                 <input type="checkbox" name="insurance" value="yes" <c:if test="${notiSetting.insurance == true}">checked</c:if>>
                                                 <span class="toggle-slider"></span>
                                             </label>
@@ -986,6 +997,18 @@
                                         <div class="setting-content">
                                             <div class="setting-title">Thông báo về các thay đổi bảo hiểm</div>
                                             <div class="setting-description">Bật chế độ này để nhận các thông báo các thay đổi bảo hiểm</div>
+                                        </div>
+                                    </div>
+                                    <div class="setting-item">
+                                        <div class="toggle-container">
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" name="carType" value="yes" <c:if test="${notiSetting.carType == true}">checked</c:if>>
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                        </div>
+                                        <div class="setting-content">
+                                            <div class="setting-title">Thông báo về các thay đổi loại xe</div>
+                                            <div class="setting-description">Bật chế độ này để nhận các thông báo các thay đổi loại xe</div>
                                         </div>
                                     </div>
                             </c:if>
@@ -1000,42 +1023,6 @@
                                         <div class="setting-content">
                                             <div class="setting-title">Thông báo về các thay đổi đơn hàng</div>
                                             <div class="setting-description">Bật chế độ này để nhận các thông báo các thay đổi đơn hàng</div>
-                                        </div>
-                                    </div>
-                                    <div class="setting-item">
-                                        <div class="toggle-container">
-                                            <label class="toggle-switch">
-                                                <input type="checkbox" name="attendance" value="yes" <c:if test="${notiSetting.attendance == true}">checked</c:if>>
-                                                <span class="toggle-slider"></span>
-                                            </label>
-                                        </div>
-                                        <div class="setting-content">
-                                            <div class="setting-title">Thông báo về các thay đổi điểm danh</div>
-                                            <div class="setting-description">Bật chế độ này để nhận các thông báo các thay đổi điểm danh</div>
-                                        </div>
-                                    </div>
-                                    <div class="setting-item">
-                                        <div class="toggle-container">
-                                            <label class="toggle-switch">
-                                                <input type="checkbox" name="serviceChanges" value="yes" <c:if test="${notiSetting.service == true}">checked</c:if>>
-                                                <span class="toggle-slider"></span>
-                                            </label>
-                                        </div>
-                                        <div class="setting-content">
-                                            <div class="setting-title">Thông báo về các thay đổi dịch vụ</div>
-                                            <div class="setting-description">Bật chế độ này để nhận các thông báo các thay đổi dịch vụ</div>
-                                        </div>
-                                    </div>
-                                    <div class="setting-item">
-                                        <div class="toggle-container">
-                                            <label class="toggle-switch">
-                                                <input type="checkbox" name="carType" value="yes" <c:if test="${notiSetting.carType == true}">checked</c:if>>
-                                                <span class="toggle-slider"></span>
-                                            </label>
-                                        </div>
-                                        <div class="setting-content">
-                                            <div class="setting-title">Thông báo về các thay đổi loại xe</div>
-                                            <div class="setting-description">Bật chế độ này để nhận các thông báo các thay đổi loại xe</div>
                                         </div>
                                     </div>
                             </c:if>
