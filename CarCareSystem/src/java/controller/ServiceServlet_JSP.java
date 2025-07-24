@@ -1,9 +1,13 @@
 package controller;
 
 import dao.FeedbackDAO;
+import dao.NotificationDAO;
 import dao.ServiceDAO;
 import dao.PartDAO;
+import dao.UserDAO;
 import entity.Feedback;
+import entity.Notification;
+import entity.NotificationSetting;
 import entity.Service;
 import entity.Part;
 import entity.User;
@@ -15,12 +19,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Vector;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
+import util.SendMailService;
 
 @WebServlet(name = "ServiceServlet_JSP", urlPatterns = {"/ServiceServlet_JSP"})
 @MultipartConfig
@@ -83,7 +89,10 @@ public class ServiceServlet_JSP extends HttpServlet {
         // Lấy user từ session (user có thể null với previewService)
         User currentUser = (User) request.getSession().getAttribute("user");
         String role = currentUser != null ? currentUser.getUserRole() : null;
-
+//NOTIFICATION
+            UserDAO userDAO = new UserDAO();
+            NotificationDAO notificationDAO = new NotificationDAO();
+//NOTIFICATION
         try {
             switch (service) {
                 case "deleteService": {
@@ -93,6 +102,132 @@ public class ServiceServlet_JSP extends HttpServlet {
                     }
                     int seid = Integer.parseInt(request.getParameter("id"));
                     dao.deleteService(seid);
+                    
+                    //NOTIFICATION DELETE
+                    
+                    String message = "Dịch vụ id = " + seid + " vừa bị xóa khỏi hệ thống";
+
+                    List<User> users = userDAO.getAllUser();
+                    for (int i = 0; i < users.size(); i++) {
+                        if (users.get(i).getUserRole().equals("manager")) {
+                            NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(users.get(i).getId());
+                            if (notiSetting.isEmail() && notiSetting.isService()) {
+                                SendMailService.sendNotification(users.get(i).getEmail(), message);
+                            }
+                            int addNoti = notificationDAO.addNotification(users.get(i).getId(), message, "Service");
+                        }
+                    }
+                    ArrayList<Notification> notifications = notificationDAO.getAllNotificationById(currentUser.getId());
+                    NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(currentUser.getId());
+                    if (!notiSetting.isProfile()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Profile")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isOrderChange()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Order Change")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isAttendance()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Attendance")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isService()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Service")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isInsurance()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Insurance")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isCategory()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Category")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isSupplier()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Supplier")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isParts()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Part")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isSettingChange()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Setting Change")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isCarType()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Car Type")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isCampaign()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Campaign")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isBlog()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Blog")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isVoucher()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Voucher")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    request.getSession().setAttribute("notification", notifications);
+                    request.getSession().setAttribute("notiSetting", notiSetting);
+//                        NOTIFICATION
+                    
+                    
                     response.sendRedirect("ServiceServlet_JSP?service=listService");
                     break;
                 }
@@ -177,6 +312,130 @@ public class ServiceServlet_JSP extends HttpServlet {
                             }
                         }
                         dao.updatePartsForService(id, partIds);
+                        
+                        //NOTIFICATION UPDATE
+                        
+                        String message = "Dịch vụ " + name + " vừa được cập nhật";
+
+                    List<User> users = userDAO.getAllUser();
+                    for (int i = 0; i < users.size(); i++) {
+                        if (users.get(i).getUserRole().equals("manager")) {
+                            NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(users.get(i).getId());
+                            if (notiSetting.isEmail() && notiSetting.isService()) {
+                                SendMailService.sendNotification(users.get(i).getEmail(), message);
+                            }
+                            int addNoti = notificationDAO.addNotification(users.get(i).getId(), message, "Service");
+                        }
+                    }
+                    ArrayList<Notification> notifications = notificationDAO.getAllNotificationById(currentUser.getId());
+                    NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(currentUser.getId());
+                    if (!notiSetting.isProfile()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Profile")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isOrderChange()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Order Change")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isAttendance()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Attendance")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isService()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Service")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isInsurance()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Insurance")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isCategory()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Category")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isSupplier()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Supplier")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isParts()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Part")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isSettingChange()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Setting Change")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isCarType()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Car Type")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isCampaign()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Campaign")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isBlog()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Blog")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isVoucher()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Voucher")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    request.getSession().setAttribute("notification", notifications);
+                    request.getSession().setAttribute("notiSetting", notiSetting);
+//                        NOTIFICATION
 
                         response.sendRedirect("ServiceServlet_JSP?service=listService");
                     }
@@ -254,6 +513,130 @@ public class ServiceServlet_JSP extends HttpServlet {
                             }
                         }
                         dao.insertPartsForService(newServiceId, partIds);
+                        
+                        //NOTIFICATION ADD
+                        
+                        String message = "Dịch vụ " + name + " vừa được thêm vào hệ thống";
+
+                    List<User> users = userDAO.getAllUser();
+                    for (int i = 0; i < users.size(); i++) {
+                        if (users.get(i).getUserRole().equals("manager")) {
+                            NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(users.get(i).getId());
+                            if (notiSetting.isEmail() && notiSetting.isService()) {
+                                SendMailService.sendNotification(users.get(i).getEmail(), message);
+                            }
+                            int addNoti = notificationDAO.addNotification(users.get(i).getId(), message, "Service");
+                        }
+                    }
+                    ArrayList<Notification> notifications = notificationDAO.getAllNotificationById(currentUser.getId());
+                    NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(currentUser.getId());
+                    if (!notiSetting.isProfile()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Profile")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isOrderChange()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Order Change")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isAttendance()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Attendance")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isService()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Service")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isInsurance()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Insurance")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isCategory()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Category")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isSupplier()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Supplier")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isParts()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Part")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isSettingChange()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Setting Change")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isCarType()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Car Type")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isCampaign()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Campaign")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isBlog()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Blog")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isVoucher()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Voucher")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    request.getSession().setAttribute("notification", notifications);
+                    request.getSession().setAttribute("notiSetting", notiSetting);
+//                        NOTIFICATION
 
                         response.sendRedirect("ServiceServlet_JSP?service=listService");
                     }

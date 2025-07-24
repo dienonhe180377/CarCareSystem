@@ -792,7 +792,7 @@
                     </button>
                     <div id="userDropdown" class="Dropdown-content">
                         <a href="${pageContext.request.contextPath}/viewProfile">Profile</a>
-                        <a href="orders.jsp">My Orders</a>
+                        <c:if test="${user.userRole eq 'customer'}"><a href="${pageContext.request.contextPath}/myorder">My Orders</a></c:if>
                         <a href="${pageContext.request.contextPath}/logout">Logout</a>
                     </div>
                 </div>

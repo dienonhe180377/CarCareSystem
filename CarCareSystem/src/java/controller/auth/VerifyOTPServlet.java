@@ -52,7 +52,7 @@ public class VerifyOTPServlet extends HttpServlet {
             //Notification
             NotificationDAO notificationDAO = new NotificationDAO();
             User user = dao.getUserByEmail(email);
-            notificationDAO.addNotificationSetting(user.getId(), true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true);
+            notificationDAO.addNotificationSetting(user.getId(), true, true, true, true, true, false, true, true, true, true, true, true, true, true, true, true);
             int addNoti = notificationDAO.addNotification(user.getId(), "Bạn đã tạo tài khoản thành công", "Profile");
 
             session.invalidate();
