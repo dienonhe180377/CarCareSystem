@@ -337,7 +337,7 @@ VALUES
            (N'manager01', N'123', N'manager@example.com', N'0900000002', N'Hồ Chí Minh', GETDATE(), N'manager'),
            (N'repairer01', N'123', N'repairer@example.com', N'0900000003', N'Đà Nẵng', GETDATE(), N'repairer'),
            (N'customer01', N'123', N'customer@example.com', N'0900000004', N'Cần Thơ', GETDATE(), N'customer'),
-           (N'warehouse01', N'123', N'ongdien4@gmail.com', N'0900000005', N'Bình Dương', GETDATE(), N'warehouse manager'),
+           (N'warehouse01', N'123', N'warehouse@gmail.com', N'0900000005', N'Bình Dương', GETDATE(), N'warehouse manager'),
            (N'marketing01', N'123', N'marketing@example.com', N'0900000006', N'Nha Trang', GETDATE(), N'marketing');
 GO
 
@@ -433,7 +433,6 @@ CREATE TABLE [Setting] (
 );
 GO
 
-select * from [User]
 
 INSERT INTO [Setting] (name, value) VALUES 
 ('site_name', 'Car Care Centre'),
