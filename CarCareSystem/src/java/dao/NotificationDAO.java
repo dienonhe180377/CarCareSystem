@@ -272,6 +272,80 @@ public class NotificationDAO extends DBConnection {
         }
     }
 
+    public int addNotificationSetting(
+            int receiverId,
+            boolean notificationTime,
+            boolean notificationStatus,
+            boolean profile,
+            boolean orderChange,
+            boolean attendance,
+            boolean email,
+            boolean service,
+            boolean insurance,
+            boolean category,
+            boolean supplier,
+            boolean parts,
+            boolean settingChange,
+            boolean carType,
+            boolean campaign,
+            boolean blog,
+            boolean voucher
+    ) throws Exception {
+        Connection conn = null;
+        PreparedStatement pre = null;
+
+        String sql = "INSERT INTO [NotificationSetting] (\n"
+                + "    recieverId,\n"
+                + "    notification_time,\n"
+                + "    notification_status,\n"
+                + "    profile,\n"
+                + "    order_change,\n"
+                + "    attendance,\n"
+                + "    email,\n"
+                + "    service,\n"
+                + "    insurance,\n"
+                + "    category,\n"
+                + "    supplier,\n"
+                + "    parts,\n"
+                + "    setting_change,\n"
+                + "    car_type,\n"
+                + "    campaign,\n"
+                + "    blog,\n"
+                + "    voucher\n"
+                + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try {
+            conn = getConnection();
+            pre = conn.prepareStatement(sql);
+
+            // Thiết lập tham số
+            pre.setInt(1, receiverId);
+            pre.setBoolean(2, notificationTime);
+            pre.setBoolean(3, notificationStatus);
+            pre.setBoolean(4, profile);
+            pre.setBoolean(5, orderChange);
+            pre.setBoolean(6, attendance);
+            pre.setBoolean(7, email);
+            pre.setBoolean(8, service);
+            pre.setBoolean(9, insurance);
+            pre.setBoolean(10, category);
+            pre.setBoolean(11, supplier);
+            pre.setBoolean(12, parts);
+            pre.setBoolean(13, settingChange);
+            pre.setBoolean(14, carType);
+            pre.setBoolean(15, campaign);
+            pre.setBoolean(16, blog);
+            pre.setBoolean(17, voucher);
+
+            return pre.executeUpdate();
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            closePreparedStatement(pre);
+            closeConnection(conn);
+        }
+    }
+
     public static void main(String[] args) throws Exception {
         NotificationDAO dAO = new NotificationDAO();
         System.out.println(dAO.getNotificationSettingById(1));
