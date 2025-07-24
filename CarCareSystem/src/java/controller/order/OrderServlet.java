@@ -23,9 +23,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import java.util.ArrayList;
 import java.util.List;
 import util.SendMailService;
+=======
+import java.text.DecimalFormat;
+>>>>>>> Stashed changes
 =======
 import java.text.DecimalFormat;
 >>>>>>> Stashed changes
@@ -319,8 +323,11 @@ public class OrderServlet extends HttpServlet {
                 session.setAttribute("totalPrice", price);
                 session.setAttribute("paymentStatus", paymentStatus);
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                 response.sendRedirect("GenerateQRCode?orderId=" + orderId
 =======
+=======
+>>>>>>> Stashed changes
                 DecimalFormat df = new DecimalFormat("#");
                 String priceFormatted = df.format(price);
                 response.sendRedirect("GenerateQRCode?orderId=" + orderId 
