@@ -256,7 +256,7 @@
                 <nav class="nav-menu">
                     <a href="ServiceServlet_JSP">SERVICES</a>
                     <a href="part">ACCESSORIES</a>
-                    <a href="insurance">INSURANCE</a>
+                    <a href="instype?action=list">INSURANCE</a>
                 </nav>
             </div>
 
