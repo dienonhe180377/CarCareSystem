@@ -5,12 +5,17 @@
 package controller;
 
 import dao.CategoryDAO;
+import dao.NotificationDAO;
 import dao.PartDAO;
 import dao.SupplierDAO;
+import dao.UserDAO;
 import entity.Category;
+import entity.Notification;
+import entity.NotificationSetting;
 import entity.Part;
 import entity.Size;
 import entity.Supplier;
+import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -22,8 +27,12 @@ import jakarta.servlet.http.HttpSession;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import util.SendMailService;
 
 /**
  *
@@ -51,7 +60,13 @@ public class PartController extends HttpServlet {
             CategoryDAO categoryDAO = new CategoryDAO();
             SupplierDAO supplierDAO = new SupplierDAO();
             PartDAO partDAO = new PartDAO();
+
+//NOTIFICATION
+            UserDAO userDAO = new UserDAO();
             HttpSession session = request.getSession();
+            User user = (User) session.getAttribute("user");
+            NotificationDAO notificationDAO = new NotificationDAO();
+//NOTIFICATION
 
             if (service.equals("list")) {
                 ArrayList<Category> categoryList = categoryDAO.getAllCategory();
@@ -165,11 +180,11 @@ public class PartController extends HttpServlet {
                     }
                     int successCheck = partDAO.addPart(name, fileName, categoryId, price);
                     if (successCheck > 0) {
-                        
-                        if(image.getSize() > 0){
+
+                        if (image.getSize() > 0) {
                             image.write(imageFilePath);
                         }
-                        
+
                         ArrayList<Part> partList = partDAO.getAllPart();
                         int id = partList.get(partList.size() - 1).getId();
 
@@ -187,6 +202,130 @@ public class PartController extends HttpServlet {
                             }
                             partDAO.addPartSize(sizeNames[i], id, status, sizeQuantity);
                         }
+
+//                        NOTIFICATION
+                        String message = "Linh kiện " + name + " vừa được thêm vào hệ thống";
+
+                        List<User> users = userDAO.getAllUser();
+                        for (int i = 0; i < users.size(); i++) {
+                            if (users.get(i).getUserRole().equals("warehouse manager")) {
+                                NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(users.get(i).getId());
+                                if (notiSetting.isEmail() && notiSetting.isParts()) {
+                                    SendMailService.sendNotification(users.get(i).getEmail(), message);
+                                }
+                                int addNoti = notificationDAO.addNotification(users.get(i).getId(), message, "Part");
+                            }
+                        }
+                        ArrayList<Notification> notifications = notificationDAO.getAllNotificationById(user.getId());
+                        NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(user.getId());
+                        if (!notiSetting.isProfile()) {
+                            for (int i = notifications.size() - 1; i >= 0; i--) {
+                                if (notifications.get(i).getType().equals("Profile")) {
+                                    notifications.remove(i);
+                                }
+                            }
+                        }
+
+                        if (!notiSetting.isOrderChange()) {
+                            for (int i = notifications.size() - 1; i >= 0; i--) {
+                                if (notifications.get(i).getType().equals("Order Change")) {
+                                    notifications.remove(i);
+                                }
+                            }
+                        }
+
+                        if (!notiSetting.isAttendance()) {
+                            for (int i = notifications.size() - 1; i >= 0; i--) {
+                                if (notifications.get(i).getType().equals("Attendance")) {
+                                    notifications.remove(i);
+                                }
+                            }
+                        }
+
+                        if (!notiSetting.isService()) {
+                            for (int i = notifications.size() - 1; i >= 0; i--) {
+                                if (notifications.get(i).getType().equals("Service")) {
+                                    notifications.remove(i);
+                                }
+                            }
+                        }
+
+                        if (!notiSetting.isInsurance()) {
+                            for (int i = notifications.size() - 1; i >= 0; i--) {
+                                if (notifications.get(i).getType().equals("Insurance")) {
+                                    notifications.remove(i);
+                                }
+                            }
+                        }
+
+                        if (!notiSetting.isCategory()) {
+                            for (int i = notifications.size() - 1; i >= 0; i--) {
+                                if (notifications.get(i).getType().equals("Category")) {
+                                    notifications.remove(i);
+                                }
+                            }
+                        }
+
+                        if (!notiSetting.isSupplier()) {
+                            for (int i = notifications.size() - 1; i >= 0; i--) {
+                                if (notifications.get(i).getType().equals("Supplier")) {
+                                    notifications.remove(i);
+                                }
+                            }
+                        }
+
+                        if (!notiSetting.isParts()) {
+                            for (int i = notifications.size() - 1; i >= 0; i--) {
+                                if (notifications.get(i).getType().equals("Part")) {
+                                    notifications.remove(i);
+                                }
+                            }
+                        }
+
+                        if (!notiSetting.isSettingChange()) {
+                            for (int i = notifications.size() - 1; i >= 0; i--) {
+                                if (notifications.get(i).getType().equals("Setting Change")) {
+                                    notifications.remove(i);
+                                }
+                            }
+                        }
+
+                        if (!notiSetting.isCarType()) {
+                            for (int i = notifications.size() - 1; i >= 0; i--) {
+                                if (notifications.get(i).getType().equals("Car Type")) {
+                                    notifications.remove(i);
+                                }
+                            }
+                        }
+
+                        if (!notiSetting.isCampaign()) {
+                            for (int i = notifications.size() - 1; i >= 0; i--) {
+                                if (notifications.get(i).getType().equals("Campaign")) {
+                                    notifications.remove(i);
+                                }
+                            }
+                        }
+
+                        if (!notiSetting.isBlog()) {
+                            for (int i = notifications.size() - 1; i >= 0; i--) {
+                                if (notifications.get(i).getType().equals("Blog")) {
+                                    notifications.remove(i);
+                                }
+                            }
+                        }
+
+                        if (!notiSetting.isVoucher()) {
+                            for (int i = notifications.size() - 1; i >= 0; i--) {
+                                if (notifications.get(i).getType().equals("Voucher")) {
+                                    notifications.remove(i);
+                                }
+                            }
+                        }
+
+                        session.setAttribute("notification", notifications);
+                        session.setAttribute("notiSetting", notiSetting);
+//                        NOTIFICATION
+
                         request.setAttribute("successAdd", 2);
                         request.getRequestDispatcher("partDetail.jsp").forward(request, response);
                     } else {
@@ -294,6 +433,129 @@ public class PartController extends HttpServlet {
                             }
                         }
 
+//                        NOTIFICATION
+                        String message = "Linh kiện " + name + " vừa được sửa";
+
+                        List<User> users = userDAO.getAllUser();
+                        for (int i = 0; i < users.size(); i++) {
+                            if (users.get(i).getUserRole().equals("warehouse manager")) {
+                                NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(users.get(i).getId());
+                                if (notiSetting.isEmail() && notiSetting.isParts()) {
+                                    SendMailService.sendNotification(users.get(i).getEmail(), message);
+                                }
+                                int addNoti = notificationDAO.addNotification(users.get(i).getId(), message, "Part");
+                            }
+                        }
+                        ArrayList<Notification> notifications = notificationDAO.getAllNotificationById(user.getId());
+                        NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(user.getId());
+                        if (!notiSetting.isProfile()) {
+                            for (int i = notifications.size() - 1; i >= 0; i--) {
+                                if (notifications.get(i).getType().equals("Profile")) {
+                                    notifications.remove(i);
+                                }
+                            }
+                        }
+
+                        if (!notiSetting.isOrderChange()) {
+                            for (int i = notifications.size() - 1; i >= 0; i--) {
+                                if (notifications.get(i).getType().equals("Order Change")) {
+                                    notifications.remove(i);
+                                }
+                            }
+                        }
+
+                        if (!notiSetting.isAttendance()) {
+                            for (int i = notifications.size() - 1; i >= 0; i--) {
+                                if (notifications.get(i).getType().equals("Attendance")) {
+                                    notifications.remove(i);
+                                }
+                            }
+                        }
+
+                        if (!notiSetting.isService()) {
+                            for (int i = notifications.size() - 1; i >= 0; i--) {
+                                if (notifications.get(i).getType().equals("Service")) {
+                                    notifications.remove(i);
+                                }
+                            }
+                        }
+
+                        if (!notiSetting.isInsurance()) {
+                            for (int i = notifications.size() - 1; i >= 0; i--) {
+                                if (notifications.get(i).getType().equals("Insurance")) {
+                                    notifications.remove(i);
+                                }
+                            }
+                        }
+
+                        if (!notiSetting.isCategory()) {
+                            for (int i = notifications.size() - 1; i >= 0; i--) {
+                                if (notifications.get(i).getType().equals("Category")) {
+                                    notifications.remove(i);
+                                }
+                            }
+                        }
+
+                        if (!notiSetting.isSupplier()) {
+                            for (int i = notifications.size() - 1; i >= 0; i--) {
+                                if (notifications.get(i).getType().equals("Supplier")) {
+                                    notifications.remove(i);
+                                }
+                            }
+                        }
+
+                        if (!notiSetting.isParts()) {
+                            for (int i = notifications.size() - 1; i >= 0; i--) {
+                                if (notifications.get(i).getType().equals("Part")) {
+                                    notifications.remove(i);
+                                }
+                            }
+                        }
+
+                        if (!notiSetting.isSettingChange()) {
+                            for (int i = notifications.size() - 1; i >= 0; i--) {
+                                if (notifications.get(i).getType().equals("Setting Change")) {
+                                    notifications.remove(i);
+                                }
+                            }
+                        }
+
+                        if (!notiSetting.isCarType()) {
+                            for (int i = notifications.size() - 1; i >= 0; i--) {
+                                if (notifications.get(i).getType().equals("Car Type")) {
+                                    notifications.remove(i);
+                                }
+                            }
+                        }
+
+                        if (!notiSetting.isCampaign()) {
+                            for (int i = notifications.size() - 1; i >= 0; i--) {
+                                if (notifications.get(i).getType().equals("Campaign")) {
+                                    notifications.remove(i);
+                                }
+                            }
+                        }
+
+                        if (!notiSetting.isBlog()) {
+                            for (int i = notifications.size() - 1; i >= 0; i--) {
+                                if (notifications.get(i).getType().equals("Blog")) {
+                                    notifications.remove(i);
+                                }
+                            }
+                        }
+
+                        if (!notiSetting.isVoucher()) {
+                            for (int i = notifications.size() - 1; i >= 0; i--) {
+                                if (notifications.get(i).getType().equals("Voucher")) {
+                                    notifications.remove(i);
+                                }
+                            }
+                        }
+
+                        session.setAttribute("notification", notifications);
+                        session.setAttribute("notiSetting", notiSetting);
+//                        NOTIFICATION
+
                         request.setAttribute("successAdd", 2);
                         request.setAttribute("choosedPart", part);
                         request.getRequestDispatcher("partDetail.jsp").forward(request, response);
@@ -318,6 +580,130 @@ public class PartController extends HttpServlet {
                     partDAO.deleteSizeByPartId(id);
                     partDAO.deletePartSupplierByPartId(id);
                     partDAO.deletePartById(id);
+
+                    //                        NOTIFICATION
+                    String message = "Linh kiện " + part.getName() + " vừa bị xóa khỏi hệ thống";
+
+                    List<User> users = userDAO.getAllUser();
+                    for (int i = 0; i < users.size(); i++) {
+                        if (users.get(i).getUserRole().equals("warehouse manager")) {
+                            NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(users.get(i).getId());
+                            if (notiSetting.isEmail() && notiSetting.isParts()) {
+                                SendMailService.sendNotification(users.get(i).getEmail(), message);
+                            }
+                            int addNoti = notificationDAO.addNotification(users.get(i).getId(), message, "Part");
+                        }
+                    }
+                    ArrayList<Notification> notifications = notificationDAO.getAllNotificationById(user.getId());
+                    NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(user.getId());
+                    if (!notiSetting.isProfile()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Profile")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isOrderChange()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Order Change")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isAttendance()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Attendance")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isService()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Service")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isInsurance()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Insurance")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isCategory()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Category")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isSupplier()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Supplier")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isParts()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Part")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isSettingChange()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Setting Change")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isCarType()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Car Type")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isCampaign()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Campaign")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isBlog()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Blog")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isVoucher()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Voucher")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    session.setAttribute("notification", notifications);
+                    session.setAttribute("notiSetting", notiSetting);
+//                        NOTIFICATION
+
                     request.setAttribute("successDelete", 1);
                     request.getRequestDispatcher("partList.jsp").forward(request, response);
                 }

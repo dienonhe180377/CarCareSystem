@@ -11,19 +11,21 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Vector;
 
-@WebServlet(name="InsTypeServlet", urlPatterns={"/instype"})
+@WebServlet(name = "InsTypeServlet", urlPatterns = {"/instype"})
 public class InsTypeServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
+            throws ServletException, IOException {
         InsTypeDAO dao = new InsTypeDAO();
         String action = request.getParameter("action");
-        if (action == null) action = "list";
+        if (action == null) {
+            action = "list";
+        }
 
         // Lấy user từ session
         User currentUser = (User) request.getSession().getAttribute("user");
         String role = (currentUser != null) ? currentUser.getUserRole() : "";
-        boolean canEdit = "admin".equals(role) || "manager".equals(role);
+        boolean canEdit = "manager".equals(role);
 
         if (action.equals("list")) {
             String keyword = request.getParameter("keyword");
@@ -53,11 +55,18 @@ public class InsTypeServlet extends HttpServlet {
             request.setAttribute("currentPage", page);
             request.setAttribute("totalPages", totalPages);
             request.setAttribute("role", role);
-            if ("customer".equals(role)) {
-    request.getRequestDispatcher("InsuranceType/InsuranceTypeCustomer.jsp").forward(request, response);
-} else {
-    request.getRequestDispatcher("InsuranceType/InsuranceType.jsp").forward(request, response);
-}
+            String view;
+            if (currentUser == null) {
+                // Chưa đăng nhập → khách
+                view = "InsuranceType/InsuranceTypeCustomer.jsp";
+            } else if ("admin".equals(role) || "manager".equals(role)) {
+                view = "InsuranceType/InsuranceType.jsp";
+            } else {
+                // Đăng nhập với tư cách customer
+                view = "InsuranceType/InsuranceTypeCustomer.jsp";
+            }
+
+            request.getRequestDispatcher(view).forward(request, response);
 
         } else if (canEdit && action.equals("add")) {
             String submit = request.getParameter("submit");
@@ -84,6 +93,8 @@ public class InsTypeServlet extends HttpServlet {
                     error = "Mô tả không được chứa ký tự đặc biệt!";
                 } else if (price <= 0) {
                     error = "Giá phải lớn hơn 0!";
+                } else if (dao.isInsuranceTypeNameExists(name)) {
+                    error = "Bảo hiểm đã tồn tại!";
                 }
 
                 if (error != null) {
@@ -126,6 +137,8 @@ public class InsTypeServlet extends HttpServlet {
                 error = "Mô tả không được chứa ký tự đặc biệt!";
             } else if (price <= 0) {
                 error = "Giá phải lớn hơn 0!";
+            } else if (dao.isInsuranceTypeNameExists(name)) {
+                error = "Bảo hiểm đã tồn tại!";
             }
 
             if (error != null) {

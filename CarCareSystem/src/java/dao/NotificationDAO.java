@@ -55,27 +55,36 @@ public class NotificationDAO extends DBConnection {
     }
 
     //Get Notification Setting By Id
-    public NotificationSetting getNotificationSettingById(int id) throws Exception {
+    public NotificationSetting getNotificationSettingById(int userId) throws Exception {
         Connection conn = null;
         PreparedStatement pre = null;
         ResultSet rs = null;
-        String sql = "SELECT * FROM [NotificationSetting] where recieverId = " + id;
+        String sql = "SELECT * FROM [NotificationSetting] where recieverId = " + userId;
         NotificationSetting setting = null;
         try {
             conn = getConnection();
             pre = conn.prepareStatement(sql);
             rs = pre.executeQuery();
             while (rs.next()) {
-                int notiSettingId = rs.getInt("id");
+                int id = rs.getInt("id");
                 User reciever = userDAO.getUserById(rs.getInt("recieverId"));
                 boolean notificationTime = rs.getBoolean("notification_time");
                 boolean notificationStatus = rs.getBoolean("notification_status");
                 boolean profile = rs.getBoolean("profile");
+                boolean orderChange = rs.getBoolean("order_change");
+                boolean attendance = rs.getBoolean("attendance");
                 boolean email = rs.getBoolean("email");
+                boolean service = rs.getBoolean("service");
+                boolean insurance = rs.getBoolean("insurance");
                 boolean category = rs.getBoolean("category");
                 boolean supplier = rs.getBoolean("supplier");
                 boolean parts = rs.getBoolean("parts");
-                setting = new NotificationSetting(notiSettingId, reciever, notificationTime, notificationStatus, profile, email, category, supplier, parts);
+                boolean settingChange = rs.getBoolean("setting_change");
+                boolean carType = rs.getBoolean("car_type");
+                boolean campaign = rs.getBoolean("campaign");
+                boolean blog = rs.getBoolean("blog");
+                boolean voucher = rs.getBoolean("voucher");
+                setting = new NotificationSetting(id, reciever, notificationTime, notificationStatus, profile, orderChange, attendance, email, service, insurance, category, supplier, parts, settingChange, carType, campaign, blog, voucher);
             }
             return setting;
         } catch (Exception e) {
@@ -151,6 +160,31 @@ public class NotificationDAO extends DBConnection {
             conn = getConnection();
             pre = conn.prepareStatement(sql);
             pre.setInt(1, id);
+            int successCheck = pre.executeUpdate();
+            return successCheck;
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            closeConnection(conn);
+            closePreparedStatement(pre);
+        }
+    }
+
+    //Add Notification
+    public int addNotification(int userId, String message, String type) throws Exception {
+        Connection conn = null;
+        PreparedStatement pre = null;
+
+        String sql = "INSERT INTO [Notification] ([message], status, recieverId, notification_type)\n"
+                + "VALUES \n"
+                + "(?, ?, ?, ?)";
+        try {
+            conn = getConnection();
+            pre = conn.prepareStatement(sql);
+            pre.setString(1, message);
+            pre.setBoolean(2, false);
+            pre.setInt(3, userId);
+            pre.setString(4, type);
             int successCheck = pre.executeUpdate();
             return successCheck;
         } catch (Exception e) {
@@ -240,6 +274,6 @@ public class NotificationDAO extends DBConnection {
 
     public static void main(String[] args) throws Exception {
         NotificationDAO dAO = new NotificationDAO();
-        System.out.println(dAO.deleteNotification(5));
+        System.out.println(dAO.getNotificationSettingById(1));
     }
 }

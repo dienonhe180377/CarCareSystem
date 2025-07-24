@@ -36,7 +36,7 @@
                         <td>${t.name}</td>
                         <td>${t.description}</td>
                         <td><fmt:formatNumber value="${t.price}" type="currency" currencySymbol="" /></td>
-                        <c:if test="${role == 'admin' || role == 'manager'}">
+                        <c:if test="${role == 'manager'}">
                             <td>
                                 <div class="action-buttons">
                                     <a href="instype?action=edit&id=${t.id}" class="btn btn-submit">Sửa</a>

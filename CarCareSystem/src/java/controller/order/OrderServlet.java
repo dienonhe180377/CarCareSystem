@@ -19,7 +19,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.sql.*;
 
 /**
  *
@@ -102,11 +101,11 @@ public class OrderServlet extends HttpServlet {
 
         
         try {
-            appointmentDateStr = appointmentDateStr.replace("T", " ") + ":00";
-            Timestamp appointmentTimestamp = Timestamp.valueOf(appointmentDateStr);
+            java.sql.Date appointmentDate = java.sql.Date.valueOf(appointmentDateStr);
+            java.sql.Date currentDate = new java.sql.Date(System.currentTimeMillis());
 
-            if (appointmentTimestamp.before(new Timestamp(System.currentTimeMillis()))) {
-                throw new IllegalArgumentException("Ngày hẹn phải sau thời gian hiện tại.");
+            if (appointmentDate.before(currentDate)) {
+                throw new IllegalArgumentException("Ngày hẹn phải sau hoặc bằng ngày hiện tại.");
             }
 
             double price = 0.0;
@@ -149,7 +148,7 @@ public class OrderServlet extends HttpServlet {
             }
             
             int orderId = dao.createOrder(fullName, email, phone, address, carTypeId,
-                                  appointmentTimestamp, price, paymentStatus, orderStatus, paymentMethod);
+                                  appointmentDate, price, paymentStatus, orderStatus, paymentMethod);
             
             if (serviceIds != null) {
                 for (String sid : serviceIds) {
@@ -169,13 +168,17 @@ public class OrderServlet extends HttpServlet {
             
             if ("Chuyển khoản ngân hàng".equals(paymentMethod)) {
                 session.setAttribute("currentOrderId", orderId);
-                session.setAttribute("appointmentDate", appointmentTimestamp);
+                session.setAttribute("appointmentDate", appointmentDate);
                 session.setAttribute("totalPrice", price);
                 session.setAttribute("paymentStatus", paymentStatus);
-                request.getRequestDispatcher("/views/order/payment.jsp").forward(request, response);
+                response.sendRedirect("GenerateQRCode?orderId=" + orderId 
+                        + "&totalAmount=" + price
+                        + "&bankAccount=1013367685"
+                        + "&bankName=Vietcombank"
+                        + "&accountName=TRAN THANH HAI");
             } else {
                 request.setAttribute("currentOrderId", orderId);
-                request.setAttribute("appointmentDate", appointmentTimestamp);
+                request.setAttribute("appointmentDate", appointmentDate);
                 request.setAttribute("totalPrice", price);
                 request.setAttribute("paymentStatus", paymentStatus);
                 request.getRequestDispatcher("/views/order/success.jsp").forward(request, response);

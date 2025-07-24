@@ -172,7 +172,7 @@
                                 </td>
                                 <td>${order.carType.name}</td>
                                 <td>
-                                    <fmt:formatDate value="${order.appointmentDate}" pattern="dd/MM/yyyy HH:mm" />
+                                    <fmt:formatDate value="${order.appointmentDate}" pattern="dd/MM/yyyy" />
                                 </td>
                                 <td>
                                     <fmt:formatNumber value="${order.price}" type="currency" currencyCode="VND" groupingUsed="false" maxFractionDigits="0"/>
@@ -247,8 +247,8 @@
                                                     <div class="modal-body">
                                                         <div class="mb-3">
                                                             <label class="form-label">Ngày hẹn mới</label>
-                                                            <input type="datetime-local" class="form-control" name="newAppointmentDate" required
-                                                                    min="<fmt:formatDate value="${now}" pattern="yyyy-MM-dd'T'HH:mm" />">
+                                                            <input type="date" class="form-control" name="newAppointmentDate" required
+                                                                    min="<fmt:formatDate value="${now}" pattern="yyyy-MM-dd" />">
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
