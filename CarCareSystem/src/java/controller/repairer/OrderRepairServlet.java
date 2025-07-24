@@ -5,12 +5,17 @@
 
 package controller.repairer;
 
+import dao.NotificationDAO;
 import dao.OrderDAO;
 import dao.PartDAO;
 import dao.ServiceDAO;
+import dao.UserDAO;
+import entity.Notification;
+import entity.NotificationSetting;
 import entity.Order;
 import entity.Part;
 import entity.Service;
+import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -18,8 +23,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
+import util.SendMailService;
 
 /**
  *
@@ -116,6 +124,144 @@ public class OrderRepairServlet extends HttpServlet {
                 handleUpdateParts(request, response, orderId);
             } else if ("updateStatus".equals(action)) {
                 handleUpdateStatus(request, response, orderId);
+                
+                //NOTIFICATION CAP NHAT TRANG THAI DON HANG
+                
+                UserDAO userDAO = new UserDAO();
+                    NotificationDAO notificationDAO = new NotificationDAO();
+                    HttpSession session = request.getSession();
+                    User user = (User) session.getAttribute("user");
+
+                    //                        NOTIFICATION
+                    List<User> users = userDAO.getAllUser();
+                    for (int i = 0; i < users.size(); i++) {
+                        String message = "Đơn hàng số" + orderId + "đã được cập nhật trạng thái";
+                        if (users.get(i).getUserRole().equals("manager") || users.get(i).getUserRole().equals("repairer")) {
+                            NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(users.get(i).getId());
+                            if (notiSetting.isEmail() && notiSetting.isOrderChange()) {
+                                SendMailService.sendNotification(users.get(i).getEmail(), message);
+                            }
+                            int addNoti = notificationDAO.addNotification(users.get(i).getId(), message, "Order Change");
+                        }
+                        if (users.get(i).getId() == user.getId()) {
+                            message = message = "Đơn hàng số" + orderId + "đã được cập nhật trạng thái";
+                            NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(users.get(i).getId());
+                            if (notiSetting.isEmail() && notiSetting.isOrderChange()) {
+                                SendMailService.sendNotification(users.get(i).getEmail(), message);
+                            }
+                            int addNoti = notificationDAO.addNotification(users.get(i).getId(), message, "Order Change");
+                        }
+                    }
+                    ArrayList<Notification> notifications = notificationDAO.getAllNotificationById(user.getId());
+                    NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(user.getId());
+                    if (!notiSetting.isProfile()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Profile")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isOrderChange()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Order Change")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isAttendance()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Attendance")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isService()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Service")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isInsurance()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Insurance")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isCategory()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Category")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isSupplier()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Supplier")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isParts()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Part")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isSettingChange()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Setting Change")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isCarType()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Car Type")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isCampaign()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Campaign")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isBlog()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Blog")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    if (!notiSetting.isVoucher()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Voucher")) {
+                                notifications.remove(i);
+                            }
+                        }
+                    }
+
+                    session.setAttribute("notification", notifications);
+                    session.setAttribute("notiSetting", notiSetting);
+//                        NOTIFICATION
+                
             }
             response.sendRedirect(request.getContextPath() + "/order_repair");
         } catch (Exception e) {

@@ -82,9 +82,46 @@ public class EditUserServlet extends HttpServlet {
         String address = request.getParameter("address");
         String role = request.getParameter("userRole");
 
+        String error = null;
+        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
+        String phoneRegex = "^0\\d{9}$";
+
+        User existingUser = uDao.getUserById(id);
+        
+        if (username.length() > 50) {
+            error = "Username quá dài!";
+        } else if (!email.matches(emailRegex)) {
+            error = "Email không hợp lệ!";
+        } else if (!email.equals(existingUser.getEmail()) && uDao.isEmailTaken(email)) {
+            error = "Email đã tồn tại!";
+        } else if (email.length() > 100) {
+            error = "Email quá dài!";
+        } else if (!phone.matches(phoneRegex)) {
+            error = "Số điện thoại không hợp lệ! (phải bắt đầu bằng 0 và có 10 chữ số)";
+        } else if (!phone.equals(existingUser.getPhone()) && uDao.isPhoneTaken(phone)) {
+            error = "Số điện thoại đã tồn tại!";
+        } else if (phone.length() > 20) {
+            error = "Số điện thoại quá dài!";
+        } else if (address.length() > 200) {
+            error = "Địa chỉ quá dài!";
+        }
+
+        if (error != null) {
+            request.setAttribute("errorMessage", error);
+            request.setAttribute("username", username);
+            request.setAttribute("email", email);
+            request.setAttribute("phone", phone);
+            request.setAttribute("address", address);
+            request.setAttribute("userRole", role);
+            request.setAttribute("user", existingUser);
+            
+            request.getRequestDispatcher("/admin/editUser.jsp").forward(request, response);
+            return;
+        }
+        
         User user = new User(id, username, "", email, phone, address, null, role);
         uDao.updateUser(user);
-
+        request.getSession().setAttribute("message", "Cập nhật user thành công!");
         response.sendRedirect(request.getContextPath() + "/admin/userList");
     }
 

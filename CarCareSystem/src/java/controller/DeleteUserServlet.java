@@ -73,6 +73,7 @@ public class DeleteUserServlet extends HttpServlet {
     throws ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
         uDao.deleteUser(id);
+        request.getSession().setAttribute("message", "Xóa user thành công!");
         response.sendRedirect(request.getContextPath() + "/admin/userList");
     }
 

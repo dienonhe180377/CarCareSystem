@@ -82,7 +82,7 @@
                         )">Chi tiết</button>
                     </td>
                     <td>
-                        <c:if test="${role == 'admin' || role == 'manager' || role == 'maketing'}">
+                        <c:if test="${role == 'manager'}">
                             <a href="insurance?service=updateInsurance&id=${i.id}" class="btn">Sửa</a>
                             <a href="insurance?service=deleteInsurance&id=${i.id}" class="btn btn-danger" onclick="return confirm('Bạn có chắc muốn xóa?');">Xóa</a>
                         </c:if>

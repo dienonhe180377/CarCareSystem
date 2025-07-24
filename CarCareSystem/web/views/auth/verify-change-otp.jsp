@@ -13,13 +13,6 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Xác nhận OTP</title>
         <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f8f9fa;
-            margin: 0;
-            padding: 0;
-        }
-
         .container {
             display: flex;
             padding: 40px;
@@ -110,7 +103,8 @@
     </style>
     </head>
     <body>
-        <%--<%@ include file="/header.jsp" %>--%>
+        <%@ include file="/header.jsp" %>
+        
         <div class="container">
             <!-- Sidebar -->
             <div class="sidebar">
@@ -150,6 +144,6 @@
                 </form>
             </div>
         </div>
-        <%--<%@ include file="/footer.jsp" %>--%>       
+        <%@ include file="/footer.jsp" %>     
     </body>
 </html>

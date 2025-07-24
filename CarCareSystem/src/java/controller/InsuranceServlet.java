@@ -131,6 +131,9 @@ public class InsuranceServlet extends HttpServlet {
                 // Tạo đối tượng Insurance và thêm vào database
                 Insurance i = new Insurance(userId, carTypeId, insuranceTypeId, startDate, endDate);
                 dao.addInsurance(i);
+                
+                //NOTIFICATION ADD INSURANCE
+                
 
                 // Sau khi thêm, hiển thị lại danh sách bảo hiểm
                 int page = 1;
@@ -233,6 +236,7 @@ public class InsuranceServlet extends HttpServlet {
                 Insurance i = new Insurance(id, userId, carTypeId, insuranceTypeId, startDate, endDate);
                 dao.updateInsurance(i);
 
+                
                 // Hiển thị lại danh sách bảo hiểm sau khi cập nhật
                 int page = 1;
                 int pageSize = 5;

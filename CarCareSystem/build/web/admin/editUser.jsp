@@ -103,7 +103,7 @@
         <%@include file="/header_emp.jsp" %>
         <div class="container">
             <%
-                User user = (User) request.getAttribute("user");
+                User user = (User) request.getAttribute("user");              
                 if (user != null) {
             %>
             <h2>Sửa thông tin User</h2>
@@ -127,8 +127,12 @@
             </form>
 
             <div class="error-message">
-                <% } else { %>
-                <p>User không tồn tại.</p>
+                <%
+                    String errorMessage = (String) request.getAttribute("errorMessage");
+                    if (errorMessage != null) {
+                        out.print(errorMessage);
+                    }
+                %>
                 <% } %>
             </div>
 

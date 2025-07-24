@@ -7,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.sql.Date;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,9 +17,9 @@ public class CampaignServlet extends AuthorizationServlet {
 
     private static final Logger LOGGER = Logger.getLogger(CampaignServlet.class.getName());
     private CampaignDAO campaignDAO;
-    
+
     Date currentDate = new Date(System.currentTimeMillis());
-    
+
     @Override
     public void init() {
         campaignDAO = new CampaignDAO();
@@ -38,8 +39,9 @@ public class CampaignServlet extends AuthorizationServlet {
         User user = (User) userObj;
         String role = user.getUserRole().toLowerCase();
 
-        // Nếu role là "user" thì không cho phép
-        return role.equals("customer");
+        // Nếu role là "user repairer warehouse manager" thì không cho phép
+        List<String> restrictedRoles = Arrays.asList("customer", "repairer", "warehouse manager");
+        return restrictedRoles.contains(role);
     }
 
     @Override
@@ -59,12 +61,11 @@ public class CampaignServlet extends AuthorizationServlet {
                 showEditForm(id, request, response);
             } else if ("delete".equalsIgnoreCase(service)) {
                 deleteCampaign(request, response);
-            } else 
-//                if ("detail".equalsIgnoreCase(service)){
-//                showCampaignDetail(request, response);
-//            } 
-//                else 
-                {
+            } else //                if ("detail".equalsIgnoreCase(service)){
+            //                showCampaignDetail(request, response);
+            //            } 
+            //                else 
+            {
                 showCampaignList(request, response);
             }
         } catch (Exception ex) {
@@ -123,7 +124,7 @@ public class CampaignServlet extends AuthorizationServlet {
             handleError(request, response, "Không thể hiển thị form sửa", ex);
         }
     }
-    
+
     private void showCampaignList(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         List<Campaign> allCampaigns = campaignDAO.getAllCampaigns();
@@ -131,8 +132,7 @@ public class CampaignServlet extends AuthorizationServlet {
         request.setAttribute("campaigns", allCampaigns);
         request.getRequestDispatcher("Campaign/Campaign.jsp").forward(request, response);
     }
-    
-    
+
     private void addOrUpdateCampaign(HttpServletRequest request, HttpServletResponse response, boolean isEdit)
             throws ServletException, IOException {
         try {

@@ -703,6 +703,7 @@
             <h2>Repairer</h2>
             <a href="${pageContext.request.contextPath}/attendance">Xem điểm danh</a>
             <a href="${pageContext.request.contextPath}/ordermanagement">Quản lý đơn hàng</a>
+            <a href="${pageContext.request.contextPath}/order_repair">Quản lý xe sửa chữa</a>
             <% } else if ("warehouse manager".equals(role)) { %>
             <h2>Warehouse Manager</h2>
             <a href="${pageContext.request.contextPath}/CategoryController?service=list">Quản lý category</a>
@@ -792,7 +793,7 @@
                     </button>
                     <div id="userDropdown" class="Dropdown-content">
                         <a href="${pageContext.request.contextPath}/viewProfile">Profile</a>
-                        <a href="orders.jsp">My Orders</a>
+                        <c:if test="${user.userRole eq 'customer'}"><a href="${pageContext.request.contextPath}/myorder">My Orders</a></c:if>
                         <a href="${pageContext.request.contextPath}/logout">Logout</a>
                     </div>
                 </div>

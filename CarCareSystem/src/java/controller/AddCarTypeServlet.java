@@ -93,6 +93,7 @@ public class AddCarTypeServlet extends HttpServlet {
 
         String name = request.getParameter("name");
         String statusStr = request.getParameter("status");
+        String description = request.getParameter("description");
         boolean status = "on".equals(statusStr);
 
         if (name == null || name.trim().isEmpty()) {
@@ -118,10 +119,12 @@ public class AddCarTypeServlet extends HttpServlet {
         CarType newCarType = new CarType();
         newCarType.setName(name);
         newCarType.setStatus(status);
+        newCarType.setDescription(description);
 
         boolean success = ctDao.addCarType(newCarType);
 
         if (success) {
+            request.getSession().setAttribute("message", "Thêm loại xe thành công!");
             response.sendRedirect(request.getContextPath() + "/manager/carTypeList");
         } else {
             request.setAttribute("errorMessage", "Thêm loại xe thất bại!");

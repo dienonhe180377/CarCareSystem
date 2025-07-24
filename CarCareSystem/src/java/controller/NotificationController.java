@@ -58,6 +58,12 @@ public class NotificationController extends HttpServlet {
                 }
                 session.setAttribute("notification", notifications);
 
+                if (user.getUserRole().equals("customer")) {
+                    if (notification.getType().equals("Order Change")) {
+                        request.getRequestDispatcher("/myorder").forward(request, response);
+                    }
+                }
+
                 if (notification.getType().equals("Part")) {
                     request.getRequestDispatcher("/PartController?service=list").forward(request, response);
                 } else if (notification.getType().equals("Profile")) {

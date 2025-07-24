@@ -212,19 +212,17 @@
                 <div class="qr-section">
                     <h2 class="section-title">Mã QR Thanh Toán</h2>
                     <div class="qr-code">
-                        <c:if test="${not empty qrCodeImage}">
-                            <img src="data:image/png;base64,${qrCodeImage}" alt="Mã QR Thanh Toán" style="width: 250px; height: 250px;">
-                            <p>Quét mã QR để chuyển tiền nhanh chóng</p>
-                            <div class="qr-instruction">
-                                <p><strong>Cách thanh toán:</strong></p>
-                                <ol>
-                                    <li>Mở ứng dụng Mobile Banking</li>
-                                    <li>Chọn tính năng quét mã QR</li>
-                                    <li>Hướng camera về mã này</li>
-                                    <li>Kiểm tra thông tin và xác nhận thanh toán</li>
-                                </ol>
-                            </div>
-                        </c:if>
+                        <img src="${vietQrUrl}" alt="QR Code VietQR" style="width: 300px; height: auto;">
+                        <p>Quét mã bằng ứng dụng ngân hàng để thanh toán</p>
+                        <div class="qr-instruction">
+                            <p><strong>Cách thanh toán:</strong></p>
+                            <ol>
+                                <li>Mở ứng dụng Mobile Banking</li>
+                                <li>Chọn tính năng quét mã QR</li>
+                                <li>Hướng camera về mã này</li>
+                                <li>Kiểm tra thông tin và xác nhận thanh toán</li>
+                            </ol>
+                        </div>
                     </div>
                 </div>
 

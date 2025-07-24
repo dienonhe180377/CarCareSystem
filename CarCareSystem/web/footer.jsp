@@ -114,16 +114,16 @@
             <footer>
                 <div class="footer-container">
                     <div class="footer-column">
-                        <h4>SITE INFORMATION</h4>
+                        <h4>THÔNG TIN TRANG WEB</h4>
                         <ul>
-                            <a href="home.jsp"><li>Home</li></a>
-                            <li>Shop</li>
-                            <li>Cart</li>
+                            <a href="home"><li>Trang chủ</li></a>
+                            <li>Cửa hàng</li>
+                            <li>Giỏ hàng</li>
                         </ul>
                     </div>
 
                     <div class="footer-column">
-                        <h4>SERVICE & SUPPORT</h4>
+                        <h4>DỊCH VỤ & HỖ TRỢ</h4>
                         <ul>
                             <li><%= settingMap.get("service_exp1") %></li>
                             <li><%= settingMap.get("service_exp2") %></li>
@@ -133,7 +133,7 @@
                     </div>
 
                     <div class="footer-column">
-                        <h4>CONTACT</h4>
+                        <h4>LIÊN HỆ</h4>
                         <ul>
                             <li><span>N.</span> <%= settingMap.get("site_name") %></li>
                             <li><span>T.</span> <%= settingMap.get("hotline") %></li>

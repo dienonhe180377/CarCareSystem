@@ -10,6 +10,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.sql.Date;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,7 +20,7 @@ public class BlogServlet extends AuthorizationServlet {
     private static final Logger LOGGER = Logger.getLogger(BlogServlet.class.getName());
     private CampaignDAO campaignDAO;
     DBConnection dbConn = new DBConnection();
-    
+
     @Override
     public void init() {
         campaignDAO = new CampaignDAO();
@@ -39,8 +40,9 @@ public class BlogServlet extends AuthorizationServlet {
         entity.User user = (entity.User) userObj;
         String role = user.getUserRole().toLowerCase();
 
-        // Nếu role là "customer" thì không cho phép
-        return role.equals("customer");
+        // Nếu role là "customer repairer warehouse manager" thì không cho phép
+        List<String> restrictedRoles = Arrays.asList("customer", "repairer", "warehouse manager");
+        return restrictedRoles.contains(role);
     }
 
     @Override
@@ -60,10 +62,9 @@ public class BlogServlet extends AuthorizationServlet {
                 showEditForm(id, request, response);
             } else if ("delete".equalsIgnoreCase(service)) {
                 deleteBlog(request, response);
-            } else 
-//                if ("detail".equalsIgnoreCase(service)) {
-//                showBlogDetail(request, response);
-//            } else 
+            } else //                if ("detail".equalsIgnoreCase(service)) {
+            //                showBlogDetail(request, response);
+            //            } else 
             {
                 showBlogList(request, response);
             }
@@ -101,7 +102,7 @@ public class BlogServlet extends AuthorizationServlet {
     private void showEditForm(int id, HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            
+
             BlogDAO blogDAO = new BlogDAO(dbConn.getConnection());
 
             List<Blog> blogs = blogDAO.getAllBlogs();
@@ -131,7 +132,7 @@ public class BlogServlet extends AuthorizationServlet {
 
     private void showBlogList(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         BlogDAO blogDAO = new BlogDAO(dbConn.getConnection());
 
         List<Blog> blogs = blogDAO.getAllBlogs();
@@ -143,12 +144,10 @@ public class BlogServlet extends AuthorizationServlet {
         request.getRequestDispatcher("Blog/Blog.jsp").forward(request, response);
     }
 
-    
-
     private void addOrUpdateBlog(HttpServletRequest request, HttpServletResponse response, boolean isEdit)
             throws ServletException, IOException {
         try {
-            
+
             BlogDAO blogDAO = new BlogDAO(dbConn.getConnection());
 
             int id = isEdit ? Integer.parseInt(request.getParameter("id")) : 0;
@@ -205,7 +204,7 @@ public class BlogServlet extends AuthorizationServlet {
     private void deleteBlog(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            
+
             BlogDAO blogDAO = new BlogDAO(dbConn.getConnection());
 
             int id = Integer.parseInt(request.getParameter("id"));
@@ -227,7 +226,6 @@ public class BlogServlet extends AuthorizationServlet {
             return "Vui lòng chọn campaign";
         }
 
-        
         BlogDAO blogDAO = new BlogDAO(dbConn.getConnection());
         List<Blog> blogs = blogDAO.getAllBlogs();
         for (Blog b : blogs) {
