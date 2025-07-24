@@ -68,18 +68,26 @@ public class OrderRepairServlet extends HttpServlet {
     throws ServletException, IOException {
 //        processRequest(request, response);
         try {
-            ArrayList<Order> orders = orderDAO.getOrdersByStatus("Đã Nhận Xe");
+            String status = request.getParameter("status");
+            ArrayList<Order> orders;
+        
+            if (status != null && !status.trim().isEmpty()) {
+                orders = orderDAO.getOrdersByStatus(status);
+            } else {
+                orders = orderDAO.getOrdersByStatus("Đã Nhận Xe");
+            }
+        
             request.setAttribute("orders", orders);
-            
-            
+        
             Vector<Service> allServices = serviceDAO.getAllService();
             ArrayList<Part> allParts = partDAO.getAllParts();
-            
+        
             request.setAttribute("allServices", allServices);
             request.setAttribute("allParts", allParts);
-            
+        
             request.getRequestDispatcher("/views/repairer/order_management.jsp").forward(request, response);
         } catch (Exception e) {
+            e.printStackTrace();
             request.setAttribute("error", "Error: " + e.getMessage());
             request.getRequestDispatcher("/views/repairer/order_management.jsp").forward(request, response);
         }
@@ -119,7 +127,6 @@ public class OrderRepairServlet extends HttpServlet {
     private void handleUpdateServices(HttpServletRequest request, HttpServletResponse response, int orderId) throws Exception {
         String[] selectedServiceIds = request.getParameterValues("serviceIds");
     
-        
         Order currentOrder = orderDAO.getOrderById(orderId);
         ArrayList<Service> currentServices = currentOrder.getServices();
     
@@ -149,55 +156,52 @@ public class OrderRepairServlet extends HttpServlet {
                 }
             }
         } else {
-        orderDAO.removeAllServicesFromOrder(orderId);
+            orderDAO.removeAllServicesFromOrder(orderId);
         }   
         updateOrderPrice(orderId);
         request.getSession().setAttribute("message", "Cập nhật dịch vụ thành công!");
     }
     
-    private void handleUpdateParts(HttpServletRequest request, HttpServletResponse response, int orderId) 
-        throws Exception {
-    String[] selectedPartIds = request.getParameterValues("partIds");
+    private void handleUpdateParts(HttpServletRequest request, HttpServletResponse response, int orderId) throws Exception {
+        String[] selectedPartIds = request.getParameterValues("partIds");
     
-    Order currentOrder = orderDAO.getOrderById(orderId);
-    ArrayList<Part> currentParts = currentOrder.getParts();
+        Order currentOrder = orderDAO.getOrderById(orderId);
+        ArrayList<Part> currentParts = currentOrder.getParts();
     
-    ArrayList<Integer> currentPartIds = new ArrayList<>();
-    for (Part part : currentParts) {
-        currentPartIds.add(part.getId());
-    }
-    
-    if (selectedPartIds != null) {
-        // Thêm phụ tùng mới
-        for (String partIdStr : selectedPartIds) {
-            int partId = Integer.parseInt(partIdStr);
-            if (!currentPartIds.contains(partId)) {
-                orderDAO.addPartToOrder(orderId, partId);
-            }
+        ArrayList<Integer> currentPartIds = new ArrayList<>();
+        for (Part part : currentParts) {
+            currentPartIds.add(part.getId());
         }
-        
-        // Xóa phụ tùng không còn được chọn
-        for (Integer existingId : currentPartIds) {
-            boolean stillSelected = false;
-            for (String selectedIdStr : selectedPartIds) {
-                if (existingId == Integer.parseInt(selectedIdStr)) {
-                    stillSelected = true;
-                    break;
+    
+        if (selectedPartIds != null) {
+            for (String partIdStr : selectedPartIds) {
+                int partId = Integer.parseInt(partIdStr);
+                if (!currentPartIds.contains(partId)) {
+                    orderDAO.addPartToOrder(orderId, partId);
                 }
             }
-            if (!stillSelected) {
-                orderDAO.removePartFromOrder(orderId, existingId);
+        
+            for (Integer existingId : currentPartIds) {
+                boolean stillSelected = false;
+                for (String selectedIdStr : selectedPartIds) {
+                    if (existingId == Integer.parseInt(selectedIdStr)) {
+                        stillSelected = true;
+                        break;
+                    }
+                }
+                if (!stillSelected) {
+                    orderDAO.removePartFromOrder(orderId, existingId);
+                }
             }
+        } else {
+            orderDAO.removeAllPartsFromOrder(orderId);
         }
-    } else {
-        orderDAO.removeAllPartsFromOrder(orderId);
+    
+        updateOrderPrice(orderId);
+        request.getSession().setAttribute("message", "Cập nhật phụ tùng thành công!");
     }
     
-    updateOrderPrice(orderId);
-    request.getSession().setAttribute("message", "Cập nhật phụ tùng thành công!");
-}
-    private void handleUpdateStatus(HttpServletRequest request, HttpServletResponse response, int orderId) 
-            throws Exception {
+    private void handleUpdateStatus(HttpServletRequest request, HttpServletResponse response, int orderId) throws Exception {
         String newStatus = request.getParameter("newStatus");
         
         if (newStatus != null && !newStatus.trim().isEmpty()) {
@@ -208,44 +212,36 @@ public class OrderRepairServlet extends HttpServlet {
                 request.getSession().setAttribute("error", "Không thể cập nhật trạng thái");
             }
         }
-    }   
-    private void updateOrderPrice(int orderId) throws Exception {
-    Order order = orderDAO.getOrderById(orderId);
-    double newPrice = 0.0;
+    }
     
-    // Tính tổng giá từ các dịch vụ (bao gồm cả phụ tùng của dịch vụ)
-    for (Service service : order.getServices()) {
-        // Thêm giá của service
-        newPrice += service.getPrice();
+    private void updateOrderPrice(int orderId) throws Exception {
+        Order order = orderDAO.getOrderById(orderId);
+        double newPrice = 0.0;
+    
+        for (Service service : order.getServices()) {       
+            newPrice += service.getPrice();
         
-        // Thêm giá của các part thuộc service (nếu có)
-        if (service.getParts() != null) {
-            for (Part part : service.getParts()) {
+            if (service.getParts() != null) {
+                for (Part part : service.getParts()) {
+                    newPrice += part.getPrice();
+                }
+            }
+        }
+    
+        for (Part part : order.getParts()) {
+            boolean isPartOfService = false;
+            for (Service service : order.getServices()) {
+                if (service.getParts() != null && service.getParts().contains(part)) {
+                    isPartOfService = true;
+                    break;
+                }
+            }
+            if (!isPartOfService) {
                 newPrice += part.getPrice();
             }
         }
+        orderDAO.updateOrderPrice(orderId, newPrice);
     }
-    
-    // Tính tổng giá từ các phụ tùng độc lập (không thuộc service nào)
-    for (Part part : order.getParts()) {
-        // Kiểm tra part này có thuộc về service nào không
-        boolean isPartOfService = false;
-        for (Service service : order.getServices()) {
-            if (service.getParts() != null && service.getParts().contains(part)) {
-                isPartOfService = true;
-                break;
-            }
-        }
-        
-        // Chỉ thêm nếu part không thuộc service nào
-        if (!isPartOfService) {
-            newPrice += part.getPrice();
-        }
-    }
-    
-    // Cập nhật giá mới vào database
-    orderDAO.updateOrderPrice(orderId, newPrice);
-}
 
     /** 
      * Returns a short description of the servlet.

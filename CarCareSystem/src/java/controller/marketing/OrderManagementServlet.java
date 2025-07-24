@@ -114,7 +114,7 @@ public class OrderManagementServlet extends HttpServlet {
         
             if ("reschedule".equals(action)) {
                 String newDateStr = request.getParameter("newAppointmentDate");
-                Timestamp newAppointmentDate = Timestamp.valueOf(newDateStr.replace("T", " ") + ":00");
+                java.sql.Date newAppointmentDate = java.sql.Date.valueOf(newDateStr);
             
                 boolean success = orderDAO.rescheduleOrder(orderId, newAppointmentDate);
                 if (success) {
@@ -124,9 +124,10 @@ public class OrderManagementServlet extends HttpServlet {
                 }
             } else if ("confirmReceived".equals(action)){
                 Order order = orderDAO.getOrderById(orderId);
-                Date now = new Date(System.currentTimeMillis());
+                java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
+                java.sql.Date appointmentDate = new java.sql.Date(order.getAppointmentDate().getTime());
             
-                if (!order.getAppointmentDate().after(now)) {
+                if (!appointmentDate.after(now)) {
                     boolean success = orderDAO.updateOrderStatus(orderId, "Đã Nhận Xe");
                     if (success) {
                         request.getSession().setAttribute("message", "Cập nhật trạng thái thành công!");
