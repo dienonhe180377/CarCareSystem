@@ -433,38 +433,8 @@ CREATE TABLE [Setting] (
 );
 GO
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
+
 select * from [Order]
->>>>>>> Stashed changes
-=======
-select * from [Order]
->>>>>>> Stashed changes
-=======
-select * from [Order]
->>>>>>> Stashed changes
-=======
-select * from [Order]
->>>>>>> Stashed changes
-=======
-select * from [Order]
->>>>>>> Stashed changes
-=======
-select * from [Order]
->>>>>>> Stashed changes
-=======
-select * from [Order]
->>>>>>> Stashed changes
-=======
-select * from [Order]
->>>>>>> Stashed changes
 
 INSERT INTO [Setting] (name, value) VALUES 
 ('site_name', 'Car Care Centre'),
