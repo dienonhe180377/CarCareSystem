@@ -142,4 +142,19 @@ public class InsTypeDAO extends DBConnection {
     }
     return list;
 }
+    public boolean isInsuranceTypeNameExists(String name) {
+    try {
+        String sql = "SELECT COUNT(*) FROM InsuranceType WHERE name = ?";
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setString(1, name);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            return rs.getInt(1) > 0;
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return false;
+}
+
 }

@@ -1,7 +1,9 @@
 package controller;
 
+import dao.FeedbackDAO;
 import dao.ServiceDAO;
 import dao.PartDAO;
+import entity.Feedback;
 import entity.Service;
 import entity.Part;
 import entity.User;
@@ -266,6 +268,9 @@ public class ServiceServlet_JSP extends HttpServlet {
                     int id = Integer.parseInt(idParam);
                     Service se = dao.getServiceDetail(id);
 
+                    FeedbackDAO feedbackDAO = new FeedbackDAO();
+                    List<Feedback> feedbackList = feedbackDAO.getFeedbackByServiceId(id);
+                    request.setAttribute("feedbackList", feedbackList);
                     if (se == null) {
                         request.setAttribute("error", "Không tìm thấy dịch vụ.");
                         request.getRequestDispatcher("jsp/error.jsp").forward(request, response);

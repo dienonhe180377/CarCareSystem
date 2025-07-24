@@ -19,10 +19,11 @@ public class DashboardServlet extends HttpServlet {
         // Kiểm tra quyền admin
         jakarta.servlet.http.HttpSession session = request.getSession();
         entity.User currentUser = (entity.User) session.getAttribute("user");
-        if (currentUser == null || !"admin".equals(currentUser.getUserRole())) {
-            response.sendRedirect("login.jsp");
-            return;
-        }
+        if (currentUser == null || 
+    !( "admin".equals(currentUser.getUserRole()) || "manager".equals(currentUser.getUserRole()) )) {
+    response.sendRedirect("login");
+    return;
+}
 
         // Lấy tham số khoảng thời gian (range)
         String range = request.getParameter("range");
