@@ -433,6 +433,10 @@ CREATE TABLE [Setting] (
 );
 GO
 
+<<<<<<< Updated upstream
+=======
+select * from [Order]
+>>>>>>> Stashed changes
 
 INSERT INTO [Setting] (name, value) VALUES 
 ('site_name', 'Car Care Centre'),

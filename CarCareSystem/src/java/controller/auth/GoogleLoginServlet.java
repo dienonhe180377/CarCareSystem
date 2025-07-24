@@ -5,7 +5,6 @@
 
 package controller.auth;
 
-import dao.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,14 +12,17 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 /**
  *
  * @author TRAN ANH HAI
  */
-@WebServlet(name="VerifyRequestServlet", urlPatterns={"/verifyRequest"})
-public class VerifyRequestServlet extends HttpServlet {
+@WebServlet(name="GoogleLoginServlet", urlPatterns={"/googlelogin"})
+public class GoogleLoginServlet extends HttpServlet {
+    
+    private static final String CLIENT_ID = "884347704813-pu1smm1tbd294u0v11ois9tu8b9e8p35.apps.googleusercontent.com";
+    private static final String CLIENT_SECRET = "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";
+    private static final String REDIRECT_URI = "http://localhost:8081/CarCareSystem/auth/google/callback";
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -32,40 +34,19 @@ public class VerifyRequestServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String enteredOtp = request.getParameter("otp");
-        String newPassword = request.getParameter("newPassword");
-
-        HttpSession session = request.getSession();
-        String sessionOtp = (String) session.getAttribute("otp");
-        String email = (String) session.getAttribute("email");
-
-        if (!enteredOtp.equals(sessionOtp)) {
-            request.setAttribute("error", "OTP không đúng!");
-            request.getRequestDispatcher("/views/auth/verify-request-otp.jsp").forward(request, response);
-            return;
+        try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet GoogleLoginServlet</title>");  
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet GoogleLoginServlet at " + request.getContextPath () + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
         }
-        
-        if (!isValidPassword(newPassword)) {
-            request.setAttribute("error", "Mật khẩu phải có ít nhất 8 ký tự, chữ cái đầu viết hoa và chứa ký tự đặc biệt.");
-            request.getRequestDispatcher("/views/auth/verify-request-otp.jsp").forward(request, response);
-            return;
-        }
-
-        UserDAO dao = new UserDAO();
-        dao.updatePassword(email, newPassword);
-
-        session.removeAttribute("otp");
-        session.removeAttribute("email");
-
-        request.setAttribute("message", "Mật khẩu đã được thay đổi thành công!");
-        request.getRequestDispatcher("/views/auth/login.jsp").forward(request, response);
-
-    }
-    
-    private boolean isValidPassword(String password) {
-        String regex = "^[A-Z][A-Za-z0-9!@#$%^&*()_+=<>?{}\\[\\]-]{7,}$";
-        return password != null && password.matches(regex);
-    }
+    } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 
@@ -78,7 +59,15 @@ public class VerifyRequestServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+//        processRequest(request, response);
+        String authUrl = "https://accounts.google.com/o/oauth2/auth?" +
+                "client_id=" + CLIENT_ID +
+                "&redirect_uri=" + REDIRECT_URI +
+                "&response_type=code" +
+                "&scope=email%20profile" +
+                "&access_type=online";
+        
+        response.sendRedirect(authUrl);
     } 
 
     /** 

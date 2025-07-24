@@ -22,9 +22,13 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+<<<<<<< Updated upstream
 import java.util.ArrayList;
 import java.util.List;
 import util.SendMailService;
+=======
+import java.text.DecimalFormat;
+>>>>>>> Stashed changes
 
 /**
  *
@@ -314,7 +318,13 @@ public class OrderServlet extends HttpServlet {
                 session.setAttribute("appointmentDate", appointmentDate);
                 session.setAttribute("totalPrice", price);
                 session.setAttribute("paymentStatus", paymentStatus);
+<<<<<<< Updated upstream
                 response.sendRedirect("GenerateQRCode?orderId=" + orderId
+=======
+                DecimalFormat df = new DecimalFormat("#");
+                String priceFormatted = df.format(price);
+                response.sendRedirect("GenerateQRCode?orderId=" + orderId 
+>>>>>>> Stashed changes
                         + "&totalAmount=" + price
                         + "&bankAccount=1013367685"
                         + "&bankName=Vietcombank"

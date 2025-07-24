@@ -5,6 +5,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Login Page</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
         <style>
             * {
                 margin: 0;
@@ -120,12 +121,55 @@
                 border-radius: 0.375rem;
                 font-size: 1rem;
                 cursor: pointer;
-                margin-bottom: 1.5rem;
+                margin-bottom: 1rem;
                 transition: background-color 0.2s ease;
             }
 
             .login-button:hover {
                 background-color: #00A090;
+            }
+
+            .google-button {
+                width: 100%;
+                padding: 0.75rem;
+                background-color: white;
+                color: #3c4043;
+                border: 1px solid #D1D5DB;
+                border-radius: 0.375rem;
+                font-size: 1rem;
+                cursor: pointer;
+                margin-bottom: 1.5rem;
+                transition: background-color 0.2s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .google-button:hover {
+                background-color: #f8f9fa;
+            }
+
+            .divider {
+                display: flex;
+                align-items: center;
+                margin: 1.5rem 0;
+                color: #6B7280;
+                font-size: 0.875rem;
+            }
+
+            .divider::before, .divider::after {
+                content: "";
+                flex: 1;
+                border-bottom: 1px solid #D1D5DB;
+            }
+
+            .divider::before {
+                margin-right: 1rem;
+            }
+
+            .divider::after {
+                margin-left: 1rem;
             }
 
             .register {
@@ -205,11 +249,32 @@
                         <% } %>
 
                         <button type="submit" class="login-button">Đăng nhập</button>
+
+                        <div class="divider">Hoặc</div>
+
+                        <button type="button" class="google-button" onclick="window.location.href = '${pageContext.request.contextPath}/googlelogin'">
+                            <i class="fab fa-google" style="color: #DB4437;"></i>
+                            Đăng nhập với Google
+                        </button>
+
                         <p class="register">
                             Chưa có tài khoản? <a href="register">Đăng ký</a>
                         </p>
                     </form>
-                    
+                        <% String error = request.getParameter("error"); %>
+                        <% if (error != null) { %>
+                        <div class="alert alert-danger">
+                            <% if ("missing_code".equals(error)) { %>
+                            Lỗi xác thực Google: Thiếu mã xác thực
+                            <% } else if ("invalid_token".equals(error)) { %>
+                            Lỗi xác thực Google: Token không hợp lệ
+                            <% } else if ("auth_failed".equals(error)) { %>
+                            Đăng nhập bằng Google thất bại
+                            <% } else { %>
+                            Lỗi đăng nhập bằng Google
+                            <% } %>
+                        </div>
+                        <% } %>
                 </div>
             </div>
         </div>
