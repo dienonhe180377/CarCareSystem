@@ -437,6 +437,10 @@ GO
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+select * from [Order]
+>>>>>>> Stashed changes
 =======
 select * from [Order]
 >>>>>>> Stashed changes
