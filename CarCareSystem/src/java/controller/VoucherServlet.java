@@ -371,7 +371,8 @@ public class VoucherServlet extends AuthorizationServlet {
         voucher.setVoucherCode(request.getParameter("voucherCode"));
         voucher.setDiscountType(request.getParameter("discountType"));
         voucher.setDiscount(Float.parseFloat(request.getParameter("discount")));
-
+        voucher.setServiceId(Integer.parseInt((request.getParameter("serviceId"))));
+        voucher.setCampaignId(Integer.parseInt((request.getParameter("campaignId"))));
         String maxDiscountStr = request.getParameter("maxDiscountAmount");
         if (maxDiscountStr != null && !maxDiscountStr.trim().isEmpty()) {
             voucher.setMaxDiscountAmount(Float.parseFloat(maxDiscountStr));

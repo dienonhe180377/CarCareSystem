@@ -356,7 +356,6 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>ID</th>
                                 <th>Tên</th>
                                 <th>Mã Voucher</th>
                                 <th>Loại giảm giá</th>
@@ -377,7 +376,6 @@
                                 <c:otherwise>
                                     <c:forEach var="voucher" items="${vouchers}">
                                         <tr>
-                                            <td>${voucher.id}</td>
                                             <td><strong>${voucher.name}</strong></td>
                                             <td><span class="voucher-code">${voucher.voucherCode}</span></td>
                                             <td>
