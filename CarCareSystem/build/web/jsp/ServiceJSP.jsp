@@ -1,4 +1,4 @@
-    <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -119,7 +119,6 @@
                 font-style: italic;
                 font-size: 1.15rem;
             }
-            /* Pagination */
             .pagination-container {
                 display: flex;
                 justify-content: center;
@@ -165,7 +164,7 @@
         </style>
     </head>
     <body>
-     <%@include file="/header_emp.jsp" %>
+        <%@include file="/header_emp.jsp" %>
         <div class="container">
             <h2>Quản lý dịch vụ</h2>
             <form class="search-bar" action="ServiceServlet_JSP" method="get">
@@ -175,7 +174,7 @@
                 <c:if test="${not empty param.name}">
                     <a href="ServiceServlet_JSP?service=listService" class="reset">Reset</a>
                 </c:if>
-                <c:if test="${role eq 'admin' || role eq 'manager' || role eq 'maketing'}">
+                <c:if test="${fn:toLowerCase(role) eq 'admin' || fn:toLowerCase(role) eq 'manager' || fn:toLowerCase(role) eq 'marketing'}">
                     <a href="ServiceServlet_JSP?service=addService" class="add">+ Thêm</a>
                 </c:if>
             </form>
@@ -194,8 +193,12 @@
                         <th>Mô tả</th>
                         <th>Giá</th>
                         <th>Chi tiết</th>
-                        <th>Sửa</th>
-                        <th>Xóa</th>
+                        <th>
+                            <c:if test="${fn:toLowerCase(role) eq 'admin' || fn:toLowerCase(role) eq 'manager' || fn:toLowerCase(role) eq 'marketing'}">Sửa</c:if>
+                        </th>
+                        <th>
+                            <c:if test="${fn:toLowerCase(role) eq 'admin' || fn:toLowerCase(role) eq 'manager'}">Xóa</c:if>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -221,10 +224,18 @@
                                 <a class="btn btn-info" href="ServiceServlet_JSP?service=detailService&id=${se.id}">Chi tiết</a>
                             </td>
                             <td>
-                                <a class="btn btn-warning" href="ServiceServlet_JSP?service=updateService&id=${se.id}">Sửa</a>
+                                <c:if test="${fn:toLowerCase(role) eq 'admin' || fn:toLowerCase(role) eq 'manager' || fn:toLowerCase(role) eq 'marketing'}">
+                                    <a class="btn btn-warning" href="ServiceServlet_JSP?service=updateService&id=${se.id}">Sửa</a>
+                                </c:if>
                             </td>
                             <td>
-                                <a class="btn btn-danger" href="ServiceServlet_JSP?service=deleteService&id=${se.id}" onclick="return confirm('Bạn chắc chắn muốn xóa?');">Xóa</a>
+                                <c:if test="${fn:toLowerCase(role) eq 'admin' || fn:toLowerCase(role) eq 'manager'}">
+                                    <a class="btn btn-danger"
+                                       href="ServiceServlet_JSP?service=deleteService&id=${se.id}"
+                                       onclick="return confirm('Bạn có chắc chắn muốn xóa dịch vụ này không?');">
+                                        Xóa
+                                    </a>
+                                </c:if>
                             </td>
                         </tr>
                     </c:forEach>
@@ -235,18 +246,14 @@
                     </c:if>
                 </tbody>
             </table>
-            <!-- Pagination -->
             <c:if test="${totalPage > 1}">
                 <div class="pagination-container">
                     <ul class="pagination">
-                        <!-- Previous -->
                         <li class="page-item <c:if test='${currentPage == 1}'>disabled</c:if>'">
                             <a class="page-link" href="ServiceServlet_JSP?service=listService&name=${fn:escapeXml(param.name)}&page=${currentPage - 1}" tabindex="-1" aria-label="Trước">
                                 &laquo;
                             </a>
                         </li>
-
-                        <!-- Số trang thu gọn (hiển thị tối đa 5 trang quanh trang hiện tại) -->
                         <c:set var="startPage" value="${currentPage - 2 > 0 ? currentPage - 2 : 1}" />
                         <c:set var="endPage" value="${currentPage + 2 <= totalPage ? currentPage + 2 : totalPage}" />
                         <c:forEach var="i" begin="${startPage}" end="${endPage}">
@@ -254,8 +261,6 @@
                                 <a class="page-link <c:if test='${i == currentPage}'>active</c:if>'" href="ServiceServlet_JSP?service=listService&name=${fn:escapeXml(param.name)}&page=${i}">${i}</a>
                             </li>
                         </c:forEach>
-
-                        <!-- Next -->
                         <li class="page-item <c:if test='${currentPage == totalPage}'>disabled</c:if>'">
                             <a class="page-link" href="ServiceServlet_JSP?service=listService&name=${fn:escapeXml(param.name)}&page=${currentPage + 1}" aria-label="Sau">
                                 &raquo;

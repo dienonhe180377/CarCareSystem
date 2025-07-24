@@ -41,14 +41,14 @@
             .header-left {
                 display: flex;
                 align-items: center;
-                gap: 48px;
+                gap: 96px;
                 justify-content: flex-start;
             }
 
             .header-right {
                 display: flex;
                 align-items: center;
-                gap: 120px;
+                gap: 56px;
                 justify-content: flex-end;
             }
 
@@ -148,7 +148,7 @@
             }
 
             .notification-icon {
-                font-size: 24px;
+                font-size: 32px;
                 color: black;
                 cursor: pointer;
                 margin-right: 15px;
@@ -254,9 +254,9 @@
             <div class="header-left">
                 <button class="menu-toggle" onclick="openSidebar()">☰ MENU</button>
                 <nav class="nav-menu">
-                    <a href="ServiceServlet_JSP">SERVICES</a>
-                    <a href="part">ACCESSORIES</a>
-                    <a href="instype?action=list">INSURANCE</a>
+                    <a href="ServiceServlet_JSP">DỊCH VỤ</a>
+                    <a href="part">PHỤ TÙNG</a>
+                    <a href="instype?action=list">BẢO HIỂM</a>
                 </nav>
             </div>
 
@@ -266,9 +266,10 @@
 
             <div class="header-right">
                 <nav class="nav-menu">
-                    <a href="blog.jsp">BLOG</a>
-                    <a href="ordertracking">TRACKING</a>
-                    <a href="contact.jsp">CONTACT</a>
+                    <a href="blog">BLOG</a>
+                    <a href="ordertracking">VẬN ĐƠN</a>
+                    <a href="contact.jsp">LIÊN HỆ</a>
+                    <a href="campaignlist">CHƯƠNG TRÌNH</a>
                 </nav>
                 <!-- Đoạn login/avatar -->
                 <% User user = (User) session.getAttribute("user"); %>
@@ -288,9 +289,9 @@
                     <div class="dropdown">
                         <i class="fas fa-user-circle avatar-icon" onclick="toggleUserDropdown()"></i>
                         <div id="userDropdown" class="dropdown-content">
-                            <a href="viewProfile">Profile</a>
-                            <a href="myorder">My Orders</a>
-                            <a href="${pageContext.request.contextPath}/logout">Logout</a>
+                            <a href="viewProfile">Thông tin cá nhân</a>
+                            <a href="myorder">Đơn hàng của tôi</a>
+                            <a href="${pageContext.request.contextPath}/logout">Đăng xuất</a>
                         </div>
                     </div>
                     <% } %>
@@ -301,13 +302,14 @@
             <div id="sidebar" class="sidebar">
                 <button class="close-btn" onclick="closeSidebar()">✖</button>
                 <nav>
-                    <a href="home">HOME</a>
-                    <a href="ServiceServlet_JSP">SERVICES</a>
-                    <a href="part">ACCESSORIES</a>
-                    <a href="promotions.jsp">PROMOTIONS</a>
+                    <a href="home">TRANG CHỦ</a>
+                    <a href="ServiceServlet_JSP">DỊCH VỤ</a>
+                    <a href="part">PHỤ TÙNG</a>
+                    <a href="instype?action=list">BẢO HIỂM</a>
                     <a href="blog">BLOG</a>
-                    <a href="ordertracking">TRACKING</a>
-                    <a href="contact.jsp">CONTACT</a>
+                    <a href="ordertracking">VẬN ĐƠN</a>
+                    <a href="contact.jsp">LIÊN HỆ</a>
+                    <a href="campaignlist">CHƯƠNG TRÌNH</a>
                     <br>
                 </nav>
             </div>

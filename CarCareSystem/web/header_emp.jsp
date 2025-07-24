@@ -713,7 +713,7 @@
             <% } else if ("marketing".equals(role)) { %>
             <h2>Marketing</h2>
             <a href="${pageContext.request.contextPath}/insurance">Quản lý bảo hiểm</a>
-            <a href="${pageContext.request.contextPath}/ServiceServlet_JSP">Quản lý dịch vụ</a>
+           <a href="${pageContext.request.contextPath}/ServiceServlet_JSP">Quản lý dịch vụ</a>
             <a href="${pageContext.request.contextPath}/ordermanagement">Quan lý đơn đặt lịch</a>
             <% } %>
         </div>

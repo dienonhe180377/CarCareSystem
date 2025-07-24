@@ -28,6 +28,28 @@ public class ServiceServlet_JSP extends HttpServlet {
 
     private static final Pattern VALID_DESC_PATTERN = Pattern.compile("^[\\p{L}0-9 ]+$");
 
+    // Phân quyền: KHÔNG phân biệt hoa thường!
+    private boolean isAdmin(String role) {
+        return role != null && "admin".equalsIgnoreCase(role);
+    }
+    private boolean isManager(String role) {
+        return role != null && "manager".equalsIgnoreCase(role);
+    }
+    private boolean isMarketing(String role) {
+        return role != null && "marketing".equalsIgnoreCase(role);
+    }
+    // Thêm, sửa: admin, manager, marketing được
+    private boolean canAdd(String role) {
+        return isAdmin(role) || isManager(role) || isMarketing(role);
+    }
+    private boolean canEdit(String role) {
+        return isAdmin(role) || isManager(role) || isMarketing(role);
+    }
+    // Xóa: chỉ admin, manager
+    private boolean canDelete(String role) {
+        return isAdmin(role) || isManager(role);
+    }
+
     private boolean isValidName(String name) {
         return name != null && name.trim().length() >= 3 && name.trim().length() < 30;
     }
@@ -61,22 +83,21 @@ public class ServiceServlet_JSP extends HttpServlet {
         // Lấy user từ session (user có thể null với previewService)
         User currentUser = (User) request.getSession().getAttribute("user");
         String role = currentUser != null ? currentUser.getUserRole() : null;
-        boolean canEdit = "admin".equals(role) || "manager".equals(role) || "maketing".equals(role);
 
         try {
             switch (service) {
                 case "deleteService": {
-                    if (!canEdit) {
+                    if (!canDelete(role)) {
                         response.sendError(HttpServletResponse.SC_FORBIDDEN, "Bạn không có quyền xóa dịch vụ.");
                         return;
                     }
                     int seid = Integer.parseInt(request.getParameter("id"));
                     dao.deleteService(seid);
-                    response.sendRedirect("ServiceServlet_JSP");
+                    response.sendRedirect("ServiceServlet_JSP?service=listService");
                     break;
                 }
                 case "updateService": {
-                    if (!canEdit) {
+                    if (!canEdit(role)) {
                         response.sendError(HttpServletResponse.SC_FORBIDDEN, "Bạn không có quyền sửa dịch vụ.");
                         return;
                     }
@@ -84,7 +105,7 @@ public class ServiceServlet_JSP extends HttpServlet {
                     List<Part> allParts = partDAO.getAllParts();
                     if (submit == null) {
                         int id = Integer.parseInt(request.getParameter("id"));
-                        Service ser = dao.getServiceDetail(id); // Lấy service đã có parts
+                        Service ser = dao.getServiceDetail(id);
                         List<Integer> selectedPartIds = dao.getPartIdsByServiceId(id);
                         request.setAttribute("service", ser);
                         request.setAttribute("allParts", allParts);
@@ -135,7 +156,6 @@ public class ServiceServlet_JSP extends HttpServlet {
                         String imgPath = oldImg;
                         if (filePart != null && filePart.getSize() > 0 && filePart.getSubmittedFileName() != null && !filePart.getSubmittedFileName().isEmpty()) {
                             String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-                            // SỬA Ở ĐÂY: chuyển uploads -> img
                             String uploadDir = getServletContext().getRealPath("/img");
                             File uploadDirFile = new File(uploadDir);
                             if (!uploadDirFile.exists()) {
@@ -143,7 +163,7 @@ public class ServiceServlet_JSP extends HttpServlet {
                             }
                             String filePath = uploadDir + File.separator + fileName;
                             filePart.write(filePath);
-                            imgPath = fileName; // <-- chỉ lưu tên file
+                            imgPath = fileName;
                         }
 
                         Service se = new Service(id, name, description, price, imgPath);
@@ -163,7 +183,7 @@ public class ServiceServlet_JSP extends HttpServlet {
                     break;
                 }
                 case "addService": {
-                    if (!canEdit) {
+                    if (!canAdd(role)) {
                         response.sendError(HttpServletResponse.SC_FORBIDDEN, "Bạn không có quyền thêm dịch vụ.");
                         return;
                     }
@@ -188,6 +208,8 @@ public class ServiceServlet_JSP extends HttpServlet {
                             errorMsg = "Mô tả phải từ 3 đến 29 ký tự và không chứa ký tự đặc biệt!";
                         } else if (!isValidPrice(priceStr)) {
                             errorMsg = "Giá dịch vụ phải là số nguyên dương nhỏ hơn 1.000.000.000!";
+                        } else if (dao.getServiceByName(name) != null) {
+                            errorMsg = "Tên dịch vụ đã tồn tại, vui lòng chọn tên khác!";
                         }
                         if (errorMsg != null) {
                             double price;
@@ -211,7 +233,6 @@ public class ServiceServlet_JSP extends HttpServlet {
                         String imgPath = "";
                         if (filePart != null && filePart.getSize() > 0 && filePart.getSubmittedFileName() != null && !filePart.getSubmittedFileName().isEmpty()) {
                             String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-                            // SỬA Ở ĐÂY: chuyển uploads -> img
                             String uploadDir = getServletContext().getRealPath("/img");
                             File uploadDirFile = new File(uploadDir);
                             if (!uploadDirFile.exists()) {
@@ -219,7 +240,7 @@ public class ServiceServlet_JSP extends HttpServlet {
                             }
                             String filePath = uploadDir + File.separator + fileName;
                             filePart.write(filePath);
-                            imgPath = fileName; // <-- chỉ lưu tên file
+                            imgPath = fileName;
                         }
 
                         Service se = new Service(0, name, description, price, imgPath);
@@ -238,7 +259,6 @@ public class ServiceServlet_JSP extends HttpServlet {
                     }
                     break;
                 }
-                // ... giữ nguyên các case còn lại ...
                 case "detailService": {
                     String idParam = request.getParameter("id");
                     if (idParam == null) {
@@ -258,14 +278,13 @@ public class ServiceServlet_JSP extends HttpServlet {
                     }
                     request.setAttribute("service", se);
                     request.setAttribute("role", role);
-                    // Sử dụng hàm entity đã hoàn thiện
                     request.setAttribute("totalPrice", se.getTotalPriceWithParts());
 
                     if (role == null) {
                         request.getRequestDispatcher("jsp/serviceUserDetail.jsp").forward(request, response);
-                    } else if ("admin".equals(role) || "manager".equals(role) || "maketing".equals(role)) {
+                    } else if (isAdmin(role) || isManager(role) || isMarketing(role)) {
                         request.getRequestDispatcher("jsp/ServiceDetail.jsp").forward(request, response);
-                    } else if ("customer".equals(role)) {
+                    } else if ("customer".equalsIgnoreCase(role)) {
                         request.getRequestDispatcher("jsp/serviceUserDetail.jsp").forward(request, response);
                     } else {
                         request.getRequestDispatcher("jsp/serviceUserDetail.jsp").forward(request, response);
@@ -286,12 +305,7 @@ public class ServiceServlet_JSP extends HttpServlet {
                     }
                     // Xử lý lưu đơn mua hàng vào DB ở đây (có thể tạo bảng Order/OrderDetail)
                     // Ví dụ: orderDAO.addOrder(currentUser.getId(), selectedIds);
-                    request.setAttribute("message", "Bạn đã mua thành công " + selectedIds.length + " dịch vụ.");
-                    Vector<Service> list = dao.getAllService();
-                    request.setAttribute("data", list);
-                    request.setAttribute("role", role);
-                    request.setAttribute("pageTitle", "Service Manager");
-                    request.getRequestDispatcher("jsp/serviceUser.jsp").forward(request, response);
+                    response.sendRedirect("order.jsp");
                     break;
                 }
                 case "previewService": {
@@ -305,7 +319,7 @@ public class ServiceServlet_JSP extends HttpServlet {
                 }
                 case "listService": {
                     int page = 1;
-                    int pageSize = 6; // Số dịch vụ/trang
+                    int pageSize = 6;
                     try {
                         String pageParam = request.getParameter("page");
                         if (pageParam != null) {
@@ -331,7 +345,7 @@ public class ServiceServlet_JSP extends HttpServlet {
                     request.setAttribute("totalPage", totalPage);
 
                     String view;
-                    if ("admin".equals(role) || "manager".equals(role) || "maketing".equals(role)) {
+                    if (isAdmin(role) || isManager(role) || isMarketing(role)) {
                         view = "jsp/ServiceJSP.jsp";
                     } else {
                         view = "jsp/serviceUser.jsp";

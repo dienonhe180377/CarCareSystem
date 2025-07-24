@@ -90,7 +90,26 @@ public class ServiceDAO extends DBConnection {
         }
         return order;
     }
-
+public Service getServiceByName(String name) {
+    String sql = "SELECT id, name, description, price, img FROM Service WHERE name = ?";
+    try (PreparedStatement ptm = connection.prepareStatement(sql)) {
+        ptm.setString(1, name);
+        ResultSet rs = ptm.executeQuery();
+        if (rs.next()) {
+            Service se = new Service(
+                    rs.getInt("id"),
+                    rs.getString("name"),
+                    rs.getString("description"),
+                    rs.getDouble("price"),
+                    rs.getString("img")
+            );
+            return se;
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+    return null;
+}
     /**
      * Lấy danh sách Service của một Order
      */

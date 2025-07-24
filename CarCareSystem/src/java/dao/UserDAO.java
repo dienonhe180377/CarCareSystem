@@ -212,6 +212,30 @@ public class UserDAO extends DBConnection {
         return false;
     }
 
+    public boolean isEmailTaken(String email) {
+        String sql = "SELECT 1 FROM [User] WHERE email = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean isPhoneTaken(String phone) {
+        String sql = "SELECT 1 FROM [User] WHERE phone = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, phone);
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
     public List<User> searchUsersByName(String keyword) {
         List<User> list = new ArrayList<>();
         String sql = "SELECT * FROM [User] WHERE username LIKE ?";

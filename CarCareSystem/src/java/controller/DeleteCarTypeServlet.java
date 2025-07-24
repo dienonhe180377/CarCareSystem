@@ -74,7 +74,7 @@ public class DeleteCarTypeServlet extends HttpServlet {
         int id = Integer.parseInt(request.getParameter("id"));
         ctDao.delete(id);
         
-        request.getSession().setAttribute("message", "Xóa carType thành công!");
+        request.getSession().setAttribute("message", "Xóa loại xe thành công!");
         response.sendRedirect(request.getContextPath() + "/manager/carTypeList");
     }
 
