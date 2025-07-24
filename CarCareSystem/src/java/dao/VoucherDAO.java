@@ -11,6 +11,7 @@ import entity.User;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.Date;
 /**
  *
  * @author NTN
@@ -86,8 +87,8 @@ public class VoucherDAO extends DBConnection {
             ps.setString(4, voucher.getDiscountType());
             ps.setFloat(5, voucher.getMaxDiscountAmount());
             ps.setFloat(6, voucher.getMinOrderAmount());
-            ps.setDate(7, new java.sql.Date(voucher.getStartDate().getTime()));
-            ps.setDate(8, new java.sql.Date(voucher.getEndDate().getTime()));
+            ps.setDate(7, new Date(voucher.getStartDate().getTime()));
+            ps.setDate(8, new Date(voucher.getEndDate().getTime()));
             ps.setObject(9, voucher.getServiceId() == 0 ? null : voucher.getServiceId());
             ps.setObject(10, voucher.getCampaignId() == 0 ? null : voucher.getCampaignId());
             ps.setBoolean(11, voucher.isStatus());

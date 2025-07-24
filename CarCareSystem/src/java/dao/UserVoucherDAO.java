@@ -112,30 +112,30 @@ public class UserVoucherDAO extends DBConnection {
     /**
      * Lấy UserVoucher theo voucherId
      */
-    public List<UserVoucher> getUserVouchersByVoucherId(int voucherId) {
-        List<UserVoucher> userVouchers = new ArrayList<>();
-        String sql = "SELECT uv.* FROM UserVoucher uv WHERE uv.voucherId = ? ORDER BY uv.id DESC";
-
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, voucherId);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                UserVoucher uv = new UserVoucher();
-                uv.setId(rs.getInt("id"));
-                uv.setUserId(rs.getInt("userId"));
-                uv.setVoucherId(rs.getInt("voucherId"));
-                uv.setVoucherCode(rs.getString("voucherCode"));
-                uv.setIsUsed(rs.getBoolean("isUsed"));
-                uv.setUsedDate(rs.getTimestamp("usedDate"));
-                uv.setOrderId(rs.getInt("orderId"));
-
-                userVouchers.add(uv);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return userVouchers;
-    }
+//    public List<UserVoucher> getUserVouchersByVoucherId(int voucherId) {
+//        List<UserVoucher> userVouchers = new ArrayList<>();
+//        String sql = "SELECT uv.* FROM UserVoucher uv WHERE uv.voucherId = ? ORDER BY uv.id DESC";
+//
+//        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+//            ps.setInt(1, voucherId);
+//            ResultSet rs = ps.executeQuery();
+//            while (rs.next()) {
+//                UserVoucher uv = new UserVoucher();
+//                uv.setId(rs.getInt("id"));
+//                uv.setUserId(rs.getInt("userId"));
+//                uv.setVoucherId(rs.getInt("voucherId"));
+//                uv.setVoucherCode(rs.getString("voucherCode"));
+//                uv.setIsUsed(rs.getBoolean("isUsed"));
+//                uv.setUsedDate(rs.getTimestamp("usedDate"));
+//                uv.setOrderId(rs.getInt("orderId"));
+//
+//                userVouchers.add(uv);
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return userVouchers;
+//    }
 
     /**
      * Thêm UserVoucher mới

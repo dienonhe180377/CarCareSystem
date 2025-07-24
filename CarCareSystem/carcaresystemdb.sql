@@ -159,32 +159,49 @@ CREATE TABLE Blog (
 GO
 
 -- 16. Bảng Voucher
-CREATE TABLE Voucher (
-    id          INT           IDENTITY(1,1) PRIMARY KEY,
-    name        NVARCHAR(150) NOT NULL,
-    campaignId  INT           NULL,
-    serviceId   INT           NULL,
-    startDate   DATE          NOT NULL,
-    endDate     DATE          NOT NULL,
-    description NVARCHAR(500) NULL,
-    discount    INT  NOT NULL,
-    status      BIT           NOT NULL DEFAULT 1,
-
+CREATE TABLE [dbo].[Voucher](
+    [id]                [int] IDENTITY(1,1) NOT NULL,
+    [name]              [nvarchar](150) NOT NULL,
+    [description]       [nvarchar](500) NULL,
+    [discount]          [float] NOT NULL,
+    [discountType]      [nvarchar](20) NOT NULL DEFAULT 'PERCENTAGE',
+    [maxDiscountAmount] [float] NULL,
+    [minOrderAmount]    [float] NULL,
+    [startDate]         [date] NOT NULL,
+    [endDate]           [date] NOT NULL,
+    [serviceId]         [int] NULL,
+    [campaignId]        [int] NULL,
+    [status]            [bit] NOT NULL DEFAULT ((1)),
+    [createdDate]       [datetime] NOT NULL DEFAULT (getdate()),
+    [voucherCode]       [nvarchar](50) NOT NULL,
+    
+    PRIMARY KEY CLUSTERED ([id] ASC),
+    UNIQUE NONCLUSTERED ([voucherCode] ASC),
+    
+    CONSTRAINT [CK_Voucher_DiscountType] CHECK ([discountType] IN ('PERCENTAGE', 'FIXED_AMOUNT')),
     CONSTRAINT FK_Voucher_Campaign FOREIGN KEY(campaignId) REFERENCES Campaign(id),
     CONSTRAINT FK_Voucher_Service  FOREIGN KEY(serviceId)  REFERENCES Service(id)
-);
+) ON [PRIMARY]
 GO
 
--- 17. Bảng UserVoucher
-CREATE TABLE UserVoucher (
-    id        INT      IDENTITY(1,1) PRIMARY KEY,
-    userId    INT      NOT NULL,
-    voucherId INT      NOT NULL,
-
+-- 17. Bảng UserVoucher (CẤU TRÚC MỚI)
+CREATE TABLE [dbo].[UserVoucher](
+    [id]          [int] IDENTITY(1,1) NOT NULL,
+    [userId]      [int] NOT NULL,
+    [voucherId]   [int] NOT NULL,
+    [isUsed]      [bit] NOT NULL DEFAULT ((0)),
+    [voucherCode] [nvarchar](50) NOT NULL,
+    [usedDate]    [datetime] NULL,
+    [orderId]     [int] NULL,
+    
+    PRIMARY KEY CLUSTERED ([id] ASC),
+    
     CONSTRAINT FK_UserVoucher_User    FOREIGN KEY(userId)    REFERENCES [User](id),
-    CONSTRAINT FK_UserVoucher_Voucher FOREIGN KEY(voucherId) REFERENCES Voucher(id)
-);
+    CONSTRAINT FK_UserVoucher_Voucher FOREIGN KEY(voucherId) REFERENCES Voucher(id),
+    CONSTRAINT FK_UserVoucher_Order   FOREIGN KEY(orderId)   REFERENCES [Order](id)
+) ON [PRIMARY]
 GO
+
 
 -- 18. Bảng PartsSupplier
 CREATE TABLE PartsSupplier (

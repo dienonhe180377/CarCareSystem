@@ -10,6 +10,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.sql.Date;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,6 +19,7 @@ public class BlogServlet extends AuthorizationServlet {
 
     private static final Logger LOGGER = Logger.getLogger(BlogServlet.class.getName());
     private CampaignDAO campaignDAO;
+    DBConnection dbConn = new DBConnection();
 
     @Override
     public void init() {
@@ -38,8 +40,9 @@ public class BlogServlet extends AuthorizationServlet {
         entity.User user = (entity.User) userObj;
         String role = user.getUserRole().toLowerCase();
 
-        // Nếu role là "user" thì không cho phép
-        return role.equals("user");
+        // Nếu role là "customer repairer warehouse manager" thì không cho phép
+        List<String> restrictedRoles = Arrays.asList("customer", "repairer", "warehouse manager");
+        return restrictedRoles.contains(role);
     }
 
     @Override
@@ -59,9 +62,10 @@ public class BlogServlet extends AuthorizationServlet {
                 showEditForm(id, request, response);
             } else if ("delete".equalsIgnoreCase(service)) {
                 deleteBlog(request, response);
-            } else if ("detail".equalsIgnoreCase(service)) {
-                showBlogDetail(request, response);
-            } else {
+            } else //                if ("detail".equalsIgnoreCase(service)) {
+            //                showBlogDetail(request, response);
+            //            } else 
+            {
                 showBlogList(request, response);
             }
         } catch (Exception ex) {
@@ -98,7 +102,7 @@ public class BlogServlet extends AuthorizationServlet {
     private void showEditForm(int id, HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            DBConnection dbConn = new DBConnection();
+
             BlogDAO blogDAO = new BlogDAO(dbConn.getConnection());
 
             List<Blog> blogs = blogDAO.getAllBlogs();
@@ -128,7 +132,7 @@ public class BlogServlet extends AuthorizationServlet {
 
     private void showBlogList(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        DBConnection dbConn = new DBConnection();
+
         BlogDAO blogDAO = new BlogDAO(dbConn.getConnection());
 
         List<Blog> blogs = blogDAO.getAllBlogs();
@@ -140,44 +144,10 @@ public class BlogServlet extends AuthorizationServlet {
         request.getRequestDispatcher("Blog/Blog.jsp").forward(request, response);
     }
 
-    private void showBlogDetail(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String idStr = request.getParameter("id");
-
-        if (idStr == null || idStr.trim().isEmpty()) {
-            request.setAttribute("errorMessage", "Thiếu ID blog");
-            showBlogList(request, response);
-            return;
-        }
-
-        try {
-            int id = Integer.parseInt(idStr);
-            DBConnection dbConn = new DBConnection();
-            BlogDAO blogDAO = new BlogDAO(dbConn.getConnection());
-
-            Blog blog = blogDAO.getBlogById(id); // Sử dụng method đã thêm
-
-            if (blog != null) {
-                request.setAttribute("blog", blog);
-                request.getRequestDispatcher("Blog/BlogDetail.jsp").forward(request, response);
-            } else {
-                request.setAttribute("errorMessage", "Không tìm thấy blog với ID: " + id);
-                showBlogList(request, response);
-            }
-
-        } catch (NumberFormatException e) {
-            LOGGER.log(Level.WARNING, "ID blog không hợp lệ: " + idStr, e);
-            request.setAttribute("errorMessage", "ID blog không hợp lệ");
-            showBlogList(request, response);
-        } catch (Exception ex) {
-            handleError(request, response, "Không thể hiển thị chi tiết blog", ex);
-        }
-    }
-
     private void addOrUpdateBlog(HttpServletRequest request, HttpServletResponse response, boolean isEdit)
             throws ServletException, IOException {
         try {
-            DBConnection dbConn = new DBConnection();
+
             BlogDAO blogDAO = new BlogDAO(dbConn.getConnection());
 
             int id = isEdit ? Integer.parseInt(request.getParameter("id")) : 0;
@@ -234,7 +204,7 @@ public class BlogServlet extends AuthorizationServlet {
     private void deleteBlog(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            DBConnection dbConn = new DBConnection();
+
             BlogDAO blogDAO = new BlogDAO(dbConn.getConnection());
 
             int id = Integer.parseInt(request.getParameter("id"));
@@ -256,7 +226,6 @@ public class BlogServlet extends AuthorizationServlet {
             return "Vui lòng chọn campaign";
         }
 
-        DBConnection dbConn = new DBConnection();
         BlogDAO blogDAO = new BlogDAO(dbConn.getConnection());
         List<Blog> blogs = blogDAO.getAllBlogs();
         for (Blog b : blogs) {
