@@ -66,7 +66,7 @@ public class AddCarTypeServlet extends HttpServlet {
         HttpSession session = request.getSession(false);
         User currentUser = (session != null) ? (User) session.getAttribute("user") : null;
         if (currentUser == null || !currentUser.getUserRole().equalsIgnoreCase("manager")) {
-            response.sendRedirect(request.getContextPath() + "/accessDenied.jsp");
+            response.sendRedirect(request.getContextPath() + "/filterPage.jsp");
             return;
         }
 
@@ -87,7 +87,7 @@ public class AddCarTypeServlet extends HttpServlet {
         HttpSession session = request.getSession(false);
         User currentUser = (session != null) ? (User) session.getAttribute("user") : null;
         if (currentUser == null || !currentUser.getUserRole().equalsIgnoreCase("manager")) {
-            response.sendRedirect(request.getContextPath() + "/accessDenied.jsp");
+            response.sendRedirect(request.getContextPath() + "/filterPage.jsp");
             return;
         }
 

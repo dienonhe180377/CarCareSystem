@@ -6,6 +6,7 @@ package controller;
 
 import dao.NotificationDAO;
 import dao.UserDAO;
+import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,6 +14,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -61,7 +63,12 @@ public class DeleteUserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        HttpSession session = request.getSession(false);
+        User currentUser = (User) (session != null ? session.getAttribute("user") : null);
+        if (currentUser == null || !currentUser.getUserRole().equalsIgnoreCase("admin")) {
+            response.sendRedirect(request.getContextPath() + "/filterPage.jsp");
+            return;
+        }
     }
 
     /**
@@ -77,6 +84,13 @@ public class DeleteUserServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        User currentUser = (User) (session != null ? session.getAttribute("user") : null);
+        if (currentUser == null || !currentUser.getUserRole().equalsIgnoreCase("admin")) {
+            response.sendRedirect(request.getContextPath() + "/filterPage.jsp");
+            return;
+        }
+        
         NotificationDAO notificationDAO = new NotificationDAO();
         int id = Integer.parseInt(request.getParameter("id"));
         try {

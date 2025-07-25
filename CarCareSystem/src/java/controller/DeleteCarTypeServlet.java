@@ -6,6 +6,7 @@
 package controller;
 
 import dao.CarTypeDAO;
+import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,6 +14,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  *
@@ -56,7 +58,12 @@ public class DeleteCarTypeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        HttpSession session = request.getSession(false);
+        User currentUser = (session != null) ? (User) session.getAttribute("user") : null;
+        if (currentUser == null || !currentUser.getUserRole().equalsIgnoreCase("manager")) {
+            response.sendRedirect(request.getContextPath() + "/filterPage.jsp");
+            return;
+        }
     } 
 
     /** 
@@ -71,6 +78,13 @@ public class DeleteCarTypeServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        User currentUser = (session != null) ? (User) session.getAttribute("user") : null;
+        if (currentUser == null || !currentUser.getUserRole().equalsIgnoreCase("manager")) {
+            response.sendRedirect(request.getContextPath() + "/filterPage.jsp");
+            return;
+        }
+        
         int id = Integer.parseInt(request.getParameter("id"));
         ctDao.delete(id);
         

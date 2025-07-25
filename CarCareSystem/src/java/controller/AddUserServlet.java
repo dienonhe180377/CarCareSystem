@@ -69,9 +69,10 @@ public class AddUserServlet extends HttpServlet {
         HttpSession session = request.getSession(false);
         User currentUser = (User) (session != null ? session.getAttribute("user") : null);
         if (currentUser == null || !currentUser.getUserRole().equalsIgnoreCase("admin")) {
-            response.sendRedirect(request.getContextPath() + "/accessDenied.jsp");
+            response.sendRedirect(request.getContextPath() + "/filterPage.jsp");
             return;
         }
+        
         request.getRequestDispatcher("/admin/addUser.jsp").forward(request, response);
     }
 
@@ -89,7 +90,7 @@ public class AddUserServlet extends HttpServlet {
         HttpSession session = request.getSession(false);
         User currentUser = (User) (session != null ? session.getAttribute("user") : null);
         if (currentUser == null || !currentUser.getUserRole().equalsIgnoreCase("admin")) {
-            response.sendRedirect(request.getContextPath() + "/accessDenied.jsp");
+            response.sendRedirect(request.getContextPath() + "/filterPage.jsp");
             return;
         }
 
