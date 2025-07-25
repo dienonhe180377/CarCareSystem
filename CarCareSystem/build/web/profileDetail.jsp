@@ -1,7 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="entity.User" %>
 <%
-    User user = (User) request.getAttribute("user");
     String message = (String) request.getAttribute("success");
     String error = (String) request.getAttribute("error");
 %>
@@ -163,7 +162,7 @@
     </style>
 </head>
 <body>
-    <%@include file="/header_emp.jsp" %>
+    <%@include file="/header.jsp" %>
 <div class="main-container">
     <div class="sidebar">
         <% if (user != null) { %>

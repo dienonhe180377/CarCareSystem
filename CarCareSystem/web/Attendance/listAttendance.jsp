@@ -16,7 +16,7 @@
     <a href="${pageContext.request.contextPath}/attendance" class="btn">Điểm danh hôm nay</a>
     <form method="get" action="attendance" class="search-form">
         <input type="hidden" name="action" value="list">
-        <input type="date" id="date" name="date" value="${selectedDate}" required>
+        <input type="date" id="date" name="date" value="${selectedDate}">
         <button type="submit" class="btn">Tìm kiếm</button>
     </form>
 </div>

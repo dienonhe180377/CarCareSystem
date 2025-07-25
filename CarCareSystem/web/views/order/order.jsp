@@ -64,7 +64,7 @@ for (Service s : services) {
 
     input[type="text"],
     input[type="email"],
-    input[type="datetime-local"],
+    input[type="date"],
     select {
         width: 100%;
         padding: 10px 12px;

@@ -20,7 +20,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
-import java.sql.*;
 import java.util.List;
 import util.SendMailService;
 
@@ -89,6 +88,8 @@ public class OrderManagementServlet extends HttpServlet {
                 orders = orderDAO.getOrdersByPaymentStatus("Đã thanh toán");
             } else if ("miss".equals(action)) {
                 orders = orderDAO.getOrdersByStatus("Lỡ hẹn");
+            } else if ("done".equals(action)) {
+                orders = orderDAO.getCompletedOrders();
             } else {
                 orders = orderDAO.getAllOrders();
             }
@@ -124,7 +125,88 @@ public class OrderManagementServlet extends HttpServlet {
         try {
             int orderId = Integer.parseInt(orderIdStr);
 
-            if ("reschedule".equals(action)) {
+            if ("confirmPayment".equals(action)) {
+                Order order = orderDAO.getOrderById(orderId);
+                if ("Chưa thanh toán".equals(order.getPaymentStatus())) {
+                    boolean success = orderDAO.updatePaymentStatus(orderId, "Đã thanh toán");
+                    if (success) {
+
+                        //Notification xác nhận thanh toán
+                        UserDAO userDAO = new UserDAO();
+                        NotificationDAO notificationDAO = new NotificationDAO();
+                        HttpSession session = request.getSession();
+                        User user = (User) session.getAttribute("user");
+
+                        List<User> users = userDAO.getAllUser();
+                        for (int i = 0; i < users.size(); i++) {
+                            String message = "Đơn hàng số" + orderId + "đã được cập nhật trạng thái";
+                            if (users.get(i).getUserRole().equals("manager") || users.get(i).getUserRole().equals("repairer")) {
+                                NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(users.get(i).getId());
+                                if (notiSetting.isEmail() && notiSetting.isOrderChange()) {
+                                    SendMailService.sendNotification(users.get(i).getEmail(), message);
+                                }
+                                int addNoti = notificationDAO.addNotification(users.get(i).getId(), message, "Order Change");
+                            }
+                            if (users.get(i).getId() == user.getId()) {
+                                message = message = "Đơn hàng số" + orderId + "đã được cập nhật trạng thái";
+                                NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(users.get(i).getId());
+                                if (notiSetting.isEmail() && notiSetting.isOrderChange()) {
+                                    SendMailService.sendNotification(users.get(i).getEmail(), message);
+                                }
+                                int addNoti = notificationDAO.addNotification(users.get(i).getId(), message, "Order Change");
+                            }
+                        }
+                        ArrayList<Notification> notifications = notificationDAO.getAllNotificationById(user.getId());
+                        NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(user.getId());
+                        if (!notiSetting.isProfile()) {
+                            for (int i = notifications.size() - 1; i >= 0; i--) {
+                                if (notifications.get(i).getType().equals("Profile")) {
+                                    notifications.remove(i);
+                                }
+                            }
+                        }
+
+                        if (!notiSetting.isOrderChange()) {
+                            for (int i = notifications.size() - 1; i >= 0; i--) {
+                                if (notifications.get(i).getType().equals("Order Change")) {
+                                    notifications.remove(i);
+                                }
+                            }
+                        }
+
+                        if (!notiSetting.isAttendance()) {
+                            for (int i = notifications.size() - 1; i >= 0; i--) {
+                                if (notifications.get(i).getType().equals("Attendance")) {
+                                    notifications.remove(i);
+                                }
+                            }
+                        }
+
+                        if (!notiSetting.isService()) {
+                            for (int i = notifications.size() - 1; i >= 0; i--) {
+                                if (notifications.get(i).getType().equals("Service")) {
+                                    notifications.remove(i);
+                                }
+                            }
+                        }
+
+                        if (!notiSetting.isInsurance()) {
+                            for (int i = notifications.size() - 1; i >= 0; i--) {
+                                if (notifications.get(i).getType().equals("Insurance")) {
+                                    notifications.remove(i);
+                                }
+                            }
+                        }
+
+                        session.setAttribute("notification", notifications);
+                        session.setAttribute("notiSetting", notiSetting);
+
+                        request.getSession().setAttribute("message", "Đã đổi thanh toán thành công!");
+                    } else {
+                        request.getSession().setAttribute("error", "Đổi thanh toán thất bại!");
+                    }
+                }
+            } else if ("reschedule".equals(action)) {
                 String newDateStr = request.getParameter("newAppointmentDate");
                 java.sql.Date newAppointmentDate = java.sql.Date.valueOf(newDateStr);
 

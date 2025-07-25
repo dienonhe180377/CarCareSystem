@@ -72,42 +72,6 @@ public class AttendanceDAO extends DBConnection {
         }
     }
 
-    public Attendance searchAttendance(int id) {
-        String sql = "SELECT * FROM [dbo].[Attendance] WHERE id = ?";
-        try {
-            PreparedStatement ptm = connection.prepareStatement(sql);
-            ptm.setInt(1, id);
-            ResultSet rs = ptm.executeQuery();
-            if (rs.next()) {
-                Attendance att = new Attendance(
-                        rs.getInt("id"),
-                        rs.getInt("userId"),
-                        rs.getDate("date"),
-                        rs.getBoolean("status")
-                );
-                return att;
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return null;
-    }
-
-    public Vector<User> getAllUsers() {
-        Vector<User> list = new Vector<>();
-        String sql = "SELECT id, username FROM [dbo].[User] WHERE role = 'customer'";
-        try {
-            PreparedStatement ptm = connection.prepareStatement(sql);
-            ResultSet rs = ptm.executeQuery();
-            while (rs.next()) {
-                User u = new User(rs.getInt("id"), rs.getString("username"));
-                list.add(u);
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return list;
-    }
 
     public Vector<User> getAllUsersForAttendance() {
         Vector<User> list = new Vector<>();
@@ -189,38 +153,4 @@ public class AttendanceDAO extends DBConnection {
     return list;
 }
 
-    public Vector<Attendance> getAttendanceForUser(int userId, String role, Date date) {
-    Vector<Attendance> list = new Vector<>();
-    String sql = "";
-    
-    if (role.equals("admin") || role.equals("manager")) {
-        // Nếu là admin hoặc manager, lấy tất cả các điểm danh
-        sql = "SELECT * FROM [dbo].[Attendance] WHERE date = ?";
-    } else {
-        // Nếu là người dùng khác, chỉ lấy điểm danh của chính họ
-        sql = "SELECT * FROM [dbo].[Attendance] WHERE userId = ? AND date = ?";
-    }
-    
-    try {
-        PreparedStatement ptm = connection.prepareStatement(sql);
-        ptm.setDate(1, date); // Lọc theo ngày
-        if (!(role.equals("admin") || role.equals("manager"))) {
-            ptm.setInt(2, userId); // Nếu không phải admin/manager thì lọc theo userId
-        }
-        
-        ResultSet rs = ptm.executeQuery();
-        while (rs.next()) {
-            Attendance att = new Attendance(
-                    rs.getInt("id"),
-                    rs.getInt("userId"),
-                    rs.getDate("date"),
-                    rs.getBoolean("status")
-            );
-            list.add(att);
-        }
-    } catch (SQLException ex) {
-        ex.printStackTrace();
-    }
-    return list;
-}
 }

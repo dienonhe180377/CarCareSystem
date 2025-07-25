@@ -77,7 +77,7 @@
                             '${typeName}',
                             '${i.startDate}',
                             '${i.endDate}',
-                            '${typePrice}',
+                            '<fmt:formatNumber value="${typePrice}" type="number" groupingUsed="true" maxFractionDigits="0" /> VND',
                             '${typeDescription}'
                         )">Chi tiết</button>
                     </td>

@@ -17,8 +17,8 @@
                 <input type="date" id="date" name="date" value="${selectedDate}" />
                 <button type="submit">Tìm kiếm</button>
             </form>
-            <div class="container">
-                <div class="attendance-title">Điểm danh của tôi</div>
+            
+                
                 <table>
                     <tr>
                         <th>Ngày</th>

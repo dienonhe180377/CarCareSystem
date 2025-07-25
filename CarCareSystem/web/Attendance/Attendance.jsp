@@ -17,9 +17,9 @@
             <table>
                 <tr>
                     <th>STT</th>
-                    <th>User Name</th>
-                    <th>Present</th>
-                    <th>Absent</th>
+                    <th>Nhân viên</th>
+                    <th>Có mặt</th>
+                    <th>Vắng mặt</th>
                 </tr>
                 <c:forEach var="user" items="${users}" varStatus="loop">
                     <tr>
@@ -38,7 +38,7 @@
             </table>
             <div class="action-buttons">
     <a href="attendance?action=list" class="btn btn-inline">Xem lịch sử điểm danh</a>
-    <button type="submit" class="btn">Done</button>
+    <button type="submit" class="btn">Xong</button>
 </div>
         </form>
         <c:if test="${param.success == 1}">

@@ -23,10 +23,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import util.SendMailService;
-
 
 /**
  *
@@ -115,8 +115,12 @@ public class OrderServlet extends HttpServlet {
             java.sql.Date appointmentDate = java.sql.Date.valueOf(appointmentDateStr);
             java.sql.Date currentDate = new java.sql.Date(System.currentTimeMillis());
 
-            if (appointmentDate.before(currentDate)) {
-                throw new IllegalArgumentException("Ngày hẹn phải sau hoặc bằng ngày hiện tại.");
+            LocalDate localAppointmentDate = appointmentDate.toLocalDate();
+            LocalDate localCurrentDate = currentDate.toLocalDate();
+            LocalDate oneDayBeforeCurrent = localCurrentDate.minusDays(1);
+            
+            if (localAppointmentDate.isBefore(oneDayBeforeCurrent)) {
+                throw new IllegalArgumentException("Ngày hẹn không được trước ngày hiện tại.");
             }
 
             double price = 0.0;
@@ -161,7 +165,7 @@ public class OrderServlet extends HttpServlet {
             int orderId = dao.createOrder(fullName, email, phone, address, carTypeId,
                     appointmentDate, price, paymentStatus, orderStatus, paymentMethod);
 
-            if(user != null){
+            if (user != null) {
                 //NOTIFICATION ORDER MOI
                 UserDAO userDAO = new UserDAO();
                 NotificationDAO notificationDAO = new NotificationDAO();
@@ -228,74 +232,10 @@ public class OrderServlet extends HttpServlet {
                     }
                 }
 
-                if (!notiSetting.isCategory()) {
-                    for (int i = notifications.size() - 1; i >= 0; i--) {
-                        if (notifications.get(i).getType().equals("Category")) {
-                            notifications.remove(i);
-                        }
-                    }
-                }
-
-                if (!notiSetting.isSupplier()) {
-                    for (int i = notifications.size() - 1; i >= 0; i--) {
-                        if (notifications.get(i).getType().equals("Supplier")) {
-                            notifications.remove(i);
-                        }
-                    }
-                }
-
-                if (!notiSetting.isParts()) {
-                    for (int i = notifications.size() - 1; i >= 0; i--) {
-                        if (notifications.get(i).getType().equals("Part")) {
-                            notifications.remove(i);
-                        }
-                    }
-                }
-
-                if (!notiSetting.isSettingChange()) {
-                    for (int i = notifications.size() - 1; i >= 0; i--) {
-                        if (notifications.get(i).getType().equals("Setting Change")) {
-                            notifications.remove(i);
-                        }
-                    }
-                }
-
-                if (!notiSetting.isCarType()) {
-                    for (int i = notifications.size() - 1; i >= 0; i--) {
-                        if (notifications.get(i).getType().equals("Car Type")) {
-                            notifications.remove(i);
-                        }
-                    }
-                }
-
-                if (!notiSetting.isCampaign()) {
-                    for (int i = notifications.size() - 1; i >= 0; i--) {
-                        if (notifications.get(i).getType().equals("Campaign")) {
-                            notifications.remove(i);
-                        }
-                    }
-                }
-
-                if (!notiSetting.isBlog()) {
-                    for (int i = notifications.size() - 1; i >= 0; i--) {
-                        if (notifications.get(i).getType().equals("Blog")) {
-                            notifications.remove(i);
-                        }
-                    }
-                }
-
-                if (!notiSetting.isVoucher()) {
-                    for (int i = notifications.size() - 1; i >= 0; i--) {
-                        if (notifications.get(i).getType().equals("Voucher")) {
-                            notifications.remove(i);
-                        }
-                    }
-                }
-
                 session.setAttribute("notification", notifications);
                 session.setAttribute("notiSetting", notiSetting);
 //                        NOTIFICATION
-            }           
+            }
 
             if (serviceIds != null) {
                 for (String sid : serviceIds) {
@@ -320,7 +260,7 @@ public class OrderServlet extends HttpServlet {
                 session.setAttribute("paymentStatus", paymentStatus);
                 DecimalFormat df = new DecimalFormat("#");
                 String priceFormatted = df.format(price);
-                response.sendRedirect("GenerateQRCode?orderId=" + orderId 
+                response.sendRedirect("GenerateQRCode?orderId=" + orderId
                         + "&totalAmount=" + price
                         + "&bankAccount=1013367685"
                         + "&bankName=Vietcombank"

@@ -14,6 +14,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  *
@@ -59,6 +60,13 @@ public class EditUserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        User currentUser = (User) (session != null ? session.getAttribute("user") : null);
+        if (currentUser == null || !currentUser.getUserRole().equalsIgnoreCase("admin")) {
+            response.sendRedirect(request.getContextPath() + "/filterPage.jsp");
+            return;
+        }
+        
         int id = Integer.parseInt(request.getParameter("id"));
         User user = uDao.getUserById(id);
         request.setAttribute("user", user);
@@ -75,6 +83,13 @@ public class EditUserServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        User currentUser = (User) (session != null ? session.getAttribute("user") : null);
+        if (currentUser == null || !currentUser.getUserRole().equalsIgnoreCase("admin")) {
+            response.sendRedirect(request.getContextPath() + "/filterPage.jsp");
+            return;
+        }
+        
         int id = Integer.parseInt(request.getParameter("id"));
         String username = request.getParameter("username");
         String email = request.getParameter("email");

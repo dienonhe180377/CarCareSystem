@@ -43,7 +43,7 @@
             .Header-left {
                 display: flex;
                 align-items: center;
-                gap: 96px;
+                gap: 48px;
                 justify-content: flex-start;
             }
 
@@ -803,6 +803,7 @@
                     <a href="ServiceServlet_JSP">DỊCH VỤ</a>
                     <a href="part">PHỤ TÙNG</a>
                     <a href="instype?action=list">BẢO HIỂM</a>
+                    <a href="voucher">VOUCHER</a>
                 </nav>
             </div>
 
@@ -900,6 +901,7 @@
                     <a href="ordertracking">VẬN ĐƠN</a>
                     <a href="contact.jsp">LIÊN HỆ</a>
                     <a href="campaignlist">CHƯƠNG TRÌNH</a>
+                    <a href="voucher">VOUCHER</a>
                     <br>
                 </nav>
             </div>

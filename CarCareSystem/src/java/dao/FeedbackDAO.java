@@ -1,15 +1,15 @@
-    package dao;
+package dao;
 
-    import entity.Feedback;
+import entity.Feedback;
 import entity.Service;
-    import java.sql.*;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-    import java.util.Vector;
+import java.util.Vector;
 
-    public class FeedbackDAO extends DBConnection {
+public class FeedbackDAO extends DBConnection {
 
-        public void addFeedback(int userId, int serviceId, String description, int rating) {
+    public void addFeedback(int userId, int serviceId, String description, int rating) {
         String sql = "INSERT INTO Feedback (userId, serviceId, description, rating, createDate) VALUES (?, ?, ?, ?, GETDATE())";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -23,8 +23,7 @@ import java.util.List;
         }
     }
 
-
-        public Vector<Feedback> getAllFeedback() {
+    public Vector<Feedback> getAllFeedback() {
         Vector<Feedback> list = new Vector<>();
         String sql = "SELECT * FROM Feedback ORDER BY createDate DESC";
         try {
@@ -34,17 +33,17 @@ import java.util.List;
                 int userId = rs.getInt("userId");
                 String username = getUsernameByUserId(userId);
                 int serviceId = rs.getInt("serviceId");
-    String serviceName = getServiceNameByServiceId(serviceId);
-    Feedback fb = new Feedback(
-        rs.getInt("id"),
-        userId,
-        serviceId,
-        rs.getString("description"),
-        rs.getInt("rating"),
-        rs.getTimestamp("createDate"),
-        username,
-        serviceName
-    );
+                String serviceName = getServiceNameByServiceId(serviceId);
+                Feedback fb = new Feedback(
+                        rs.getInt("id"),
+                        userId,
+                        serviceId,
+                        rs.getString("description"),
+                        rs.getInt("rating"),
+                        rs.getTimestamp("createDate"),
+                        username,
+                        serviceName
+                );
                 list.add(fb);
             }
         } catch (SQLException ex) {
@@ -53,34 +52,33 @@ import java.util.List;
         return list;
     }
 
-
-        public String getUsernameByUserId(int userId) {
-            String sql = "SELECT username FROM [User] WHERE id = ?";
-            try {
-                PreparedStatement ps = connection.prepareStatement(sql);
-                ps.setInt(1, userId);
-                ResultSet rs = ps.executeQuery();
-                if (rs.next()) {
-                    return rs.getString("username");
-                }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
+    public String getUsernameByUserId(int userId) {
+        String sql = "SELECT username FROM [User] WHERE id = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getString("username");
             }
-            return "Unknown";
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
+        return "Unknown";
+    }
 
-        public void deleteFeedback(int id) {
-            String sql = "DELETE FROM Feedback WHERE id = ?";
-            try {
-                PreparedStatement ps = connection.prepareStatement(sql);
-                ps.setInt(1, id);
-                ps.executeUpdate();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
+    public void deleteFeedback(int id) {
+        String sql = "DELETE FROM Feedback WHERE id = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
+    }
 
-        public void updateFeedback(int id, String description, int rating) {
+    public void updateFeedback(int id, String description, int rating) {
         String sql = "UPDATE Feedback SET description = ?, rating = ? WHERE id = ?";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -93,7 +91,7 @@ import java.util.List;
         }
     }
 
-        public Feedback getFeedbackById(int id) {
+    public Feedback getFeedbackById(int id) {
         String sql = "SELECT * FROM Feedback WHERE id = ?";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -103,13 +101,13 @@ import java.util.List;
                 int userId = rs.getInt("userId");
                 String username = getUsernameByUserId(userId);
                 return new Feedback(
-                    rs.getInt("id"),
-                    userId,
-                    rs.getInt("serviceId"),
-                    rs.getString("description"),
-                    rs.getInt("rating"),
-                    rs.getTimestamp("createDate"),
-                    username
+                        rs.getInt("id"),
+                        userId,
+                        rs.getInt("serviceId"),
+                        rs.getString("description"),
+                        rs.getInt("rating"),
+                        rs.getTimestamp("createDate"),
+                        username
                 );
             }
         } catch (SQLException ex) {
@@ -117,6 +115,7 @@ import java.util.List;
         }
         return null;
     }
+
     public Vector<Feedback> getFeedbackByServiceId(int serviceId) {
         Vector<Feedback> list = new Vector<>();
         String sql = "SELECT * FROM Feedback WHERE serviceId = ? ORDER BY createDate DESC";
@@ -128,13 +127,13 @@ import java.util.List;
                 int userId = rs.getInt("userId");
                 String username = getUsernameByUserId(userId);
                 Feedback fb = new Feedback(
-                    rs.getInt("id"),
-                    userId,
-                    serviceId,
-                    rs.getString("description"),
-                    rs.getInt("rating"),
-                    rs.getTimestamp("createDate"),
-                    username
+                        rs.getInt("id"),
+                        userId,
+                        serviceId,
+                        rs.getString("description"),
+                        rs.getInt("rating"),
+                        rs.getTimestamp("createDate"),
+                        username
                 );
                 list.add(fb);
             }
@@ -143,6 +142,7 @@ import java.util.List;
         }
         return list;
     }
+
     public String getServiceNameByServiceId(int serviceId) {
         String sql = "SELECT name FROM Service WHERE id = ?";
         try {
@@ -157,22 +157,23 @@ import java.util.List;
         }
         return "Unknown Service";
     }
-    public List<Service> getAllServices() {
-    List<Service> list = new ArrayList<>();
-    try {
-        String sql = "SELECT * FROM Service";
-        PreparedStatement ps = connection.prepareStatement(sql);
-        ResultSet rs = ps.executeQuery();
-        while (rs.next()) {
-            Service s = new Service();
-            s.setId(rs.getInt("id"));
-            s.setName(rs.getString("name"));
-            list.add(s);
-        }
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-    return list;
-}
 
+    public List<Service> getAllServices() {
+        List<Service> list = new ArrayList<>();
+        try {
+            String sql = "SELECT * FROM Service";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Service s = new Service();
+                s.setId(rs.getInt("id"));
+                s.setName(rs.getString("name"));
+                list.add(s);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
     }
+
+}

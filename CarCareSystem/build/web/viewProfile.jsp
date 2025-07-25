@@ -1,7 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="entity.User" %>
 <%
-    User user = (User) request.getAttribute("user");
     String success = (String) request.getAttribute("success");
 %>
 <!DOCTYPE html>
@@ -166,7 +165,7 @@
     </style>
 </head>
 <body> 
-    <%@include file="/header_emp.jsp" %>
+    <%@include file="/header.jsp" %>
 <% if (user == null) { %>
     <div class="profile-content full-screen" style="margin: 80px auto; max-width: 500px;">
         <h2>THÔNG TIN TÀI KHOẢN</h2>
