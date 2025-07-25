@@ -361,6 +361,14 @@
                     discountInput.removeAttribute('max');
                 }
             }
+            document.addEventListener('DOMContentLoaded', function () {
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('startDate').value = today;
+
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 7);
+                document.getElementById('endDate').value = tomorrow.toISOString().split('T')[0];
+            });
         </script>
     </body>
 </html>
