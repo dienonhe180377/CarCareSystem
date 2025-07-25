@@ -121,6 +121,19 @@
                 padding: 14px 16px;
                 text-align: left;
             }
+            td, h2 {
+                color: #333; /* Đảm bảo màu chữ tối cho nội dung */
+                background-color: white; /* Nền trắng cho ô dữ liệu */
+            }
+
+            tr:nth-child(even) td {
+                background-color: #f8f9fa; /* Màu nền cho hàng chẵn */
+            }
+
+            tr:hover td {
+                background-color: #e3f2fd; /* Màu nền khi hover */
+                color: #333; /* Đảm bảo chữ vẫn đọc được khi hover */
+            }
 
             th {
                 background: linear-gradient(135deg, #3498db 0%, #1a5f8e 100%);

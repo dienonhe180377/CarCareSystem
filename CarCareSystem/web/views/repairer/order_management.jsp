@@ -85,6 +85,19 @@
             .cursor-pointer {
                 cursor: pointer;
             }
+            .search-box {
+                margin-bottom: 25px;
+                display: flex;
+                max-width: 400px;
+            }
+            .search-box input {
+                border-top-right-radius: 0;
+                border-bottom-right-radius: 0;
+            }
+            .search-box button {
+                border-top-left-radius: 0;
+                border-bottom-left-radius: 0;
+            }
         </style>
     </head>
     <body>
@@ -103,9 +116,9 @@
                        class="btn ${param.status eq 'Đang Sửa Chữa' ? 'btn-primary' : 'btn-outline-primary'}">
                         Đang Sửa Chữa
                     </a>
-                    <a href="${pageContext.request.contextPath}/order_repair?status=Hoàn Thành" 
-                       class="btn ${param.status eq 'Hoàn Thành' ? 'btn-primary' : 'btn-outline-primary'}">
-                        Hoàn Thành
+                    <a href="${pageContext.request.contextPath}/order_repair?status=Hoàn Thành Sửa Chữa" 
+                       class="btn ${param.status eq 'Hoàn Thành Sửa Chữa' ? 'btn-primary' : 'btn-outline-primary'}">
+                        Hoàn Thành Sửa Chữa
                     </a>
                     <a href="${pageContext.request.contextPath}/order_repair?status=Đã Trả Xe" 
                        class="btn ${param.status eq 'Đã Trả Xe' ? 'btn-primary' : 'btn-outline-primary'}">
@@ -116,6 +129,13 @@
                         Tất Cả
                     </a>
                 </div>
+            </div>
+                       
+            <div class="search-box">
+                <form action="${pageContext.request.contextPath}/order_repair" method="GET" class="d-flex">
+                    <input type="text" name="search" class="form-control" placeholder="Search by name, email, phone or ID">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
             </div>
 
             <c:if test="${not empty message}">
@@ -200,24 +220,29 @@
                                         <select name="newStatus" class="form-select status-select" onchange="this.form.submit()">
                                             <option value="Đã Nhận Xe" ${order.orderStatus eq 'Đã Nhận Xe' ? 'selected' : ''}>Đã Nhận Xe</option>
                                             <option value="Đang Sửa Chữa" ${order.orderStatus eq 'Đang Sửa Chữa' ? 'selected' : ''}>Đang Sửa Chữa</option>
-                                            <option value="Hoàn Thành" ${order.orderStatus eq 'Hoàn Thành' ? 'selected' : ''}>Hoàn Thành</option>
+                                            <option value="Hoàn Thành Sửa Chữa" ${order.orderStatus eq 'Hoàn Thành Sửa Chữa' ? 'selected' : ''}>Hoàn Thành Sửa Chữa</option>
                                             <option value="Đã Trả Xe" ${order.orderStatus eq 'Đã Trả Xe' ? 'selected' : ''}>Đã Trả Xe</option>
                                         </select>
                                     </form>
                                 </td>
                                 <td>
                                     <div class="d-flex gap-2">
-                                        <!-- Nút chỉnh sửa dịch vụ -->
-                                        <button class="btn btn-sm btn-outline-primary" 
-                                                data-bs-toggle="modal" data-bs-target="#editServicesModal${order.id}">
-                                            <i class="bi bi-pencil"></i> Sửa DV
-                                        </button>
+                                        <c:if test="${order.orderStatus ne 'Hoàn Thành Sửa Chữa' and order.orderStatus ne 'Đã Trả Xe'}">
+                                            
+                                            <button class="btn btn-sm btn-outline-primary" 
+                                                    data-bs-toggle="modal" data-bs-target="#editServicesModal${order.id}">
+                                                <i class="bi bi-pencil"></i> Sửa DV
+                                            </button>
 
-                                        <!-- Nút chỉnh sửa phụ tùng -->
-                                        <button class="btn btn-sm btn-outline-success" 
-                                                data-bs-toggle="modal" data-bs-target="#editPartsModal${order.id}">
-                                            <i class="bi bi-wrench"></i> Sửa PT
-                                        </button>
+                                            <button class="btn btn-sm btn-outline-success" 
+                                                    data-bs-toggle="modal" data-bs-target="#editPartsModal${order.id}">
+                                                <i class="bi bi-wrench"></i> Sửa PT
+                                            </button>
+                                        </c:if>
+
+                                        <c:if test="${order.orderStatus eq 'Hoàn Thành Sửa Chữa' or order.orderStatus eq 'Đã Trả Xe'}">
+                                            <span class="text-muted">Không thể chỉnh sửa</span>
+                                        </c:if>
                                     </div>
                                 </td>
                             </tr>

@@ -80,7 +80,7 @@ public class MyOrder extends HttpServlet {
             request.setAttribute("error", "Lỗi khi tải lịch sử đơn hàng");
             request.getRequestDispatcher("/views/order/myOrder.jsp").forward(request, response);
         }
-    } 
+    }
 
     /** 
      * Handles the HTTP <code>POST</code> method.

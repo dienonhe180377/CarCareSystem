@@ -156,5 +156,20 @@ public class InsTypeDAO extends DBConnection {
     }
     return false;
 }
+public boolean isInsuranceTypeNameExistsForOtherId(String name, int currentId) {
+    String sql = "SELECT COUNT(*) FROM InsuranceType WHERE name = ? AND id != ?";
+    try {
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setString(1, name);
+        ps.setInt(2, currentId);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            return rs.getInt(1) > 0;
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return false;
+}
 
 }
