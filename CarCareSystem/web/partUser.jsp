@@ -83,9 +83,13 @@
                     <button type="button" class="part-icon-btn" title="Xem nhanh" data-bs-toggle="modal" data-bs-target="#quickViewModal${part.id}">
                         <i class="fas fa-eye"></i>
                     </button>
-                    <button type="button" class="part-icon-btn" title="Mua ngay" data-bs-toggle="modal" data-bs-target="#buyModal${part.id}">
-                        <i class="fas fa-cart-plus"></i>
-                    </button>
+                    <form class="d-flex align-items-center mt-3" action="order" method="post">
+                        <input type="hidden" name="partId" value="${part.id}">
+                        <input type="number" name="quantity" min="1" value="1" style="width:90px;" class="form-control me-2"/>
+                        <button type="submit" class="part-icon-btn" title="Mua ngay" data-bs-toggle="modal">
+                            <i class="fas fa-cart-plus"></i>
+                        </button>
+                    </form>
                 </div>
                 <div class="part-card-body">
                     <div class="part-card-title">${part.name}</div>
@@ -111,9 +115,11 @@
                                     <div style="color:#e67e22; font-size:1.25rem; font-weight:bold;">
                                         <fmt:formatNumber value="${part.price}" type="number" groupingUsed="true" minFractionDigits="0" /> đ
                                     </div>
-                                    <div class="mt-3">
-                                        <button type="button" class="btn btn-danger ms-2" data-bs-toggle="modal" data-bs-target="#buyModal${part.id}" data-bs-dismiss="modal">Mua ngay</button>
-                                    </div>
+                                        <form class="d-flex align-items-center mt-3" action="order" method="post">
+                                            <input type="hidden" name="partId" value="${part.id}">
+                                            <input type="number" name="quantity" min="1" value="1" style="width:90px;" class="form-control me-2"/>
+                                            <button type="submit" class="btn btn-danger">Mua ngay</button>
+                                        </form>
                                 </div>
                             </div>
                         </div>
@@ -137,11 +143,11 @@
                                     <div class="mb-3" style="color:#e67e22; font-size:1.25rem; font-weight:bold;">
                                         <fmt:formatNumber value="${part.price}" type="number" groupingUsed="true" minFractionDigits="0" /> đ
                                     </div>
-                                    <form class="d-flex align-items-center mt-3" action="OrderServlet" method="post">
-                                        <input type="hidden" name="partId" value="${part.id}">
-                                        <input type="number" name="quantity" min="1" value="1" style="width:90px;" class="form-control me-2"/>
-                                        <button type="submit" class="btn btn-danger">Mua ngay</button>
-                                    </form>
+                                        <form class="d-flex align-items-center mt-3" action="order" method="post">
+                                            <input type="hidden" name="partId" value="${part.id}">
+                                            <input type="number" name="quantity" min="1" value="1" style="width:90px;" class="form-control me-2"/>
+                                            <button type="submit" class="btn btn-danger">Mua ngay</button>
+                                        </form>
                                 </div>
                             </div>
                         </div>

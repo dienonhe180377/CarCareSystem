@@ -20,7 +20,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
-import java.sql.*;
 import java.util.List;
 import util.SendMailService;
 
@@ -89,6 +88,8 @@ public class OrderManagementServlet extends HttpServlet {
                 orders = orderDAO.getOrdersByPaymentStatus("Đã thanh toán");
             } else if ("miss".equals(action)) {
                 orders = orderDAO.getOrdersByStatus("Lỡ hẹn");
+            } else if ("done".equals(action)) {
+                orders = orderDAO.getCompletedOrders();
             } else {
                 orders = orderDAO.getAllOrders();
             }
@@ -124,7 +125,17 @@ public class OrderManagementServlet extends HttpServlet {
         try {
             int orderId = Integer.parseInt(orderIdStr);
 
-            if ("reschedule".equals(action)) {
+            if ("confirmPayment".equals(action)) {
+                Order order = orderDAO.getOrderById(orderId);
+                if ("Chưa thanh toán".equals(order.getPaymentStatus())) {
+                    boolean success = orderDAO.updatePaymentStatus(orderId, "Đã thanh toán");
+                    if (success) {
+                        request.getSession().setAttribute("message", "Đã đổi thanh toán thành công!");
+                    } else {
+                        request.getSession().setAttribute("error", "Đổi thanh toán thất bại!");
+                    }
+                }
+            } else if ("reschedule".equals(action)) {
                 String newDateStr = request.getParameter("newAppointmentDate");
                 java.sql.Date newAppointmentDate = java.sql.Date.valueOf(newDateStr);
 

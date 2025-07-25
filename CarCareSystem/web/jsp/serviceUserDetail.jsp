@@ -137,6 +137,19 @@
             margin: 18px 0;
             padding-left: 10px;
         }
+        .fb-btn{
+            background: #FFD700;
+            color: #fff;
+            padding: 10px 28px;
+            border-radius: 6px;
+            font-size: 1.12rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            transition: background 0.2s;
+        }
         .action-row {
             display: flex;
             justify-content: center;
@@ -309,6 +322,7 @@
                 <button type="submit" class="order-btn">Đặt dịch vụ</button>
             </form>
             <a href="ServiceServlet_JSP?service=listService" class="back-btn">← Quay lại danh sách</a>
+            <a href="feedback" class="fb-btn">Gửi Phản hồi</a>
         </div>
     </div>
 </body>

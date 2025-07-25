@@ -17,27 +17,27 @@ public class InsuranceDAO extends DBConnection {
     /**
      * Lấy danh sách bảo hiểm theo câu SQL truyền vào.
      */
-    public Vector<Insurance> getAllInsurance(String sql) {
-        Vector<Insurance> listInsurance = new Vector<>();
-        try {
-            PreparedStatement ptm = connection.prepareStatement(sql);
-            ResultSet rs = ptm.executeQuery();
-            while (rs.next()) {
-                Insurance i = new Insurance(
-                        rs.getInt("id"),
-                        rs.getInt("userId"),
-                        rs.getInt("carTypeId"),
-                        rs.getInt("insuranceTypeId"),
-                        rs.getDate("startDate"),
-                        rs.getDate("endDate")
-                );
-                listInsurance.add(i);
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return listInsurance;
-    }
+//    public Vector<Insurance> getAllInsurance(String sql) {
+//        Vector<Insurance> listInsurance = new Vector<>();
+//        try {
+//            PreparedStatement ptm = connection.prepareStatement(sql);
+//            ResultSet rs = ptm.executeQuery();
+//            while (rs.next()) {
+//                Insurance i = new Insurance(
+//                        rs.getInt("id"),
+//                        rs.getInt("userId"),
+//                        rs.getInt("carTypeId"),
+//                        rs.getInt("insuranceTypeId"),
+//                        rs.getDate("startDate"),
+//                        rs.getDate("endDate")
+//                );
+//                listInsurance.add(i);
+//            }
+//        } catch (SQLException ex) {
+//            ex.printStackTrace();
+//        }
+//        return listInsurance;
+//    }
 
     /**
      * Thêm mới một bảo hiểm vào database.

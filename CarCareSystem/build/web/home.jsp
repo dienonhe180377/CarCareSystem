@@ -102,7 +102,7 @@
             justify-content: center;
         }
         .quick-action-btn {
-            width: 100%;
+            width: 120%;
             max-width: 420px;
             min-height: 110px;
             font-size: 2rem;
@@ -206,10 +206,12 @@
                                 href="ServiceServlet_JSP?service=detailService&id=${se.id}">
                                 <i class="fas fa-link"></i>
                             </a>
-                            <button type="button" class="service-icon-btn" title="Mua ngay"
-                                data-bs-toggle="modal" data-bs-target="#buyModal${se.id}">
-                                <i class="fas fa-shopping-cart"></i>
-                            </button>
+                            <form class="d-flex align-items-center mt-3" action="order" method="post">
+                                <input type="hidden" name="selectedServiceIds" value="${se.id}">
+                                <button type="submit" class="service-icon-btn" data-bs-toggle="modal" title="Mua ngay">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </button>
+                            </form>
                         </div>
                         <div class="service-card-body">
                             <div class="service-card-title">${se.name}</div>
@@ -258,9 +260,10 @@
                                             <a class="btn btn-primary" href="ServiceServlet_JSP?service=detailService&id=${se.id}">
                                                 Xem chi tiết
                                             </a>
-                                            <button type="button" class="btn btn-danger ms-2" data-bs-toggle="modal" data-bs-target="#buyModal${se.id}" data-bs-dismiss="modal">
-                                                Đặt dịch vụ
-                                            </button>
+                                            <form class="d-flex align-items-center mt-3" action="order" method="post">
+                                                <input type="hidden" name="selectedServiceIds" value="${se.id}">
+                                                <button type="submit" class="btn btn-danger">Đặt dịch vụ</button>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
@@ -293,7 +296,7 @@
                                             <fmt:formatNumber value="${se.totalPriceWithParts}" type="number" groupingUsed="true" minFractionDigits="0" />đ
                                         </div>
                                         <div><b>Mô tả:</b> ${se.description}</div>
-                                        <form class="d-flex align-items-center mt-3" action="ServiceServlet_JSP?service=buyService" method="post">
+                                        <form class="d-flex align-items-center mt-3" action="order" method="post">
                                             <input type="hidden" name="selectedServiceIds" value="${se.id}">
                                             <button type="submit" class="btn btn-danger">Đặt dịch vụ</button>
                                         </form>
@@ -329,9 +332,13 @@
                         <button type="button" class="part-icon-btn" title="Xem nhanh" data-bs-toggle="modal" data-bs-target="#quickViewModal${part.id}">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button type="button" class="part-icon-btn" title="Mua ngay" data-bs-toggle="modal" data-bs-target="#buyModal${part.id}">
-                            <i class="fas fa-cart-plus"></i>
-                        </button>
+                        <form class="d-flex align-items-center mt-3" action="order" method="post">
+                            <input type="hidden" name="partId" value="${part.id}">
+                            <input type="number" name="quantity" min="1" value="1" style="width:90px;" class="form-control me-2"/>
+                            <button type="submit" class="part-icon-btn" title="Mua ngay" data-bs-toggle="modal">
+                                <i class="fas fa-cart-plus"></i>
+                            </button>
+                        </form>
                     </div>
                     <div class="part-card-body">
                         <div class="part-card-title">${part.name}</div>
@@ -357,9 +364,11 @@
                                         <div style="color:#e67e22; font-size:1.25rem; font-weight:bold;">
                                             <fmt:formatNumber value="${part.price}" type="number" groupingUsed="true" minFractionDigits="0" /> đ
                                         </div>
-                                        <div class="mt-3">
-                                            <button type="button" class="btn btn-danger ms-2" data-bs-toggle="modal" data-bs-target="#buyModal${part.id}" data-bs-dismiss="modal">Mua ngay</button>
-                                        </div>
+                                        <form class="d-flex align-items-center mt-3" action="order" method="post">
+                                            <input type="hidden" name="partId" value="${part.id}">
+                                            <input type="number" name="quantity" min="1" value="1" style="width:90px;" class="form-control me-2"/>
+                                            <button type="submit" class="btn btn-danger">Mua ngay</button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -383,7 +392,7 @@
                                         <div class="mb-3" style="color:#e67e22; font-size:1.25rem; font-weight:bold;">
                                             <fmt:formatNumber value="${part.price}" type="number" groupingUsed="true" minFractionDigits="0" /> đ
                                         </div>
-                                        <form class="d-flex align-items-center mt-3" action="OrderServlet" method="post">
+                                        <form class="d-flex align-items-center mt-3" action="order" method="post">
                                             <input type="hidden" name="partId" value="${part.id}">
                                             <input type="number" name="quantity" min="1" value="1" style="width:90px;" class="form-control me-2"/>
                                             <button type="submit" class="btn btn-danger">Mua ngay</button>
