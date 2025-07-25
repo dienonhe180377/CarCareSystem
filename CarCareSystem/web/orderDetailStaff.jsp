@@ -37,8 +37,17 @@
         <tr>
             <th>Khách hàng</th>
             <td>
-                <c:out value="${order.user != null ? order.user.username : ''}"/>
-                <c:if test="${order.user == null}"><span style="color: #999;">(Ẩn danh)</span></c:if>
+                <c:choose>
+                    <c:when test="${not empty order.name}">
+                        <c:out value="${order.name}" />
+                    </c:when>
+                    <c:when test="${order.user != null && not empty order.user.username}">
+                        <c:out value="${order.user.username}" />
+                    </c:when>
+                    <c:otherwise>
+                        <span style="color: #999;">(Ẩn danh)</span>
+                    </c:otherwise>
+                </c:choose>
             </td>
         </tr>
         <tr>
