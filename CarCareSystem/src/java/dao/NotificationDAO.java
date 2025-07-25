@@ -169,6 +169,26 @@ public class NotificationDAO extends DBConnection {
             closePreparedStatement(pre);
         }
     }
+    
+    //Delete All Notifications
+    public int deleteNotificationSetting(int id) throws Exception {
+        Connection conn = null;
+        PreparedStatement pre = null;
+
+        String sql = "delete from [NotificationSetting] where recieverId = ?";
+        try {
+            conn = getConnection();
+            pre = conn.prepareStatement(sql);
+            pre.setInt(1, id);
+            int successCheck = pre.executeUpdate();
+            return successCheck;
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            closeConnection(conn);
+            closePreparedStatement(pre);
+        }
+    }
 
     //Add Notification
     public int addNotification(int userId, String message, String type) throws Exception {
