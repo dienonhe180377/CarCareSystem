@@ -230,38 +230,7 @@ public class PartController extends HttpServlet {
                             }
                         }
 
-                        if (!notiSetting.isOrderChange()) {
-                            for (int i = notifications.size() - 1; i >= 0; i--) {
-                                if (notifications.get(i).getType().equals("Order Change")) {
-                                    notifications.remove(i);
-                                }
-                            }
-                        }
-
-                        if (!notiSetting.isAttendance()) {
-                            for (int i = notifications.size() - 1; i >= 0; i--) {
-                                if (notifications.get(i).getType().equals("Attendance")) {
-                                    notifications.remove(i);
-                                }
-                            }
-                        }
-
-                        if (!notiSetting.isService()) {
-                            for (int i = notifications.size() - 1; i >= 0; i--) {
-                                if (notifications.get(i).getType().equals("Service")) {
-                                    notifications.remove(i);
-                                }
-                            }
-                        }
-
-                        if (!notiSetting.isInsurance()) {
-                            for (int i = notifications.size() - 1; i >= 0; i--) {
-                                if (notifications.get(i).getType().equals("Insurance")) {
-                                    notifications.remove(i);
-                                }
-                            }
-                        }
-
+                        
                         if (!notiSetting.isCategory()) {
                             for (int i = notifications.size() - 1; i >= 0; i--) {
                                 if (notifications.get(i).getType().equals("Category")) {
@@ -281,46 +250,6 @@ public class PartController extends HttpServlet {
                         if (!notiSetting.isParts()) {
                             for (int i = notifications.size() - 1; i >= 0; i--) {
                                 if (notifications.get(i).getType().equals("Part")) {
-                                    notifications.remove(i);
-                                }
-                            }
-                        }
-
-                        if (!notiSetting.isSettingChange()) {
-                            for (int i = notifications.size() - 1; i >= 0; i--) {
-                                if (notifications.get(i).getType().equals("Setting Change")) {
-                                    notifications.remove(i);
-                                }
-                            }
-                        }
-
-                        if (!notiSetting.isCarType()) {
-                            for (int i = notifications.size() - 1; i >= 0; i--) {
-                                if (notifications.get(i).getType().equals("Car Type")) {
-                                    notifications.remove(i);
-                                }
-                            }
-                        }
-
-                        if (!notiSetting.isCampaign()) {
-                            for (int i = notifications.size() - 1; i >= 0; i--) {
-                                if (notifications.get(i).getType().equals("Campaign")) {
-                                    notifications.remove(i);
-                                }
-                            }
-                        }
-
-                        if (!notiSetting.isBlog()) {
-                            for (int i = notifications.size() - 1; i >= 0; i--) {
-                                if (notifications.get(i).getType().equals("Blog")) {
-                                    notifications.remove(i);
-                                }
-                            }
-                        }
-
-                        if (!notiSetting.isVoucher()) {
-                            for (int i = notifications.size() - 1; i >= 0; i--) {
-                                if (notifications.get(i).getType().equals("Voucher")) {
                                     notifications.remove(i);
                                 }
                             }
@@ -460,37 +389,7 @@ public class PartController extends HttpServlet {
                             }
                         }
 
-                        if (!notiSetting.isOrderChange()) {
-                            for (int i = notifications.size() - 1; i >= 0; i--) {
-                                if (notifications.get(i).getType().equals("Order Change")) {
-                                    notifications.remove(i);
-                                }
-                            }
-                        }
 
-                        if (!notiSetting.isAttendance()) {
-                            for (int i = notifications.size() - 1; i >= 0; i--) {
-                                if (notifications.get(i).getType().equals("Attendance")) {
-                                    notifications.remove(i);
-                                }
-                            }
-                        }
-
-                        if (!notiSetting.isService()) {
-                            for (int i = notifications.size() - 1; i >= 0; i--) {
-                                if (notifications.get(i).getType().equals("Service")) {
-                                    notifications.remove(i);
-                                }
-                            }
-                        }
-
-                        if (!notiSetting.isInsurance()) {
-                            for (int i = notifications.size() - 1; i >= 0; i--) {
-                                if (notifications.get(i).getType().equals("Insurance")) {
-                                    notifications.remove(i);
-                                }
-                            }
-                        }
 
                         if (!notiSetting.isCategory()) {
                             for (int i = notifications.size() - 1; i >= 0; i--) {
@@ -511,46 +410,6 @@ public class PartController extends HttpServlet {
                         if (!notiSetting.isParts()) {
                             for (int i = notifications.size() - 1; i >= 0; i--) {
                                 if (notifications.get(i).getType().equals("Part")) {
-                                    notifications.remove(i);
-                                }
-                            }
-                        }
-
-                        if (!notiSetting.isSettingChange()) {
-                            for (int i = notifications.size() - 1; i >= 0; i--) {
-                                if (notifications.get(i).getType().equals("Setting Change")) {
-                                    notifications.remove(i);
-                                }
-                            }
-                        }
-
-                        if (!notiSetting.isCarType()) {
-                            for (int i = notifications.size() - 1; i >= 0; i--) {
-                                if (notifications.get(i).getType().equals("Car Type")) {
-                                    notifications.remove(i);
-                                }
-                            }
-                        }
-
-                        if (!notiSetting.isCampaign()) {
-                            for (int i = notifications.size() - 1; i >= 0; i--) {
-                                if (notifications.get(i).getType().equals("Campaign")) {
-                                    notifications.remove(i);
-                                }
-                            }
-                        }
-
-                        if (!notiSetting.isBlog()) {
-                            for (int i = notifications.size() - 1; i >= 0; i--) {
-                                if (notifications.get(i).getType().equals("Blog")) {
-                                    notifications.remove(i);
-                                }
-                            }
-                        }
-
-                        if (!notiSetting.isVoucher()) {
-                            for (int i = notifications.size() - 1; i >= 0; i--) {
-                                if (notifications.get(i).getType().equals("Voucher")) {
                                     notifications.remove(i);
                                 }
                             }
@@ -608,101 +467,29 @@ public class PartController extends HttpServlet {
                         }
                     }
 
-                    if (!notiSetting.isOrderChange()) {
-                        for (int i = notifications.size() - 1; i >= 0; i--) {
-                            if (notifications.get(i).getType().equals("Order Change")) {
-                                notifications.remove(i);
+                        if (!notiSetting.isCategory()) {
+                            for (int i = notifications.size() - 1; i >= 0; i--) {
+                                if (notifications.get(i).getType().equals("Category")) {
+                                    notifications.remove(i);
+                                }
                             }
                         }
-                    }
 
-                    if (!notiSetting.isAttendance()) {
-                        for (int i = notifications.size() - 1; i >= 0; i--) {
-                            if (notifications.get(i).getType().equals("Attendance")) {
-                                notifications.remove(i);
+                        if (!notiSetting.isSupplier()) {
+                            for (int i = notifications.size() - 1; i >= 0; i--) {
+                                if (notifications.get(i).getType().equals("Supplier")) {
+                                    notifications.remove(i);
+                                }
                             }
                         }
-                    }
 
-                    if (!notiSetting.isService()) {
-                        for (int i = notifications.size() - 1; i >= 0; i--) {
-                            if (notifications.get(i).getType().equals("Service")) {
-                                notifications.remove(i);
+                        if (!notiSetting.isParts()) {
+                            for (int i = notifications.size() - 1; i >= 0; i--) {
+                                if (notifications.get(i).getType().equals("Part")) {
+                                    notifications.remove(i);
+                                }
                             }
                         }
-                    }
-
-                    if (!notiSetting.isInsurance()) {
-                        for (int i = notifications.size() - 1; i >= 0; i--) {
-                            if (notifications.get(i).getType().equals("Insurance")) {
-                                notifications.remove(i);
-                            }
-                        }
-                    }
-
-                    if (!notiSetting.isCategory()) {
-                        for (int i = notifications.size() - 1; i >= 0; i--) {
-                            if (notifications.get(i).getType().equals("Category")) {
-                                notifications.remove(i);
-                            }
-                        }
-                    }
-
-                    if (!notiSetting.isSupplier()) {
-                        for (int i = notifications.size() - 1; i >= 0; i--) {
-                            if (notifications.get(i).getType().equals("Supplier")) {
-                                notifications.remove(i);
-                            }
-                        }
-                    }
-
-                    if (!notiSetting.isParts()) {
-                        for (int i = notifications.size() - 1; i >= 0; i--) {
-                            if (notifications.get(i).getType().equals("Part")) {
-                                notifications.remove(i);
-                            }
-                        }
-                    }
-
-                    if (!notiSetting.isSettingChange()) {
-                        for (int i = notifications.size() - 1; i >= 0; i--) {
-                            if (notifications.get(i).getType().equals("Setting Change")) {
-                                notifications.remove(i);
-                            }
-                        }
-                    }
-
-                    if (!notiSetting.isCarType()) {
-                        for (int i = notifications.size() - 1; i >= 0; i--) {
-                            if (notifications.get(i).getType().equals("Car Type")) {
-                                notifications.remove(i);
-                            }
-                        }
-                    }
-
-                    if (!notiSetting.isCampaign()) {
-                        for (int i = notifications.size() - 1; i >= 0; i--) {
-                            if (notifications.get(i).getType().equals("Campaign")) {
-                                notifications.remove(i);
-                            }
-                        }
-                    }
-
-                    if (!notiSetting.isBlog()) {
-                        for (int i = notifications.size() - 1; i >= 0; i--) {
-                            if (notifications.get(i).getType().equals("Blog")) {
-                                notifications.remove(i);
-                            }
-                        }
-                    }
-
-                    if (!notiSetting.isVoucher()) {
-                        for (int i = notifications.size() - 1; i >= 0; i--) {
-                            if (notifications.get(i).getType().equals("Voucher")) {
-                                notifications.remove(i);
-                            }
-                        }
-                    }
 
                     session.setAttribute("notification", notifications);
                     session.setAttribute("notiSetting", notiSetting);
