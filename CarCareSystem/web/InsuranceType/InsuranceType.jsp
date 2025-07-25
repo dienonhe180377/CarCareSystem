@@ -35,7 +35,8 @@
                         <td>${(currentPage-1)*5 + status.index + 1}</td>
                         <td>${t.name}</td>
                         <td>${t.description}</td>
-                        <td><fmt:formatNumber value="${t.price}" type="currency" currencySymbol="" /></td>
+                        <td><fmt:formatNumber value="${t.price}" type="number" groupingUsed="true" maxFractionDigits="0" />
+</td>
                         <c:if test="${role == 'manager'}">
                             <td>
                                 <div class="action-buttons">

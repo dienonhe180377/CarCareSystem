@@ -25,7 +25,7 @@
                     <div class="card-title">${t.name}</div>
                     <div class="card-desc">${t.description}</div>
                     <div class="card-price">
-                        <fmt:formatNumber value="${t.price}" type="number" groupingUsed="true" maxFractionDigits="0" /> vnđ
+                        <fmt:formatNumber value="${t.price}" type="number" groupingUsed="true" maxFractionDigits="0" /> VND
 
                     </div>
                     <a href="" class="buy-btn">Mua ngay</a>
