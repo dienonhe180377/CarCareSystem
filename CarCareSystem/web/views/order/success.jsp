@@ -219,19 +219,19 @@
                 <h3>Thông tin liên hệ</h3>
                 <div class="contact-item">
                     <span class="contact-label">Địa chỉ:</span>
-                    <span>123 Đường ABC, Quận XYZ, TP. Hồ Chí Minh</span>
+                    <span>198 Đường Giải Phóng, Đống Đa, TP Hà Nội</span>
                 </div>
                 <div class="contact-item">
                     <span class="contact-label">Hotline:</span>
-                    <span>1900 1234</span>
+                    <span>0123 456 789</span>
                 </div>
                 <div class="contact-item">
                     <span class="contact-label">Email:</span>
-                    <span>support@carcaresystem.com</span>
+                    <span>support@carcarecentre.com</span>
                 </div>
                 <div class="contact-item">
-                    <span class="contact-label">Thời gian làm việc:</span>
-                    <span>8:00 - 20:00 hàng ngày</span>
+                    <span class="contact-label">Giờ làm việc:</span>
+                    <span>08:00 - 18:00 hàng ngày</span>
                 </div>
             </div>
 

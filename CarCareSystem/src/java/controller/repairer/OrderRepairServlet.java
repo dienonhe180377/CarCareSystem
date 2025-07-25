@@ -77,8 +77,12 @@ public class OrderRepairServlet extends HttpServlet {
 //        processRequest(request, response);
         try {
             String status = request.getParameter("status");
+            String searchQuery = request.getParameter("search");
             ArrayList<Order> orders;
         
+            if (searchQuery != null && !searchQuery.isEmpty()) {
+                orders = orderDAO.searchOrders(searchQuery);
+            }
             if (status != null && !status.trim().isEmpty()) {
                 orders = orderDAO.getOrdersByStatus(status);
             } else {
@@ -271,9 +275,16 @@ public class OrderRepairServlet extends HttpServlet {
     }
     
     private void handleUpdateServices(HttpServletRequest request, HttpServletResponse response, int orderId) throws Exception {
-        String[] selectedServiceIds = request.getParameterValues("serviceIds");
-    
         Order currentOrder = orderDAO.getOrderById(orderId);
+
+        if (currentOrder.getOrderStatus().equals("Hoàn Thành Sửa Chữa")
+                || currentOrder.getOrderStatus().equals("Đã Trả Xe")) {
+            request.getSession().setAttribute("error", "Không thể cập nhật dịch vụ cho đơn hàng đã hoàn thành sửa chữa hoặc đã trả xe");
+            response.sendRedirect(request.getContextPath() + "/order_repair");
+            return;
+        }
+        String[] selectedServiceIds = request.getParameterValues("serviceIds");
+        
         ArrayList<Service> currentServices = currentOrder.getServices();
     
         ArrayList<Integer> currentServiceIds = new ArrayList<>();
@@ -309,9 +320,16 @@ public class OrderRepairServlet extends HttpServlet {
     }
     
     private void handleUpdateParts(HttpServletRequest request, HttpServletResponse response, int orderId) throws Exception {
+        Order currentOrder = orderDAO.getOrderById(orderId);
+
+        if (currentOrder.getOrderStatus().equals("Hoàn Thành Sửa Chữa")
+                || currentOrder.getOrderStatus().equals("Đã Trả Xe")) {
+            request.getSession().setAttribute("error", "Không thể cập nhật phụ tùng cho đơn hàng đã hoàn thành sửa chữa hoặc đã trả xe");
+            response.sendRedirect(request.getContextPath() + "/order_repair");
+            return;
+        }
         String[] selectedPartIds = request.getParameterValues("partIds");
     
-        Order currentOrder = orderDAO.getOrderById(orderId);
         ArrayList<Part> currentParts = currentOrder.getParts();
     
         ArrayList<Integer> currentPartIds = new ArrayList<>();
