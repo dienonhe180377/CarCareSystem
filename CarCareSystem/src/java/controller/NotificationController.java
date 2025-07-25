@@ -75,7 +75,7 @@ public class NotificationController extends HttpServlet {
                 } else if (notification.getType().equals("Service")) {
                     request.getRequestDispatcher("/ServiceServlet_JSP").forward(request, response);
                 } else if (notification.getType().equals("Insurance")) {
-                    request.getRequestDispatcher("/insurance").forward(request, response);
+                    request.getRequestDispatcher("/instype?action=list").forward(request, response);
                 } else if (notification.getType().equals("Category")) {
                     request.getRequestDispatcher("/CategoryController?service=list").forward(request, response);
                 } else if (notification.getType().equals("Supplier")) {
