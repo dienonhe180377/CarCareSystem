@@ -184,7 +184,7 @@
         </style>
     </head>
     <body>
-        <jsp:include page="/header_emp.jsp"></jsp:include>
+        <jsp:include page="/header.jsp"></jsp:include>
         <div class="main-header">
             <h1><i class="fas fa-list"></i> Danh sách Campaign</h1>
         </div>
