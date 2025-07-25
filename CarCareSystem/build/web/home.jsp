@@ -102,7 +102,7 @@
             justify-content: center;
         }
         .quick-action-btn {
-            width: 120%;
+            width: 100%;
             max-width: 420px;
             min-height: 110px;
             font-size: 2rem;

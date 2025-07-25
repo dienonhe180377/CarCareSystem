@@ -2,7 +2,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-
 package controller.repairer;
 
 import dao.NotificationDAO;
@@ -33,39 +32,43 @@ import util.SendMailService;
  *
  * @author TRAN ANH HAI
  */
-@WebServlet(name="OrderRepairServlet", urlPatterns={"/order_repair"})
+@WebServlet(name = "OrderRepairServlet", urlPatterns = {"/order_repair"})
 public class OrderRepairServlet extends HttpServlet {
-   
+
     private OrderDAO orderDAO = new OrderDAO();
     private ServiceDAO serviceDAO = new ServiceDAO();
     private PartDAO partDAO = new PartDAO();
-    /** 
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
+
+    /**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet OrderRepairServlet</title>");  
+            out.println("<title>Servlet OrderRepairServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet OrderRepairServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet OrderRepairServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
-    } 
+    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /** 
+    /**
      * Handles the HTTP <code>GET</code> method.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -73,13 +76,13 @@ public class OrderRepairServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
 //        processRequest(request, response);
         try {
             String status = request.getParameter("status");
             String searchQuery = request.getParameter("search");
             ArrayList<Order> orders;
-        
+
             if (searchQuery != null && !searchQuery.isEmpty()) {
                 orders = orderDAO.searchOrders(searchQuery);
             }
@@ -88,25 +91,26 @@ public class OrderRepairServlet extends HttpServlet {
             } else {
                 orders = orderDAO.getOrdersByStatus("Đã Nhận Xe");
             }
-        
+
             request.setAttribute("orders", orders);
-        
+
             Vector<Service> allServices = serviceDAO.getAllService();
             ArrayList<Part> allParts = partDAO.getAllParts();
-        
+
             request.setAttribute("allServices", allServices);
             request.setAttribute("allParts", allParts);
-        
+
             request.getRequestDispatcher("/views/repairer/order_management.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("error", "Error: " + e.getMessage());
             request.getRequestDispatcher("/views/repairer/order_management.jsp").forward(request, response);
         }
-    } 
+    }
 
-    /** 
+    /**
      * Handles the HTTP <code>POST</code> method.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -114,158 +118,93 @@ public class OrderRepairServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
 //        processRequest(request, response);
         String action = request.getParameter("action");
         String orderIdStr = request.getParameter("orderId");
-        
+
         try {
             int orderId = Integer.parseInt(orderIdStr);
-            
+
             if ("updateServices".equals(action)) {
                 handleUpdateServices(request, response, orderId);
             } else if ("updateParts".equals(action)) {
                 handleUpdateParts(request, response, orderId);
             } else if ("updateStatus".equals(action)) {
                 handleUpdateStatus(request, response, orderId);
-                
+
                 //NOTIFICATION CAP NHAT TRANG THAI DON HANG
-                
                 UserDAO userDAO = new UserDAO();
-                    NotificationDAO notificationDAO = new NotificationDAO();
-                    HttpSession session = request.getSession();
-                    User user = (User) session.getAttribute("user");
+                NotificationDAO notificationDAO = new NotificationDAO();
+                HttpSession session = request.getSession();
+                User user = (User) session.getAttribute("user");
 
-                    //                        NOTIFICATION
-                    List<User> users = userDAO.getAllUser();
-                    for (int i = 0; i < users.size(); i++) {
-                        String message = "Đơn hàng số" + orderId + "đã được cập nhật trạng thái";
-                        if (users.get(i).getUserRole().equals("manager") || users.get(i).getUserRole().equals("repairer")) {
-                            NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(users.get(i).getId());
-                            if (notiSetting.isEmail() && notiSetting.isOrderChange()) {
-                                SendMailService.sendNotification(users.get(i).getEmail(), message);
-                            }
-                            int addNoti = notificationDAO.addNotification(users.get(i).getId(), message, "Order Change");
+                //                        NOTIFICATION
+                List<User> users = userDAO.getAllUser();
+                for (int i = 0; i < users.size(); i++) {
+                    String message = "Đơn hàng số" + orderId + "đã được cập nhật trạng thái";
+                    if (users.get(i).getUserRole().equals("manager") || users.get(i).getUserRole().equals("repairer")) {
+                        NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(users.get(i).getId());
+                        if (notiSetting.isEmail() && notiSetting.isOrderChange()) {
+                            SendMailService.sendNotification(users.get(i).getEmail(), message);
                         }
-                        if (users.get(i).getId() == user.getId()) {
-                            message = message = "Đơn hàng số" + orderId + "đã được cập nhật trạng thái";
-                            NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(users.get(i).getId());
-                            if (notiSetting.isEmail() && notiSetting.isOrderChange()) {
-                                SendMailService.sendNotification(users.get(i).getEmail(), message);
-                            }
-                            int addNoti = notificationDAO.addNotification(users.get(i).getId(), message, "Order Change");
+                        int addNoti = notificationDAO.addNotification(users.get(i).getId(), message, "Order Change");
+                    }
+                    if (users.get(i).getId() == user.getId()) {
+                        message = message = "Đơn hàng số" + orderId + "đã được cập nhật trạng thái";
+                        NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(users.get(i).getId());
+                        if (notiSetting.isEmail() && notiSetting.isOrderChange()) {
+                            SendMailService.sendNotification(users.get(i).getEmail(), message);
+                        }
+                        int addNoti = notificationDAO.addNotification(users.get(i).getId(), message, "Order Change");
+                    }
+                }
+                ArrayList<Notification> notifications = notificationDAO.getAllNotificationById(user.getId());
+                NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(user.getId());
+                if (!notiSetting.isProfile()) {
+                    for (int i = notifications.size() - 1; i >= 0; i--) {
+                        if (notifications.get(i).getType().equals("Profile")) {
+                            notifications.remove(i);
                         }
                     }
-                    ArrayList<Notification> notifications = notificationDAO.getAllNotificationById(user.getId());
-                    NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(user.getId());
-                    if (!notiSetting.isProfile()) {
-                        for (int i = notifications.size() - 1; i >= 0; i--) {
-                            if (notifications.get(i).getType().equals("Profile")) {
-                                notifications.remove(i);
-                            }
+                }
+
+                if (!notiSetting.isOrderChange()) {
+                    for (int i = notifications.size() - 1; i >= 0; i--) {
+                        if (notifications.get(i).getType().equals("Order Change")) {
+                            notifications.remove(i);
                         }
                     }
+                }
 
-                    if (!notiSetting.isOrderChange()) {
-                        for (int i = notifications.size() - 1; i >= 0; i--) {
-                            if (notifications.get(i).getType().equals("Order Change")) {
-                                notifications.remove(i);
-                            }
+                if (!notiSetting.isAttendance()) {
+                    for (int i = notifications.size() - 1; i >= 0; i--) {
+                        if (notifications.get(i).getType().equals("Attendance")) {
+                            notifications.remove(i);
                         }
                     }
+                }
 
-                    if (!notiSetting.isAttendance()) {
-                        for (int i = notifications.size() - 1; i >= 0; i--) {
-                            if (notifications.get(i).getType().equals("Attendance")) {
-                                notifications.remove(i);
-                            }
+                if (!notiSetting.isService()) {
+                    for (int i = notifications.size() - 1; i >= 0; i--) {
+                        if (notifications.get(i).getType().equals("Service")) {
+                            notifications.remove(i);
                         }
                     }
+                }
 
-                    if (!notiSetting.isService()) {
-                        for (int i = notifications.size() - 1; i >= 0; i--) {
-                            if (notifications.get(i).getType().equals("Service")) {
-                                notifications.remove(i);
-                            }
+                if (!notiSetting.isInsurance()) {
+                    for (int i = notifications.size() - 1; i >= 0; i--) {
+                        if (notifications.get(i).getType().equals("Insurance")) {
+                            notifications.remove(i);
                         }
                     }
+                }
 
-                    if (!notiSetting.isInsurance()) {
-                        for (int i = notifications.size() - 1; i >= 0; i--) {
-                            if (notifications.get(i).getType().equals("Insurance")) {
-                                notifications.remove(i);
-                            }
-                        }
-                    }
-
-                    if (!notiSetting.isCategory()) {
-                        for (int i = notifications.size() - 1; i >= 0; i--) {
-                            if (notifications.get(i).getType().equals("Category")) {
-                                notifications.remove(i);
-                            }
-                        }
-                    }
-
-                    if (!notiSetting.isSupplier()) {
-                        for (int i = notifications.size() - 1; i >= 0; i--) {
-                            if (notifications.get(i).getType().equals("Supplier")) {
-                                notifications.remove(i);
-                            }
-                        }
-                    }
-
-                    if (!notiSetting.isParts()) {
-                        for (int i = notifications.size() - 1; i >= 0; i--) {
-                            if (notifications.get(i).getType().equals("Part")) {
-                                notifications.remove(i);
-                            }
-                        }
-                    }
-
-                    if (!notiSetting.isSettingChange()) {
-                        for (int i = notifications.size() - 1; i >= 0; i--) {
-                            if (notifications.get(i).getType().equals("Setting Change")) {
-                                notifications.remove(i);
-                            }
-                        }
-                    }
-
-                    if (!notiSetting.isCarType()) {
-                        for (int i = notifications.size() - 1; i >= 0; i--) {
-                            if (notifications.get(i).getType().equals("Car Type")) {
-                                notifications.remove(i);
-                            }
-                        }
-                    }
-
-                    if (!notiSetting.isCampaign()) {
-                        for (int i = notifications.size() - 1; i >= 0; i--) {
-                            if (notifications.get(i).getType().equals("Campaign")) {
-                                notifications.remove(i);
-                            }
-                        }
-                    }
-
-                    if (!notiSetting.isBlog()) {
-                        for (int i = notifications.size() - 1; i >= 0; i--) {
-                            if (notifications.get(i).getType().equals("Blog")) {
-                                notifications.remove(i);
-                            }
-                        }
-                    }
-
-                    if (!notiSetting.isVoucher()) {
-                        for (int i = notifications.size() - 1; i >= 0; i--) {
-                            if (notifications.get(i).getType().equals("Voucher")) {
-                                notifications.remove(i);
-                            }
-                        }
-                    }
-
-                    session.setAttribute("notification", notifications);
-                    session.setAttribute("notiSetting", notiSetting);
+                session.setAttribute("notification", notifications);
+                session.setAttribute("notiSetting", notiSetting);
 //                        NOTIFICATION
-                
+
             }
             response.sendRedirect(request.getContextPath() + "/order_repair");
         } catch (Exception e) {
@@ -273,7 +212,7 @@ public class OrderRepairServlet extends HttpServlet {
             request.getRequestDispatcher("/views/repairer/order_management.jsp").forward(request, response);
         }
     }
-    
+
     private void handleUpdateServices(HttpServletRequest request, HttpServletResponse response, int orderId) throws Exception {
         Order currentOrder = orderDAO.getOrderById(orderId);
 
@@ -284,14 +223,14 @@ public class OrderRepairServlet extends HttpServlet {
             return;
         }
         String[] selectedServiceIds = request.getParameterValues("serviceIds");
-        
+
         ArrayList<Service> currentServices = currentOrder.getServices();
-    
+
         ArrayList<Integer> currentServiceIds = new ArrayList<>();
         for (Service service : currentServices) {
             currentServiceIds.add(service.getId());
         }
-    
+
         if (selectedServiceIds != null) {
             for (String serviceIdStr : selectedServiceIds) {
                 int serviceId = Integer.parseInt(serviceIdStr);
@@ -299,7 +238,7 @@ public class OrderRepairServlet extends HttpServlet {
                     orderDAO.addServiceToOrder(orderId, serviceId);
                 }
             }
-        
+
             for (Integer existingId : currentServiceIds) {
                 boolean stillSelected = false;
                 for (String selectedIdStr : selectedServiceIds) {
@@ -314,11 +253,11 @@ public class OrderRepairServlet extends HttpServlet {
             }
         } else {
             orderDAO.removeAllServicesFromOrder(orderId);
-        }   
+        }
         updateOrderPrice(orderId);
         request.getSession().setAttribute("message", "Cập nhật dịch vụ thành công!");
     }
-    
+
     private void handleUpdateParts(HttpServletRequest request, HttpServletResponse response, int orderId) throws Exception {
         Order currentOrder = orderDAO.getOrderById(orderId);
 
@@ -329,14 +268,14 @@ public class OrderRepairServlet extends HttpServlet {
             return;
         }
         String[] selectedPartIds = request.getParameterValues("partIds");
-    
+
         ArrayList<Part> currentParts = currentOrder.getParts();
-    
+
         ArrayList<Integer> currentPartIds = new ArrayList<>();
         for (Part part : currentParts) {
             currentPartIds.add(part.getId());
         }
-    
+
         if (selectedPartIds != null) {
             for (String partIdStr : selectedPartIds) {
                 int partId = Integer.parseInt(partIdStr);
@@ -344,7 +283,7 @@ public class OrderRepairServlet extends HttpServlet {
                     orderDAO.addPartToOrder(orderId, partId);
                 }
             }
-        
+
             for (Integer existingId : currentPartIds) {
                 boolean stillSelected = false;
                 for (String selectedIdStr : selectedPartIds) {
@@ -360,14 +299,14 @@ public class OrderRepairServlet extends HttpServlet {
         } else {
             orderDAO.removeAllPartsFromOrder(orderId);
         }
-    
+
         updateOrderPrice(orderId);
         request.getSession().setAttribute("message", "Cập nhật phụ tùng thành công!");
     }
-    
+
     private void handleUpdateStatus(HttpServletRequest request, HttpServletResponse response, int orderId) throws Exception {
         String newStatus = request.getParameter("newStatus");
-        
+
         if (newStatus != null && !newStatus.trim().isEmpty()) {
             boolean success = orderDAO.updateOrderStatus(orderId, newStatus);
             if (success) {
@@ -377,21 +316,21 @@ public class OrderRepairServlet extends HttpServlet {
             }
         }
     }
-    
+
     private void updateOrderPrice(int orderId) throws Exception {
         Order order = orderDAO.getOrderById(orderId);
         double newPrice = 0.0;
-    
-        for (Service service : order.getServices()) {       
+
+        for (Service service : order.getServices()) {
             newPrice += service.getPrice();
-        
+
             if (service.getParts() != null) {
                 for (Part part : service.getParts()) {
                     newPrice += part.getPrice();
                 }
             }
         }
-    
+
         for (Part part : order.getParts()) {
             boolean isPartOfService = false;
             for (Service service : order.getServices()) {
@@ -407,8 +346,9 @@ public class OrderRepairServlet extends HttpServlet {
         orderDAO.updateOrderPrice(orderId, newPrice);
     }
 
-    /** 
+    /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override
