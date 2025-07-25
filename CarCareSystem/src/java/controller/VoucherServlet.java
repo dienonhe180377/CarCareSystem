@@ -73,7 +73,7 @@ public class VoucherServlet extends AuthorizationServlet {
 
         if (isUnauthorized(request)) {
             response.setContentType("text/plain;charset=UTF-8");
-            response.getWriter().write("Bạn cần đăng nhập để truy cập trang này.");
+            response.sendRedirect("filterPage.jsp");
             return;
         }
 

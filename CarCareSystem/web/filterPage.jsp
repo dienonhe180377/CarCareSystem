@@ -23,8 +23,8 @@
         <div class="row">
             <div class="col-md-2"></div>
             <div class="col-md-8 text-center" style="margin-top: 50px;">
-                <h4>You're not allowed to access that page!</h4>
-                <h5>Here, have some cute puppies instead!</h5>
+                <h4>Bạn không được phép truy cập trang này!</h4>
+                <h5>Thôi, xem cái này cho vui nè!</h5>
                 <iframe width="720" height="405" src="https://www.youtube.com/embed/j5a0jTc9S10?autoplay=1" 
                     title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 <br>
