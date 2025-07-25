@@ -174,7 +174,7 @@
         </style>
     </head>
     <body>
-        <%@include file="/header_emp.jsp" %>
+        <%@include file="/header.jsp" %>
         
         <div class="main-container">
             <!-- Sidebar -->

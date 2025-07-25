@@ -53,7 +53,7 @@ public class ConfirmChangePasswordServlet extends HttpServlet {
         request.setAttribute("message", "Mật khẩu đã được thay đổi thành công!");
         session.removeAttribute("otp");
         session.removeAttribute("newPassword");
-        request.getRequestDispatcher("/home.jsp").forward(request, response);
+        response.sendRedirect(request.getContextPath() + "/home");
     } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

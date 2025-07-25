@@ -23,6 +23,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import util.SendMailService;
@@ -114,8 +115,12 @@ public class OrderServlet extends HttpServlet {
             java.sql.Date appointmentDate = java.sql.Date.valueOf(appointmentDateStr);
             java.sql.Date currentDate = new java.sql.Date(System.currentTimeMillis());
 
-            if (appointmentDate.before(currentDate)) {
-                throw new IllegalArgumentException("Ngày hẹn phải sau hoặc bằng ngày hiện tại.");
+            LocalDate localAppointmentDate = appointmentDate.toLocalDate();
+            LocalDate localCurrentDate = currentDate.toLocalDate();
+            LocalDate oneDayBeforeCurrent = localCurrentDate.minusDays(1);
+            
+            if (localAppointmentDate.isBefore(oneDayBeforeCurrent)) {
+                throw new IllegalArgumentException("Ngày hẹn không được trước ngày hiện tại.");
             }
 
             double price = 0.0;
