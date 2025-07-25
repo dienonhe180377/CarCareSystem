@@ -347,6 +347,50 @@ public class OrderDAO extends DBConnection {
         }
         return orders;
     }
+    
+    public ArrayList<Order> getCompletedOrders() {
+        ArrayList<Order> completedOrders = new ArrayList<>();
+        String sql = "SELECT o.id, o.name, o.email, o.phone, o.address, o.createDate, "
+               + "o.appointmentDate, o.price, o.paymentStatus, o.orderStatus, o.paymentMethod, "
+               + "ct.id AS car_type_id, ct.name AS car_type_name "
+               + "FROM [Order] o "
+               + "LEFT JOIN CarType ct ON o.carTypeId = ct.id "
+               + "WHERE o.paymentStatus = ? AND o.orderStatus = ? "
+               + "ORDER BY o.createDate DESC";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            stmt.setString(1, "Đã thanh toán");
+            stmt.setString(2, "Đã trả xe");
+            
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Order order = new Order();
+                order.setId(rs.getInt("id"));
+                order.setName(rs.getString("name"));
+                order.setEmail(rs.getString("email"));
+                order.setPhone(rs.getString("phone"));
+                order.setAddress(rs.getString("address"));
+                order.setCreatedDate(rs.getTimestamp("createDate"));
+                order.setAppointmentDate(rs.getDate("appointmentDate"));
+                order.setPrice(rs.getDouble("price"));
+                order.setPaymentStatus(rs.getString("paymentStatus"));
+                order.setOrderStatus(rs.getString("orderStatus"));
+                order.setPaymentMethod(rs.getString("paymentMethod"));
+
+                CarType carType = new CarType();
+                carType.setId(rs.getInt("car_type_id"));
+                carType.setName(rs.getString("car_type_name"));
+                order.setCarType(carType);
+
+                completedOrders.add(order);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return completedOrders;
+    }
 
     public ArrayList<Order> searchOrders(String query) throws SQLException {
         ArrayList<Order> orders = new ArrayList<>();

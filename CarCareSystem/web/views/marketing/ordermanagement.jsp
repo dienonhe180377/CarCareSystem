@@ -124,11 +124,17 @@
             <h1>Order Management</h1>
 
             <c:if test="${not empty message}">
-                <div class="alert alert-success">${message}</div>
+                <div class="alert alert-success alert-dismissible fade show">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
             </c:if>
 
             <c:if test="${not empty error}">
-                <div class="alert alert-danger">${error}</div>
+                <div class="alert alert-danger alert-dismissible fade show">
+                    ${error}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
             </c:if>
 
             <div class="filter-buttons">
@@ -137,6 +143,7 @@
                 <a href="${pageContext.request.contextPath}/ordermanagement?action=miss" class="btn btn-warning">Lỡ Hẹn</a>
                 <a href="${pageContext.request.contextPath}/ordermanagement?action=unpaid" class="btn btn-danger">Chưa Thanh Toán</a>
                 <a href="${pageContext.request.contextPath}/ordermanagement?action=paid" class="btn btn-success">Đã Thanh Toán</a>
+                <a href="${pageContext.request.contextPath}/ordermanagement?action=done" class="btn btn-success">Đơn Hoàn Thành</a>
             </div>
 
             <div class="search-box">
@@ -276,35 +283,5 @@
             </div>
         </div>        
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script>
-                                    function togglePaymentStatus(orderId, currentStatus) {
-                                        if (currentStatus === 'Chưa thanh toán') {
-                                            const newStatus = 'Đã thanh toán';
-
-                                            if (confirm(`Bạn có chắc muốn xác nhận đơn hàng này đã thanh toán?`)) {
-                                                fetch('${pageContext.request.contextPath}/ordermanagement', {
-                                                    method: 'POST',
-                                                    headers: {
-                                                        'Content-Type': 'application/x-www-form-urlencoded',
-                                                    },
-                                                    body: `action=updatePayment&orderId=${orderId}&newStatus=${newStatus}`
-                                                })
-                                                        .then(response => {
-                                                            if (response.ok) {
-                                                                window.location.reload();
-                                                            } else {
-                                                                alert('Có lỗi xảy ra khi cập nhật trạng thái thanh toán');
-                                                            }
-                                                        })
-                                                        .catch(error => {
-                                                            console.error('Error:', error);
-                                                            alert('Có lỗi xảy ra khi cập nhật trạng thái thanh toán');
-                                                        });
-                                            }
-                                        } else {
-                                            alert('Đơn hàng này đã được thanh toán và không thể chuyển ngược lại trạng thái chưa thanh toán');
-                                        }
-                                    }
-        </script>
     </body>
 </html>
