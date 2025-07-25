@@ -161,139 +161,141 @@ public class OrderServlet extends HttpServlet {
             int orderId = dao.createOrder(fullName, email, phone, address, carTypeId,
                     appointmentDate, price, paymentStatus, orderStatus, paymentMethod);
 
-            //NOTIFICATION ORDER MOI
-            UserDAO userDAO = new UserDAO();
-            NotificationDAO notificationDAO = new NotificationDAO();
+            if(user != null){
+                //NOTIFICATION ORDER MOI
+                UserDAO userDAO = new UserDAO();
+                NotificationDAO notificationDAO = new NotificationDAO();
 
-            //                        NOTIFICATION
-            List<User> users = userDAO.getAllUser();
-            for (int i = 0; i < users.size(); i++) {
-                String message = "Người dùng " + user.getUsername() + " vừa thêm đơn hàng mới";
-                if (users.get(i).getUserRole().equals("manager") || users.get(i).getUserRole().equals("repairer")) {
-                    NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(users.get(i).getId());
-                    if (notiSetting.isEmail() && notiSetting.isOrderChange()) {
-                        SendMailService.sendNotification(users.get(i).getEmail(), message);
+                //                        NOTIFICATION
+                List<User> users = userDAO.getAllUser();
+                for (int i = 0; i < users.size(); i++) {
+                    String message = "Người dùng " + user.getUsername() + " vừa thêm đơn hàng mới";
+                    if (users.get(i).getUserRole().equals("manager") || users.get(i).getUserRole().equals("repairer")) {
+                        NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(users.get(i).getId());
+                        if (notiSetting.isEmail() && notiSetting.isOrderChange()) {
+                            SendMailService.sendNotification(users.get(i).getEmail(), message);
+                        }
+                        int addNoti = notificationDAO.addNotification(users.get(i).getId(), message, "Order Change");
                     }
-                    int addNoti = notificationDAO.addNotification(users.get(i).getId(), message, "Order Change");
-                }
-                if (users.get(i).getId() == user.getId()) {
-                    message = "Bạn đã thêm một đơn hàng mới";
-                    NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(users.get(i).getId());
-                    if (notiSetting.isEmail() && notiSetting.isOrderChange()) {
-                        SendMailService.sendNotification(users.get(i).getEmail(), message);
-                    }
-                    int addNoti = notificationDAO.addNotification(users.get(i).getId(), message, "Order Change");
-                }
-            }
-            ArrayList<Notification> notifications = notificationDAO.getAllNotificationById(user.getId());
-            NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(user.getId());
-            if (!notiSetting.isProfile()) {
-                for (int i = notifications.size() - 1; i >= 0; i--) {
-                    if (notifications.get(i).getType().equals("Profile")) {
-                        notifications.remove(i);
+                    if (users.get(i).getId() == user.getId()) {
+                        message = "Bạn đã thêm một đơn hàng mới";
+                        NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(users.get(i).getId());
+                        if (notiSetting.isEmail() && notiSetting.isOrderChange()) {
+                            SendMailService.sendNotification(users.get(i).getEmail(), message);
+                        }
+                        int addNoti = notificationDAO.addNotification(users.get(i).getId(), message, "Order Change");
                     }
                 }
-            }
+                ArrayList<Notification> notifications = notificationDAO.getAllNotificationById(user.getId());
+                NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(user.getId());
+                if (!notiSetting.isProfile()) {
+                    for (int i = notifications.size() - 1; i >= 0; i--) {
+                        if (notifications.get(i).getType().equals("Profile")) {
+                            notifications.remove(i);
+                        }
+                    }
+                }
 
-            if (!notiSetting.isOrderChange()) {
-                for (int i = notifications.size() - 1; i >= 0; i--) {
-                    if (notifications.get(i).getType().equals("Order Change")) {
-                        notifications.remove(i);
+                if (!notiSetting.isOrderChange()) {
+                    for (int i = notifications.size() - 1; i >= 0; i--) {
+                        if (notifications.get(i).getType().equals("Order Change")) {
+                            notifications.remove(i);
+                        }
                     }
                 }
-            }
 
-            if (!notiSetting.isAttendance()) {
-                for (int i = notifications.size() - 1; i >= 0; i--) {
-                    if (notifications.get(i).getType().equals("Attendance")) {
-                        notifications.remove(i);
+                if (!notiSetting.isAttendance()) {
+                    for (int i = notifications.size() - 1; i >= 0; i--) {
+                        if (notifications.get(i).getType().equals("Attendance")) {
+                            notifications.remove(i);
+                        }
                     }
                 }
-            }
 
-            if (!notiSetting.isService()) {
-                for (int i = notifications.size() - 1; i >= 0; i--) {
-                    if (notifications.get(i).getType().equals("Service")) {
-                        notifications.remove(i);
+                if (!notiSetting.isService()) {
+                    for (int i = notifications.size() - 1; i >= 0; i--) {
+                        if (notifications.get(i).getType().equals("Service")) {
+                            notifications.remove(i);
+                        }
                     }
                 }
-            }
 
-            if (!notiSetting.isInsurance()) {
-                for (int i = notifications.size() - 1; i >= 0; i--) {
-                    if (notifications.get(i).getType().equals("Insurance")) {
-                        notifications.remove(i);
+                if (!notiSetting.isInsurance()) {
+                    for (int i = notifications.size() - 1; i >= 0; i--) {
+                        if (notifications.get(i).getType().equals("Insurance")) {
+                            notifications.remove(i);
+                        }
                     }
                 }
-            }
 
-            if (!notiSetting.isCategory()) {
-                for (int i = notifications.size() - 1; i >= 0; i--) {
-                    if (notifications.get(i).getType().equals("Category")) {
-                        notifications.remove(i);
+                if (!notiSetting.isCategory()) {
+                    for (int i = notifications.size() - 1; i >= 0; i--) {
+                        if (notifications.get(i).getType().equals("Category")) {
+                            notifications.remove(i);
+                        }
                     }
                 }
-            }
 
-            if (!notiSetting.isSupplier()) {
-                for (int i = notifications.size() - 1; i >= 0; i--) {
-                    if (notifications.get(i).getType().equals("Supplier")) {
-                        notifications.remove(i);
+                if (!notiSetting.isSupplier()) {
+                    for (int i = notifications.size() - 1; i >= 0; i--) {
+                        if (notifications.get(i).getType().equals("Supplier")) {
+                            notifications.remove(i);
+                        }
                     }
                 }
-            }
 
-            if (!notiSetting.isParts()) {
-                for (int i = notifications.size() - 1; i >= 0; i--) {
-                    if (notifications.get(i).getType().equals("Part")) {
-                        notifications.remove(i);
+                if (!notiSetting.isParts()) {
+                    for (int i = notifications.size() - 1; i >= 0; i--) {
+                        if (notifications.get(i).getType().equals("Part")) {
+                            notifications.remove(i);
+                        }
                     }
                 }
-            }
 
-            if (!notiSetting.isSettingChange()) {
-                for (int i = notifications.size() - 1; i >= 0; i--) {
-                    if (notifications.get(i).getType().equals("Setting Change")) {
-                        notifications.remove(i);
+                if (!notiSetting.isSettingChange()) {
+                    for (int i = notifications.size() - 1; i >= 0; i--) {
+                        if (notifications.get(i).getType().equals("Setting Change")) {
+                            notifications.remove(i);
+                        }
                     }
                 }
-            }
 
-            if (!notiSetting.isCarType()) {
-                for (int i = notifications.size() - 1; i >= 0; i--) {
-                    if (notifications.get(i).getType().equals("Car Type")) {
-                        notifications.remove(i);
+                if (!notiSetting.isCarType()) {
+                    for (int i = notifications.size() - 1; i >= 0; i--) {
+                        if (notifications.get(i).getType().equals("Car Type")) {
+                            notifications.remove(i);
+                        }
                     }
                 }
-            }
 
-            if (!notiSetting.isCampaign()) {
-                for (int i = notifications.size() - 1; i >= 0; i--) {
-                    if (notifications.get(i).getType().equals("Campaign")) {
-                        notifications.remove(i);
+                if (!notiSetting.isCampaign()) {
+                    for (int i = notifications.size() - 1; i >= 0; i--) {
+                        if (notifications.get(i).getType().equals("Campaign")) {
+                            notifications.remove(i);
+                        }
                     }
                 }
-            }
 
-            if (!notiSetting.isBlog()) {
-                for (int i = notifications.size() - 1; i >= 0; i--) {
-                    if (notifications.get(i).getType().equals("Blog")) {
-                        notifications.remove(i);
+                if (!notiSetting.isBlog()) {
+                    for (int i = notifications.size() - 1; i >= 0; i--) {
+                        if (notifications.get(i).getType().equals("Blog")) {
+                            notifications.remove(i);
+                        }
                     }
                 }
-            }
 
-            if (!notiSetting.isVoucher()) {
-                for (int i = notifications.size() - 1; i >= 0; i--) {
-                    if (notifications.get(i).getType().equals("Voucher")) {
-                        notifications.remove(i);
+                if (!notiSetting.isVoucher()) {
+                    for (int i = notifications.size() - 1; i >= 0; i--) {
+                        if (notifications.get(i).getType().equals("Voucher")) {
+                            notifications.remove(i);
+                        }
                     }
                 }
-            }
 
-            session.setAttribute("notification", notifications);
-            session.setAttribute("notiSetting", notiSetting);
+                session.setAttribute("notification", notifications);
+                session.setAttribute("notiSetting", notiSetting);
 //                        NOTIFICATION
+            }           
 
             if (serviceIds != null) {
                 for (String sid : serviceIds) {
