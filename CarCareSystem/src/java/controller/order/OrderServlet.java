@@ -23,7 +23,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.text.DecimalFormat;
-<<<<<<< Updated upstream
+//<<<<<<< Updated upstream
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +31,8 @@ import util.SendMailService;
 
 
 import java.text.DecimalFormat;
-=======
->>>>>>> Stashed changes
+//=======
+//>>>>>>> Stashed changes
 
 /**
  *
