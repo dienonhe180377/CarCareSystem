@@ -10,7 +10,7 @@
     <body>
         <jsp:include page="/header.jsp" />
         <div class="fb-container">
-            <h2>Gửi Feedback</h2>
+            <h2>Gửi Phản hồi</h2>
 
             <!-- Hiển thị form nếu người dùng đã đăng nhập -->
             <c:if test="${not empty sessionScope.user}">
@@ -53,7 +53,7 @@
                 </c:if>
 
             <hr>
-            <h3>Danh sách Feedback</h3>
+            <h3>Tất cả phản hồi</h3>
 
             <c:forEach var="fb" items="${feedbackList}">
                 <div class="feedback-item" id="fb-${fb.id}">
@@ -124,6 +124,15 @@
                 s.style.color = (parseInt(s.dataset.value) <= value) ? "gold" : "#ccc";
             });
         });
+    });
+    // Đảm bảo người dùng đã chọn sao trước khi submit
+    const feedbackForm = document.querySelector(".fb-form");
+    feedbackForm.addEventListener("submit", function (e) {
+        const rating = parseInt(document.getElementById("rating-value").value);
+        if (rating === 0) {
+            alert("Vui lòng chọn số sao đánh giá trước khi gửi feedback!");
+            e.preventDefault(); // Ngăn submit
+        }
     });
 </script>
 

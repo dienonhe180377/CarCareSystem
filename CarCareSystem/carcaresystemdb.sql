@@ -827,6 +827,57 @@ INSERT INTO Service (name, description, price, img) VALUES
 (N'Thay ắc quy', N'Ắc quy mới', 350000, N'thay_acquy.jpg'),
 (N'Sửa điều hòa', N'Điều hòa mát', 250000, N'sua_dieuhoa.jpg');
 GO
+INSERT INTO [dbo].[InsuranceType]
+           ([name], [description], [price])
+     VALUES
+           (N'Bảo hiểm cơ bản', N'Bảo hiểm trách nhiệm dân sự bắt buộc cho xe cơ giới.', 500000),
+           (N'Bảo hiểm toàn diện', N'Bảo hiểm bao gồm thiệt hại xe, tai nạn, cháy nổ và mất cắp.', 2000000),
+           (N'Bảo hiểm tai nạn cá nhân', N'Bảo hiểm cho người điều khiển xe trong trường hợp tai nạn.', 750000),
+           (N'Bảo hiểm thiên tai', N'Bảo hiểm cho xe trong các trường hợp thiên tai như lũ lụt, bão.', 1000000),
+           (N'Bảo hiểm mất cắp', N'Bảo hiểm chuyên biệt cho trường hợp xe bị trộm cắp hoặc cướp.', 1200000);
+GO
+INSERT INTO Attendance (userId, date, status) VALUES
+(3, '2025-07-25', 0),
+(6, '2025-07-25', 1),
+(3, '2025-07-24', 1),
+(6, '2025-07-24', 0),
+(3, '2025-07-23', 0),
+(6, '2025-07-23', 1);
+GO
+
+-- Feedback của userId 4
+INSERT INTO [dbo].[Feedback]
+           ([userId], [description], [createDate], [serviceId], [rating])
+     VALUES
+           (4, N'Dịch vụ rất tốt, nhân viên nhiệt tình.', '2025-07-25', 1, 5),
+           (4, N'Thời gian chờ hơi lâu nhưng chất lượng ổn.', '2025-07-24', 2, 4);
+
+-- Feedback của userId 11
+INSERT INTO [dbo].[Feedback]
+           ([userId], [description], [createDate], [serviceId], [rating])
+     VALUES
+           (11, N'Không hài lòng với thái độ phục vụ.', '2025-07-23', 3, 2),
+           (11, N'Làm việc nhanh chóng, giá cả hợp lý.', '2025-07-22', 4, 5);
+GO
+
+USE [CarCareSystem]
+GO
+
+INSERT INTO [dbo].[Insurance]
+           ([userId], [carTypeId], [startDate], [endDate], [insuranceTypeId])
+VALUES
+           (4, 1, '2025-07-22', '2026-07-21', 1),
+           (4, 1, '2025-07-22', '2026-07-21', 2),
+           (4, 1, '2025-07-21', '2026-07-20', 3),
+           (4, 4, '2025-07-18', '2026-07-17', 4),
+           (4, 1, '2025-07-18', '2026-07-17', 1),
+           (4, 1, '2025-07-09', '2026-07-08', 2),
+           (4, 1, '2025-07-09', '2026-07-08', 3),
+           (4, 1, '2025-07-24', '2025-07-25', 1),
+           (4, 1, '2025-07-25', '2025-07-26', 1),
+           (11, 6, '2025-07-18', '2025-08-08', 1);
+GO
+
 
 INSERT INTO PartsService (serviceId, partId) VALUES
 (1,1),(2,2),(3,3),(4,4),(5,5),(6,6),(7,7),(8,8),(9,9),(10,10);

@@ -95,7 +95,7 @@ public class InsTypeServlet extends HttpServlet {
                 String error = null;
 
                 // Regex: chỉ cho phép chữ cái, số, khoảng trắng cho name và description
-                String validPattern = "^[a-zA-Z0-9\\sÀ-ỹ]+$";
+                String validPattern = "^[a-zA-Z0-9\\sÀ-ỹ.,]+$";
                 double price = 0;
                 try {
                     price = Double.parseDouble(priceStr);
@@ -199,7 +199,7 @@ public class InsTypeServlet extends HttpServlet {
             String priceStr = request.getParameter("price");
             String error = null;
 
-            String validPattern = "^[a-zA-Z0-9\\sÀ-ỹ]+$";
+            String validPattern = "^[a-zA-Z0-9\\sÀ-ỹ.,]+$";
             double price = 0;
             try {
                 price = Double.parseDouble(priceStr);
@@ -213,7 +213,7 @@ public class InsTypeServlet extends HttpServlet {
                 error = "Mô tả không được chứa ký tự đặc biệt!";
             } else if (price <= 0) {
                 error = "Giá phải lớn hơn 0!";
-            } else if (dao.isInsuranceTypeNameExists(name)) {
+            } else if (dao.isInsuranceTypeNameExistsForOtherId(name, id)) {
                 error = "Bảo hiểm đã tồn tại!";
             }
 
