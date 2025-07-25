@@ -94,14 +94,15 @@
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label for="maxDiscountAmount" class="form-label">Giảm tối đa (₫)</label>
-                                            <input type="number" class="form-control" id="maxDiscountAmount" name="maxDiscountAmount" min="0">
+                                            <input type="number" class="form-control" id="maxDiscountAmount" name="maxDiscountAmount" 
+                                                   min="0" placeholder="Ví dụ: 100000">
                                             <div class="form-text">Để trống nếu không giới hạn</div>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label for="minOrderAmount" class="form-label">Đơn hàng tối thiểu (₫)</label>
-                                            <input type="number" class="form-control" id="minOrderAmount" name="minOrderAmount" min="0">
+                                            <input type="number" class="form-control" id="minOrderAmount" name="minOrderAmount" min="0" placeholder="Ví dụ: 50000">
                                             <div class="form-text">Để trống nếu không yêu cầu</div>
                                         </div>
                                     </div>
@@ -185,12 +186,48 @@
 
                                             // Set ngày hiện tại làm mặc định
                                             document.addEventListener('DOMContentLoaded', function () {
-                                                const today = new Date().toISOString().split('T')[0];
-                                                document.getElementById('startDate').value = today;
+                                                // Lấy ngày hiện tại theo múi giờ Việt Nam
+                                                const today = new Intl.DateTimeFormat('sv-SE', {
+                                                    timeZone: 'Asia/Ho_Chi_Minh'
+                                                }).format(new Date());
 
-                                                const tomorrow = new Date();
-                                                tomorrow.setDate(tomorrow.getDate() + 7);
-                                                document.getElementById('endDate').value = tomorrow.toISOString().split('T')[0];
+                                                const startDateInput = document.getElementById('startDate');
+                                                const endDateInput = document.getElementById('endDate');
+
+                                                if (startDateInput && endDateInput) {
+                                                    // Set giá trị mặc định
+                                                    startDateInput.value = today;
+                                                    startDateInput.min = today;
+
+                                                    // Ngày kết thúc mặc định là 7 ngày sau
+                                                    const nextWeekDate = new Date();
+                                                    nextWeekDate.setDate(nextWeekDate.getDate() + 7);
+                                                    const nextWeek = new Intl.DateTimeFormat('sv-SE', {
+                                                        timeZone: 'Asia/Ho_Chi_Minh'
+                                                    }).format(nextWeekDate);
+                                                    endDateInput.value = nextWeek;
+
+                                                    // Validation ngày
+                                                    startDateInput.addEventListener('change', function () {
+                                                        endDateInput.min = this.value;
+                                                        if (endDateInput.value && endDateInput.value <= this.value) {
+                                                            const nextDay = new Date(this.value);
+                                                            nextDay.setDate(nextDay.getDate() + 1);
+                                                            endDateInput.value = nextDay.toISOString().split('T')[0];
+                                                        }
+                                                    });
+
+                                                    endDateInput.addEventListener('change', function () {
+                                                        if (this.value <= startDateInput.value) {
+                                                            alert('Ngày kết thúc phải sau ngày bắt đầu!');
+                                                            const nextDay = new Date(startDateInput.value);
+                                                            nextDay.setDate(nextDay.getDate() + 1);
+                                                            this.value = nextDay.toISOString().split('T')[0];
+                                                        }
+                                                    });
+
+                                                    console.log('Ngày hiện tại (VN):', today);
+                                                }
                                             });
         </script>
     </body>

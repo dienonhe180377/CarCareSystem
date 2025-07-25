@@ -8,6 +8,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<fmt:setLocale value="vi_VN"/>
 <!DOCTYPE html>
 <html>
 <head>
@@ -114,7 +115,7 @@
                                                             </c:when>
                                                             <c:otherwise>
                                                                 <span class="text-success fw-bold">
-                                                                    <fmt:formatNumber value="${voucher.discount}" type="currency" currencySymbol="₫"/>
+                                                                    <fmt:formatNumber value="${voucher.discount}" type="currency" />
                                                                 </span>
                                                             </c:otherwise>
                                                         </c:choose>
@@ -125,7 +126,7 @@
                                                     <td>
                                                         <c:choose>
                                                             <c:when test="${voucher.maxDiscountAmount > 0}">
-                                                                <fmt:formatNumber value="${voucher.maxDiscountAmount}" type="currency" currencySymbol="₫"/>
+                                                                <fmt:formatNumber value="${voucher.maxDiscountAmount}" type="currency" />
                                                             </c:when>
                                                             <c:otherwise>
                                                                 <span class="text-muted">Không giới hạn</span>
@@ -138,7 +139,7 @@
                                                     <td>
                                                         <c:choose>
                                                             <c:when test="${voucher.minOrderAmount > 0}">
-                                                                <fmt:formatNumber value="${voucher.minOrderAmount}" type="currency" currencySymbol="₫"/>
+                                                                <fmt:formatNumber value="${voucher.minOrderAmount}" type="currency" />
                                                             </c:when>
                                                             <c:otherwise>
                                                                 <span class="text-muted">Không yêu cầu</span>
