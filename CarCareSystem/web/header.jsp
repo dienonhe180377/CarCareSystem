@@ -812,7 +812,7 @@
 
             <div class="Header-right">
                 <nav class="Nav-menu">
-                    <a href="blog">BLOG</a>
+                    <a href="bloglist">BLOG</a>
                     <a href="ordertracking">VẬN ĐƠN</a>
                     <a href="contact.jsp">LIÊN HỆ</a>
                     <a href="campaignlist">CHƯƠNG TRÌNH</a>
