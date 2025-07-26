@@ -240,7 +240,7 @@ public class VoucherServlet extends AuthorizationServlet {
         int voucherId = Integer.parseInt(request.getParameter("id"));
         Voucher voucher = voucherDAO.getVoucherById(voucherId);
         List<String> owners = userVoucherDAO.getVoucherOwners(voucherId);
-
+        
         request.setAttribute("voucher", voucher);
         request.setAttribute("owners", owners);
         request.getRequestDispatcher("Voucher/VoucherDetail.jsp").forward(request, response);
