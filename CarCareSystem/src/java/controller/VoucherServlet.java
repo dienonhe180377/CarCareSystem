@@ -240,7 +240,7 @@ public class VoucherServlet extends AuthorizationServlet {
         int voucherId = Integer.parseInt(request.getParameter("id"));
         Voucher voucher = voucherDAO.getVoucherById(voucherId);
         List<String> owners = userVoucherDAO.getVoucherOwners(voucherId);
-        
+
         request.setAttribute("voucher", voucher);
         request.setAttribute("owners", owners);
         request.getRequestDispatcher("Voucher/VoucherDetail.jsp").forward(request, response);
@@ -403,10 +403,12 @@ public class VoucherServlet extends AuthorizationServlet {
             return "Mã voucher không được để trống!";
         }
 
-        if (!Pattern.matches("^[a-zA-Z0-9]+$", voucher.getVoucherCode())) {
-            return "Mã voucher chỉ được chứa chữ cái và số, không có dấu cách hoặc ký tự đặc biệt!";
+        if (!Pattern.matches("^[A-Z0-9]+$", voucher.getVoucherCode())) {
+            return "Mã voucher chỉ được chứa chữ cái và số, không có dấu cách hoặc ký tự đặc biệt, và viết hoa!";
         }
-
+        if (voucher.getVoucherCode().length() < 4 || voucher.getVoucherCode().length() > 10) {
+            return "Mã voucher phải từ 4-20 ký tự!";
+        }
         if (voucherDAO.isVoucherCodeExists(voucher.getVoucherCode())) {
             return "Mã voucher đã tồn tại!";
         }
