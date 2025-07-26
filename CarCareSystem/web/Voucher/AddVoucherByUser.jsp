@@ -170,7 +170,7 @@
                                                     discountHelp.textContent = 'Nhập giá trị từ 0-100 cho phần trăm';
                                                 } else {
                                                     discountInput.removeAttribute('max');
-                                                    discountHelp.textContent = 'Nhập số tiền giảm giá';
+                                                    discountHelp.textContent = 'Nhập số tiền cố định (VND)';
                                                 }
                                             }
 
