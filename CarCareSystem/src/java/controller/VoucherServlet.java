@@ -403,10 +403,13 @@ public class VoucherServlet extends AuthorizationServlet {
             return "Mã voucher không được để trống!";
         }
 
-        if (!Pattern.matches("^[a-zA-Z0-9]+$", voucher.getVoucherCode())) {
-            return "Mã voucher chỉ được chứa chữ cái và số, không có dấu cách hoặc ký tự đặc biệt!";
+        if (!Pattern.matches("^[A-Z0-9]+$", voucher.getVoucherCode())) {
+            return "Mã voucher chỉ được chứa chữ cái và số, không có dấu cách hoặc ký tự đặc biệt và voucher phải viết hoa!";
         }
 
+        if(voucher.getVoucherCode().length()< 4 || voucher.getVoucherCode().length() > 10){
+            return "Mã voucher phải lớn hơn 4 và bé hơn 10";
+        }
         if (voucherDAO.isVoucherCodeExists(voucher.getVoucherCode())) {
             return "Mã voucher đã tồn tại!";
         }

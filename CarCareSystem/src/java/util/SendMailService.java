@@ -4,15 +4,21 @@
  */
 package util;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Properties;
 import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import javax.mail.internet.MimeUtility;
 
 /**
  *
@@ -40,10 +46,26 @@ public class SendMailService {
         try {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(from));
-            message.setRecipients(
-                    Message.RecipientType.TO, InternetAddress.parse(to));
-            message.setSubject("Xác nhận OTP");
-            message.setText("Mã OTP của bạn là: " + otp);
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+            message.setSubject("=?UTF-8?B?" + Base64.getEncoder().encodeToString("Xác nhận OTP".getBytes(StandardCharsets.UTF_8)) + "?=");
+            
+            String htmlContent = "<html>"
+                + "<body style=\"font-family: Arial, sans-serif; font-size: 14px;\">"
+                + "<p>Mã OTP của bạn là: <strong>" + otp + "</strong></p>"
+                + "<p>Vui lòng không chia sẻ mã này với bất kỳ ai.</p>"
+                + "</body></html>";
+            
+            MimeBodyPart textPart = new MimeBodyPart();
+            textPart.setText("Mã OTP của bạn là: " + otp, "UTF-8");
+            
+            MimeBodyPart htmlPart = new MimeBodyPart();
+            htmlPart.setContent(htmlContent, "text/html; charset=UTF-8");
+
+            Multipart multipart = new MimeMultipart("alternative");
+            multipart.addBodyPart(textPart);
+            multipart.addBodyPart(htmlPart);
+
+            message.setContent(multipart);
             Transport.send(message);
             return true;
         } catch (MessagingException e) {

@@ -433,7 +433,7 @@ CREATE TABLE [Setting] (
 );
 GO
 
-select * from [Order]
+select * from [User]
 
 INSERT INTO [Setting] (name, value) VALUES 
 ('site_name', 'Car Care Centre'),
@@ -877,9 +877,84 @@ VALUES
            (4, 1, '2025-07-25', '2025-07-26', 1),
            (11, 6, '2025-07-18', '2025-08-08', 1);
 GO
-
+INSERT INTO [dbo].[Campaign]
+           ([name]
+           ,[status]
+           ,[description]
+           ,[startDate]
+           ,[endDate])
+     VALUES
+           (N'Khuyến Mãi Mùa Hè 2025'
+           ,1
+           ,N'Chương trình khuyến mãi đặc biệt mùa hè với nhiều ưu đãi hấp dẫn cho các dịch vụ chăm sóc xe. Giảm giá lên đến 40% cho combo rửa xe và bảo dưỡng.'
+           ,'2025-07-26'
+           ,'2025-08-31'),
+           
+           (N'Flash Sale Cuối Tuần'
+           ,1
+           ,N'Chương trình flash sale diễn ra vào các cuối tuần với thời gian có hạn. Ưu đãi đặc biệt cho khách hàng đặt lịch online.'
+           ,'2025-07-27'
+           ,'2025-12-31'),
+           
+           (N'Tri Ân Khách Hàng Thân Thiết'
+           ,1
+           ,N'Chương trình dành riêng cho khách hàng thân thiết đã sử dụng dịch vụ trên 5 lần. Nhiều ưu đãi độc quyền và quà tặng giá trị.'
+           ,'2025-07-26'
+           ,'2025-12-31'),
+           
+           (N'Khai Trương Chi Nhánh Mới'
+           ,1
+           ,N'Chương trình khuyến mãi đặc biệt nhân dịp khai trương chi nhánh mới. Miễn phí dịch vụ rửa xe cho 100 khách hàng đầu tiên.'
+           ,'2025-07-28'
+           ,'2025-08-28')
+GO
+INSERT INTO [dbo].[Blog]
+           ([title]
+           ,[campaignId]
+           ,[content]
+           ,[createDate]
+           ,[updatedDate]
+           ,[status])
+     VALUES
+           (N'5 Bí Quyết Chăm Sóc Xe Mùa Hè Hiệu Quả'
+           ,1
+           ,N'Mùa hè với nắng nóng gay gắt là thử thách lớn đối với chiếc xe của bạn. Dưới đây là 5 bí quyết giúp xe luôn trong tình trạng tốt nhất: 1. Thường xuyên kiểm tra áp suất lốp, 2. Bảo dưỡng hệ thống làm mát, 3. Vệ sinh nội thất thường xuyên, 4. Sử dụng kem chống nắng cho xe, 5. Đỗ xe ở nơi thoáng mát. Hãy tham gia chương trình khuyến mãi mùa hè của chúng tôi để được tư vấn chi tiết!'
+           ,'2025-07-26 09:00:00'
+           ,'2025-07-26 09:00:00'
+           ,1),
+           
+           (N'Flash Sale Cuối Tuần - Cơ Hội Vàng Tiết Kiệm Chi Phí'
+           ,2
+           ,N'Mỗi cuối tuần là cơ hội tuyệt vời để chăm sóc xe với chi phí tiết kiệm nhất! Chương trình Flash Sale của chúng tôi mang đến ưu đãi lên đến 50% cho các dịch vụ: rửa xe, đánh bóng, bảo dưỡng cơ bản. Đặc biệt, khách hàng đặt lịch online sẽ được tặng thêm voucher miễn phí cho lần sử dụng tiếp theo. Nhanh tay đặt lịch ngay!'
+           ,'2025-07-26 10:30:00'
+           ,'2025-07-26 10:30:00'
+           ,1),
+           
+           (N'Tri Ân Khách Hàng Thân Thiết - Những Đặc Quyền Độc Quyền'
+           ,3
+           ,N'Chúng tôi hiểu rằng lòng trung thành của khách hàng là tài sản quý giá nhất. Vì vậy, chương trình Tri Ân Khách Hàng Thân Thiết được ra đời với nhiều đặc quyền: Ưu tiên đặt lịch, giảm giá 30% mọi dịch vụ, tặng phiếu bảo dưỡng miễn phí, hỗ trợ 24/7. Hãy trở thành thành viên VIP để tận hưởng những đặc quyền này!'
+           ,'2025-07-26 14:15:00'
+           ,'2025-07-26 14:15:00'
+           ,1),
+           
+           (N'Khai Trương Chi Nhánh Mới - Miễn Phí Rửa Xe Cho 100 Khách Đầu Tiên'
+           ,4
+           ,N'Tin vui! Chi nhánh mới của chúng tôi chính thức khai trương với quy mô hiện đại, trang thiết bị tiên tiến và đội ngũ kỹ thuật viên chuyên nghiệp. Để chào mừng sự kiện đặc biệt này, 100 khách hàng đầu tiên sẽ được miễn phí hoàn toàn dịch vụ rửa xe cao cấp. Địa chỉ mới thuận tiện, không gian rộng rãi, đảm bảo trải nghiệm tuyệt vời!'
+           ,'2025-07-26 16:45:00'
+           ,'2025-07-26 16:45:00'
+           ,1),
+           
+           (N'Xu Hướng Chăm Sóc Xe 2025 - Công Nghệ Mới Nhất'
+           ,1
+		   ,N'Năm 2025 đánh dấu bước tiến mới trong ngành chăm sóc xe với nhiều công nghệ tiên tiến: rửa xe không chạm, phủ ceramic nano, vệ sinh nội thất bằng hơi nước nóng. Tại trung tâm chúng tôi, bạn sẽ trải nghiệm những công nghệ này với mức giá ưu đãi đặc biệt trong chương trình khuyến mãi mùa hè.'
+           ,'2025-07-26 11:20:00'
+           ,'2025-07-26 11:20:00'
+           ,1)
+GO
 
 INSERT INTO PartsService (serviceId, partId) VALUES
 (1,1),(2,2),(3,3),(4,4),(5,5),(6,6),(7,7),(8,8),(9,9),(10,10);
 
-select * from [PartsService]
+select * from [User]
+
+select * from [Order]
