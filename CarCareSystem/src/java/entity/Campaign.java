@@ -17,14 +17,20 @@ public class Campaign {
     private String description;
     private Date startDate;
     private Date endDate;
+    private String img;
+    private String thumbnail;
+    private Date createdDate;
 
-    public Campaign(int id, String name, boolean status, String description, Date startDate, Date endDate) {
+    public Campaign(int id, String name, boolean status, String description, Date startDate, Date endDate, String img, String thumbnail, Date createdDate) {
         this.id = id;
         this.name = name;
         this.status = status;
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.img = img;
+        this.thumbnail = thumbnail;
+        this.createdDate = createdDate;
     }
 
     public int getId() {
@@ -73,6 +79,30 @@ public class Campaign {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
     
     

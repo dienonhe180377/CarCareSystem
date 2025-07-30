@@ -4,7 +4,7 @@
  */
 package entity;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 /**
  *
@@ -19,20 +19,26 @@ public class Voucher {
     private String discountType; // PERCENTAGE hoặc FIXED_AMOUNT
     private float maxDiscountAmount;
     private float minOrderAmount;
-    private Date startDate;
-    private Date endDate;
+    private Timestamp startDate;
+    private Timestamp endDate;
     private int serviceId;
     private int campaignId;
     private boolean status;
-    private Date createdDate;
+    private Timestamp createdDate;
     private String voucherCode;
+    private int totalVoucherCount;
 
     public Voucher() {
     }
 
-    public Voucher(int id, String name, String description, float discount, String discountType,
-            float maxDiscountAmount, float minOrderAmount, Date startDate, Date endDate,
-            int serviceId, int campaignId, boolean status, Date createdDate, String voucherCode) {
+    public Voucher(String name, String description, float discount, String discountType,
+            float maxDiscountAmount, float minOrderAmount, Timestamp startDate,
+            Timestamp endDate, int serviceId, int campaignId, boolean status,
+            Timestamp createdDate, String voucherCode, int totalVoucherCount) {
+        // Gán tất cả trừ id
+    }
+
+    public Voucher(int id, String name, String description, float discount, String discountType, float maxDiscountAmount, float minOrderAmount, Timestamp startDate, Timestamp endDate, int serviceId, int campaignId, boolean status, Timestamp createdDate, String voucherCode, int totalVoucherCount) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -47,6 +53,7 @@ public class Voucher {
         this.status = status;
         this.createdDate = createdDate;
         this.voucherCode = voucherCode;
+        this.totalVoucherCount = totalVoucherCount;
     }
 
     // Getters and Setters
@@ -106,20 +113,36 @@ public class Voucher {
         this.minOrderAmount = minOrderAmount;
     }
 
-    public Date getStartDate() {
+    public Timestamp getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(Timestamp startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public Timestamp getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(Timestamp endDate) {
         this.endDate = endDate;
+    }
+
+    public int getTotalVoucherCount() {
+        return totalVoucherCount;
+    }
+
+    public void setTotalVoucherCount(int totalVoucherCount) {
+        this.totalVoucherCount = totalVoucherCount;
+    }
+
+    public Timestamp getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Timestamp createdDate) {
+        this.createdDate = createdDate;
     }
 
     public int getServiceId() {
@@ -144,14 +167,6 @@ public class Voucher {
 
     public void setStatus(boolean status) {
         this.status = status;
-    }
-
-    public Date getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
     }
 
     public String getVoucherCode() {

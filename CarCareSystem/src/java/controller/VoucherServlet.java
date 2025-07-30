@@ -13,6 +13,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -385,8 +386,8 @@ public class VoucherServlet extends AuthorizationServlet {
                 voucher.setMinOrderAmount(Float.parseFloat(minOrderStr));
             }
 
-            voucher.setStartDate(Date.valueOf(request.getParameter("startDate")));
-            voucher.setEndDate(Date.valueOf(request.getParameter("endDate")));
+            voucher.setStartDate(Timestamp.valueOf(request.getParameter("startDate")));
+            voucher.setEndDate(Timestamp.valueOf(request.getParameter("endDate")));
             voucher.setStatus(true);
             return voucher;
         } catch (IllegalArgumentException e) {
@@ -404,7 +405,7 @@ public class VoucherServlet extends AuthorizationServlet {
         }
 
         if (!Pattern.matches("^[A-Z0-9]+$", voucher.getVoucherCode())) {
-            return "Mã voucher chỉ được chứa chữ cái và số, không có dấu cách hoặc ký tự đặc biệt, và viết hoa!";
+            return "Mã voucher chỉ được chứa chữ cái và số, không có dấu cách hoặc ký tự đặc biệt và voucher phải viết hoa!";
         }
         if (voucher.getVoucherCode().length() < 4 || voucher.getVoucherCode().length() > 10) {
             return "Mã voucher phải từ 4-20 ký tự!";

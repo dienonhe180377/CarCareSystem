@@ -10,14 +10,14 @@ import entity.User;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  *
  * @author NTN
  */
 public class UserVoucherDAO extends DBConnection {
-    /**
-     * Lấy UserVoucher theo userId
-     */
+
+    // Lấy UserVoucher theo userId
     public List<UserVoucher> getUserVouchersByUserId(int userId) {
         List<UserVoucher> userVouchers = new ArrayList<>();
         String sql = "SELECT uv.*, v.name as voucherName, v.description, v.discount, v.discountType, "
@@ -49,8 +49,8 @@ public class UserVoucherDAO extends DBConnection {
                 voucher.setDiscountType(rs.getString("discountType"));
                 voucher.setMaxDiscountAmount(rs.getFloat("maxDiscountAmount"));
                 voucher.setMinOrderAmount(rs.getFloat("minOrderAmount"));
-                voucher.setStartDate(rs.getDate("startDate"));
-                voucher.setEndDate(rs.getDate("endDate"));
+                voucher.setStartDate(rs.getTimestamp("startDate"));
+                voucher.setEndDate(rs.getTimestamp("endDate"));
                 voucher.setStatus(rs.getBoolean("voucherStatus"));
                 uv.setVoucher(voucher);
 
@@ -62,9 +62,7 @@ public class UserVoucherDAO extends DBConnection {
         return userVouchers;
     }
 
-    /**
-     * Thêm UserVoucher với các tham số cơ bản
-     */
+    //Thêm UserVoucher với các tham số cơ bản
     public boolean addUserVoucher(int userId, int voucherId, String voucherCode) {
         String sql = "INSERT INTO UserVoucher (userId, voucherId, voucherCode, isUsed) VALUES (?, ?, ?, 0)";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -78,9 +76,8 @@ public class UserVoucherDAO extends DBConnection {
         }
         return false;
     }
-    /**
-     * Lấy danh sách user theo role
-     */
+
+    // Lấy danh sách user theo role
     public List<User> getUsersByRole(String role) {
         List<User> users = new ArrayList<>();
         // Sửa từ userRole thành role
@@ -102,9 +99,7 @@ public class UserVoucherDAO extends DBConnection {
         return users;
     }
 
-    /**
-     * Lấy tất cả user
-     */
+    // Lấy tất cả user
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
         // Sửa từ userRole thành role để khớp với database
@@ -133,9 +128,7 @@ public class UserVoucherDAO extends DBConnection {
         return users;
     }
 
-    /**
-     * Lấy thông tin owners của voucher (username và role)
-     */
+    // Lấy thông tin owners của voucher (username và role)
     public List<String> getVoucherOwners(int voucherId) {
         List<String> owners = new ArrayList<>();
         String sql = "SELECT u.username, u.role FROM UserVoucher uv "
@@ -150,5 +143,43 @@ public class UserVoucherDAO extends DBConnection {
             e.printStackTrace();
         }
         return owners;
+    }
+
+    // Check user đã lấy voucher này chưa
+    public boolean hasUserClaimedVoucher(int userId, int voucherId) {
+        String sql = "SELECT 1 FROM UserVoucher WHERE userId = ? AND voucherId = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ps.setInt(2, voucherId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next(); // Có record = đã claim
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    // Check user đã dùng voucher chưa
+    public boolean hasUserUsedVoucher(int userId, int voucherId) {
+        String sql = "SELECT 1 FROM UserVoucher WHERE userId = ? AND voucherId = ? AND isUsed = 1";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ps.setInt(2, voucherId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next(); // Có record với isUsed = 1 = đã dùng
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 }

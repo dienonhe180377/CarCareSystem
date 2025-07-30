@@ -146,7 +146,7 @@ public class CampaignServlet extends AuthorizationServlet {
                 return;
             }
 
-            Campaign campaign = new Campaign(id, name.trim(), status, description, startDate, endDate);
+            Campaign campaign = new Campaign(id, name, status, description, startDate, endDate, name, name, endDate);
             if (isEdit) {
                 campaignDAO.updateCampaign(campaign);
                 request.setAttribute("successMessage", "Cập nhật campaign thành công");
