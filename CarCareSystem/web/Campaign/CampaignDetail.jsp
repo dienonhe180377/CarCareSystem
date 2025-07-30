@@ -319,19 +319,9 @@
                     <div class="campaign-info">
                         <div class="campaign-header">
                             <h2 class="campaign-title">${campaign.name}</h2>
-<!--                            <span class="status-badge {campaign.status ? 'status-active' : 'status-inactive'}">
-                                <i class="fas {campaign.status ? 'fa-check' : 'fa-times'}"></i>
-                                {campaign.status ? 'Đang hoạt động' : 'Tạm dừng'}
-                            </span>-->
                         </div>
 
                         <div class="info-grid">
-<!--                            <div class="info-item">
-                                <div class="info-label">
-                                    <i class="fas fa-hashtag"></i> ID Campaign
-                                </div>
-                                <div class="info-value">#campaign.id</div>
-                            </div>-->
 
                             <div class="info-item">
                                 <div class="info-label">
@@ -384,19 +374,6 @@
                     </div>
 
                     <div class="actions">
-<!--                        <a href="campaign?editId={campaign.id}" class="btn btn-primary">
-                            <i class="fas fa-edit"></i> Chỉnh sửa
-                        </a>
-                        
-                        <form method="post" action="campaign" style="display:inline">
-                            <input type="hidden" name="id" value="{campaign.id}"/>
-                            <input type="hidden" name="service" value="delete"/>
-                            <button type="submit" class="btn btn-danger" 
-                                    onclick="return confirm('Bạn có chắc chắn muốn xóa campaign {campaign.name}?')">
-                                <i class="fas fa-trash"></i> Xóa Campaign
-                            </button>
-                        </form>-->
-                        
                         <a href="campaignlist" class="btn btn-secondary">
                             <i class="fas fa-arrow-left"></i> Quay lại
                         </a>

@@ -10,6 +10,7 @@
         <title>Quản lý Campaign</title>
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
         <style>
+            /* CSS giữ nguyên như cũ */
             :root {
                 --primary-blue: #add8e6;
                 --secondary-blue: #87ceeb;
@@ -115,6 +116,7 @@
 
             input[type="text"],
             input[type="date"],
+            input[type="file"],
             textarea,
             select {
                 width: 100%;
@@ -128,6 +130,7 @@
 
             input[type="text"]:focus,
             input[type="date"]:focus,
+            input[type="file"]:focus,
             textarea:focus,
             select:focus {
                 outline: none;
@@ -311,53 +314,49 @@
             .alert {
                 padding: 15px;
                 margin-bottom: 20px;
-                border: 1px solid transparent;
-                border-radius: 15px;
+                border-radius: 10px;
                 font-weight: 600;
-                box-shadow: 0 4px 15px rgba(173, 216, 230, 0.2);
             }
 
             .alert-success {
+                background: linear-gradient(135deg, #d4edda, #c3e6cb);
                 color: #155724;
-                background: linear-gradient(135deg, #d4edda 0%, var(--light-blue) 100%);
-                border-color: var(--primary-blue);
+                border: 2px solid #c3e6cb;
             }
 
             .alert-error {
+                background: linear-gradient(135deg, #f8d7da, #f5c6cb);
                 color: #721c24;
-                background: linear-gradient(135deg, #f8d7da 0%, #ffebee 100%);
-                border-color: #dc3545;
+                border: 2px solid #f5c6cb;
             }
 
-            .fa-bullhorn, .fa-edit, .fa-plus, .fa-save, .fa-times, .fa-trash, .fa-check-circle, .fa-exclamation-triangle {
-                margin-right: 8px;
-                color: var(--secondary-blue);
+            .image-preview {
+                max-width: 100px;
+                max-height: 100px;
+                border-radius: 5px;
+                border: 1px solid var(--accent-blue);
             }
 
-            @media (max-width: 768px) {
-                .form-row {
-                    flex-direction: column;
-                }
+            .current-image {
+                margin-top: 10px;
+            }
 
-                .actions {
-                    flex-direction: column;
-                }
-
-                .btn {
-                    margin: 2px 0;
-                }
+            .current-image img {
+                max-width: 150px;
+                max-height: 150px;
+                border-radius: 10px;
+                border: 2px solid var(--accent-blue);
             }
         </style>
     </head>
     <body>
-        <jsp:include page="/header_emp.jsp"></jsp:include>
-            <div class="container">
-                <div class="header">
-                    <h1><i class="fas fa-bullhorn"></i> Quản lý Campaign</h1>
-                </div>
+        <div class="container">
+            <div class="header">
+                <h1><i class="fas fa-bullhorn"></i> Quản lý Campaign</h1>
+            </div>
 
-                <div class="content">
-                    <!-- Hiển thị thông báo -->
+            <div class="content">
+                <!-- ✅ HIỂN THỊ THÔNG BÁO -->
                 <c:if test="${not empty successMessage}">
                     <div class="alert alert-success">
                         <i class="fas fa-check-circle"></i> ${successMessage}
@@ -370,120 +369,196 @@
                     </div>
                 </c:if>
 
-                <!-- Form thêm/sửa Campaign -->
+                <!-- ✅ FORM THÊM/SỬA CAMPAIGN -->
                 <div class="form-section">
-                    <h2 id="form-title">
+                    <h2>
                         <c:choose>
-                            <c:when test="${isEditing}"><i class="fas fa-edit"></i> Sửa Campaign</c:when>
-                            <c:otherwise><i class="fas fa-plus"></i> Thêm Campaign Mới</c:otherwise>
+                            <c:when test="${isEditing}">
+                                <i class="fas fa-edit"></i> Sửa Campaign
+                            </c:when>
+                            <c:otherwise>
+                                <i class="fas fa-plus"></i> Thêm Campaign Mới
+                            </c:otherwise>
                         </c:choose>
                     </h2>
 
-                    <form id="campaign-form" method="post" action="campaign">
-                        <input type="hidden" name="service" value="${isEditing ? 'edit' : 'add'}">
+                    <!-- ✅ FORM VỚI ENCTYPE CHO FILE UPLOAD -->
+                    <form method="post" action="campaign" enctype="multipart/form-data">
+                        <!-- ✅ HIDDEN FIELDS CHO EDIT -->
                         <c:if test="${isEditing}">
+                            <input type="hidden" name="service" value="edit">
                             <input type="hidden" name="id" value="${campaign.id}">
+                            <input type="hidden" name="currentImg" value="${campaign.img}">
+                            <input type="hidden" name="currentThumbnail" value="${campaign.thumbnail}">
+                        </c:if>
+                        <c:if test="${not isEditing}">
+                            <input type="hidden" name="service" value="add">
                         </c:if>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="campaign-name">Tên Campaign *</label>
-                                <input type="text" id="campaign-name" name="name" required 
-                                       placeholder="Nhập tên campaign" 
-                                       value="${campaign.name}">
+                                <label for="name">Tên Campaign *</label>
+                                <input type="text" id="name" name="name" 
+                                       value="${campaign.name}" required>
                             </div>
-
                             <div class="form-group">
-                                <label for="campaign-status">Trạng thái</label>
+                                <label for="status">Trạng thái</label>
                                 <div class="checkbox-group">
-                                    <input type="checkbox" id="campaign-status" name="status" 
+                                    <input type="checkbox" id="status" name="status" 
                                            ${campaign.status ? 'checked' : ''}>
-                                    <label for="campaign-status">Kích hoạt</label>
+                                    <label for="status">Kích hoạt</label>
                                 </div>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="campaign-description">Mô tả</label>
-                            <textarea id="campaign-description" name="description" 
-                                      placeholder="Nhập mô tả chi tiết về campaign">${campaign.description}</textarea>
+                            <label for="description">Mô tả</label>
+                            <textarea id="description" name="description" 
+                                      placeholder="Nhập mô tả campaign...">${campaign.description}</textarea>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="start-date">Ngày bắt đầu *</label>
-                                <input type="date" id="start-date" name="startDate" required 
-                                       value="<fmt:formatDate value='${campaign.startDate}' pattern='yyyy-MM-dd' timeZone='Asia/Ho_Chi_Minh'/>">
+                                <label for="startDate">Ngày bắt đầu *</label>
+                                <input type="date" id="startDate" name="startDate" 
+                                       value="<fmt:formatDate value='${campaign.startDate}' pattern='yyyy-MM-dd'/>" required>
                             </div>
-
                             <div class="form-group">
-                                <label for="end-date">Ngày kết thúc *</label>
-                                <input type="date" id="end-date" name="endDate" required 
-                                       value="<fmt:formatDate value='${campaign.endDate}' pattern='yyyy-MM-dd' timeZone='Asia/Ho_Chi_Minh'/>">
+                                <label for="endDate">Ngày kết thúc *</label>
+                                <input type="date" id="endDate" name="endDate" 
+                                       value="<fmt:formatDate value='${campaign.endDate}' pattern='yyyy-MM-dd'/>" required>
+                            </div>
+                        </div>
+
+                        <!-- ✅ UPLOAD IMAGES -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="imageFile">Ảnh Campaign</label>
+                                <input type="file" id="imageFile" name="imageFile" 
+                                       accept="image/*">
+                                <c:if test="${isEditing and not empty campaign.img}">
+                                    <div class="current-image">
+                                        <p>Ảnh hiện tại:</p>
+                                        <img src="${pageContext.request.contextPath}/${campaign.img}" 
+                                             alt="Current Image" class="image-preview">
+                                    </div>
+                                </c:if>
+                            </div>
+                            <div class="form-group">
+                                <label for="thumbnailFile">Ảnh Thumbnail</label>
+                                <input type="file" id="thumbnailFile" name="thumbnailFile" 
+                                       accept="image/*">
+                                <c:if test="${isEditing and not empty campaign.thumbnail}">
+                                    <div class="current-image">
+                                        <p>Thumbnail hiện tại:</p>
+                                        <img src="${pageContext.request.contextPath}/${campaign.thumbnail}" 
+                                             alt="Current Thumbnail" class="image-preview">
+                                    </div>
+                                </c:if>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary">
                                 <c:choose>
-                                    <c:when test="${isEditing}"><i class="fas fa-save"></i> Cập nhật</c:when>
-                                    <c:otherwise><i class="fas fa-plus"></i> Thêm mới</c:otherwise>
+                                    <c:when test="${isEditing}">
+                                        <i class="fas fa-save"></i> Cập nhật
+                                    </c:when>
+                                    <c:otherwise>
+                                        <i class="fas fa-plus"></i> Thêm mới
+                                    </c:otherwise>
                                 </c:choose>
                             </button>
 
                             <c:if test="${isEditing}">
-                                <a href="campaign" class="btn btn-cancel"><i class="fas fa-times"></i> Hủy</a>
+                                <a href="campaign" class="btn btn-cancel">
+                                    <i class="fas fa-times"></i> Hủy
+                                </a>
                             </c:if>
                         </div>
                     </form>
                 </div>
 
-                <!-- Danh sách Campaign -->
+                <!-- ✅ DANH SÁCH CAMPAIGN -->
                 <div class="table-section">
                     <h2><i class="fas fa-list"></i> Danh sách Campaign</h2>
+
                     <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Tên Campaign</th>
-                                    <th>Trạng thái</th>
-                                    <th>Mô tả</th>
-                                    <th>Ngày bắt đầu</th>
-                                    <th>Ngày kết thúc</th>
-                                    <th>Thao tác</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <c:choose>
-                                    <c:when test="${empty campaigns}">
-                                        <tr class="no-data">
-                                            <td colspan="7"><i class="fas fa-inbox"></i> Chưa có campaign nào được tạo</td>
+                        <c:choose>
+                            <c:when test="${empty campaigns}">
+                                <div class="no-data">
+                                    <i class="fas fa-inbox"></i>
+                                    <p>Chưa có campaign nào</p>
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Tên</th>
+                                            <th>Mô tả</th>
+                                            <th>Ngày bắt đầu</th>
+                                            <th>Ngày kết thúc</th>
+                                            <th>Trạng thái</th>
+                                            <th>Ảnh</th>
+                                            <th>Thumbnail</th>
+                                            <th>Thao tác</th>
                                         </tr>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <c:forEach var="c" items="${campaigns}">
-                                            <tr ${c.id == campaign.id ? 'style="background-color: var(--light-blue);"' : ''}>
-                                                <td>${c.id}</td>
-                                                <td><strong>${c.name}</strong></td>
+                                    </thead>
+                                    <tbody>
+                                        <c:forEach var="camp" items="${campaigns}">
+                                            <tr>
+                                                <td>${camp.id}</td>
+                                                <td><strong>${camp.name}</strong></td>
                                                 <td>
-                                                    <span class="${c.status ? 'status-active' : 'status-inactive'}">
-                                                        ${c.status ? '✅ Kích hoạt' : '❌ Tạm dừng'}
+                                                    <c:choose>
+                                                        <c:when test="${empty camp.description}">
+                                                            <em>Chưa có mô tả</em>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            ${camp.description.length() > 50 ? 
+                                                              camp.description.substring(0, 50).concat("...") : 
+                                                              camp.description}
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </td>
+                                                <td>
+                                                    <fmt:formatDate value="${camp.startDate}" pattern="dd/MM/yyyy"/>
+                                                </td>
+                                                <td>
+                                                    <fmt:formatDate value="${camp.endDate}" pattern="dd/MM/yyyy"/>
+                                                </td>
+                                                <td>
+                                                    <span class="${camp.status ? 'status-active' : 'status-inactive'}">
+                                                        ${camp.status ? 'Hoạt động' : 'Không hoạt động'}
                                                     </span>
                                                 </td>
-                                                <td>${c.description}</td>
-                                                <td><fmt:formatDate value="${c.startDate}" pattern="dd/MM/yyyy" timeZone="Asia/Ho_Chi_Minh"/></td>
-                                                <td><fmt:formatDate value="${c.endDate}" pattern="dd/MM/yyyy" timeZone="Asia/Ho_Chi_Minh"/></td>
+                                                <td>
+                                                    <c:if test="${not empty camp.img}">
+                                                        <img src="${pageContext.request.contextPath}/${camp.img}" 
+                                                             alt="Campaign Image" class="image-preview">
+                                                    </c:if>
+                                                </td>
+                                                <td>
+                                                    <c:if test="${not empty camp.thumbnail}">
+                                                        <img src="${pageContext.request.contextPath}/${camp.thumbnail}" 
+                                                             alt="Thumbnail" class="image-preview">
+                                                    </c:if>
+                                                </td>
                                                 <td>
                                                     <div class="actions">
-                                                        <a href="campaign?editId=${c.id}" class="btn btn-edit">
+                                                        <!-- ✅ LINK SỬA -->
+                                                        <a href="campaign?editId=${camp.id}" class="btn btn-edit">
                                                             <i class="fas fa-edit"></i> Sửa
                                                         </a>
-                                                        <form method="post" action="campaign" style="display:inline">
-                                                            <input type="hidden" name="id" value="${c.id}"/>
-                                                            <input type="hidden" name="service" value="delete"/>
+
+                                                        <!-- ✅ FORM XÓA -->
+                                                        <form method="post" action="campaign" style="display: inline;">
+                                                            <input type="hidden" name="service" value="delete">
+                                                            <input type="hidden" name="id" value="${camp.id}">
                                                             <button type="submit" class="btn btn-danger" 
-                                                                    onclick="return confirm('Bạn có chắc chắn muốn xóa campaign ${c.name}?')">
+                                                                    onclick="return confirm('Bạn có chắc muốn xóa campaign này?')">
                                                                 <i class="fas fa-trash"></i> Xóa
                                                             </button>
                                                         </form>
@@ -491,95 +566,106 @@
                                                 </td>
                                             </tr>
                                         </c:forEach>
-                                    </c:otherwise>
-                                </c:choose>
-                            </tbody>
-                        </table>
+                                    </tbody>
+                                </table>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- ✅ JAVASCRIPT XỬ LÝ FORM -->
         <script>
-        // ĐỒNG BỘ - Xử lý ngày tháng theo múi giờ Việt Nam
-        document.addEventListener('DOMContentLoaded', function () {
-            // Lấy ngày hiện tại theo múi giờ Việt Nam
-            const today = new Intl.DateTimeFormat('sv-SE', {
-                timeZone: 'Asia/Ho_Chi_Minh'
-            }).format(new Date());
+            // Validate form trước khi submit
+            document.querySelector('form').addEventListener('submit', function (e) {
+                const startDate = new Date(document.getElementById('startDate').value);
+                const endDate = new Date(document.getElementById('endDate').value);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
 
-            const startDateInput = document.getElementById('start-date');
-            const endDateInput = document.getElementById('end-date');
-
-            if (startDateInput && endDateInput) {
-                // Chỉ set giá trị mặc định khi không phải chế độ edit
-                const isEditing = ${isEditing ? 'true' : 'false'};
-                
-                if (!isEditing) {
-                    // Set giá trị mặc định cho campaign mới
-                    startDateInput.value = today;
-                    
-                    // Ngày kết thúc mặc định là 30 ngày sau (campaign thường dài hơn voucher)
-                    const nextMonthDate = new Date();
-                    nextMonthDate.setDate(nextMonthDate.getDate() + 30);
-                    const nextMonth = new Intl.DateTimeFormat('sv-SE', {
-                        timeZone: 'Asia/Ho_Chi_Minh'
-                    }).format(nextMonthDate);
-                    endDateInput.value = nextMonth;
+                if (startDate >= endDate) {
+                    alert('Ngày bắt đầu phải trước ngày kết thúc!');
+                    e.preventDefault();
+                    return false;
                 }
 
-                // Set ngày tối thiểu
-                startDateInput.min = today;
+                if (endDate < today) {
+                    alert('Ngày kết thúc phải từ hôm nay trở đi!');
+                    e.preventDefault();
+                    return false;
+                }
 
-                // Validation ngày
-                startDateInput.addEventListener('change', function () {
-                    endDateInput.min = this.value;
-                    if (endDateInput.value && endDateInput.value <= this.value) {
-                        const nextDay = new Date(this.value);
-                        nextDay.setDate(nextDay.getDate() + 1);
-                        endDateInput.value = nextDay.toISOString().split('T')[0];
-                    }
-                });
+                return true;
+            });
 
-                endDateInput.addEventListener('change', function () {
-                    if (this.value <= startDateInput.value) {
-                        alert('Ngày kết thúc phải sau ngày bắt đầu!');
-                        const nextDay = new Date(startDateInput.value);
-                        nextDay.setDate(nextDay.getDate() + 1);
-                        this.value = nextDay.toISOString().split('T')[0];
-                    }
-                });
+            // Set ngày hiện tại làm mặc định
+            document.addEventListener('DOMContentLoaded', function () {
+                // Lấy ngày hiện tại theo múi giờ Việt Nam
+                const today = new Intl.DateTimeFormat('sv-SE', {
+                    timeZone: 'Asia/Ho_Chi_Minh'
+                }).format(new Date());
 
-                console.log('Campaign - Ngày hiện tại (VN):', today);
+                const startDateInput = document.getElementById('startDate');
+                const endDateInput = document.getElementById('endDate');
+
+                if (startDateInput && endDateInput) {
+                    // Set giá trị mặc định
+                    startDateInput.value = today;
+                    startDateInput.min = today;
+
+                    // Ngày kết thúc mặc định là 15 ngày sau (campaign nó thế)
+                    const nextWeekDate = new Date();
+                    nextWeekDate.setDate(nextWeekDate.getDate() + 15);
+                    const nextWeek = new Intl.DateTimeFormat('sv-SE', {
+                        timeZone: 'Asia/Ho_Chi_Minh'
+                    }).format(nextWeekDate);
+                    endDateInput.value = nextWeek;
+
+                    // Validation ngày
+                    startDateInput.addEventListener('change', function () {
+                        endDateInput.min = this.value;
+                        if (endDateInput.value && endDateInput.value <= this.value) {
+                            const nextDay = new Date(this.value);
+                            nextDay.setDate(nextDay.getDate() + 1);
+                            endDateInput.value = nextDay.toISOString().split('T')[0];
+                        }
+                    });
+
+                    endDateInput.addEventListener('change', function () {
+                        if (this.value <= startDateInput.value) {
+                            alert('Ngày kết thúc phải sau ngày bắt đầu!');
+                            const nextDay = new Date(startDateInput.value);
+                            nextDay.setDate(nextDay.getDate() + 1);
+                            this.value = nextDay.toISOString().split('T')[0];
+                        }
+                    });
+
+                    console.log('Ngày hiện tại (VN):', today);
+                }
+            });
+            // Preview ảnh khi chọn file
+            function previewImage(input, previewId) {
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const preview = document.getElementById(previewId);
+                        if (preview) {
+                            preview.src = e.target.result;
+                            preview.style.display = 'block';
+                        }
+                    };
+                    reader.readAsDataURL(input.files[0]);
+                }
             }
-        });
 
-        // Validation form trước khi submit
-        document.getElementById('campaign-form').addEventListener('submit', function(e) {
-            const startDate = document.getElementById('start-date').value;
-            const endDate = document.getElementById('end-date').value;
-            const name = document.getElementById('campaign-name').value.trim();
+            document.getElementById('imageFile').addEventListener('change', function () {
+                previewImage(this, 'imagePreview');
+            });
 
-            if (!name) {
-                alert('Vui lòng nhập tên campaign!');
-                e.preventDefault();
-                return;
-            }
-
-            if (!startDate || !endDate) {
-                alert('Vui lòng chọn đầy đủ ngày bắt đầu và kết thúc!');
-                e.preventDefault();
-                return;
-            }
-
-            if (endDate <= startDate) {
-                alert('Ngày kết thúc phải sau ngày bắt đầu!');
-                e.preventDefault();
-                return;
-            }
-
-            console.log('Campaign form validated successfully');
-        });
-    </script>
+            document.getElementById('thumbnailFile').addEventListener('change', function () {
+                previewImage(this, 'thumbnailPreview');
+            });
+        </script>
     </body>
 </html>
