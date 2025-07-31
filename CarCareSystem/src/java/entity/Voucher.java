@@ -23,22 +23,22 @@ public class Voucher {
     private Timestamp endDate;
     private int serviceId;
     private int campaignId;
-    private boolean status;
     private Timestamp createdDate;
     private String voucherCode;
     private int totalVoucherCount;
+    private String status;
 
     public Voucher() {
     }
 
-    public Voucher(String name, String description, float discount, String discountType,
-            float maxDiscountAmount, float minOrderAmount, Timestamp startDate,
-            Timestamp endDate, int serviceId, int campaignId, boolean status,
-            Timestamp createdDate, String voucherCode, int totalVoucherCount) {
-        // Gán tất cả trừ id
-    }
+//    public Voucher(String name, String description, float discount, String discountType,
+//            float maxDiscountAmount, float minOrderAmount, Timestamp startDate,
+//            Timestamp endDate, int serviceId, int campaignId, Timestamp createdDate, 
+//            String voucherCode, int totalVoucherCount, String status) {
+//        // Gán tất cả trừ id
+//    }
 
-    public Voucher(int id, String name, String description, float discount, String discountType, float maxDiscountAmount, float minOrderAmount, Timestamp startDate, Timestamp endDate, int serviceId, int campaignId, boolean status, Timestamp createdDate, String voucherCode, int totalVoucherCount) {
+    public Voucher(int id, String name, String description, float discount, String discountType, float maxDiscountAmount, float minOrderAmount, Timestamp startDate, Timestamp endDate, int serviceId, int campaignId, Timestamp createdDate, String voucherCode, int totalVoucherCount, String status) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -50,13 +50,12 @@ public class Voucher {
         this.endDate = endDate;
         this.serviceId = serviceId;
         this.campaignId = campaignId;
-        this.status = status;
         this.createdDate = createdDate;
         this.voucherCode = voucherCode;
         this.totalVoucherCount = totalVoucherCount;
+        this.status = status;
     }
 
-    // Getters and Setters
     public int getId() {
         return id;
     }
@@ -129,22 +128,6 @@ public class Voucher {
         this.endDate = endDate;
     }
 
-    public int getTotalVoucherCount() {
-        return totalVoucherCount;
-    }
-
-    public void setTotalVoucherCount(int totalVoucherCount) {
-        this.totalVoucherCount = totalVoucherCount;
-    }
-
-    public Timestamp getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Timestamp createdDate) {
-        this.createdDate = createdDate;
-    }
-
     public int getServiceId() {
         return serviceId;
     }
@@ -161,12 +144,12 @@ public class Voucher {
         this.campaignId = campaignId;
     }
 
-    public boolean isStatus() {
-        return status;
+    public Timestamp getCreatedDate() {
+        return createdDate;
     }
 
-    public void setStatus(boolean status) {
-        this.status = status;
+    public void setCreatedDate(Timestamp createdDate) {
+        this.createdDate = createdDate;
     }
 
     public String getVoucherCode() {
@@ -176,4 +159,21 @@ public class Voucher {
     public void setVoucherCode(String voucherCode) {
         this.voucherCode = voucherCode;
     }
+
+    public int getTotalVoucherCount() {
+        return totalVoucherCount;
+    }
+
+    public void setTotalVoucherCount(int totalVoucherCount) {
+        this.totalVoucherCount = totalVoucherCount;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
 }

@@ -113,6 +113,9 @@ public class VoucherServlet extends AuthorizationServlet {
                 case "addPrivate":
                     showAddPrivateForm(request, response);
                     break;
+                case "addClaim":
+                    showVoucherClaim(request, response);
+                    break;
                 case "detail":
                     showVoucherDetail(request, response);
                     break;
@@ -153,6 +156,9 @@ public class VoucherServlet extends AuthorizationServlet {
 
         try {
             switch (action) {
+                case "addClaim":
+                    addVoucherClaim(request, response);
+                    break;
                 case "addByUser":
                     processAddByUser(request, response);
                     break;
@@ -216,6 +222,34 @@ public class VoucherServlet extends AuthorizationServlet {
         request.setAttribute("services", services);
         request.setAttribute("campaigns", campaigns);
         request.getRequestDispatcher("Voucher/AddVoucherByUser.jsp").forward(request, response);
+    }
+
+    private void showVoucherClaim(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException{
+        List<Service> services = serviceDAO.getAllService();
+        List<Campaign> campaigns = campaignDAO.getAllCampaigns();
+        request.setAttribute("services", services);
+        request.setAttribute("campaigns", campaigns);
+        request.getRequestDispatcher("Voucher/AddVoucherClaim.jsp").forward(request, response);
+    }
+    
+    private void addVoucherClaim(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        Voucher voucher = createVoucherFromRequest(request);
+        String validationError = validateVoucher(voucher);
+        if (validationError != null) {
+            request.setAttribute("errorMessage", validationError);
+            showVoucherClaim(request, response);
+            return;
+        }
+        
+        if (voucherDAO.addVoucher(voucher)) {
+            request.setAttribute("successMessage", "Thêm voucher công khai thành công!");
+            showVoucherList(request, response);
+        } else {
+            request.setAttribute("errorMessage", "Không thể thêm voucher!");
+            showVoucherClaim(request, response);
+        }
     }
 
     private void showAddPublicForm(HttpServletRequest request, HttpServletResponse response)
@@ -388,10 +422,11 @@ public class VoucherServlet extends AuthorizationServlet {
 
             voucher.setStartDate(Timestamp.valueOf(request.getParameter("startDate")));
             voucher.setEndDate(Timestamp.valueOf(request.getParameter("endDate")));
-            voucher.setStatus(true);
+            voucher.setStatus("ACTIVE");
+            voucher.setTotalVoucherCount(Integer.parseInt((request.getParameter("totalVoucherCount"))));
             return voucher;
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Định dạng ngày không hợp lệ!");
+            throw new IllegalArgumentException(e);
         }
     }
 

@@ -21,15 +21,17 @@ public class UserVoucherDAO extends DBConnection {
     public List<UserVoucher> getUserVouchersByUserId(int userId) {
         List<UserVoucher> userVouchers = new ArrayList<>();
         String sql = "SELECT uv.*, v.name as voucherName, v.description, v.discount, v.discountType, "
-                + "v.maxDiscountAmount, v.minOrderAmount, v.startDate, v.endDate, v.status as voucherStatus "
+                + "v.maxDiscountAmount, v.minOrderAmount, v.startDate, v.endDate, v.status as voucherStatus, "
+                + "v.serviceId, v.campaignId, v.createdDate, v.totalVoucherCount "
                 + "FROM UserVoucher uv "
                 + "JOIN Voucher v ON uv.voucherId = v.id "
-                + "WHERE uv.userId = ? AND v.status = 1 "
+                + "WHERE uv.userId = ? AND v.status = 'ACTIVE' " 
                 + "ORDER BY v.endDate ASC";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
+
             while (rs.next()) {
                 UserVoucher uv = new UserVoucher();
                 uv.setId(rs.getInt("id"));
@@ -40,7 +42,7 @@ public class UserVoucherDAO extends DBConnection {
                 uv.setUsedDate(rs.getTimestamp("usedDate"));
                 uv.setOrderId(rs.getInt("orderId"));
 
-                // Set voucher info
+                // 🔥 SỬA: Set voucher info với đầy đủ fields
                 Voucher voucher = new Voucher();
                 voucher.setId(rs.getInt("voucherId"));
                 voucher.setName(rs.getString("voucherName"));
@@ -51,9 +53,13 @@ public class UserVoucherDAO extends DBConnection {
                 voucher.setMinOrderAmount(rs.getFloat("minOrderAmount"));
                 voucher.setStartDate(rs.getTimestamp("startDate"));
                 voucher.setEndDate(rs.getTimestamp("endDate"));
-                voucher.setStatus(rs.getBoolean("voucherStatus"));
-                uv.setVoucher(voucher);
+                voucher.setServiceId(rs.getInt("serviceId"));
+                voucher.setCampaignId(rs.getInt("campaignId"));
+                voucher.setCreatedDate(rs.getTimestamp("createdDate"));
+                voucher.setTotalVoucherCount(rs.getInt("totalVoucherCount"));
+                voucher.setStatus(rs.getString("voucherStatus")); 
 
+                uv.setVoucher(voucher);
                 userVouchers.add(uv);
             }
         } catch (SQLException e) {

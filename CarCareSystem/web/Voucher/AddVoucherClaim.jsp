@@ -1,6 +1,6 @@
 <%-- 
-    Document   : AddVoucherPrivate
-    Created on : Jul 31, 2025, 11:50:00 PM
+    Document   : AddVoucherClaim
+    Created on : Jul 31, 2025, 9:51:13 PM
     Author     : NTN
 --%>
 
@@ -13,7 +13,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Thêm Voucher Riêng tư</title>
+        <title>Thêm Voucher Claim</title>
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
         <style>
             :root {
@@ -41,7 +41,7 @@
             }
 
             .container {
-                max-width: 1000px;
+                max-width: 900px;
                 margin: 0 auto;
                 background: rgba(255, 255, 255, 0.95);
                 border-radius: 20px;
@@ -204,13 +204,6 @@
                 transform: translateY(-2px);
             }
 
-            .btn-sm {
-                padding: 8px 15px;
-                font-size: 0.85rem;
-                margin-right: 10px;
-                margin-bottom: 10px;
-            }
-
             .alert {
                 padding: 15px;
                 margin-bottom: 20px;
@@ -241,17 +234,17 @@
             }
 
             .voucher-type-info {
-                background: linear-gradient(135deg, #e7f3ff, #cce7ff);
-                border: 2px solid var(--primary-blue);
+                background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+                border: 2px solid #ffc107;
                 border-radius: 10px;
                 padding: 15px;
                 margin-bottom: 20px;
-                color: var(--dark-blue);
+                color: #856404;
             }
 
             .voucher-type-info h3 {
                 margin-bottom: 10px;
-                color: var(--dark-blue);
+                color: var(--warning-orange);
             }
 
             .form-actions {
@@ -262,61 +255,6 @@
                 padding-top: 20px;
                 border-top: 2px solid var(--accent-blue);
             }
-
-            .role-selection {
-                border: 2px solid var(--primary-blue);
-                border-radius: 10px;
-                padding: 20px;
-                background: #f8f9fa;
-            }
-
-            .role-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                gap: 15px;
-                margin-top: 15px;
-            }
-
-            .role-item {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                padding: 12px;
-                border: 2px solid #dee2e6;
-                border-radius: 8px;
-                transition: all 0.3s ease;
-                background: white;
-            }
-
-            .role-item:hover {
-                border-color: var(--primary-blue);
-                background: var(--light-blue);
-            }
-
-            .role-item input[type="checkbox"]:checked + label {
-                color: var(--dark-blue);
-                font-weight: 600;
-            }
-
-            .role-item label {
-                margin: 0;
-                cursor: pointer;
-                flex: 1;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-            }
-
-            .role-icon {
-                font-size: 1.2rem;
-            }
-
-            .role-admin { color: #dc3545; }
-            .role-manager { color: #28a745; }
-            .role-customer { color: #007bff; }
-            .role-marketing { color: #ffc107; }
-            .role-warehouse { color: #17a2b8; }
-            .role-repairer { color: #6c757d; }
 
             @media (max-width: 768px) {
                 .form-row {
@@ -331,18 +269,14 @@
                     width: 100%;
                     margin-bottom: 10px;
                 }
-
-                .role-grid {
-                    grid-template-columns: 1fr;
-                }
             }
         </style>
     </head>
     <body>
         <div class="container">
             <div class="header">
-                <h1><i class="fas fa-user-shield"></i> Thêm Voucher Riêng tư</h1>
-                <p>Tạo voucher dành riêng cho những vai trò được chọn</p>
+                <h1><i class="fas fa-ticket-alt"></i> Thêm Voucher Claim</h1>
+                <p>Tạo voucher có thể claim cho người dùng</p>
             </div>
 
             <div class="content">
@@ -366,30 +300,27 @@
 
                 <!-- ✅ THÔNG TIN LOẠI VOUCHER -->
                 <div class="voucher-type-info">
-                    <h3><i class="fas fa-info-circle"></i> Voucher Riêng tư</h3>
-                    <p>Loại voucher này sẽ được phát cho <strong>người dùng có vai trò được chọn</strong>. 
-                        Chỉ những user thuộc vai trò được chọn mới nhận được voucher này.</p>
+                    <h3><i class="fas fa-info-circle"></i> Voucher Claim</h3>
+                    <p>Loại voucher này cho phép người dùng tự claim (nhận) voucher thông qua mã code hoặc điều kiện nhất định. 
+                        Voucher sẽ được thêm vào tài khoản của họ sau khi claim thành công.</p>
                 </div>
 
-                <!-- ✅ FORM THÊM VOUCHER PRIVATE -->
+                <!-- ✅ FORM THÊM VOUCHER CLAIM -->
                 <div class="form-section">
                     <form action="voucher" method="post">
-                        <input type="hidden" name="action" value="addPrivate">
-                        <input type="hidden" name="totalVoucherCount" value="0">
-                        <input type="hidden" id="campaignId" name="campaignId" value="0">
-
+                        <input type="hidden" name="action" value="addClaim">
                         <!-- ✅ THÔNG TIN Cơ BẢN -->
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="name">Tên Voucher <span class="required">*</span></label>
                                 <input type="text" id="name" name="name" 
-                                       placeholder="VD: Voucher dành riêng cho Manager" required>
+                                       placeholder="VD: Giảm giá 50K cho dịch vụ rửa xe" required>
                             </div>
                             <div class="form-group">
                                 <label for="voucherCode">Mã Voucher <span class="required">*</span></label>
                                 <input type="text" id="voucherCode" name="voucherCode" 
-                                       placeholder="VD: MANAGER2024" required>
-                                <div class="form-help">Mã voucher duy nhất, chỉ chứa chữ cái và số</div>
+                                       placeholder="VD: CLAIM2024" required>
+                                <div class="form-help">Nhập mã voucher duy nhất để người dùng claim</div>
                             </div>
                         </div>
 
@@ -445,83 +376,49 @@
                             </div>
                         </div>
 
+                        <!-- ✅ GIỚI HẠN SỬ DỤNG -->
+                        <div class="form-group">
+                            <label for="totalVoucherCount">Tổng số voucher có thể claim</label>
+                            <input type="number" id="totalVoucherCount" name="totalVoucherCount" 
+                                   min="1" placeholder="VD: 100">
+                            <div class="form-help">Nhập tổng số lượng voucher có thể được claim bởi tất cả người dùng</div>
+                        </div>
+
                         <!-- ✅ LIÊN KẾT DỊCH VỤ VÀ CAMPAIGN -->
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="serviceId">Dịch vụ</label>
-                                <select id="serviceId" name="serviceId">
+                                <label for="serviceId" class="form-label">Dịch vụ</label>
+                                <select class="form-select" id="serviceId" name="serviceId" >
                                     <option value="0">Tất cả các dịch vụ</option>
                                     <c:forEach var="service" items="${services}">
                                         <option value="${service.id}">${service.name}</option>
                                     </c:forEach>
                                 </select>
-                                <div class="form-help">Chọn dịch vụ áp dụng voucher</div>
+                                <div class="form-help">Để trống nếu áp dụng cho tất cả dịch vụ</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="campaignId">Thuộc Campaign</label>
+                                <select id="campaignId" name="campaignId">
+
+                                    <c:forEach var="campaign" items="${campaigns}">
+                                        <option value="${campaign.id}">${campaign.name}</option>
+                                    </c:forEach>
+                                </select>
                             </div>
                         </div>
 
-                        <!-- ✅ CHỌN VAI TRÒ -->
+                        <!-- ✅ TRẠNG THÁI -->
                         <div class="form-group">
-                            <label>Chọn vai trò <span class="required">*</span></label>
-                            <div class="mb-2">
-                                <button type="button" class="btn btn-sm btn-secondary" onclick="selectAllRoles()">
-                                    <i class="fas fa-check-double"></i> Chọn tất cả
-                                </button>
-                                <button type="button" class="btn btn-sm btn-secondary" onclick="deselectAllRoles()">
-                                    <i class="fas fa-times"></i> Bỏ chọn tất cả
-                                </button>
-                            </div>
-                            <div class="role-selection">
-                                <div class="role-grid">
-                                    <div class="role-item">
-                                        <input type="checkbox" id="roleAdmin" name="roles" value="admin" class="role-checkbox">
-                                        <label for="roleAdmin">
-                                            <i class="fas fa-user-shield role-icon role-admin"></i>
-                                            <span>Admin</span>
-                                        </label>
-                                    </div>
-                                    <div class="role-item">
-                                        <input type="checkbox" id="roleManager" name="roles" value="manager" class="role-checkbox">
-                                        <label for="roleManager">
-                                            <i class="fas fa-user-tie role-icon role-manager"></i>
-                                            <span>Manager</span>
-                                        </label>
-                                    </div>
-                                    <div class="role-item">
-                                        <input type="checkbox" id="roleCustomer" name="roles" value="customer" class="role-checkbox">
-                                        <label for="roleCustomer">
-                                            <i class="fas fa-user role-icon role-customer"></i>
-                                            <span>Customer</span>
-                                        </label>
-                                    </div>
-                                    <div class="role-item">
-                                        <input type="checkbox" id="roleMarketing" name="roles" value="marketing" class="role-checkbox">
-                                        <label for="roleMarketing">
-                                            <i class="fas fa-bullhorn role-icon role-marketing"></i>
-                                            <span>Marketing</span>
-                                        </label>
-                                    </div>
-                                    <div class="role-item">
-                                        <input type="checkbox" id="roleWarehouse" name="roles" value="warehouse manager" class="role-checkbox">
-                                        <label for="roleWarehouse">
-                                            <i class="fas fa-warehouse role-icon role-warehouse"></i>
-                                            <span>Warehouse Manager</span>
-                                        </label>
-                                    </div>
-                                    <div class="role-item">
-                                        <input type="checkbox" id="roleRepairer" name="roles" value="repairer" class="role-checkbox">
-                                        <label for="roleRepairer">
-                                            <i class="fas fa-wrench role-icon role-repairer"></i>
-                                            <span>Repairer</span>
-                                        </label>
-                                    </div>
-                                </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="status" name="status" checked>
+                                <label for="status">Kích hoạt voucher</label>
                             </div>
                         </div>
 
                         <!-- ✅ CÁC NÚT HÀNH ĐỘNG -->
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-plus"></i> Tạo Voucher Riêng tư
+                                <i class="fas fa-plus"></i> Tạo Voucher Claim
                             </button>
                             <a href="voucher" class="btn btn-secondary">
                                 <i class="fas fa-times"></i> Hủy bỏ
@@ -537,7 +434,6 @@
             document.addEventListener('DOMContentLoaded', function () {
                 // ✅ SET NGÀY MẶC ĐỊNH
                 const now = new Date();
-                
                 // ✅ HÀM FORMAT DATETIME-LOCAL
                 function formatDateTimeLocal(date) {
                     const year = date.getFullYear();
@@ -546,132 +442,115 @@
                     const hours = String(date.getHours()).padStart(2, '0');
                     const minutes = String(date.getMinutes()).padStart(2, '0');
                     return `${year}-${month}-${day}T${hours}:${minutes}`;
-                }
-                
-                // Ngày bắt đầu: hiện tại
-                const startDate = new Date(now);
-                const startDateInput = document.getElementById('startDate');
-                startDateInput.value = formatDateTimeLocal(startDate);
-                startDateInput.min = formatDateTimeLocal(now);
+                            }
+                            // Ngày bắt đầu: hiện tại
+                            const startDate = new Date(now);
+                            const startDateInput = document.getElementById('startDate');
+                            startDateInput.value = formatDateTimeLocal(startDate);
+                            startDateInput.min = formatDateTimeLocal(now);
 
-                // Ngày kết thúc: 7 ngày sau
-                const endDate = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-                const endDateInput = document.getElementById('endDate');
-                endDateInput.value = formatDateTimeLocal(endDate);
+                            // Ngày kết thúc: 7 ngày sau
+                            const endDate = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+                            const endDateInput = document.getElementById('endDate');
+                            endDateInput.value = formatDateTimeLocal(endDate);
 
-                // ✅ VALIDATION NGÀY
-                startDateInput.addEventListener('change', function () {
-                    const startValue = new Date(this.value);
-                    const endValue = new Date(endDateInput.value);
+                            // ✅ VALIDATION NGÀY
+                            startDateInput.addEventListener('change', function () {
+                                const startValue = new Date(this.value);
+                                const endValue = new Date(endDateInput.value);
 
-                    if (endValue <= startValue) {
-                        const newEndDate = new Date(startValue.getTime() + 24 * 60 * 60 * 1000);
-                        endDateInput.value = formatDateTimeLocal(newEndDate);
-                    }
-                    endDateInput.min = this.value;
-                });
+                                if (endValue <= startValue) {
+                                    const newEndDate = new Date(startValue.getTime() + 24 * 60 * 60 * 1000);
+                                    endDateInput.value = formatDateTimeLocal(newEndDate);
+                                }
+                                endDateInput.min = this.value;
+                            });
 
-                endDateInput.addEventListener('change', function () {
-                    const startValue = new Date(startDateInput.value);
-                    const endValue = new Date(this.value);
+                            endDateInput.addEventListener('change', function () {
+                                const startValue = new Date(startDateInput.value);
+                                const endValue = new Date(this.value);
 
-                    if (endValue <= startValue) {
-                        alert('Ngày kết thúc phải sau ngày bắt đầu!');
-                        const newEndDate = new Date(startValue.getTime() + 24 * 60 * 60 * 1000);
-                        this.value = formatDateTimeLocal(newEndDate);
-                    }
-                });
-            });
+                                if (endValue <= startValue) {
+                                    alert('Ngày kết thúc phải sau ngày bắt đầu!');
+                                    const newEndDate = new Date(startValue.getTime() + 24 * 60 * 60 * 1000);
+                                    this.value = formatDateTimeLocal(newEndDate);
+                                }
+                            });
+                        });
 
-            // ✅ TOGGLE DISCOUNT FIELDS
-            function toggleDiscountFields() {
-                const discountType = document.getElementById('discountType').value;
-                const helpText = document.getElementById('discountHelp');
-                const maxDiscountGroup = document.getElementById('maxDiscountAmount').closest('.form-group');
 
-                if (discountType === 'PERCENTAGE') {
-                    helpText.textContent = 'Nhập phần trăm giảm (VD: 10 = giảm 10%)';
-                    maxDiscountGroup.style.display = 'block';
-                } else if (discountType === 'FIXED_AMOUNT') {
-                    helpText.textContent = 'Nhập số tiền giảm cố định (VD: 50000 = giảm 50,000 VNĐ)';
-                    maxDiscountGroup.style.display = 'none';
-                }
-            }
 
-            // ✅ CHỌN/BỎ CHỌN TẤT CẢ ROLES
-            function selectAllRoles() {
-                const checkboxes = document.querySelectorAll('.role-checkbox');
-                checkboxes.forEach(checkbox => checkbox.checked = true);
-            }
+                        // ✅ TOGGLE DISCOUNT FIELDS
+                        function toggleDiscountFields() {
+                            const discountType = document.getElementById('discountType').value;
+                            const helpText = document.getElementById('discountHelp');
+                            const maxDiscountGroup = document.getElementById('maxDiscountAmount').closest('.form-group');
 
-            function deselectAllRoles() {
-                const checkboxes = document.querySelectorAll('.role-checkbox');
-                checkboxes.forEach(checkbox => checkbox.checked = false);
-            }
+                            if (discountType === 'PERCENTAGE') {
+                                helpText.textContent = 'Nhập phần trăm giảm (VD: 10 = giảm 10%)';
+                                maxDiscountGroup.style.display = 'block';
+                            } else if (discountType === 'FIXED_AMOUNT') {
+                                helpText.textContent = 'Nhập số tiền giảm cố định (VD: 50000 = giảm 50,000 VNĐ)';
+                                maxDiscountGroup.style.display = 'none';
+                            }
+                        }
 
-            // ✅ XỬ LÝ FORM SUBMIT - CHUYỂN ĐỔI FORMAT NGÀY
-            document.querySelector('form').addEventListener('submit', function (e) {
-                const startDateInput = document.getElementById('startDate');
-                const endDateInput = document.getElementById('endDate');
+                        // ✅ XỬ LÝ FORM SUBMIT - CHUYỂN ĐỔI FORMAT NGÀY
+                        document.querySelector('form').addEventListener('submit', function (e) {
+                            const startDateInput = document.getElementById('startDate');
+                            const endDateInput = document.getElementById('endDate');
 
-                // Chuyển từ "2025-07-31T23:30" thành "2025-07-31 23:30:00"
-                if (startDateInput.value) {
-                    const hiddenStartDate = document.createElement('input');
-                    hiddenStartDate.type = 'hidden';
-                    hiddenStartDate.name = 'startDate';
-                    hiddenStartDate.value = startDateInput.value.replace('T', ' ') + ':00';
-                    this.appendChild(hiddenStartDate);
-                    startDateInput.name = 'startDate_display';
-                }
+                            // Chuyển từ "2025-07-31T23:30" thành "2025-07-31 23:30:00"
+                            if (startDateInput.value) {
+                                const hiddenStartDate = document.createElement('input');
+                                hiddenStartDate.type = 'hidden';
+                                hiddenStartDate.name = 'startDate';
+                                hiddenStartDate.value = startDateInput.value.replace('T', ' ') + ':00';
+                                this.appendChild(hiddenStartDate);
+                                startDateInput.name = 'startDate_display'; // Đổi tên để không conflict
+                            }
 
-                if (endDateInput.value) {
-                    const hiddenEndDate = document.createElement('input');
-                    hiddenEndDate.type = 'hidden';
-                    hiddenEndDate.name = 'endDate';
-                    hiddenEndDate.value = endDateInput.value.replace('T', ' ') + ':00';
-                    this.appendChild(hiddenEndDate);
-                    endDateInput.name = 'endDate_display';
-                }
+                            if (endDateInput.value) {
+                                const hiddenEndDate = document.createElement('input');
+                                hiddenEndDate.type = 'hidden';
+                                hiddenEndDate.name = 'endDate';
+                                hiddenEndDate.value = endDateInput.value.replace('T', ' ') + ':00';
+                                this.appendChild(hiddenEndDate);
+                                endDateInput.name = 'endDate_display'; // Đổi tên để không conflict
+                            }
 
-                // ✅ VALIDATION
-                const startDate = new Date(startDateInput.value);
-                const endDate = new Date(endDateInput.value);
-                const discountType = document.getElementById('discountType').value;
-                const discountValue = parseFloat(document.getElementById('discount').value);
-                const selectedRoles = document.querySelectorAll('.role-checkbox:checked');
+                            // ✅ VALIDATION CƠ BẢN
+                            const startDate = new Date(startDateInput.value);
+                            const endDate = new Date(endDateInput.value);
+                            const discountType = document.getElementById('discountType').value;
+                            const discountValue = parseFloat(document.getElementById('discount').value);
 
-                // Kiểm tra thời gian
-                if (startDate >= endDate) {
-                    alert('Ngày bắt đầu phải trước ngày kết thúc!');
-                    e.preventDefault();
-                    return false;
-                }
+                            // Kiểm tra thời gian
+                            if (startDate >= endDate) {
+                                alert('Ngày bắt đầu phải trước ngày kết thúc!');
+                                e.preventDefault();
+                                return false;
+                            }
 
-                // Kiểm tra giá trị giảm giá
-                if (discountType === 'PERCENTAGE' && (discountValue <= 0 || discountValue > 100)) {
-                    alert('Phần trăm giảm giá phải từ 0.01% đến 100%!');
-                    e.preventDefault();
-                    return false;
-                }
+                            // Kiểm tra giá trị giảm giá
+                            if (discountType === 'PERCENTAGE' && (discountValue <= 0 || discountValue > 100)) {
+                                alert('Phần trăm giảm giá phải từ 0.01% đến 100%!');
+                                e.preventDefault();
+                                return false;
+                            }
 
-                if (discountType === 'FIXED_AMOUNT' && discountValue <= 0) {
-                    alert('Số tiền giảm phải lớn hơn 0!');
-                    e.preventDefault();
-                    return false;
-                }
+                            if (discountType === 'FIXED_AMOUNT' && discountValue <= 0) {
+                                alert('Số tiền giảm phải lớn hơn 0!');
+                                e.preventDefault();
+                                return false;
+                            }
 
-                // Kiểm tra chọn role
-                if (selectedRoles.length === 0) {
-                    alert('Vui lòng chọn ít nhất một vai trò!');
-                    e.preventDefault();
-                    return false;
-                }
+                            return true;
+                        });
 
-                return true;
-            });
-
-            // ✅ KHỞI TẠO TOGGLE FIELDS
-            toggleDiscountFields();
+                        // ✅ KHỞI TẠO TOGGLE FIELDS
+                        toggleDiscountFields();
         </script>
     </body>
 </html>
+

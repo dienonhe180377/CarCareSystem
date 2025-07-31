@@ -1,5 +1,13 @@
+<%-- 
+    Document   : AddVoucherPublic
+    Created on : Jul 31, 2025, 11:45:00 PM
+    Author     : NTN
+--%>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<fmt:setTimeZone value="Asia/Ho_Chi_Minh"/>
 <!DOCTYPE html>
 <html lang="vi">
     <head>
@@ -14,6 +22,9 @@
                 --light-blue: #e6f3ff;
                 --dark-blue: #4682b4;
                 --accent-blue: #b0e0e6;
+                --success-green: #28a745;
+                --error-red: #dc3545;
+                --warning-orange: #fd7e14;
             }
 
             * {
@@ -29,75 +40,146 @@
                 padding: 20px;
             }
 
-            .main-header {
-                background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
-                color: #333;
-                padding: 30px 0;
-                margin-bottom: 30px;
-                box-shadow: 0 4px 15px rgba(173, 216, 230, 0.3);
-                border-radius: 0 0 20px 20px;
-            }
-
-            .main-header h1 {
-                font-weight: bold;
-                text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-                text-align: center;
-                font-size: 2.2rem;
-                margin: 0;
-            }
-
             .container {
                 max-width: 900px;
                 margin: 0 auto;
-            }
-
-            .card {
-                background: linear-gradient(135deg, #FFFFFF 0%, var(--light-blue) 100%);
+                background: rgba(255, 255, 255, 0.95);
                 border-radius: 20px;
-                box-shadow: 0 8px 25px rgba(173, 216, 230, 0.2);
-                border: 2px solid var(--accent-blue);
+                box-shadow: 0 20px 40px rgba(173, 216, 230, 0.2);
                 overflow: hidden;
+                backdrop-filter: blur(10px);
+                border: 2px solid var(--accent-blue);
             }
 
-            .card-header {
-                background: linear-gradient(135deg, var(--accent-blue) 0%, var(--primary-blue) 100%);
+            .header {
+                background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
                 color: #333;
-                padding: 20px 25px;
-                border-bottom: 2px solid var(--primary-blue);
+                padding: 30px;
+                text-align: center;
+                box-shadow: 0 4px 15px rgba(173, 216, 230, 0.3);
             }
 
-            .card-header h4 {
-                margin: 0;
+            .header h1 {
+                font-size: 2.5rem;
+                margin-bottom: 10px;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
                 font-weight: bold;
-                font-size: 1.5rem;
             }
 
-            .card-body {
+            .header p {
+                font-size: 1.1rem;
+                opacity: 0.8;
+                margin-top: 10px;
+            }
+
+            .content {
                 padding: 30px;
             }
 
+            .form-section {
+                background: linear-gradient(135deg, #FFFFFF 0%, var(--light-blue) 100%);
+                border-radius: 15px;
+                padding: 30px;
+                box-shadow: 0 8px 25px rgba(173, 216, 230, 0.2);
+                border: 2px solid var(--accent-blue);
+            }
+
+            .form-group {
+                margin-bottom: 25px;
+            }
+
+            .form-row {
+                display: flex;
+                gap: 20px;
+                flex-wrap: wrap;
+            }
+
+            .form-row .form-group {
+                flex: 1;
+                min-width: 250px;
+            }
+
+            label {
+                display: block;
+                margin-bottom: 8px;
+                font-weight: 600;
+                color: var(--dark-blue);
+                font-size: 0.95rem;
+            }
+
+            .required {
+                color: var(--error-red);
+            }
+
+            input[type="text"],
+            input[type="number"],
+            input[type="date"],
+            input[type="datetime-local"],
+            textarea,
+            select {
+                width: 100%;
+                padding: 12px 15px;
+                border: 2px solid var(--accent-blue);
+                border-radius: 10px;
+                font-size: 1rem;
+                transition: all 0.3s ease;
+                background: #fafafa;
+            }
+
+            input:focus,
+            textarea:focus,
+            select:focus {
+                outline: none;
+                border-color: var(--primary-blue);
+                background: white;
+                box-shadow: 0 0 0 3px rgba(173, 216, 230, 0.25);
+                transform: translateY(-1px);
+            }
+
+            textarea {
+                resize: vertical;
+                min-height: 100px;
+            }
+
+            .checkbox-group {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-top: 10px;
+            }
+
+            input[type="checkbox"] {
+                width: 20px;
+                height: 20px;
+                accent-color: var(--primary-blue);
+            }
+
             .btn {
-                padding: 10px 20px;
+                padding: 12px 25px;
                 border: none;
                 border-radius: 25px;
+                font-size: 1rem;
                 font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
                 text-decoration: none;
                 display: inline-block;
-                transition: all 0.3s ease;
-                cursor: pointer;
-                box-shadow: 0 4px 15px rgba(173, 216, 230, 0.2);
+                text-align: center;
+                box-shadow: 0 4px 15px rgba(173, 216, 230, 0.3);
             }
 
             .btn-primary {
-                background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
-                color: #333;
+                background: linear-gradient(135deg, var(--success-green), #20c997);
+                color: white;
+                margin-right: 15px;
             }
 
             .btn-primary:hover {
-                background: linear-gradient(135deg, var(--secondary-blue), var(--dark-blue));
+                background: linear-gradient(135deg, #20c997, #17a2b8);
                 transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(173, 216, 230, 0.4);
-                color: white;
+                box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
             }
 
             .btn-secondary {
@@ -110,236 +192,222 @@
                 transform: translateY(-2px);
             }
 
-            .btn-sm {
-                padding: 8px 16px;
-                font-size: 0.9rem;
-            }
-
-            .float-end {
-                float: right;
-            }
-
-            .form-label {
-                font-weight: 600;
-                color: var(--dark-blue);
-                margin-bottom: 8px;
-                display: block;
-            }
-
-            .form-control, .form-select {
-                width: 100%;
-                padding: 12px 15px;
-                border: 2px solid var(--accent-blue);
-                border-radius: 10px;
-                font-size: 1rem;
-                transition: all 0.3s ease;
-                background: #fafafa;
-            }
-
-            .form-control:focus, .form-select:focus {
-                outline: none;
-                border-color: var(--primary-blue);
-                background: white;
-                box-shadow: 0 0 0 3px rgba(173, 216, 230, 0.25);
-                transform: translateY(-1px);
-            }
-
-            .mb-3 {
+            .btn-back {
+                background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+                color: #333;
                 margin-bottom: 20px;
             }
 
-            .row {
-                display: flex;
-                flex-wrap: wrap;
-                margin: 0 -10px;
-            }
-
-            .col-md-6 {
-                flex: 0 0 50%;
-                max-width: 50%;
-                padding: 0 10px;
+            .btn-back:hover {
+                background: linear-gradient(135deg, var(--secondary-blue), var(--dark-blue));
+                color: white;
+                transform: translateY(-2px);
             }
 
             .alert {
-                padding: 15px 20px;
+                padding: 15px;
                 margin-bottom: 20px;
-                border: 1px solid transparent;
-                border-radius: 15px;
+                border-radius: 10px;
                 font-weight: 600;
-                box-shadow: 0 4px 15px rgba(173, 216, 230, 0.2);
+                display: flex;
+                align-items: center;
+                gap: 10px;
             }
 
-            .alert-info {
-                color: #0c5460;
-                background: linear-gradient(135deg, #d1ecf1 0%, var(--light-blue) 100%);
-                border-color: var(--primary-blue);
+            .alert-success {
+                background: linear-gradient(135deg, #d4edda, #c3e6cb);
+                color: #155724;
+                border: 2px solid #c3e6cb;
             }
 
-            .alert-danger {
+            .alert-error {
+                background: linear-gradient(135deg, #f8d7da, #f5c6cb);
                 color: #721c24;
-                background: linear-gradient(135deg, #f8d7da 0%, #ffebee 100%);
-                border-color: #dc3545;
+                border: 2px solid #f5c6cb;
             }
 
-            .text-danger {
-                color: #dc3545 !important;
-            }
-
-            .form-text {
-                font-size: 0.875rem;
+            .form-help {
+                font-size: 0.85rem;
                 color: #6c757d;
                 margin-top: 5px;
+                font-style: italic;
             }
 
-            .fa-globe, .fa-arrow-left, .fa-exclamation-circle, .fa-info-circle,
-            .fa-plus, .fa-times {
-                color: var(--secondary-blue);
-                margin-right: 8px;
+            .voucher-type-info {
+                background: linear-gradient(135deg, #e7f3ff, #cce7ff);
+                border: 2px solid var(--primary-blue);
+                border-radius: 10px;
+                padding: 15px;
+                margin-bottom: 20px;
+                color: var(--dark-blue);
+            }
+
+            .voucher-type-info h3 {
+                margin-bottom: 10px;
+                color: var(--dark-blue);
+            }
+
+            .form-actions {
+                display: flex;
+                justify-content: flex-start;
+                gap: 15px;
+                margin-top: 30px;
+                padding-top: 20px;
+                border-top: 2px solid var(--accent-blue);
             }
 
             @media (max-width: 768px) {
-                .col-md-6 {
-                    flex: 0 0 100%;
-                    max-width: 100%;
+                .form-row {
+                    flex-direction: column;
                 }
 
-                .main-header h1 {
-                    font-size: 1.8rem;
+                .form-actions {
+                    flex-direction: column;
                 }
 
-                .card-body {
-                    padding: 20px;
+                .btn {
+                    width: 100%;
+                    margin-bottom: 10px;
                 }
             }
         </style>
     </head>
     <body>
-        <div class="main-header">
-            <h1><i class="fas fa-globe"></i> Thêm Voucher Công khai</h1>
-        </div>
-
         <div class="container">
-            <div class="card">
-                <div class="card-header">
-                    <h4><i class="fas fa-globe"></i> Thêm Voucher Công khai</h4>
-                    <a href="voucher" class="btn btn-secondary btn-sm float-end">
-                        <i class="fas fa-arrow-left"></i> Quay lại
-                    </a>
-                </div>
-                <div class="card-body">
-                    <div class="alert alert-info">
-                        <i class="fas fa-info-circle"></i> 
-                        Voucher này sẽ được phát cho <strong>tất cả người dùng</strong> trong hệ thống.
+            <div class="header">
+                <h1><i class="fas fa-globe"></i> Thêm Voucher Công khai</h1>
+                <p>Tạo voucher áp dụng cho tất cả người dùng trong hệ thống</p>
+            </div>
+
+            <div class="content">
+                <!-- ✅ NÚT QUAY LẠI -->
+                <a href="voucher" class="btn btn-back">
+                    <i class="fas fa-arrow-left"></i> Quay lại danh sách
+                </a>
+
+                <!-- ✅ HIỂN THỊ THÔNG BÁO -->
+                <c:if test="${not empty successMessage}">
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i> ${successMessage}
                     </div>
+                </c:if>
 
-                    <c:if test="${not empty errorMessage}">
-                        <div class="alert alert-danger">
-                            <i class="fas fa-exclamation-circle"></i> ${errorMessage}
-                        </div>
-                    </c:if>
+                <c:if test="${not empty errorMessage}">
+                    <div class="alert alert-error">
+                        <i class="fas fa-exclamation-triangle"></i> ${errorMessage}
+                    </div>
+                </c:if>
 
+                <!-- ✅ THÔNG TIN LOẠI VOUCHER -->
+                <div class="voucher-type-info">
+                    <h3><i class="fas fa-info-circle"></i> Voucher Công khai</h3>
+                    <p>Loại voucher này sẽ được phát cho <strong>tất cả người dùng</strong> trong hệ thống. 
+                        Mỗi user sẽ nhận được 1 voucher và có thể sử dụng ngay.</p>
+                </div>
+
+                <!-- ✅ FORM THÊM VOUCHER PUBLIC -->
+                <div class="form-section">
                     <form action="voucher" method="post">
                         <input type="hidden" name="action" value="addPublic">
+                        <input type="hidden" name="totalVoucherCount" value="0">
+                        <input type="hidden" id="campaignId" name="campaignId" value="0">
 
-                        <!-- Thông tin voucher -->
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="name" class="form-label">Tên voucher <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="name" name="name" required>
-                                </div>
+                        <!-- ✅ THÔNG TIN Cơ BẢN -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="name">Tên Voucher <span class="required">*</span></label>
+                                <input type="text" id="name" name="name" 
+                                       placeholder="VD: Voucher chào mừng thành viên mới" required>
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="voucherCode" class="form-label">Mã voucher <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="voucherCode" name="voucherCode" 
-                                           pattern="[a-zA-Z0-9]+" title="Chỉ được chứa chữ cái và số" required>
-                                    <div class="form-text">Chỉ được chứa chữ cái và số, không có dấu cách</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="serviceId" class="form-label">Dịch vụ</label>
-                            <select class="form-select" id="serviceId" name="serviceId" >
-                                <option value="0">Tất cả các dịch vụ</option>
-                                <c:forEach var="service" items="${services}">
-                                    <option value="${service.id}">${service.name}</option>
-                                </c:forEach>
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="campaignId" class="form-label">Chiến dịch</label>
-                            <select class="form-select" id="campaignId" name="campaignId">
-                                <option value="0">Không thuộc chiến dịch nào</option>
-                                <c:forEach var="campaign" items="${campaigns}">
-                                    <option value="${campaign.id}">${campaign.name}</option>
-                                </c:forEach>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Mô tả</label>
-                            <textarea class="form-control" id="description" name="description" rows="3"></textarea>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="discountType" class="form-label">Loại giảm giá <span class="text-danger">*</span></label>
-                                    <select class="form-select" id="discountType" name="discountType" onchange="toggleDiscountType()" required>
-                                        <option value="PERCENTAGE">Phần trăm (%)</option>
-                                        <option value="FIXED_AMOUNT">Số tiền cố định (₫)</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="discount" class="form-label">Giá trị giảm giá <span class="text-danger">*</span></label>
-                                    <input type="number" class="form-control" id="discount" name="discount" 
-                                           min="0" step="0.01" required>
-                                    <div class="form-text" id="discountHelp">Nhập giá trị từ 0-100 cho phần trăm</div>
-                                </div>
+                            <div class="form-group">
+                                <label for="voucherCode">Mã Voucher <span class="required">*</span></label>
+                                <input type="text" id="voucherCode" name="voucherCode" 
+                                       placeholder="VD: WELCOME2024" required>
+                                <div class="form-help">Mã voucher duy nhất, chỉ chứa chữ cái và số</div>
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="maxDiscountAmount" class="form-label">Giảm tối đa (₫)</label>
-                                    <input type="number" class="form-control" id="maxDiscountAmount" name="maxDiscountAmount" min="0" placeholder="Ví dụ: 100000">
-                                    <div class="form-text">Để trống nếu không giới hạn</div>
-                                </div>
+                        <!-- ✅ MÔ TẢ -->
+                        <div class="form-group">
+                            <label for="description">Mô tả Voucher</label>
+                            <textarea id="description" name="description" 
+                                      placeholder="Mô tả chi tiết về voucher, điều kiện sử dụng..."></textarea>
+                        </div>
+
+                        <!-- ✅ LOẠI GIẢM GIÁ -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="discountType">Loại giảm giá <span class="required">*</span></label>
+                                <select id="discountType" name="discountType" required onchange="toggleDiscountFields()">
+                                    <option value="PERCENTAGE">Phần trăm (%)</option>
+                                    <option value="FIXED_AMOUNT">Số tiền cố định (₫)</option>
+                                </select>
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="minOrderAmount" class="form-label">Đơn hàng tối thiểu (₫)</label>
-                                    <input type="number" class="form-control" id="minOrderAmount" name="minOrderAmount" min="0" placeholder="Ví dụ: 50000">
-                                    <div class="form-text">Để trống nếu không yêu cầu</div>
-                                </div>
+                            <div class="form-group">
+                                <label for="discount">Giá trị giảm <span class="required">*</span></label>
+                                <input type="number" id="discount" name="discount" 
+                                       min="0" step="0.01" placeholder="VD: 50000 hoặc 10" required>
+                                <div class="form-help" id="discountHelp">Nhập giá trị giảm giá</div>
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="startDate" class="form-label">Ngày bắt đầu <span class="text-danger">*</span></label>
-                                    <input type="date" class="form-control" id="startDate" name="startDate" required>
-                                </div>
+                        <!-- ✅ ĐIỀU KIỆN SỬ DỤNG -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="minOrderAmount">Giá trị đơn hàng tối thiểu</label>
+                                <input type="number" id="minOrderAmount" name="minOrderAmount" 
+                                       min="0" step="1000" placeholder="VD: 100000">
+                                <div class="form-help">Để trống nếu không có điều kiện tối thiểu</div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="endDate" class="form-label">Ngày kết thúc <span class="text-danger">*</span></label>
-                                    <input type="date" class="form-control" id="endDate" name="endDate" required>
-                                </div>
+                            <div class="form-group">
+                                <label for="maxDiscountAmount">Giảm tối đa (VNĐ)</label>
+                                <input type="number" id="maxDiscountAmount" name="maxDiscountAmount" 
+                                       min="0" step="1000" placeholder="VD: 200000">
+                                <div class="form-help">Áp dụng cho voucher giảm theo %</div>
                             </div>
                         </div>
 
-                        <div class="text-center">
+                        <!-- ✅ THỜI GIAN -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="startDate">Ngày bắt đầu <span class="required">*</span></label>
+                                <input type="datetime-local" id="startDate" name="startDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="endDate">Ngày kết thúc <span class="required">*</span></label>
+                                <input type="datetime-local" id="endDate" name="endDate" required>
+                            </div>
+                        </div>
+
+                        <!-- ✅ LIÊN KẾT DỊCH VỤ VÀ CAMPAIGN -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="serviceId">Dịch vụ</label>
+                                <select id="serviceId" name="serviceId">
+                                    <option value="0">Tất cả các dịch vụ</option>
+                                    <c:forEach var="service" items="${services}">
+                                        <option value="${service.id}">${service.name}</option>
+                                    </c:forEach>
+                                </select>
+                                <div class="form-help">Chọn dịch vụ áp dụng voucher</div>
+                            </div>
+                        </div>
+
+                        <!-- ✅ TRẠNG THÁI -->
+                        <div class="form-group">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="status" name="status" checked>
+                                <label for="status">Kích hoạt voucher</label>
+                            </div>
+                        </div>
+
+                        <!-- ✅ CÁC NÚT HÀNH ĐỘNG -->
+                        <div class="form-actions">
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-plus"></i> Tạo Voucher
+                                <i class="fas fa-plus"></i> Tạo Voucher Công khai
                             </button>
                             <a href="voucher" class="btn btn-secondary">
-                                <i class="fas fa-times"></i> Hủy
+                                <i class="fas fa-times"></i> Hủy bỏ
                             </a>
                         </div>
                     </form>
@@ -347,65 +415,127 @@
             </div>
         </div>
 
+        <!-- ✅ JAVASCRIPT XỬ LÝ FORM -->
         <script>
-            function toggleDiscountType() {
+            document.addEventListener('DOMContentLoaded', function () {
+                // ✅ SET NGÀY MẶC ĐỊNH
+                const now = new Date();
+                
+                // ✅ HÀM FORMAT DATETIME-LOCAL
+                function formatDateTimeLocal(date) {
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const hours = String(date.getHours()).padStart(2, '0');
+                    const minutes = String(date.getMinutes()).padStart(2, '0');
+                    return `${year}-${month}-${day}T${hours}:${minutes}`;
+                }
+                
+                // Ngày bắt đầu: hiện tại
+                const startDate = new Date(now);
+                const startDateInput = document.getElementById('startDate');
+                startDateInput.value = formatDateTimeLocal(startDate);
+                startDateInput.min = formatDateTimeLocal(now);
+
+                // Ngày kết thúc: 7 ngày sau
+                const endDate = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+                const endDateInput = document.getElementById('endDate');
+                endDateInput.value = formatDateTimeLocal(endDate);
+
+                // ✅ VALIDATION NGÀY
+                startDateInput.addEventListener('change', function () {
+                    const startValue = new Date(this.value);
+                    const endValue = new Date(endDateInput.value);
+
+                    if (endValue <= startValue) {
+                        const newEndDate = new Date(startValue.getTime() + 24 * 60 * 60 * 1000);
+                        endDateInput.value = formatDateTimeLocal(newEndDate);
+                    }
+                    endDateInput.min = this.value;
+                });
+
+                endDateInput.addEventListener('change', function () {
+                    const startValue = new Date(startDateInput.value);
+                    const endValue = new Date(this.value);
+
+                    if (endValue <= startValue) {
+                        alert('Ngày kết thúc phải sau ngày bắt đầu!');
+                        const newEndDate = new Date(startValue.getTime() + 24 * 60 * 60 * 1000);
+                        this.value = formatDateTimeLocal(newEndDate);
+                    }
+                });
+            });
+
+            // ✅ TOGGLE DISCOUNT FIELDS
+            function toggleDiscountFields() {
                 const discountType = document.getElementById('discountType').value;
-                const discountHelp = document.getElementById('discountHelp');
-                const discountInput = document.getElementById('discount');
+                const helpText = document.getElementById('discountHelp');
+                const maxDiscountGroup = document.getElementById('maxDiscountAmount').closest('.form-group');
 
                 if (discountType === 'PERCENTAGE') {
-                    discountHelp.textContent = 'Nhập giá trị từ 0-100 cho phần trăm';
-                    discountInput.max = '100';
-                } else {
-                    discountHelp.textContent = 'Nhập số tiền cố định (VND)';
-                    discountInput.removeAttribute('max');
+                    helpText.textContent = 'Nhập phần trăm giảm (VD: 10 = giảm 10%)';
+                    maxDiscountGroup.style.display = 'block';
+                } else if (discountType === 'FIXED_AMOUNT') {
+                    helpText.textContent = 'Nhập số tiền giảm cố định (VD: 50000 = giảm 50,000 VNĐ)';
+                    maxDiscountGroup.style.display = 'none';
                 }
             }
-            // Sử dụng Intl API để lấy ngày theo múi giờ Việt Nam
-            document.addEventListener('DOMContentLoaded', function () {
-                // Lấy ngày hiện tại theo múi giờ Việt Nam
-                const today = new Intl.DateTimeFormat('sv-SE', {
-                    timeZone: 'Asia/Ho_Chi_Minh'
-                }).format(new Date());
 
+            // ✅ XỬ LÝ FORM SUBMIT - CHUYỂN ĐỔI FORMAT NGÀY
+            document.querySelector('form').addEventListener('submit', function (e) {
                 const startDateInput = document.getElementById('startDate');
                 const endDateInput = document.getElementById('endDate');
 
-                if (startDateInput && endDateInput) {
-                    // Set giá trị mặc định
-                    startDateInput.value = today;
-                    startDateInput.min = today;
-
-                    // Ngày kết thúc mặc định là 7 ngày sau
-                    const nextWeekDate = new Date();
-                    nextWeekDate.setDate(nextWeekDate.getDate() + 7);
-                    const nextWeek = new Intl.DateTimeFormat('sv-SE', {
-                        timeZone: 'Asia/Ho_Chi_Minh'
-                    }).format(nextWeekDate);
-                    endDateInput.value = nextWeek;
-
-                    // Validation ngày
-                    startDateInput.addEventListener('change', function () {
-                        endDateInput.min = this.value;
-                        if (endDateInput.value && endDateInput.value <= this.value) {
-                            const nextDay = new Date(this.value);
-                            nextDay.setDate(nextDay.getDate() + 1);
-                            endDateInput.value = nextDay.toISOString().split('T')[0];
-                        }
-                    });
-
-                    endDateInput.addEventListener('change', function () {
-                        if (this.value <= startDateInput.value) {
-                            alert('Ngày kết thúc phải sau ngày bắt đầu!');
-                            const nextDay = new Date(startDateInput.value);
-                            nextDay.setDate(nextDay.getDate() + 1);
-                            this.value = nextDay.toISOString().split('T')[0];
-                        }
-                    });
-
-                    console.log('Ngày hiện tại (VN):', today);
+                // Chuyển từ "2025-07-31T23:30" thành "2025-07-31 23:30:00"
+                if (startDateInput.value) {
+                    const hiddenStartDate = document.createElement('input');
+                    hiddenStartDate.type = 'hidden';
+                    hiddenStartDate.name = 'startDate';
+                    hiddenStartDate.value = startDateInput.value.replace('T', ' ') + ':00';
+                    this.appendChild(hiddenStartDate);
+                    startDateInput.name = 'startDate_display';
                 }
+
+                if (endDateInput.value) {
+                    const hiddenEndDate = document.createElement('input');
+                    hiddenEndDate.type = 'hidden';
+                    hiddenEndDate.name = 'endDate';
+                    hiddenEndDate.value = endDateInput.value.replace('T', ' ') + ':00';
+                    this.appendChild(hiddenEndDate);
+                    endDateInput.name = 'endDate_display';
+                }
+
+                // ✅ VALIDATION
+                const startDate = new Date(startDateInput.value);
+                const endDate = new Date(endDateInput.value);
+                const discountType = document.getElementById('discountType').value;
+                const discountValue = parseFloat(document.getElementById('discount').value);
+
+                // Kiểm tra thời gian
+                if (startDate >= endDate) {
+                    alert('Ngày bắt đầu phải trước ngày kết thúc!');
+                    e.preventDefault();
+                    return false;
+                }
+
+                // Kiểm tra giá trị giảm giá
+                if (discountType === 'PERCENTAGE' && (discountValue <= 0 || discountValue > 100)) {
+                    alert('Phần trăm giảm giá phải từ 0.01% đến 100%!');
+                    e.preventDefault();
+                    return false;
+                }
+
+                if (discountType === 'FIXED_AMOUNT' && discountValue <= 0) {
+                    alert('Số tiền giảm phải lớn hơn 0!');
+                    e.preventDefault();
+                    return false;
+                }
+
+                return true;
             });
+
+            // ✅ KHỞI TẠO TOGGLE FIELDS
+            toggleDiscountFields();
         </script>
     </body>
 </html>

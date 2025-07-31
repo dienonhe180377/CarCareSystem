@@ -34,11 +34,10 @@ public class VoucherDAO extends DBConnection {
                 voucher.setEndDate(rs.getTimestamp("endDate"));     // ✅ Sửa thành getTimestamp
                 voucher.setServiceId(rs.getInt("serviceId"));
                 voucher.setCampaignId(rs.getInt("campaignId"));
-                voucher.setStatus(rs.getBoolean("status"));
                 voucher.setCreatedDate(rs.getTimestamp("createdDate"));
                 voucher.setVoucherCode(rs.getString("voucherCode"));
                 voucher.setTotalVoucherCount(rs.getInt("totalVoucherCount")); // ✅ Thêm field bị thiếu
-
+                voucher.setStatus(rs.getString("status"));
                 vouchers.add(voucher);
             }
 
@@ -70,10 +69,10 @@ public class VoucherDAO extends DBConnection {
                     voucher.setEndDate(rs.getTimestamp("endDate"));
                     voucher.setServiceId(rs.getInt("serviceId"));
                     voucher.setCampaignId(rs.getInt("campaignId"));
-                    voucher.setStatus(rs.getBoolean("status"));
                     voucher.setCreatedDate(rs.getTimestamp("createdDate"));
                     voucher.setVoucherCode(rs.getString("voucherCode"));
                     voucher.setTotalVoucherCount(rs.getInt("totalVoucherCount"));
+                    voucher.setStatus(rs.getString("status"));
 
                     return voucher;
                 }
@@ -89,7 +88,7 @@ public class VoucherDAO extends DBConnection {
 
     public boolean addVoucher(Voucher voucher) {
         String sql = "INSERT INTO Voucher (name, description, discount, discountType, maxDiscountAmount, "
-                + "minOrderAmount, startDate, endDate, serviceId, campaignId, status, voucherCode, totalVoucherCount) "
+                + "minOrderAmount, startDate, endDate, serviceId, campaignId, voucherCode, totalVoucherCount, status) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -103,9 +102,9 @@ public class VoucherDAO extends DBConnection {
             ps.setTimestamp(8, voucher.getEndDate());
             ps.setObject(9, voucher.getServiceId() == 0 ? null : voucher.getServiceId());
             ps.setObject(10, voucher.getCampaignId() == 0 ? null : voucher.getCampaignId());
-            ps.setBoolean(11, voucher.isStatus());
-            ps.setString(12, voucher.getVoucherCode());
-            ps.setInt(13, voucher.getTotalVoucherCount());
+            ps.setString(11, voucher.getVoucherCode());
+            ps.setInt(12, voucher.getTotalVoucherCount());
+            ps.setString(13, voucher.getStatus());
 
             int result = ps.executeUpdate();
             if (result > 0) {
@@ -128,7 +127,7 @@ public class VoucherDAO extends DBConnection {
     public boolean updateVoucher(Voucher voucher) {
         String sql = "UPDATE Voucher SET name=?, description=?, discount=?, discountType=?, "
                 + "maxDiscountAmount=?, minOrderAmount=?, startDate=?, endDate=?, "
-                + "serviceId=?, campaignId=?, status=?, voucherCode=?, totalVoucherCount=? "
+                + "serviceId=?, campaignId=?, voucherCode=?, totalVoucherCount=?, status=? "
                 + "WHERE id=?";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -142,9 +141,9 @@ public class VoucherDAO extends DBConnection {
             ps.setTimestamp(8, voucher.getEndDate());
             ps.setObject(9, voucher.getServiceId() == 0 ? null : voucher.getServiceId());
             ps.setObject(10, voucher.getCampaignId() == 0 ? null : voucher.getCampaignId());
-            ps.setBoolean(11, voucher.isStatus());
-            ps.setString(12, voucher.getVoucherCode());
-            ps.setInt(13, voucher.getTotalVoucherCount());
+            ps.setString(11, voucher.getVoucherCode());
+            ps.setInt(12, voucher.getTotalVoucherCount());
+            ps.setString(13, voucher.getStatus());
             ps.setInt(14, voucher.getId());
 
             return ps.executeUpdate() > 0;
@@ -226,11 +225,11 @@ public class VoucherDAO extends DBConnection {
                     voucher.setMinOrderAmount(rs.getFloat("minOrderAmount"));
                     voucher.setStartDate(rs.getTimestamp("startDate"));
                     voucher.setEndDate(rs.getTimestamp("endDate"));
-                    voucher.setServiceId(rs.getInt("serviceId"));          // ✅ Đúng field
+                    voucher.setServiceId(rs.getInt("serviceId"));          
                     voucher.setCampaignId(rs.getInt("campaignId"));
-                    voucher.setStatus(rs.getBoolean("status"));
                     voucher.setCreatedDate(rs.getTimestamp("createdDate"));
-                    voucher.setTotalVoucherCount(rs.getInt("totalVoucherCount")); // ✅ Đúng field
+                    voucher.setTotalVoucherCount(rs.getInt("totalVoucherCount")); 
+                    voucher.setStatus(rs.getString("status"));
 
                     vouchers.add(voucher);
                 }
