@@ -19,6 +19,33 @@ import java.util.ArrayList;
 public class OrderDAO extends DBConnection {
 
     private UserDAO userDAO = new UserDAO();
+    
+    
+    //Get Order Number By Part
+    public int getOrderNumberByPart(int partId) throws Exception {
+        Connection conn = null;
+        PreparedStatement pre = null;
+        ResultSet rs = null;
+        String sql = "select * from [OrderParts] where partId = ?";
+        int count = 0;
+        try {
+            conn = getConnection();
+            pre = conn.prepareStatement(sql);
+            pre.setInt(1, partId);
+            rs = pre.executeQuery();
+            while (rs.next()) {
+                count++;
+            }
+            return count;
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            closeResultSet(rs);
+            closePreparedStatement(pre);
+            closeConnection(conn);
+        }
+    }
+    
 
     public int createOrder(String fullName, String email, String phone, String address, int carTypeId,
             Date appointmentDate, double price, String paymentStatus, String orderStatus, String paymentMethod) throws SQLException {
