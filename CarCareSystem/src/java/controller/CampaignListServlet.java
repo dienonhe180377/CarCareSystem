@@ -47,6 +47,7 @@ public class CampaignListServlet extends HttpServlet {
             List<Campaign> allCampaigns = campaignDAO.getAllCampaigns();
             List<Campaign> activeCampaign = allCampaigns.stream()
                     .filter(c -> c.isStatus())
+                    .filter(c -> !c.getStartDate().after(currentDate))
                     .filter(c -> !c.getEndDate().before(currentDate))
                     .collect(Collectors.toList());
             request.setAttribute("campaigns", activeCampaign);

@@ -350,6 +350,7 @@
         </style>
     </head>
     <body>
+        <jsp:include page="/header_emp.jsp"></jsp:include>
         <div class="container">
             <div class="header">
                 <h1><i class="fas fa-bullhorn"></i> Quản lý Campaign</h1>
