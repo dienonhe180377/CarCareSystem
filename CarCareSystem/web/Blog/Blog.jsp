@@ -260,7 +260,7 @@
                                         <i class="fas fa-campaign"></i> Campaign <span class="text-danger">*</span>
                                     </label>
                                     <select class="form-select" id="campaignId" name="campaignId" required>
-                                        <option value="">-- Chọn Campaign --</option>
+                                        
                                         <c:forEach items="${campaigns}" var="campaign">
                                             <option value="${campaign.id}" 
                                                     <c:if test="${blog.campaign.id == campaign.id}">selected</c:if>>
