@@ -841,75 +841,93 @@ GO
 INSERT INTO PartsService (serviceId, partId) VALUES
 (1,1),(2,2),(3,3),(4,4),(5,5),(6,6),(7,7),(8,8),(9,9),(10,10);
 
+-- ===== INSERT DATA CHO BẢNG CAMPAIGN =====
 INSERT INTO [dbo].[Campaign] ([name], [status], [description], [startDate], [endDate], [img], [thumbnail], [createdDate])
 VALUES 
+-- Campaign ID = 1
+(N'Khuyến mãi mùa hè 2025', 1, N'Chương trình khuyến mãi đặc biệt cho mùa hè với nhiều ưu đãi hấp dẫn', '2025-06-01', '2025-08-31', N'image/summer_campaign.jpg', N'image/summer_thumb.jpg', '2025-05-15'),
+-- Campaign ID = 2
+(N'Chăm sóc xe cuối năm', 1, N'Dịch vụ chăm sóc xe toàn diện chuẩn bị đón năm mới', '2025-08-01', '2025-12-31', N'image/year_end_campaign.jpg', N'image/year_end_thumb.jpg', '2025-08-01'),
+-- Campaign ID = 3
 (N'Ưu đãi Black Friday 2025', 1, N'Giảm giá sốc 30% cho tất cả dịch vụ và phụ tùng trong ngày Black Friday', '2025-11-29', '2025-11-30', N'image/blackfriday_campaign.jpg', N'image/blackfriday_thumb.jpg', GETDATE()),
-(N'Khuyến mãi Tết Nguyên Đán', 1, N'Chương trình khuyến mãi đặc biệt mừng Tết Ất Tỵ 2025', '2025-01-25', '2025-02-10', N'image/tet_campaign.jpg', N'image/tet_thumb.jpg', GETDATE()),
-(N'Chăm sóc xe mùa mưa', 1, N'Dịch vụ chăm sóc xe chuyên biệt cho mùa mưa bão', '2025-09-01', '2025-11-30', N'image/rainy_season.jpg', N'image/rainy_thumb.jpg', GETDATE()),
-(N'Bảo dưỡng định kỳ', 0, N'Chương trình bảo dưỡng định kỳ cho xe cũ', '2025-06-01', '2025-06-30', N'image/maintenance_campaign.jpg', N'image/maintenance_thumb.jpg', GETDATE()),
-(N'Khuyến mãi sinh nhật 5 năm', 1, N'Kỷ niệm 5 năm thành lập trung tâm chăm sóc xe', '2025-03-15', '2025-04-15', N'image/anniversary_campaign.jpg', N'image/anniversary_thumb.jpg', GETDATE());
+-- Campaign ID = 4
+(N'Khuyến mãi Tết Nguyên Đán', 1, N'Chương trình khuyến mãi đặc biệt mừng Tết Bính Ngọ 2026', '2026-01-25', '2026-02-10', N'image/tet_campaign.jpg', N'image/tet_thumb.jpg', GETDATE()),
+-- Campaign ID = 5
+(N'Chăm sóc xe mùa mưa', 1, N'Dịch vụ chăm sóc xe chuyên biệt cho mùa mưa bão', '2025-07-01', '2025-11-30', N'image/rainy_season.jpg', N'image/rainy_thumb.jpg', GETDATE()),
+-- Campaign ID = 6
+(N'Bảo dưỡng định kỳ', 1, N'Chương trình bảo dưỡng định kỳ cho xe cũ', '2025-07-01', '2025-09-30', N'image/maintenance_campaign.jpg', N'image/maintenance_thumb.jpg', GETDATE()),
+-- Campaign ID = 7
+(N'Khuyến mãi sinh nhật 5 năm', 1, N'Kỷ niệm 5 năm thành lập trung tâm chăm sóc xe', '2025-07-15', '2025-09-15', N'image/anniversary_campaign.jpg', N'image/anniversary_thumb.jpg', GETDATE());
 GO
 
--- THÊM DỮ LIỆU MẪU CHO VOUCHER (bổ sung thêm)
 INSERT INTO [dbo].[Voucher] ([name], [description], [discount], [discountType], [maxDiscountAmount], [minOrderAmount], [startDate], [endDate], [serviceId], [campaignId], [status], [createdDate], [voucherCode], [totalVoucherCount])
 VALUES 
--- Voucher cho campaign Black Friday
+-- Voucher ID = 1 (Campaign 1: 2025-06-01 đến 2025-08-31)
+(N'Giảm 20% dịch vụ rửa xe', N'Voucher giảm 20% cho dịch vụ rửa xe cơ bản', 20, 'PERCENTAGE', 50000, 100000, '2025-06-01', '2025-08-31', 1, 1, 'ACTIVE', '2025-05-20', 'WASH20', 100),
+-- Voucher ID = 2 (Campaign 1: 2025-06-01 đến 2025-08-31)
+(N'Miễn phí kiểm tra tổng quát', N'Voucher miễn phí dịch vụ kiểm tra tổng quát cho khách hàng mới', 100, 'PERCENTAGE', 150000, 0, '2025-06-01', '2025-08-31', 2, 1, 'ACTIVE', '2025-05-20', 'FREECHECK1', 50),
+-- Voucher ID = 3 (Campaign 2: 2025-08-01 đến 2025-12-31)
+(N'Giảm 100k cho bảo dưỡng', N'Voucher giảm 100.000đ cho dịch vụ bảo dưỡng định kỳ', 100000, 'FIXED_AMOUNT', NULL, 500000, '2025-08-01', '2025-12-31', 3, 2, 'ACTIVE', '2025-07-25', 'SAVE100K', 30),
+-- Voucher ID = 4 (Campaign 3: 2025-11-29 đến 2025-11-30)
 (N'Black Friday 30%', N'Giảm 30% tất cả dịch vụ trong ngày Black Friday', 30, 'PERCENTAGE', 200000, 300000, '2025-11-29', '2025-11-30', NULL, 3, 'ACTIVE', GETDATE(), 'BF30OFF', 200),
-(N'Miễn phí rửa xe', N'Voucher miễn phí dịch vụ rửa xe cho khách hàng mới', 100, 'PERCENTAGE', 50000, 0, '2025-11-29', '2025-11-30', 1, 3, 'ACTIVE', GETDATE(), 'FREEWASH', 50),
-
--- Voucher cho campaign Tết
-(N'Lì xì Tết 100k', N'Voucher giảm 100.000đ mừng Tết Nguyên Đán', 100000, 'FIXED_AMOUNT', NULL, 500000, '2025-01-25', '2025-02-10', NULL, 4, 'ACTIVE', GETDATE(), 'TET100K', 100),
-(N'Giảm 25% bảo dưỡng Tết', N'Voucher giảm 25% dịch vụ bảo dưỡng dịp Tết', 25, 'PERCENTAGE', 150000, 200000, '2025-01-25', '2025-02-10', 3, 4, 'ACTIVE', GETDATE(), 'TET25', 80),
-
--- Voucher cho campaign mùa mưa
-(N'Chống thấm 20%', N'Giảm 20% dịch vụ chống thấm xe mùa mưa', 20, 'PERCENTAGE', 100000, 150000, '2025-09-01', '2025-11-30', 5, 5, 'ACTIVE', GETDATE(), 'RAIN20', 120),
-(N'Kiểm tra điện miễn phí', N'Miễn phí kiểm tra hệ thống điện mùa mưa', 100, 'PERCENTAGE', 90000, 0, '2025-09-01', '2025-11-30', 8, 5, 'ACTIVE', GETDATE(), 'FREECHECK', 60),
-
--- Voucher cho campaign sinh nhật
-(N'Sinh nhật 5 năm - 50%', N'Giảm 50% dịch vụ đánh bóng sơn nhân dịp sinh nhật', 50, 'PERCENTAGE', 60000, 100000, '2025-03-15', '2025-04-15', 5, 7, 'ACTIVE', GETDATE(), 'BDAY50', 150),
-(N'Combo sinh nhật 200k', N'Voucher combo giảm 200k cho 2 dịch vụ bất kỳ', 200000, 'FIXED_AMOUNT', NULL, 400000, '2025-03-15', '2025-04-15', NULL, 7, 'ACTIVE', GETDATE(), 'COMBO200K', 75),
-
--- Voucher không thuộc campaign nào
+-- Voucher ID = 5 (Campaign 3: 2025-11-29 đến 2025-11-30)
+(N'Miễn phí rửa xe Black Friday', N'Voucher miễn phí dịch vụ rửa xe cho khách hàng mới', 100, 'PERCENTAGE', 50000, 0, '2025-11-29', '2025-11-30', 1, 3, 'ACTIVE', GETDATE(), 'FREEWASH', 50),
+-- Voucher ID = 6 (Campaign 4: 2026-01-25 đến 2026-02-10)
+(N'Lì xì Tết 100k', N'Voucher giảm 100.000đ mừng Tết Nguyên Đán', 100000, 'FIXED_AMOUNT', NULL, 500000, '2026-01-25', '2026-02-10', NULL, 4, 'ACTIVE', GETDATE(), 'TET100K', 100),
+-- Voucher ID = 7 (Campaign 4: 2026-01-25 đến 2026-02-10)
+(N'Giảm 25% bảo dưỡng Tết', N'Voucher giảm 25% dịch vụ bảo dưỡng dịp Tết', 25, 'PERCENTAGE', 150000, 200000, '2026-01-25', '2026-02-10', 3, 4, 'ACTIVE', GETDATE(), 'TET25', 80),
+-- Voucher ID = 8 (Campaign 5: 2025-07-01 đến 2025-11-30)
+(N'Chống thấm 20%', N'Giảm 20% dịch vụ chống thấm xe mùa mưa', 20, 'PERCENTAGE', 100000, 150000, '2025-07-01', '2025-11-30', 5, 5, 'ACTIVE', GETDATE(), 'RAIN20', 120),
+-- Voucher ID = 9 (Campaign 5: 2025-07-01 đến 2025-11-30)
+(N'Kiểm tra điện miễn phí', N'Miễn phí kiểm tra hệ thống điện mùa mưa', 100, 'PERCENTAGE', 90000, 0, '2025-07-01', '2025-11-30', 8, 5, 'ACTIVE', GETDATE(), 'FREECHECK2', 60),
+-- Voucher ID = 10 (Campaign 7: 2025-07-15 đến 2025-09-15)
+(N'Sinh nhật 5 năm - 50%', N'Giảm 50% dịch vụ đánh bóng sơn nhân dịp sinh nhật', 50, 'PERCENTAGE', 60000, 100000, '2025-07-15', '2025-09-15', 5, 7, 'ACTIVE', GETDATE(), 'BDAY50', 150),
+-- Voucher ID = 11 (Campaign 7: 2025-07-15 đến 2025-09-15)
+(N'Combo sinh nhật 200k', N'Voucher combo giảm 200k cho 2 dịch vụ bất kỳ', 200000, 'FIXED_AMOUNT', NULL, 400000, '2025-07-15', '2025-09-15', NULL, 7, 'ACTIVE', GETDATE(), 'COMBO200K', 75),
+-- Voucher ID = 12 (Không thuộc campaign - thời gian dài hạn)
 (N'Khách VIP 15%', N'Voucher dành riêng cho khách hàng VIP', 15, 'PERCENTAGE', 100000, 200000, '2025-01-01', '2025-12-31', NULL, NULL, 'ACTIVE', GETDATE(), 'VIP15', 500),
+-- Voucher ID = 13 (Không thuộc campaign - thời gian dài hạn)
 (N'Thay lốp giảm 10%', N'Voucher giảm 10% cho dịch vụ lắp lốp mới', 10, 'PERCENTAGE', 80000, 600000, '2025-01-01', '2025-12-31', 7, NULL, 'ACTIVE', GETDATE(), 'TIRE10', 200);
 GO
 
--- THÊM DỮ LIỆU MẪU CHO BLOG
+-- ===== INSERT DATA CHO BẢNG BLOG =====
 INSERT INTO [dbo].[Blog] ([title], [campaignId], [content], [createDate], [updatedDate], [status])
 VALUES 
--- Blog thuộc campaign
+-- Blog ID = 1 (thuộc Campaign 1)
+(N'5 bước chăm sóc xe mùa hè hiệu quả', 1, N'Mùa hè với nhiệt độ cao có thể gây hại cho xe của bạn. Dưới đây là 5 bước chăm sóc xe mùa hè hiệu quả: 1. Kiểm tra hệ thống làm mát, 2. Bảo vệ sơn xe, 3. Kiểm tra lốp xe, 4. Vệ sinh nội thất, 5. Kiểm tra điều hòa', '2025-06-15', '2025-06-15', 1),
+-- Blog ID = 2 (thuộc Campaign 6)
+(N'Tầm quan trọng của việc bảo dưỡng định kỳ', 6, N'Bảo dưỡng định kỳ là chìa khóa để xe hoạt động bền bỉ và an toàn. Việc thay dầu, kiểm tra phanh, và các bộ phận khác theo lịch trình sẽ giúp phát hiện sớm các vấn đề và tiết kiệm chi phí sửa chữa lớn', '2025-07-01', '2025-07-01', 1),
+-- Blog ID = 3 (thuộc Campaign 2)
+(N'Chuẩn bị xe cho mùa đông', 2, N'Mùa đông đòi hỏi sự chuẩn bị đặc biệt cho xe. Hãy kiểm tra hệ thống sưởi, thay dầu phù hợp với nhiệt độ thấp, kiểm tra ắc quy và đảm bảo lốp xe có độ bám tốt trên đường trơn trượt', '2025-07-30', '2025-07-30', 1),
+-- Blog ID = 4 (thuộc Campaign 1)
 (N'Bí quyết chăm sóc xe mùa hè hiệu quả', 1, N'Mùa hè với nhiệt độ cao và ánh nắng gay gắt có thể ảnh hưởng nghiêm trọng đến xe của bạn. Dưới đây là những bí quyết chăm sóc xe mùa hè: 1. Kiểm tra hệ thống làm mát thường xuyên 2. Bảo vệ sơn xe khỏi tia UV 3. Kiểm tra áp suất lốp xe 4. Vệ sinh nội thất để tránh mùi hôi...', GETDATE(), GETDATE(), 1),
-
+-- Blog ID = 5 (thuộc Campaign 3)
 (N'Ưu đãi Black Friday - Tiết kiệm 30% chi phí bảo dưỡng xe', 3, N'Chỉ trong 2 ngày Black Friday, trung tâm chăm sóc xe của chúng tôi mang đến ưu đãi cực khủng với mức giảm giá lên đến 30% cho tất cả dịch vụ. Đây là cơ hội vàng để bạn chăm sóc xe yêu với chi phí tối ưu nhất...', GETDATE(), GETDATE(), 1),
-
-(N'Chuẩn bị xe đón Tết Nguyên Đán 2025', 4, N'Tết Nguyên Đán đang đến gần, đây là thời điểm quan trọng để chuẩn bị xe cho những chuyến đi xa về quê. Hãy cùng chúng tôi tìm hiểu những bước chuẩn bị cần thiết: 1. Kiểm tra toàn diện hệ thống phanh 2. Thay dầu động cơ và các loại dầu khác 3. Kiểm tra lốp xe và áp suất...', GETDATE(), GETDATE(), 1),
-
+-- Blog ID = 6 (thuộc Campaign 4)
+(N'Chuẩn bị xe đón Tết Nguyên Đán 2026', 4, N'Tết Nguyên Đán đang đến gần, đây là thời điểm quan trọng để chuẩn bị xe cho những chuyến đi xa về quê. Hãy cùng chúng tôi tìm hiểu những bước chuẩn bị cần thiết: 1. Kiểm tra toàn diện hệ thống phanh 2. Thay dầu động cơ và các loại dầu khác 3. Kiểm tra lốp xe và áp suất...', GETDATE(), GETDATE(), 1),
+-- Blog ID = 7 (thuộc Campaign 5)
 (N'Chăm sóc xe mùa mưa - Những điều cần lưu ý', 5, N'Mùa mưa bão đã đến, việc chăm sóc xe trong thời tiết ẩm ướt đòi hỏi sự chú ý đặc biệt. Bài viết này sẽ hướng dẫn bạn cách bảo vệ xe khỏi những tác động xấu của thời tiết: 1. Kiểm tra hệ thống thoát nước 2. Bảo vệ hệ thống điện khỏi ẩm ướt 3. Vệ sinh gầm xe thường xuyên...', GETDATE(), GETDATE(), 1),
-
+-- Blog ID = 8 (thuộc Campaign 7)
 (N'5 năm đồng hành - Cảm ơn sự tin tưởng của khách hàng', 7, N'Nhân dịp kỷ niệm 5 năm thành lập, chúng tôi xin gửi lời cảm ơn chân thành nhất đến tất cả khách hàng đã tin tưởng và đồng hành cùng trung tâm chăm sóc xe. Trong 5 năm qua, chúng tôi đã phục vụ hơn 10,000 lượt khách hàng với chất lượng dịch vụ ngày càng hoàn thiện...', GETDATE(), GETDATE(), 1),
-
--- Blog có trạng thái inactive
-(N'Xu hướng công nghệ ô tô 2024', NULL, N'Năm 2024 đánh dấu những bước tiến vượt bậc trong công nghệ ô tô với sự phát triển của xe điện, xe tự lái và các hệ thống hỗ trợ lái xe thông minh. Bài viết này sẽ điểm qua những xu hướng công nghệ nổi bật nhất trong ngành ô tô...', GETDATE(), GETDATE(), 0),
-
-(N'Kinh nghiệm lái xe an toàn trong thành phố', NULL, N'Lái xe trong thành phố với mật độ giao thông cao đòi hỏi kỹ năng và kinh nghiệm đặc biệt. Bài viết này sẽ chia sẻ những kinh nghiệm quý báu giúp bạn lái xe an toàn trong môi trường đô thị phức tạp...', GETDATE(), GETDATE(), 0);
+-- Blog ID = 9 (không thuộc campaign nào)
+(N'Hướng dẫn kiểm tra và bảo dưỡng ắc quy xe ô tô', 6, N'Ắc quy là bộ phận quan trọng của xe ô tô, cung cấp điện năng cho hệ thống khởi động và các thiết bị điện tử. Việc bảo dưỡng ắc quy đúng cách sẽ giúp kéo dài tuổi thọ và đảm bảo xe hoạt động ổn định. Bài viết này sẽ hướng dẫn chi tiết cách kiểm tra và bảo dưỡng ắc quy...', GETDATE(), GETDATE(), 1),
+-- Blog ID = 10 (không thuộc campaign nào)
+(N'Tại sao nên thay dầu động cơ định kỳ?', 6, N'Dầu động cơ đóng vai trò như "máu" của xe ô tô, có nhiệm vụ bôi trơn, làm mát và bảo vệ các bộ phận bên trong động cơ. Việc thay dầu định kỳ không chỉ giúp động cơ hoạt động trơn tru mà còn kéo dài tuổi thọ của xe. Hãy cùng tìm hiểu lý do tại sao việc này lại quan trọng...', GETDATE(), GETDATE(), 1),
+-- Blog ID = 11 (không thuộc campaign nào)
+(N'Cách nhận biết và xử lý khi phanh xe bị yếu', 6, N'Hệ thống phanh là một trong những bộ phận quan trọng nhất đảm bảo an toàn khi lái xe. Khi phanh xe bị yếu, điều này có thể gây ra những tình huống nguy hiểm. Bài viết này sẽ hướng dẫn cách nhận biết dấu hiệu phanh yếu và các biện pháp xử lý kịp thời...', GETDATE(), GETDATE(), 1),
+-- Blog ID = 12 (không thuộc campaign nào)
+(N'Lốp xe: Khi nào cần thay và cách chọn lốp phù hợp', 6, N'Lốp xe là bộ phận duy nhất tiếp xúc trực tiếp với mặt đường, ảnh hưởng trực tiếp đến an toàn và hiệu suất vận hành. Việc biết khi nào cần thay lốp và cách chọn lốp phù hợp sẽ giúp bạn lái xe an toàn và tiết kiệm chi phí. Cùng tìm hiểu những kiến thức cần thiết về lốp xe...', GETDATE(), GETDATE(), 1);
 GO
 
--- THÊM DỮ LIỆU MẪU CHO USERVOUCHER (bổ sung)
+-- ===== INSERT DATA CHO BẢNG USERVOUCHER =====
+-- Đảm bảo userId 4 tồn tại và các voucherId khớp
 INSERT INTO [dbo].[UserVoucher] ([userId], [voucherId], [isUsed], [voucherCode], [usedDate], [orderId])
 VALUES 
--- User 4 có thêm voucher
+-- User 4 có voucher ID = 4 (BF30OFF)
 (4, 4, 0, 'BF30OFF', NULL, NULL),
+-- User 4 có voucher ID = 6 (TET100K)
 (4, 6, 0, 'TET100K', NULL, NULL),
-(4, 11, 0, 'VIP15', NULL, NULL),
-
--- User 6 có thêm voucher  
-(6, 5, 0, 'FREEWASH', NULL, NULL),
-(6, 7, 0, 'TET25', NULL, NULL),
-(6, 12, 0, 'TIRE10', NULL, NULL),
-
--- User khác
-(1, 8, 0, 'RAIN20', NULL, NULL),
-(2, 9, 0, 'FREECHECK', NULL, NULL),
-(3, 10, 0, 'BDAY50', NULL, NULL);
+-- User 4 có voucher ID = 12 (VIP15)
+(4, 12, 0, 'VIP15', NULL, NULL);
 GO
 

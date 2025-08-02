@@ -407,14 +407,6 @@
                             </div>
                         </div>
 
-                        <!-- ✅ TRẠNG THÁI -->
-<!--                        <div class="form-group">
-                            <div class="checkbox-group">
-                                <input type="checkbox" id="status" name="status" checked>
-                                <label for="status">Kích hoạt voucher</label>
-                            </div>
-                        </div>-->
-
                         <!-- ✅ CÁC NÚT HÀNH ĐỘNG -->
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary">
