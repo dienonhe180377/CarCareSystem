@@ -113,6 +113,9 @@ public class VoucherServlet extends AuthorizationServlet {
                 case "addPrivate":
                     showAddPrivateForm(request, response);
                     break;
+                case "addClaim":
+                    showVoucherClaim(request, response);
+                    break;
                 case "detail":
                     showVoucherDetail(request, response);
                     break;
@@ -153,9 +156,9 @@ public class VoucherServlet extends AuthorizationServlet {
 
         try {
             switch (action) {
-//                case "addClaim":
-//                    addVoucherClaim(request, response);
-//                    break;
+                case "addClaim":
+                    addVoucherClaim(request, response);
+                    break;
                 case "addByUser":
                     processAddByUser(request, response);
                     break;
@@ -230,24 +233,24 @@ public class VoucherServlet extends AuthorizationServlet {
         request.getRequestDispatcher("Voucher/AddVoucherClaim.jsp").forward(request, response);
     }
 
-//    private void addVoucherClaim(HttpServletRequest request, HttpServletResponse response)
-//            throws ServletException, IOException {
-//        Voucher voucher = createVoucherFromRequest(request);
-//        String validationError = validateVoucher(voucher);
-//        if (validationError != null) {
-//            request.setAttribute("errorMessage", validationError);
-//            showVoucherClaim(request, response);
-//            return;
-//        }
-//
-//        if (voucherDAO.addVoucher(voucher)) {
-//            request.setAttribute("successMessage", "Thêm voucher công khai thành công!");
-//            showVoucherList(request, response);
-//        } else {
-//            request.setAttribute("errorMessage", "Không thể thêm voucher!");
-//            showVoucherClaim(request, response);
-//        }
-//    }
+    private void addVoucherClaim(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        Voucher voucher = createVoucherFromRequest(request);
+        String validationError = validateVoucher(voucher);
+        if (validationError != null) {
+            request.setAttribute("errorMessage", validationError);
+            showVoucherClaim(request, response);
+            return;
+        }
+
+        if (voucherDAO.addVoucher(voucher)) {
+            request.setAttribute("successMessage", "Thêm voucher công khai thành công!");
+            showVoucherList(request, response);
+        } else {
+            request.setAttribute("errorMessage", "Không thể thêm voucher!");
+            showVoucherClaim(request, response);
+        }
+    }
 
     private void showAddPublicForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

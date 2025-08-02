@@ -468,7 +468,7 @@
                                         <span class="badge badge-percentage">Phần trăm</span>
                                     </c:when>
                                     <c:otherwise>
-                                        <span class="badge badge-fixed">Số tiền cố định</span>
+                                        <span class="badge badge-fixed">Số tiền</span>
                                     </c:otherwise>
                                 </c:choose>
                             </div>

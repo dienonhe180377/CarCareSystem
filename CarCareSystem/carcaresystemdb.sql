@@ -845,7 +845,7 @@ INSERT INTO PartsService (serviceId, partId) VALUES
 INSERT INTO [dbo].[Campaign] ([name], [status], [description], [startDate], [endDate], [img], [thumbnail], [createdDate])
 VALUES 
 (N'Khuyến mãi mùa hè 2025', 1, N'Giảm giá 20% cho tất cả dịch vụ bảo dưỡng xe trong tháng 7-8', '2025-07-01', '2025-08-31', N'image/summer_campaign.jpg', N'image/summer_thumb.jpg', GETDATE()),
-(N'Chăm sóc xe cuối năm', 1, N'Ưu đãi đặc biệt cho khách hàng thân thiết', '2025-12-01', '2025-12-31', N'image/year_end_campaign.jpg', N'image/year_end_thumb.jpg', GETDATE()),
+(N'Chăm sóc xe cuối năm', 1, N'Ưu đãi đặc biệt cho khách hàng thân thiết', '2025-12-01', '2025-12-31', N'image/year_end_campaign.jpg', N'image/year_end_thumb.jpg', GETDATE())
 GO
 
 -- INSERT DỮ LIỆU MẪU CHO VOUCHER
@@ -853,7 +853,7 @@ INSERT INTO [dbo].[Voucher] ([name], [description], [discount], [discountType], 
 VALUES 
 (N'Giảm 10% dịch vụ rửa xe', N'Voucher giảm 10% cho dịch vụ rửa xe', 10, 'PERCENTAGE', 50000, 100000, '2025-07-01', '2025-08-31', 1, 1, 'ACTIVE', GETDATE(), 'WASH10', 100),
 (N'Giảm 50k bảo dưỡng', N'Voucher giảm 50.000đ cho dịch vụ bảo dưỡng', 50000, 'FIXED_AMOUNT', NULL, 200000, '2025-07-01', '2025-08-31', 3, 1, 'ACTIVE', GETDATE(), 'MAINTAIN50K', 50),
-(N'Giảm 15% thay dầu', N'Voucher giảm 15% cho dịch vụ thay dầu', 15, 'PERCENTAGE', 30000, 80000, '2025-12-01', '2025-12-31', 6, 2, 'ACTIVE', GETDATE(), 'OIL15', 75),
+(N'Giảm 15% thay dầu', N'Voucher giảm 15% cho dịch vụ thay dầu', 15, 'PERCENTAGE', 30000, 80000, '2025-12-01', '2025-12-31', 6, 2, 'ACTIVE', GETDATE(), 'OIL15', 75)
 GO
 
 -- INSERT DỮ LIỆU MẪU CHO USERVOUCHER
