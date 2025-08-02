@@ -7,6 +7,7 @@ package controller.marketing;
 import dao.NotificationDAO;
 import dao.OrderDAO;
 import dao.UserDAO;
+import dao.WorkDAO;
 import entity.Notification;
 import entity.NotificationSetting;
 import entity.Order;
@@ -19,6 +20,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Part;
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import util.SendMailService;
@@ -81,17 +85,26 @@ public class OrderManagementServlet extends HttpServlet {
             if (searchQuery != null && !searchQuery.isEmpty()) {
                 orders = orderDAO.searchOrders(searchQuery);
             } else if ("unconfirmed".equals(action)) {
-                orders = orderDAO.getOrdersByStatus("Chưa xác nhận");
+                orders = orderDAO.getOrdersByStatus("pending");
             } else if ("unpaid".equals(action)) {
-                orders = orderDAO.getOrdersByPaymentStatus("Chưa thanh toán");
+                orders = orderDAO.getOrdersByPaymentStatus("unpaid");
             } else if ("paid".equals(action)) {
-                orders = orderDAO.getOrdersByPaymentStatus("Đã thanh toán");
+                orders = orderDAO.getOrdersByPaymentStatus("paid");
             } else if ("miss".equals(action)) {
-                orders = orderDAO.getOrdersByStatus("Lỡ hẹn");
+                orders = orderDAO.getOrdersByStatus("missed");
             } else if ("done".equals(action)) {
                 orders = orderDAO.getCompletedOrders();
             } else {
                 orders = orderDAO.getAllOrders();
+            }
+
+            if (request.getSession().getAttribute("user") != null) {
+                User user = (User) request.getSession().getAttribute("user");
+                if ("manager".equals(user.getUserRole())) {
+                    UserDAO userDAO = new UserDAO();
+                    List<User> repairers = userDAO.getUsersByRole("repairer");
+                    request.setAttribute("repairers", repairers);
+                }
             }
 
             request.setAttribute("orders", orders);
@@ -120,15 +133,13 @@ public class OrderManagementServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
 
         String action = request.getParameter("action");
-        String orderIdStr = request.getParameter("orderId");
+        int orderId = Integer.parseInt(request.getParameter("orderId"));
 
         try {
-            int orderId = Integer.parseInt(orderIdStr);
-
+            Order order = orderDAO.getOrderById(orderId);
             if ("confirmPayment".equals(action)) {
-                Order order = orderDAO.getOrderById(orderId);
-                if ("Chưa thanh toán".equals(order.getPaymentStatus())) {
-                    boolean success = orderDAO.updatePaymentStatus(orderId, "Đã thanh toán");
+                if ("unpaid".equals(order.getPaymentStatus())) {
+                    boolean success = orderDAO.updatePaymentStatus(orderId, "paid");
                     if (success) {
 
                         //Notification xác nhận thanh toán
@@ -216,7 +227,8 @@ public class OrderManagementServlet extends HttpServlet {
                         request.getSession().setAttribute("error", "Đổi thanh toán thất bại!");
                     }
                 }
-            } else if ("reschedule".equals(action)) {
+            }
+            if ("reschedule".equals(action)) {
                 String newDateStr = request.getParameter("newAppointmentDate");
                 java.sql.Date newAppointmentDate = java.sql.Date.valueOf(newDateStr);
 
@@ -226,13 +238,31 @@ public class OrderManagementServlet extends HttpServlet {
                 } else {
                     request.getSession().setAttribute("error", "Đổi lịch hẹn thất bại!");
                 }
-            } else if ("confirmReceived".equals(action)) {
-                Order order = orderDAO.getOrderById(orderId);
-                java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
-                java.sql.Date appointmentDate = new java.sql.Date(order.getAppointmentDate().getTime());
+            }
+            if ("confirmReceived".equals(action)) {
+                try {
+                    if (!"pending".equals(order.getOrderStatus())) {
+                        request.getSession().setAttribute("error", "Chỉ có thể nhận xe với đơn hàng ở trạng thái chờ");
+                        response.sendRedirect(request.getContextPath() + "/ordermanagement");
+                        return;
+                    }
 
-                if (!appointmentDate.after(now)) {
-                    boolean success = orderDAO.updateOrderStatus(orderId, "Đã Nhận Xe");
+                    String receivedDateStr = request.getParameter("receivedDate");
+                    java.sql.Date receivedDate = java.sql.Date.valueOf(receivedDateStr);
+
+                    int repairerId = Integer.parseInt(request.getParameter("repairerId"));
+
+                    boolean statusUpdated = orderDAO.updateOrderStatus(orderId, "received");
+                    if (!statusUpdated) {
+                        throw new Exception("Không thể cập nhật trạng thái đơn hàng");
+                    }
+
+                    WorkDAO workDAO = new WorkDAO();
+                    int workId = workDAO.createWork(orderId, repairerId, receivedDate);
+
+                    if (workId <= 0) {
+                        throw new Exception("Không thể tạo công việc mới");
+                    }
 
                     //NOTIFICATION NHAN XE
                     UserDAO userDAO = new UserDAO();
@@ -362,13 +392,11 @@ public class OrderManagementServlet extends HttpServlet {
                     session.setAttribute("notiSetting", notiSetting);
 //                        NOTIFICATION
 
-                    if (success) {
-                        request.getSession().setAttribute("message", "Cập nhật trạng thái thành công!");
-                    } else {
-                        request.getSession().setAttribute("error", "Cập nhật trạng thái thất bại!");
-                    }
-                } else {
-                    request.getSession().setAttribute("error", "Chưa đến ngày hẹn, không thể xác nhận nhận xe!");
+                    request.getSession().setAttribute("message", "Nhận xe thành công!");
+
+                } catch (Exception e) {
+                    request.getSession().setAttribute("error", "Lỗi khi nhận xe: " + e.getMessage());
+                    e.printStackTrace();
                 }
             }
 

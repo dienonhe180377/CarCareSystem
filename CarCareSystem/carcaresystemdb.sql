@@ -322,8 +322,6 @@ CREATE TABLE [Notification](
     notification_type nvarchar(50) not null,
     CONSTRAINT FK_Notification_User    FOREIGN KEY(recieverId)    REFERENCES [User](id)
 )
-
-
 GO
 
 ALTER TABLE [Order] 
@@ -405,9 +403,8 @@ INSERT INTO Parts (name, image, categoryId, price) VALUES
   (N'Alloy Wheel 17\"',  'BDVOLK012-01-1.jpg'    ,             10, 120.00),
   (N'Tire 225/45R17',   'BDVOLK012-01-1.jpg'    ,              10,  90.00),
   (N'Valve Stem',    'BDVOLK012-01-1.jpg'    ,                 10,   5.00);
-
-
 GO
+
 INSERT INTO CarType (name, status) VALUES (N'Toyota Vios', 1);
 INSERT INTO CarType (name, status) VALUES (N'Honda Civic', 1);
 INSERT INTO CarType (name, status) VALUES (N'Hyundai Accent', 1);
@@ -461,9 +458,8 @@ INSERT INTO Supplier ([name], logo, [description], email, phone, [address]) VALU
 ('Express Wash', 'Auto_Care.jpg', N'Dịch vụ rửa xe nhanh – gọn – lẹ', 'service@expresswash.vn', '0977888999', N'90 Bạch Đằng, Quận Bình Thạnh, TP. HCM'),
 ('EliteParts', 'Auto_Care.jpg', N'Phụ tùng xe hơi cao cấp nhập khẩu', 'support@eliteparts.vn', '0933555777', N'101 Nguyễn Văn Trỗi, Quận Phú Nhuận, TP. HCM'),
 ('SafeDrive Supplies', 'Auto_Care.jpg', N'Phụ kiện an toàn và đồ bảo hộ lái xe', 'info@safedrive.vn', '0922666888', N'202 Hoàng Văn Thụ, Quận Tân Bình, TP. HCM');
-
-
 GO
+
 INSERT INTO PartsSupplier (partId, supplierId) VALUES
   -- partId 1–10 chia đều cho supplierId 1–10
   ( 1,  1),
@@ -500,7 +496,6 @@ INSERT INTO PartsSupplier (partId, supplierId) VALUES
   (28,  8),
   (29,  9),
   (30, 10);
-
 GO
 
 INSERT INTO Size (name, partId, quantity) VALUES
@@ -538,8 +533,8 @@ INSERT INTO Size (name, partId, quantity) VALUES
   ('S', 28, 300), ('M', 28, 300), ('L', 28, 300),
   ('S', 29, 300), ('M', 29, 300), ('L', 29, 300),
   ('S', 30, 300), ('M', 30, 300), ('L', 30, 300);
-
 GO
+
 INSERT INTO [Notification] ([message], status, recieverId, notification_type)
 VALUES 
 (N'Linh Kiện Tank vừa được sửa', 1, 5, N'Part'),
@@ -547,8 +542,8 @@ VALUES
 (N'Tài khoản của bạn đã được cập nhật', 1, 5, N'Part'),
 (N'Có lời mời kết bạn mới', 0, 5, N'Profile'),
 (N'Sự kiện mới sắp diễn ra', 0, 5, N'Part');
-
 GO
+
 CREATE TABLE [NotificationSetting](
     id int identity(1,1) primary key,
     recieverId int not null UNIQUE,
@@ -570,8 +565,8 @@ CREATE TABLE [NotificationSetting](
     voucher bit,
     CONSTRAINT FK_NotificationSetting_User FOREIGN KEY(recieverId) REFERENCES [User](id)
 )
-
 GO
+
 INSERT INTO [NotificationSetting] (
     recieverId,
     notification_time,
@@ -610,10 +605,8 @@ VALUES (
     0, -- blog
     0  -- voucher
 );
-
-
-
 GO
+
 INSERT INTO [NotificationSetting] (
     recieverId,
     notification_time,
@@ -652,9 +645,8 @@ VALUES (
     1, -- blog
     0  -- voucher
 );
-
-
 GO
+
 INSERT INTO [NotificationSetting] (
     recieverId,
     notification_time,
@@ -693,8 +685,8 @@ VALUES (
     0, -- blog
     0  -- voucher
 );
-
 GO
+
 INSERT INTO [NotificationSetting] (
     recieverId,
     notification_time,
@@ -733,9 +725,8 @@ VALUES (
     0, -- blog
     0  -- voucher
 );
-
-
 GO
+
 INSERT INTO [NotificationSetting] (
     recieverId,
     notification_time,
@@ -774,8 +765,8 @@ VALUES (
     0, -- blog
     0  -- voucher
 );
-
 GO
+
 INSERT INTO [NotificationSetting] (
     recieverId,
     notification_time,
@@ -815,6 +806,7 @@ VALUES (
     1  -- voucher
 );
 GO
+
 INSERT INTO Service (name, description, price, img) VALUES
 (N'Rửa xe', N'Rửa ngoài', 50000, N'rua_xe_oto.jpg'),
 (N'Vệ sinh nội thất', N'Nội thất sạch', 90000, N've_sinh_noi_that.jpg'),
@@ -827,6 +819,7 @@ INSERT INTO Service (name, description, price, img) VALUES
 (N'Thay ắc quy', N'Ắc quy mới', 350000, N'thay_acquy.jpg'),
 (N'Sửa điều hòa', N'Điều hòa mát', 250000, N'sua_dieuhoa.jpg');
 GO
+
 INSERT INTO [dbo].[InsuranceType]
            ([name], [description], [price])
      VALUES
@@ -836,6 +829,7 @@ INSERT INTO [dbo].[InsuranceType]
            (N'Bảo hiểm thiên tai', N'Bảo hiểm cho xe trong các trường hợp thiên tai như lũ lụt, bão.', 1000000),
            (N'Bảo hiểm mất cắp', N'Bảo hiểm chuyên biệt cho trường hợp xe bị trộm cắp hoặc cướp.', 1200000);
 GO
+
 INSERT INTO Attendance (userId, date, status) VALUES
 (3, '2025-07-25', 0),
 (6, '2025-07-25', 1),
@@ -851,6 +845,7 @@ INSERT INTO [dbo].[Feedback]
      VALUES
            (4, N'Dịch vụ rất tốt, nhân viên nhiệt tình.', '2025-07-25', 1, 5),
            (4, N'Thời gian chờ hơi lâu nhưng chất lượng ổn.', '2025-07-24', 2, 4);
+GO
 
 -- Feedback của userId 11
 INSERT INTO [dbo].[Feedback]
@@ -858,9 +853,6 @@ INSERT INTO [dbo].[Feedback]
      VALUES
            (11, N'Không hài lòng với thái độ phục vụ.', '2025-07-23', 3, 2),
            (11, N'Làm việc nhanh chóng, giá cả hợp lý.', '2025-07-22', 4, 5);
-GO
-
-USE [CarCareSystem]
 GO
 
 INSERT INTO [dbo].[Insurance]
@@ -877,6 +869,7 @@ VALUES
            (4, 1, '2025-07-25', '2025-07-26', 1),
            (11, 6, '2025-07-18', '2025-08-08', 1);
 GO
+
 INSERT INTO [dbo].[Campaign]
            ([name]
            ,[status]
@@ -908,6 +901,7 @@ INSERT INTO [dbo].[Campaign]
            ,'2025-07-28'
            ,'2025-08-28')
 GO
+
 INSERT INTO [dbo].[Blog]
            ([title]
            ,[campaignId]
@@ -954,7 +948,57 @@ GO
 
 INSERT INTO PartsService (serviceId, partId) VALUES
 (1,1),(2,2),(3,3),(4,4),(5,5),(6,6),(7,7),(8,8),(9,9),(10,10);
+GO
+
+-- Update lai bang Order--
+ALTER TABLE [Order]
+DROP CONSTRAINT FK_Order_CarType;
+GO
+
+ALTER TABLE [Order]
+DROP COLUMN carTypeId;
+GO
+
+ALTER TABLE [Order]
+ADD 
+    carType NVARCHAR(50) NOT NULL,
+    [description] NVARCHAR(MAX) NOT NULL;
+GO
+
+ALTER TABLE [Order] ALTER COLUMN appointmentDate DATE;
+ALTER TABLE [Order] ALTER COLUMN createDate DATE;
+GO
+
+-- Them bang moi ---
+CREATE TABLE Work(
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    order_id INT NOT NULL,
+    repairer_id INT NOT NULL,
+    [image] VARCHAR(255)  NULL,
+    received_date DATETIME  NULL,
+	return_date DATETIME  NULL,
+);
+GO
+
+ALTER TABLE Work
+ADD CONSTRAINT FK_Work_Order 
+FOREIGN KEY (order_id) REFERENCES [Order](id);
+
+ALTER TABLE Work
+ADD CONSTRAINT FK_Work_Repairer 
+FOREIGN KEY (repairer_id) REFERENCES [User](id);
+
+select * from [Order]
+
+select * from [Work]
 
 select * from [User]
 
-select * from [Order]
+INSERT INTO [Order] (
+    userId, createDate, appointmentDate, price, name, email, phone, address,
+    paymentStatus, orderStatus, paymentMethod, carType, description
+) VALUES (
+    null, '2025-07-31 12:16:30.763', '2025-08-01', 0, 'Tran Thanh Hai', 
+    'tuanlinh3898@gmail.com', '0983644236', 'Vinh Phuc', 
+    'unpaid', 'missed', 'cash', 'Honda Civic', 'loi nay ,loi kia'
+);

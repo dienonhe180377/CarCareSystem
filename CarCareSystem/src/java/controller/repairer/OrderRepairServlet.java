@@ -93,7 +93,7 @@ public class OrderRepairServlet extends HttpServlet {
             if (status != null && !status.trim().isEmpty()) {
                 orders = orderDAO.getOrdersByStatus(status);
             } else {
-                orders = orderDAO.getOrdersByStatus("Đã Nhận Xe");
+                orders = orderDAO.getOrdersByStatus("received");
             }
 
             request.setAttribute("orders", orders);
@@ -212,8 +212,8 @@ public class OrderRepairServlet extends HttpServlet {
     private void handleUpdateServices(HttpServletRequest request, HttpServletResponse response, int orderId) throws Exception {
         Order currentOrder = orderDAO.getOrderById(orderId);
 
-        if (currentOrder.getOrderStatus().equals("Hoàn Thành Sửa Chữa")
-                || currentOrder.getOrderStatus().equals("Đã Trả Xe")) {
+        if (currentOrder.getOrderStatus().equals("done")
+                || currentOrder.getOrderStatus().equals("returned")) {
             request.getSession().setAttribute("error", "Không thể cập nhật dịch vụ cho đơn hàng đã hoàn thành sửa chữa hoặc đã trả xe");
             response.sendRedirect(request.getContextPath() + "/order_repair");
             return;
@@ -257,8 +257,8 @@ public class OrderRepairServlet extends HttpServlet {
     private void handleUpdateParts(HttpServletRequest request, HttpServletResponse response, int orderId) throws Exception {
         Order currentOrder = orderDAO.getOrderById(orderId);
 
-        if (currentOrder.getOrderStatus().equals("Hoàn Thành Sửa Chữa")
-                || currentOrder.getOrderStatus().equals("Đã Trả Xe")) {
+        if (currentOrder.getOrderStatus().equals("done")
+                || currentOrder.getOrderStatus().equals("returned")) {
             request.getSession().setAttribute("error", "Không thể cập nhật phụ tùng cho đơn hàng đã hoàn thành sửa chữa hoặc đã trả xe");
             response.sendRedirect(request.getContextPath() + "/order_repair");
             return;
@@ -307,10 +307,10 @@ public class OrderRepairServlet extends HttpServlet {
 
         // Define the allowed status progression
         Map<String, List<String>> allowedTransitions = new HashMap<>();
-        allowedTransitions.put("Đã Nhận Xe", Arrays.asList("Đang Sửa Chữa"));
-        allowedTransitions.put("Đang Sửa Chữa", Arrays.asList("Hoàn Thành Sửa Chữa"));
-        allowedTransitions.put("Hoàn Thành Sửa Chữa", Arrays.asList("Đã Trả Xe"));
-        allowedTransitions.put("Đã Trả Xe", Collections.emptyList());
+        allowedTransitions.put("received", Arrays.asList("fixing"));
+        allowedTransitions.put("fixing", Arrays.asList("done"));
+        allowedTransitions.put("done", Arrays.asList("returned"));
+        allowedTransitions.put("returned", Collections.emptyList());
 
         // Check if the transition is allowed
         if (currentStatus == null || !allowedTransitions.containsKey(currentStatus)) {

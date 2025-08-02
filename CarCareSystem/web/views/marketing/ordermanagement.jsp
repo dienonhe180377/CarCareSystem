@@ -3,6 +3,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<jsp:useBean id="now" class="java.util.Date" />
+<fmt:formatDate value="${now}" var="today" pattern="yyyy-MM-dd" />
 <!DOCTYPE html>
 <html>
     <head>
@@ -171,13 +173,13 @@
                     <tbody>
                         <c:forEach items="${orders}" var="order" varStatus="loop">
                             <tr>
-                                <td>${loop.index + 1}</td>
+                                <td>${loop.index +1}</td>
                                 <td>${order.name}</td>
                                 <td>
                                     <div>${order.email}</div>
                                     <div class="text-muted">${order.phone}</div>
                                 </td>
-                                <td>${order.carType.name}</td>
+                                <td>${order.carType}</td>
                                 <td>
                                     <fmt:formatDate value="${order.appointmentDate}" pattern="dd/MM/yyyy" />
                                 </td>
@@ -186,11 +188,11 @@
                                 </td>
                                 <td>
                                     <c:choose>
-                                        <c:when test="${order.paymentStatus == 'Đã thanh toán'}">
-                                            <span class="badge badge-success">${order.paymentStatus}</span>
+                                        <c:when test="${order.paymentStatus == 'paid'}">
+                                            <span class="badge badge-success">Đã thanh toán</span>
                                         </c:when>
-                                        <c:when test="${order.paymentStatus == 'Chưa thanh toán'}">
-                                            <span class="badge badge-danger">${order.paymentStatus}</span>
+                                        <c:when test="${order.paymentStatus == 'unpaid'}">
+                                            <span class="badge badge-danger">Chưa thanh toán</span>
                                         </c:when>
                                         <c:otherwise>                                           
                                             <span class="badge badge-info">${order.paymentStatus}</span>
@@ -199,11 +201,14 @@
                                 </td>
                                 <td>
                                     <c:choose>
-                                        <c:when test="${order.orderStatus == 'Đã Nhận Xe'}">
-                                            <span class="badge badge-success">${order.orderStatus}</span>
+                                        <c:when test="${order.orderStatus == 'received'}">
+                                            <span class="badge badge-success">Đã Nhận Xe</span>
                                         </c:when>
-                                        <c:when test="${order.orderStatus == 'Chưa xác nhận'}">
-                                            <span class="badge badge-warning">${order.orderStatus}</span>
+                                        <c:when test="${order.orderStatus == 'pending'}">
+                                            <span class="badge badge-warning">Chưa xác nhận</span>
+                                        </c:when>
+                                        <c:when test="${order.orderStatus == 'missed'}">
+                                            <span class="badge badge-warning">Lỡ hẹn</span>
                                         </c:when>
                                         <c:otherwise>
                                             <span class="badge badge-info">${order.orderStatus}</span>
@@ -212,68 +217,97 @@
                                 </td>
                                 <td>
                                     <div class="action-buttons">
-                                        <c:if test="${order.paymentStatus == 'Chưa thanh toán'}">
-                                            <form class="status-form" action="${pageContext.request.contextPath}/ordermanagement" method="POST">
+                                        <c:if test="${order.paymentStatus == 'unpaid'} && ${order.orderStatus == 'returned'}">
+                                            <form class="status-form" action="${pageContext.request.contextPath}/ordermanagement" method="post">
                                                 <input type="hidden" name="action" value="confirmPayment">
                                                 <input type="hidden" name="orderId" value="${order.id}">
                                                 <button type="submit" class="btn btn-success btn-sm">Xác nhận thanh toán</button>
                                             </form>
                                         </c:if>
-                                    </div>
-                                    <div class="action-buttons">
-                                        <c:if test="${order.orderStatus == 'Chưa xác nhận'}">
-                                            <c:set var="now" value="<%= new java.util.Date() %>" />
-                                            <fmt:formatDate value="${now}" pattern="yyyy-MM-dd" var="today"/>
-                                            <fmt:formatDate value="${order.appointmentDate}" pattern="yyyy-MM-dd" var="appointmentDay"/>
 
-                                            <c:choose>
-                                                <c:when test="${appointmentDay == today}">
-                                                    <form class="status-form" action="${pageContext.request.contextPath}/ordermanagement" method="POST">
-                                                        <input type="hidden" name="action" value="confirmReceived">
-                                                        <input type="hidden" name="orderId" value="${order.id}">
-                                                        <button type="submit" class="btn btn-success btn-sm">Nhận xe</button>
-                                                    </form>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <span class="text-muted">Chưa đến ngày hẹn</span>
-                                                </c:otherwise>
-                                            </c:choose>
+                                        <c:if test="${order.orderStatus == 'pending'}">
+                                            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" 
+                                                    data-bs-target="#receiveCarModal${order.id}">
+                                                Nhận xe
+                                            </button>
+                                            <div class="modal fade" id="receiveCarModal${order.id}" tabindex="-1" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Xác nhận nhận xe cho đơn #${order.id}</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <form action="${pageContext.request.contextPath}/ordermanagement" method="post">
+                                                            <input type="hidden" name="action" value="confirmReceived">
+                                                            <input type="hidden" name="orderId" value="${order.id}">
+                                                            <div class="modal-body">
+                                                                <div class="mb-3">
+                                                                    <label class="form-label">Ngày nhận xe</label>
+                                                                    <input type="date" class="form-control" name="receivedDate" required min="${today}">
+                                                                </div>
+
+                                                                <c:if test="${sessionScope.user.userRole == 'manager'}">
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label">Kỹ thuật viên phụ trách</label>
+                                                                        <select class="form-select" name="repairerId" required>
+                                                                            <option value="">-- Chọn kỹ thuật viên --</option>
+                                                                            <c:forEach items="${repairers}" var="repairer">
+                                                                                <option value="${repairer.id}">${repairer.username}</option>
+                                                                            </c:forEach>
+                                                                        </select>
+                                                                    </div>
+                                                                </c:if>
+
+                                                                <c:if test="${sessionScope.user.userRole == 'repairer'}">
+                                                                    <input type="hidden" name="repairerId" value="${sessionScope.user.id}">
+                                                                    <div class="alert alert-info">
+                                                                        Kỹ thuật viên phụ trách: ${sessionScope.user.username}
+                                                                    </div>
+                                                                </c:if>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                                                <button type="submit" class="btn btn-primary">Xác nhận</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </c:if>
 
-                                        <c:if test="${order.orderStatus == 'Lỡ hẹn'}">                                            
+                                        <c:if test="${order.orderStatus == 'missed'}">                                            
                                             <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" 
                                                     data-bs-target="#rescheduleModal${order.id}">
                                                 Đặt lại lịch hẹn
-                                            </button>  
+                                            </button>
+                                            <div class="modal fade" id="rescheduleModal${order.id}" tabindex="-1" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Đổi lịch hẹn cho đơn #${order.id}</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <form action="${pageContext.request.contextPath}/ordermanagement" method="post">
+                                                            <input type="hidden" name="action" value="reschedule">
+                                                            <input type="hidden" name="orderId" value="${order.id}">
+                                                            <div class="modal-body">
+                                                                <div class="mb-3">
+                                                                    <label class="form-label">Ngày hẹn mới</label>
+                                                                    <input type="date" class="form-control" name="newAppointmentDate" required
+                                                                           min="<fmt:formatDate value="${now}" pattern="yyyy-MM-dd"/>">
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                                                <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </c:if>        
                                         <a href="${pageContext.request.contextPath}/orderDetail?orderId=${order.id}" 
                                            class="btn btn-info btn-sm">Details</a>
-                                    </div>
-
-                                    <div class="modal fade" id="rescheduleModal${order.id}" tabindex="-1" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">Đổi lịch hẹn cho đơn #${order.id}</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <form action="${pageContext.request.contextPath}/ordermanagement" method="POST">
-                                                    <input type="hidden" name="action" value="reschedule">
-                                                    <input type="hidden" name="orderId" value="${order.id}">
-                                                    <div class="modal-body">
-                                                        <div class="mb-3">
-                                                            <label class="form-label">Ngày hẹn mới</label>
-                                                            <input type="date" class="form-control" name="newAppointmentDate" required
-                                                                   min="<fmt:formatDate value="${now}" pattern="yyyy-MM-dd" />">
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                                                        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
                                     </div>
                                 </td>
                             </tr>

@@ -14,7 +14,6 @@ import java.util.Date;
 public class Order {
     private int id;
     private User user;
-    private CarType carType;
     private ArrayList<Service> services;
     private ArrayList<Part> parts;
     private Date createdDate;
@@ -27,11 +26,12 @@ public class Order {
     private String paymentStatus;
     private String orderStatus;
     private String paymentMethod;
+    private String carType;
+    private String description;
 
-    public Order(int id, User user, CarType carType, ArrayList<Service> services, ArrayList<Part> parts, Date createdDate, Date appointmentDate, double price, String name, String email, String phone, String address, String paymentStatus, String orderStatus, String paymentMethod) {
+    public Order(int id, User user, ArrayList<Service> services, ArrayList<Part> parts, Date createdDate, Date appointmentDate, double price, String name, String email, String phone, String address, String paymentStatus, String orderStatus, String paymentMethod, String carType, String description) {
         this.id = id;
         this.user = user;
-        this.carType = carType;
         this.services = services;
         this.parts = parts;
         this.createdDate = createdDate;
@@ -44,6 +44,8 @@ public class Order {
         this.paymentStatus = paymentStatus;
         this.orderStatus = orderStatus;
         this.paymentMethod = paymentMethod;
+        this.carType = carType;
+        this.description = description;
     }
 
     public Order() {
@@ -64,14 +66,6 @@ public class Order {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public CarType getCarType() {
-        return carType;
-    }
-
-    public void setCarType(CarType carType) {
-        this.carType = carType;
     }
 
     public ArrayList<Service> getServices() {
@@ -168,6 +162,22 @@ public class Order {
 
     public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;
+    }
+
+    public String getCarType() {
+        return carType;
+    }
+
+    public void setCarType(String carType) {
+        this.carType = carType;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
     
 }

@@ -108,20 +108,20 @@
 
             <div class="mb-4">
                 <div class="btn-group" role="group">
-                    <a href="${pageContext.request.contextPath}/order_repair?status=Đã Nhận Xe" 
-                       class="btn ${param.status eq 'Đã Nhận Xe' or empty param.status ? 'btn-primary' : 'btn-outline-primary'}">
+                    <a href="${pageContext.request.contextPath}/order_repair?status=received" 
+                       class="btn ${param.status eq 'received' or empty param.status ? 'btn-primary' : 'btn-outline-primary'}">
                         Đã Nhận Xe
                     </a>
-                    <a href="${pageContext.request.contextPath}/order_repair?status=Đang Sửa Chữa" 
-                       class="btn ${param.status eq 'Đang Sửa Chữa' ? 'btn-primary' : 'btn-outline-primary'}">
+                    <a href="${pageContext.request.contextPath}/order_repair?status=fixing" 
+                       class="btn ${param.status eq 'fixing' ? 'btn-primary' : 'btn-outline-primary'}">
                         Đang Sửa Chữa
                     </a>
-                    <a href="${pageContext.request.contextPath}/order_repair?status=Hoàn Thành Sửa Chữa" 
-                       class="btn ${param.status eq 'Hoàn Thành Sửa Chữa' ? 'btn-primary' : 'btn-outline-primary'}">
+                    <a href="${pageContext.request.contextPath}/order_repair?status=done" 
+                       class="btn ${param.status eq 'done' ? 'btn-primary' : 'btn-outline-primary'}">
                         Hoàn Thành Sửa Chữa
                     </a>
-                    <a href="${pageContext.request.contextPath}/order_repair?status=Đã Trả Xe" 
-                       class="btn ${param.status eq 'Đã Trả Xe' ? 'btn-primary' : 'btn-outline-primary'}">
+                    <a href="${pageContext.request.contextPath}/order_repair?status=returned" 
+                       class="btn ${param.status eq 'returned' ? 'btn-primary' : 'btn-outline-primary'}">
                         Đã Trả Xe
                     </a>
                     <a href="${pageContext.request.contextPath}/order_repair" 
@@ -175,7 +175,7 @@
                                     <div>${order.phone}</div>
                                     <small class="text-muted">${order.email}</small>
                                 </td>
-                                <td>${order.carType.name}</td>
+                                <td>${order.carType}</td>
                                 <td class="fw-bold">
                                     <fmt:formatNumber value="${order.price}" type="currency" currencyCode="VND"/>
                                 </td>
@@ -218,23 +218,23 @@
                                         <input type="hidden" name="action" value="updateStatus">
                                         <input type="hidden" name="orderId" value="${order.id}">
                                         <select name="newStatus" class="form-select status-select" onchange="this.form.submit()">
-                                            <option value="Đã Nhận Xe" 
-                                                    ${order.orderStatus eq 'Đã Nhận Xe' ? 'selected' : ''}
-                                                    ${order.orderStatus ne 'Đã Nhận Xe' ? 'disabled' : ''}>
+                                            <option value="received" 
+                                                    ${order.orderStatus eq 'received' ? 'selected' : ''}
+                                                    ${order.orderStatus ne 'received' ? 'disabled' : ''}>
                                                 Đã Nhận Xe
                                             </option>
-                                            <option value="Đang Sửa Chữa" 
-                                                    ${order.orderStatus eq 'Đang Sửa Chữa' ? 'selected' : ''}
-                                                    ${order.orderStatus eq 'Hoàn Thành Sửa Chữa' or order.orderStatus eq 'Đã Trả Xe' ? 'disabled' : ''}>
+                                            <option value="fixing" 
+                                                    ${order.orderStatus eq 'fixing' ? 'selected' : ''}
+                                                    ${order.orderStatus eq 'done' or order.orderStatus eq 'returned' ? 'disabled' : ''}>
                                                 Đang Sửa Chữa
                                             </option>
-                                            <option value="Hoàn Thành Sửa Chữa" 
-                                                    ${order.orderStatus eq 'Hoàn Thành Sửa Chữa' ? 'selected' : ''}
-                                                    ${order.orderStatus eq 'Đã Trả Xe' ? 'disabled' : ''}>
+                                            <option value="done" 
+                                                    ${order.orderStatus eq 'done' ? 'selected' : ''}
+                                                    ${order.orderStatus eq 'returned' ? 'disabled' : ''}>
                                                 Hoàn Thành Sửa Chữa
                                             </option>
-                                            <option value="Đã Trả Xe" 
-                                                    ${order.orderStatus eq 'Đã Trả Xe' ? 'selected' : ''}>
+                                            <option value="returned" 
+                                                    ${order.orderStatus eq 'returned' ? 'selected' : ''}>
                                                 Đã Trả Xe
                                             </option>
                                         </select>

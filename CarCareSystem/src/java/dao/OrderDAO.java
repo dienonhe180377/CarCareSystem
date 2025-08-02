@@ -4,7 +4,6 @@
  */
 package dao;
 
-import entity.CarType;
 import entity.Order;
 import entity.Part;
 import entity.Service;
@@ -20,22 +19,23 @@ public class OrderDAO extends DBConnection {
 
     private UserDAO userDAO = new UserDAO();
 
-    public int createOrder(String fullName, String email, String phone, String address, int carTypeId,
-            Date appointmentDate, double price, String paymentStatus, String orderStatus, String paymentMethod) throws SQLException {
-        String sql = "INSERT INTO [Order] (name, email, phone, address, carTypeId, appointmentDate, price, paymentStatus, orderStatus, paymentMethod) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public int createOrder(String fullName, String email, String phone, String address, Date appointmentDate,
+            double price, String paymentStatus, String orderStatus, String paymentMethod, String carType, String description) throws SQLException {
+        String sql = "INSERT INTO [Order] (name, email, phone, address, appointmentDate, price, paymentStatus, orderStatus, paymentMethod, carType, description) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, fullName);
             ps.setString(2, email);
             ps.setString(3, phone);
             ps.setString(4, address);
-            ps.setInt(5, carTypeId);
-            ps.setDate(6, appointmentDate);
-            ps.setDouble(7, price);
-            ps.setString(8, paymentStatus);
-            ps.setString(9, orderStatus);
-            ps.setString(10, paymentMethod);
+            ps.setDate(5, appointmentDate);
+            ps.setDouble(6, price);
+            ps.setString(7, paymentStatus);
+            ps.setString(8, orderStatus);
+            ps.setString(9, paymentMethod);
+            ps.setString(10, carType);
+            ps.setString(11, description);
 
             ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();
@@ -79,12 +79,10 @@ public class OrderDAO extends DBConnection {
     }
 
     public Order getOrderById(int orderId) throws SQLException {
-        String sql = "SELECT "
-                + "o.id, o.name, o.email, o.phone, o.address, o.userId,"
-                + "o.appointmentDate, o.price, o.paymentStatus, o.orderStatus, o.paymentMethod, "
-                + "ct.id AS car_type_id, ct.name AS car_type_name "
+        String sql = "SELECT o.id, o.userId, o.name, o.email, o.phone, o.address, "
+                + "o.createDate, o.appointmentDate, o.price, o.paymentStatus, "
+                + "o.orderStatus, o.paymentMethod, o.carType, o.description "
                 + "FROM [Order] o "
-                + "LEFT JOIN CarType ct ON o.carTypeId = ct.id "
                 + "WHERE o.id = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -104,11 +102,8 @@ public class OrderDAO extends DBConnection {
                 order.setPaymentStatus(rs.getString("paymentStatus"));
                 order.setOrderStatus(rs.getString("orderStatus"));
                 order.setPaymentMethod(rs.getString("paymentMethod"));
-
-                CarType carType = new CarType();
-                carType.setId(rs.getInt("car_type_id"));
-                carType.setName(rs.getString("car_type_name"));
-                order.setCarType(carType);
+                order.setCarType(rs.getString("carType"));
+                order.setDescription(rs.getString("description"));
 
                 order.setServices(getServicesForOrder(orderId));
                 order.setParts(getPartsForOrder(orderId));
@@ -195,11 +190,10 @@ public class OrderDAO extends DBConnection {
 
     public ArrayList<Order> getOrdersByEmail(String email) throws SQLException {
         ArrayList<Order> orders = new ArrayList<>();
-        String sql = "SELECT o.id, o.name, o.email, o.phone, o.address, o.createDate, "
-                + "o.appointmentDate, o.price, o.paymentStatus, o.orderStatus, o.paymentMethod, "
-                + "ct.id AS car_type_id, ct.name AS car_type_name "
+        String sql = "SELECT o.id, o.userId, o.name, o.email, o.phone, o.address, "
+                + "o.createDate, o.appointmentDate, o.price, o.paymentStatus, "
+                + "o.orderStatus, o.paymentMethod, o.carType, o.description "
                 + "FROM [Order] o "
-                + "LEFT JOIN CarType ct ON o.carTypeId = ct.id "
                 + "WHERE o.email = ? "
                 + "ORDER BY o.id DESC";
 
@@ -220,11 +214,8 @@ public class OrderDAO extends DBConnection {
                 order.setPaymentStatus(rs.getString("paymentStatus"));
                 order.setOrderStatus(rs.getString("orderStatus"));
                 order.setPaymentMethod(rs.getString("paymentMethod"));
-
-                CarType carType = new CarType();
-                carType.setId(rs.getInt("car_type_id"));
-                carType.setName(rs.getString("car_type_name"));
-                order.setCarType(carType);
+                order.setCarType(rs.getString("carType"));
+                order.setDescription(rs.getString("description"));
 
                 orders.add(order);
             }
@@ -234,11 +225,10 @@ public class OrderDAO extends DBConnection {
 
     public ArrayList<Order> getAllOrders() throws SQLException {
         ArrayList<Order> orders = new ArrayList<>();
-        String sql = "SELECT o.id, o.name, o.email, o.phone, o.address, o.createDate, "
-                + "o.appointmentDate, o.price, o.paymentStatus, o.orderStatus, o.paymentMethod, "
-                + "ct.id AS car_type_id, ct.name AS car_type_name "
+        String sql = "SELECT o.id, o.userId, o.name, o.email, o.phone, o.address, "
+                + "o.createDate, o.appointmentDate, o.price, o.paymentStatus, "
+                + "o.orderStatus, o.paymentMethod, o.carType, o.description "
                 + "FROM [Order] o "
-                + "LEFT JOIN CarType ct ON o.carTypeId = ct.id "
                 + "ORDER BY o.createDate DESC";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -257,11 +247,8 @@ public class OrderDAO extends DBConnection {
                 order.setPaymentStatus(rs.getString("paymentStatus"));
                 order.setOrderStatus(rs.getString("orderStatus"));
                 order.setPaymentMethod(rs.getString("paymentMethod"));
-
-                CarType carType = new CarType();
-                carType.setId(rs.getInt("car_type_id"));
-                carType.setName(rs.getString("car_type_name"));
-                order.setCarType(carType);
+                order.setCarType(rs.getString("carType"));
+                order.setDescription(rs.getString("description"));
 
                 orders.add(order);
             }
@@ -271,11 +258,10 @@ public class OrderDAO extends DBConnection {
 
     public ArrayList<Order> getOrdersByStatus(String status) throws SQLException {
         ArrayList<Order> orders = new ArrayList<>();
-        String sql = "SELECT o.id, o.name, o.email, o.phone, o.address, o.createDate, "
-                + "o.appointmentDate, o.price, o.paymentStatus, o.orderStatus, o.paymentMethod, "
-                + "ct.id AS car_type_id, ct.name AS car_type_name "
+        String sql = "SELECT o.id, o.userId, o.name, o.email, o.phone, o.address, "
+                + "o.createDate, o.appointmentDate, o.price, o.paymentStatus, "
+                + "o.orderStatus, o.paymentMethod, o.carType, o.description "
                 + "FROM [Order] o "
-                + "LEFT JOIN CarType ct ON o.carTypeId = ct.id "
                 + "WHERE o.orderStatus = ? "
                 + "ORDER BY o.createDate DESC";
 
@@ -296,11 +282,8 @@ public class OrderDAO extends DBConnection {
                 order.setPaymentStatus(rs.getString("paymentStatus"));
                 order.setOrderStatus(rs.getString("orderStatus"));
                 order.setPaymentMethod(rs.getString("paymentMethod"));
-
-                CarType carType = new CarType();
-                carType.setId(rs.getInt("car_type_id"));
-                carType.setName(rs.getString("car_type_name"));
-                order.setCarType(carType);
+                order.setCarType(rs.getString("carType"));
+                order.setDescription(rs.getString("description"));
 
                 int orderId = order.getId();
                 order.setServices(getServicesForOrder(orderId));
@@ -314,11 +297,10 @@ public class OrderDAO extends DBConnection {
 
     public ArrayList<Order> getOrdersByPaymentStatus(String paymentStatus) throws SQLException {
         ArrayList<Order> orders = new ArrayList<>();
-        String sql = "SELECT o.id, o.name, o.email, o.phone, o.address, o.createDate, "
-                + "o.appointmentDate, o.price, o.paymentStatus, o.orderStatus, o.paymentMethod, "
-                + "ct.id AS car_type_id, ct.name AS car_type_name "
+        String sql = "SELECT o.id, o.userId, o.name, o.email, o.phone, o.address, "
+                + "o.createDate, o.appointmentDate, o.price, o.paymentStatus, "
+                + "o.orderStatus, o.paymentMethod, o.carType, o.description "
                 + "FROM [Order] o "
-                + "LEFT JOIN CarType ct ON o.carTypeId = ct.id "
                 + "WHERE o.paymentStatus = ? "
                 + "ORDER BY o.createDate DESC";
 
@@ -339,11 +321,8 @@ public class OrderDAO extends DBConnection {
                 order.setPaymentStatus(rs.getString("paymentStatus"));
                 order.setOrderStatus(rs.getString("orderStatus"));
                 order.setPaymentMethod(rs.getString("paymentMethod"));
-
-                CarType carType = new CarType();
-                carType.setId(rs.getInt("car_type_id"));
-                carType.setName(rs.getString("car_type_name"));
-                order.setCarType(carType);
+                order.setCarType(rs.getString("carType"));
+                order.setDescription(rs.getString("description"));
 
                 orders.add(order);
             }
@@ -353,18 +332,17 @@ public class OrderDAO extends DBConnection {
 
     public ArrayList<Order> getCompletedOrders() {
         ArrayList<Order> completedOrders = new ArrayList<>();
-        String sql = "SELECT o.id, o.name, o.email, o.phone, o.address, o.createDate, "
-                + "o.appointmentDate, o.price, o.paymentStatus, o.orderStatus, o.paymentMethod, "
-                + "ct.id AS car_type_id, ct.name AS car_type_name "
+        String sql = "SELECT o.id, o.userId, o.name, o.email, o.phone, o.address, "
+                + "o.createDate, o.appointmentDate, o.price, o.paymentStatus, "
+                + "o.orderStatus, o.paymentMethod, o.carType, o.description "
                 + "FROM [Order] o "
-                + "LEFT JOIN CarType ct ON o.carTypeId = ct.id "
                 + "WHERE o.paymentStatus = ? AND o.orderStatus = ? "
                 + "ORDER BY o.createDate DESC";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 
-            stmt.setString(1, "Đã thanh toán");
-            stmt.setString(2, "Đã trả xe");
+            stmt.setString(1, "paid");
+            stmt.setString(2, "returned");
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
@@ -380,11 +358,8 @@ public class OrderDAO extends DBConnection {
                 order.setPaymentStatus(rs.getString("paymentStatus"));
                 order.setOrderStatus(rs.getString("orderStatus"));
                 order.setPaymentMethod(rs.getString("paymentMethod"));
-
-                CarType carType = new CarType();
-                carType.setId(rs.getInt("car_type_id"));
-                carType.setName(rs.getString("car_type_name"));
-                order.setCarType(carType);
+                order.setCarType(rs.getString("carType"));
+                order.setDescription(rs.getString("description"));
 
                 completedOrders.add(order);
             }
@@ -397,11 +372,10 @@ public class OrderDAO extends DBConnection {
 
     public ArrayList<Order> searchOrders(String query) throws SQLException {
         ArrayList<Order> orders = new ArrayList<>();
-        String sql = "SELECT o.id, o.name, o.email, o.phone, o.address, o.createDate, "
-                + "o.appointmentDate, o.price, o.paymentStatus, o.orderStatus, o.paymentMethod, "
-                + "ct.id AS car_type_id, ct.name AS car_type_name "
+        String sql = "SELECT o.id, o.userId, o.name, o.email, o.phone, o.address, "
+                + "o.createDate, o.appointmentDate, o.price, o.paymentStatus, "
+                + "o.orderStatus, o.paymentMethod, o.carType, o.description "
                 + "FROM [Order] o "
-                + "LEFT JOIN CarType ct ON o.carTypeId = ct.id "
                 + "WHERE o.name LIKE ? OR o.email LIKE ? OR o.phone LIKE ? OR o.id = ? "
                 + "ORDER BY o.createDate DESC";
 
@@ -433,11 +407,8 @@ public class OrderDAO extends DBConnection {
                 order.setPaymentStatus(rs.getString("paymentStatus"));
                 order.setOrderStatus(rs.getString("orderStatus"));
                 order.setPaymentMethod(rs.getString("paymentMethod"));
-
-                CarType carType = new CarType();
-                carType.setId(rs.getInt("car_type_id"));
-                carType.setName(rs.getString("car_type_name"));
-                order.setCarType(carType);
+                order.setCarType(rs.getString("carType"));
+                order.setDescription(rs.getString("description"));
 
                 orders.add(order);
             }
@@ -489,11 +460,11 @@ public class OrderDAO extends DBConnection {
 
     public boolean checkAndUpdateMissedAppointments() {
         String sql = "UPDATE [Order] SET orderStatus = ? "
-                + "WHERE orderStatus = 'Chưa xác nhận' "
-                + "AND CONVERT(DATE, appointmentDate) < CONVERT(DATE, GETDATE())";
+                + "WHERE orderStatus = 'pending' "
+                + "AND CAST(appointmentDate AS DATE) < CAST(GETDATE() AS DATE)";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setNString(1, "Lỡ hẹn");
+            ps.setNString(1, "missed");
             return ps.executeUpdate() >= 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -505,7 +476,7 @@ public class OrderDAO extends DBConnection {
         String sql = "UPDATE [Order] SET appointmentDate = ?, orderStatus = ? WHERE id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setDate(1, newAppointmentDate);
-            ps.setNString(2, "Chưa xác nhận");
+            ps.setNString(2, "pending");
             ps.setInt(3, orderId);
 
             int rowsUpdated = ps.executeUpdate();
