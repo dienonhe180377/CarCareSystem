@@ -334,11 +334,15 @@ public class ServiceServlet_JSP extends HttpServlet {
                             priceStr = priceStr.replace(",", ".").trim();
                         }
 
+                        // Chỉ cho phép chữ cái và khoảng trắng, không số/ký tự đặc biệt
+                        Pattern namePattern = Pattern.compile("^[\\p{L} ]+$");
+                        Pattern descPattern = Pattern.compile("^[\\p{L} ]+$");
+
                         String errorMsg = null;
-                        if (!isValidName(name)) {
-                            errorMsg = "Tên dịch vụ phải từ 3 đến 29 ký tự!";
-                        } else if (!isValidDescription(description)) {
-                            errorMsg = "Mô tả phải từ 3 đến 29 ký tự và không chứa ký tự đặc biệt!";
+                        if (!isValidName(name) || !namePattern.matcher(name.trim()).matches()) {
+                            errorMsg = "Tên dịch vụ phải từ 3 đến 29 ký tự, chỉ chứa chữ cái và khoảng trắng!";
+                        } else if (!isValidDescription(description) || !descPattern.matcher(description.trim()).matches()) {
+                            errorMsg = "Mô tả phải từ 3 đến 29 ký tự, chỉ chứa chữ cái và khoảng trắng!";
                         } else if (!isValidPrice(priceStr)) {
                             errorMsg = "Giá dịch vụ phải là số nguyên dương nhỏ hơn 1.000.000.000!";
                         } else if (dao.getServiceByName(name) != null) {
@@ -362,6 +366,7 @@ public class ServiceServlet_JSP extends HttpServlet {
 
                         double price = Double.parseDouble(priceStr);
 
+                        // Xử lý ảnh: nếu không upload thì lưu ảnh mặc định
                         jakarta.servlet.http.Part filePart = request.getPart("img");
                         String imgPath = "";
                         if (filePart != null && filePart.getSize() > 0 && filePart.getSubmittedFileName() != null && !filePart.getSubmittedFileName().isEmpty()) {
@@ -374,6 +379,8 @@ public class ServiceServlet_JSP extends HttpServlet {
                             String filePath = uploadDir + File.separator + fileName;
                             filePart.write(filePath);
                             imgPath = fileName;
+                        } else {
+                            imgPath = "default.png"; // Ảnh mặc định nếu không upload
                         }
 
                         Service se = new Service(0, name, description, price, imgPath);
@@ -388,65 +395,7 @@ public class ServiceServlet_JSP extends HttpServlet {
                         }
                         dao.insertPartsForService(newServiceId, partIds);
 
-                        //NOTIFICATION ADD
-                        String message = "Dịch vụ " + name + " vừa được thêm vào hệ thống";
-
-                        List<User> users = userDAO.getAllUser();
-                        for (int i = 0; i < users.size(); i++) {
-                            if (users.get(i).getUserRole().equals("manager")) {
-                                NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(users.get(i).getId());
-                                if (notiSetting.isEmail() && notiSetting.isService()) {
-                                    SendMailService.sendNotification(users.get(i).getEmail(), message);
-                                }
-                                int addNoti = notificationDAO.addNotification(users.get(i).getId(), message, "Service");
-                            }
-                        }
-                        ArrayList<Notification> notifications = notificationDAO.getAllNotificationById(currentUser.getId());
-                        NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(currentUser.getId());
-                        if (!notiSetting.isProfile()) {
-                            for (int i = notifications.size() - 1; i >= 0; i--) {
-                                if (notifications.get(i).getType().equals("Profile")) {
-                                    notifications.remove(i);
-                                }
-                            }
-                        }
-
-                        if (!notiSetting.isOrderChange()) {
-                            for (int i = notifications.size() - 1; i >= 0; i--) {
-                                if (notifications.get(i).getType().equals("Order Change")) {
-                                    notifications.remove(i);
-                                }
-                            }
-                        }
-
-                        if (!notiSetting.isAttendance()) {
-                            for (int i = notifications.size() - 1; i >= 0; i--) {
-                                if (notifications.get(i).getType().equals("Attendance")) {
-                                    notifications.remove(i);
-                                }
-                            }
-                        }
-
-                        if (!notiSetting.isService()) {
-                            for (int i = notifications.size() - 1; i >= 0; i--) {
-                                if (notifications.get(i).getType().equals("Service")) {
-                                    notifications.remove(i);
-                                }
-                            }
-                        }
-
-                        if (!notiSetting.isInsurance()) {
-                            for (int i = notifications.size() - 1; i >= 0; i--) {
-                                if (notifications.get(i).getType().equals("Insurance")) {
-                                    notifications.remove(i);
-                                }
-                            }
-                        }
-
-                        request.getSession().setAttribute("notification", notifications);
-                        request.getSession().setAttribute("notiSetting", notiSetting);
-//                        NOTIFICATION
-
+                        // Chuyển hướng về danh sách dịch vụ sau khi thêm thành công
                         response.sendRedirect("ServiceServlet_JSP?service=listService");
                     }
                     break;
