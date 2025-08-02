@@ -284,17 +284,63 @@
                                     <th>Tổng tiền</th>
                                     <th>Trạng thái thanh toán</th>
                                     <th>Trạng thái đơn</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <c:forEach items="${orders}" var="order">
                                     <tr>
                                         <td>${order.id}</td>
-                                        <td><fmt:formatDate value="${order.createdDate}" pattern="dd/MM/yyyy HH:mm" /></td>
-                                        <td><fmt:formatDate value="${order.appointmentDate}" pattern="dd/MM/yyyy HH:mm" /></td>
+                                        <td><fmt:formatDate value="${order.createdDate}" pattern="dd/MM/yyyy" /></td>
+                                        <td><fmt:formatDate value="${order.appointmentDate}" pattern="dd/MM/yyyy" /></td>
                                         <td><fmt:formatNumber value="${order.price}" type="currency" currencySymbol="₫" /></td>
-                                        <td>${order.paymentStatus}</td>
-                                        <td>${order.orderStatus}</td>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${order.paymentStatus == 'paid'}">
+                                                    <span class="badge badge-success">Đã thanh toán</span>
+                                                </c:when>
+                                                <c:when test="${order.paymentStatus == 'unpaid'}">
+                                                    <span class="badge badge-danger">Chưa thanh toán</span>
+                                                </c:when>
+                                                <c:otherwise>                                           
+                                                    <span class="badge badge-info">${order.paymentStatus}</span>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </td>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${order.orderStatus == 'pending'}">
+                                                    <span class="badge badge-warning">Chờ xác nhận</span>
+                                                </c:when>
+                                                <c:when test="${order.orderStatus == 'received'}">
+                                                    <span class="badge badge-primary">Đã nhận xe</span>
+                                                </c:when>
+                                                <c:when test="${order.orderStatus == 'missed'}">
+                                                    <span class="badge badge-success">Lỡ hẹn</span>
+                                                </c:when>
+                                                <c:when test="${order.orderStatus == 'fixing'}">
+                                                    <span class="badge badge-danger">Đang sửa chữa</span>
+                                                </c:when>
+                                                <c:when test="${order.orderStatus == 'done'}">
+                                                    <span class="badge badge-success">Sửa xong</span>
+                                                </c:when>
+                                                <c:when test="${order.orderStatus == 'returned'}">
+                                                    <span class="badge badge-danger">Đã trả xe</span>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <span class="badge badge-info">${order.orderStatus}</span>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </td>
+                                        <td>
+                                            <c:if test="${order.paymentStatus eq 'unpaid' and order.orderStatus eq 'done'}">
+                                                <form class="status-form" action="GenerateQRCode" method="get">
+                                                    <input type="hidden" name="orderId" value="${order.id}">
+                                                    <input type="hidden" name="totalAmount" value="${order.totalPrice}">
+                                                    <button type="submit" class="payment-btn">Thanh toán</button>
+                                                </form>
+                                            </c:if>
+                                        </td>
                                     </tr>
                                 </c:forEach>
                             </tbody>

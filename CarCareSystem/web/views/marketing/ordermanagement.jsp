@@ -141,11 +141,11 @@
 
             <div class="filter-buttons">
                 <a href="${pageContext.request.contextPath}/ordermanagement" class="btn btn-dark">All Orders</a>
-                <a href="${pageContext.request.contextPath}/ordermanagement?action=unconfirmed" class="btn btn-warning">Chưa Xác Nhận</a>
+                <a href="${pageContext.request.contextPath}/ordermanagement?action=unconfirmed" class="btn btn-danger">Chưa Xác Nhận</a>
                 <a href="${pageContext.request.contextPath}/ordermanagement?action=miss" class="btn btn-warning">Lỡ Hẹn</a>
-                <a href="${pageContext.request.contextPath}/ordermanagement?action=unpaid" class="btn btn-danger">Chưa Thanh Toán</a>
+                <a href="${pageContext.request.contextPath}/ordermanagement?action=done" class="btn btn-warning">Hoàn Thành Sửa Chữa</a>
                 <a href="${pageContext.request.contextPath}/ordermanagement?action=paid" class="btn btn-success">Đã Thanh Toán</a>
-                <a href="${pageContext.request.contextPath}/ordermanagement?action=done" class="btn btn-success">Đơn Hoàn Thành</a>
+                <a href="${pageContext.request.contextPath}/ordermanagement?action=complete" class="btn btn-success">Đơn Hoàn Thành</a>
             </div>
 
             <div class="search-box">
@@ -210,6 +210,9 @@
                                         <c:when test="${order.orderStatus == 'missed'}">
                                             <span class="badge badge-warning">Lỡ hẹn</span>
                                         </c:when>
+                                        <c:when test="${order.orderStatus == 'done'}">
+                                            <span class="badge badge-success">Sửa Xong</span>
+                                        </c:when>
                                         <c:otherwise>
                                             <span class="badge badge-info">${order.orderStatus}</span>
                                         </c:otherwise>
@@ -217,7 +220,7 @@
                                 </td>
                                 <td>
                                     <div class="action-buttons">
-                                        <c:if test="${order.paymentStatus == 'unpaid'} && ${order.orderStatus == 'returned'}">
+                                        <c:if test="${order.paymentStatus eq 'unpaid' and order.orderStatus eq 'done'}">
                                             <form class="status-form" action="${pageContext.request.contextPath}/ordermanagement" method="post">
                                                 <input type="hidden" name="action" value="confirmPayment">
                                                 <input type="hidden" name="orderId" value="${order.id}">

@@ -120,14 +120,6 @@
                        class="btn ${param.status eq 'done' ? 'btn-primary' : 'btn-outline-primary'}">
                         Hoàn Thành Sửa Chữa
                     </a>
-                    <a href="${pageContext.request.contextPath}/order_repair?status=returned" 
-                       class="btn ${param.status eq 'returned' ? 'btn-primary' : 'btn-outline-primary'}">
-                        Đã Trả Xe
-                    </a>
-                    <a href="${pageContext.request.contextPath}/order_repair" 
-                       class="btn btn-outline-secondary">
-                        Tất Cả
-                    </a>
                 </div>
             </div>
 
@@ -233,16 +225,12 @@
                                                     ${order.orderStatus eq 'returned' ? 'disabled' : ''}>
                                                 Hoàn Thành Sửa Chữa
                                             </option>
-                                            <option value="returned" 
-                                                    ${order.orderStatus eq 'returned' ? 'selected' : ''}>
-                                                Đã Trả Xe
-                                            </option>
                                         </select>
                                     </form>
                                 </td>
                                 <td>
                                     <div class="d-flex gap-2">
-                                        <c:if test="${order.orderStatus ne 'Hoàn Thành Sửa Chữa' and order.orderStatus ne 'Đã Trả Xe'}">
+                                        <c:if test="${order.orderStatus ne 'done' and order.orderStatus ne 'returned'}">
 
                                             <button class="btn btn-sm btn-outline-primary" 
                                                     data-bs-toggle="modal" data-bs-target="#editServicesModal${order.id}">
@@ -255,7 +243,7 @@
                                             </button>
                                         </c:if>
 
-                                        <c:if test="${order.orderStatus eq 'Hoàn Thành Sửa Chữa' or order.orderStatus eq 'Đã Trả Xe'}">
+                                        <c:if test="${order.orderStatus eq 'done' or order.orderStatus eq 'returned'}">
                                             <span class="text-muted">Không thể chỉnh sửa</span>
                                         </c:if>
                                     </div>
@@ -395,13 +383,13 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-            // Tự động đóng thông báo sau 5 giây
-            setTimeout(() => {
-                const alerts = document.querySelectorAll('.alert');
-                alerts.forEach(alert => {
-                    new bootstrap.Alert(alert).close();
-                });
-            }, 5000);
+                                            // Tự động đóng thông báo sau 5 giây
+                                            setTimeout(() => {
+                                                const alerts = document.querySelectorAll('.alert');
+                                                alerts.forEach(alert => {
+                                                    new bootstrap.Alert(alert).close();
+                                                });
+                                            }, 5000);
         </script>
     </body>
 </html>

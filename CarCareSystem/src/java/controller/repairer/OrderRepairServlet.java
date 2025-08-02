@@ -9,6 +9,7 @@ import dao.OrderDAO;
 import dao.PartDAO;
 import dao.ServiceDAO;
 import dao.UserDAO;
+import dao.WorkDAO;
 import entity.Notification;
 import entity.NotificationSetting;
 import entity.Order;
@@ -42,6 +43,7 @@ public class OrderRepairServlet extends HttpServlet {
     private OrderDAO orderDAO = new OrderDAO();
     private ServiceDAO serviceDAO = new ServiceDAO();
     private PartDAO partDAO = new PartDAO();
+    private WorkDAO workDAO = new WorkDAO();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -83,17 +85,26 @@ public class OrderRepairServlet extends HttpServlet {
             throws ServletException, IOException {
 //        processRequest(request, response);
         try {
+
+            HttpSession session = request.getSession();
+            User user = (User) session.getAttribute("user");
+
+            if (user == null || !user.getUserRole().equals("repairer")) {
+                response.sendRedirect(request.getContextPath() + "/login");
+                return;
+            }
+
             String status = request.getParameter("status");
             String searchQuery = request.getParameter("search");
             ArrayList<Order> orders;
 
             if (searchQuery != null && !searchQuery.isEmpty()) {
-                orders = orderDAO.searchOrders(searchQuery);
-            }
+                orders = workDAO.searchOrdersAssignedToRepairer(user.getId(), searchQuery);
+            } 
             if (status != null && !status.trim().isEmpty()) {
-                orders = orderDAO.getOrdersByStatus(status);
+                orders = workDAO.getOrdersByStatusAssignedToRepairer(user.getId(), status);
             } else {
-                orders = orderDAO.getOrdersByStatus("received");
+                orders = workDAO.getOrdersByStatusAssignedToRepairer(user.getId(), "received");
             }
 
             request.setAttribute("orders", orders);

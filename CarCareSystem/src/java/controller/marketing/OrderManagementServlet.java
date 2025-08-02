@@ -86,13 +86,13 @@ public class OrderManagementServlet extends HttpServlet {
                 orders = orderDAO.searchOrders(searchQuery);
             } else if ("unconfirmed".equals(action)) {
                 orders = orderDAO.getOrdersByStatus("pending");
-            } else if ("unpaid".equals(action)) {
-                orders = orderDAO.getOrdersByPaymentStatus("unpaid");
+            } else if ("done".equals(action)) {
+                orders = orderDAO.getOrdersByStatus("done");
             } else if ("paid".equals(action)) {
                 orders = orderDAO.getOrdersByPaymentStatus("paid");
             } else if ("miss".equals(action)) {
                 orders = orderDAO.getOrdersByStatus("missed");
-            } else if ("done".equals(action)) {
+            } else if ("complete".equals(action)) {
                 orders = orderDAO.getCompletedOrders();
             } else {
                 orders = orderDAO.getAllOrders();
