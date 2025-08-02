@@ -113,9 +113,6 @@ public class VoucherServlet extends AuthorizationServlet {
                 case "addPrivate":
                     showAddPrivateForm(request, response);
                     break;
-                case "addClaim":
-                    showVoucherClaim(request, response);
-                    break;
                 case "detail":
                     showVoucherDetail(request, response);
                     break;
@@ -156,9 +153,9 @@ public class VoucherServlet extends AuthorizationServlet {
 
         try {
             switch (action) {
-                case "addClaim":
-                    addVoucherClaim(request, response);
-                    break;
+//                case "addClaim":
+//                    addVoucherClaim(request, response);
+//                    break;
                 case "addByUser":
                     processAddByUser(request, response);
                     break;
@@ -225,32 +222,32 @@ public class VoucherServlet extends AuthorizationServlet {
     }
 
     private void showVoucherClaim(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException{
+            throws ServletException, IOException {
         List<Service> services = serviceDAO.getAllService();
         List<Campaign> campaigns = campaignDAO.getAllCampaigns();
         request.setAttribute("services", services);
         request.setAttribute("campaigns", campaigns);
         request.getRequestDispatcher("Voucher/AddVoucherClaim.jsp").forward(request, response);
     }
-    
-    private void addVoucherClaim(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        Voucher voucher = createVoucherFromRequest(request);
-        String validationError = validateVoucher(voucher);
-        if (validationError != null) {
-            request.setAttribute("errorMessage", validationError);
-            showVoucherClaim(request, response);
-            return;
-        }
-        
-        if (voucherDAO.addVoucher(voucher)) {
-            request.setAttribute("successMessage", "Thêm voucher công khai thành công!");
-            showVoucherList(request, response);
-        } else {
-            request.setAttribute("errorMessage", "Không thể thêm voucher!");
-            showVoucherClaim(request, response);
-        }
-    }
+
+//    private void addVoucherClaim(HttpServletRequest request, HttpServletResponse response)
+//            throws ServletException, IOException {
+//        Voucher voucher = createVoucherFromRequest(request);
+//        String validationError = validateVoucher(voucher);
+//        if (validationError != null) {
+//            request.setAttribute("errorMessage", validationError);
+//            showVoucherClaim(request, response);
+//            return;
+//        }
+//
+//        if (voucherDAO.addVoucher(voucher)) {
+//            request.setAttribute("successMessage", "Thêm voucher công khai thành công!");
+//            showVoucherList(request, response);
+//        } else {
+//            request.setAttribute("errorMessage", "Không thể thêm voucher!");
+//            showVoucherClaim(request, response);
+//        }
+//    }
 
     private void showAddPublicForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -272,13 +269,42 @@ public class VoucherServlet extends AuthorizationServlet {
 
     private void showVoucherDetail(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int voucherId = Integer.parseInt(request.getParameter("id"));
-        Voucher voucher = voucherDAO.getVoucherById(voucherId);
-        List<String> owners = userVoucherDAO.getVoucherOwners(voucherId);
+        try {
+            int voucherId = Integer.parseInt(request.getParameter("id"));
+            Voucher voucher = voucherDAO.getVoucherById(voucherId);
 
-        request.setAttribute("voucher", voucher);
-        request.setAttribute("owners", owners);
-        request.getRequestDispatcher("Voucher/VoucherDetail.jsp").forward(request, response);
+            if (voucher == null) {
+                response.sendRedirect("voucher?action=list");
+                return;
+            }
+
+            String serviceName = null;
+            int serviceId = voucher.getServiceId();
+            if (serviceId > 0) {
+                serviceName = voucherDAO.getServiceNameById(serviceId);
+            }
+
+            String campaignName = null;
+            int campaignId = voucher.getCampaignId();
+            if (campaignId > 0) {
+                campaignName = voucherDAO.getCampaignNameById(campaignId);
+            }
+            List<String> owners = userVoucherDAO.getVoucherOwners(voucherId);
+
+            request.setAttribute("voucher", voucher);
+            request.setAttribute("serviceName", serviceName);
+            request.setAttribute("campaignName", campaignName);
+            request.setAttribute("owners", owners);
+            request.getRequestDispatcher("Voucher/VoucherDetail.jsp").forward(request, response);
+
+        } catch (NumberFormatException e) {
+            System.err.println("Invalid voucher ID format: " + e.getMessage());
+            response.sendRedirect("Voucher/Voucher.jsp");
+        } catch (Exception e) {
+            System.err.println("Error in showVoucherDetail: " + e.getMessage());
+            e.printStackTrace();
+            response.sendRedirect("Voucher/Voucher.jsp");
+        }
     }
 
     private void showUserVouchers(HttpServletRequest request, HttpServletResponse response)
@@ -442,7 +468,7 @@ public class VoucherServlet extends AuthorizationServlet {
         if (!Pattern.matches("^[A-Z0-9]+$", voucher.getVoucherCode())) {
             return "Mã voucher chỉ được chứa chữ cái và số, không có dấu cách hoặc ký tự đặc biệt và voucher phải viết hoa!";
         }
-        if (voucher.getVoucherCode().length() < 4 || voucher.getVoucherCode().length() > 10) {
+        if (voucher.getVoucherCode().length() < 4 || voucher.getVoucherCode().length() > 20) {
             return "Mã voucher phải từ 4-20 ký tự!";
         }
         if (voucherDAO.isVoucherCodeExists(voucher.getVoucherCode())) {

@@ -25,7 +25,7 @@ public class UserVoucherDAO extends DBConnection {
                 + "v.serviceId, v.campaignId, v.createdDate, v.totalVoucherCount "
                 + "FROM UserVoucher uv "
                 + "JOIN Voucher v ON uv.voucherId = v.id "
-                + "WHERE uv.userId = ? AND v.status = 'ACTIVE' " 
+                + "WHERE uv.userId = ? AND v.status = 'ACTIVE' "
                 + "ORDER BY v.endDate ASC";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -57,7 +57,7 @@ public class UserVoucherDAO extends DBConnection {
                 voucher.setCampaignId(rs.getInt("campaignId"));
                 voucher.setCreatedDate(rs.getTimestamp("createdDate"));
                 voucher.setTotalVoucherCount(rs.getInt("totalVoucherCount"));
-                voucher.setStatus(rs.getString("voucherStatus")); 
+                voucher.setStatus(rs.getString("voucherStatus"));
 
                 uv.setVoucher(voucher);
                 userVouchers.add(uv);
@@ -188,4 +188,59 @@ public class UserVoucherDAO extends DBConnection {
 
         return false;
     }
+
+    public boolean claimVoucher(int userId, int voucherId, String voucherCode) {
+        if (hasUserClaimedVoucher(userId, voucherId)) {
+            System.err.println("User " + userId + " already claimed voucher " + voucherId);
+            return false;
+        }
+        String updateVoucherSql = "UPDATE Voucher SET totalVoucherCount = totalVoucherCount - 1 "
+                + "WHERE id = ? AND totalVoucherCount > 0";
+
+        String insertUserVoucherSql = "INSERT INTO UserVoucher (userId, voucherId, voucherCode, isUsed) VALUES (?, ?, ?, 0)";
+
+        try {
+            // Bắt đầu transaction
+            connection.setAutoCommit(false);
+
+            // 1. Giảm số lượng voucher
+            try (PreparedStatement ps1 = connection.prepareStatement(updateVoucherSql)) {
+                ps1.setInt(1, voucherId);
+                int updatedRows = ps1.executeUpdate();
+
+                if (updatedRows == 0) {
+                    connection.rollback();
+                    return false; // Không còn voucher
+                }
+            }
+
+            // 2. Thêm voucher cho user
+            try (PreparedStatement ps2 = connection.prepareStatement(insertUserVoucherSql)) {
+                ps2.setInt(1, userId);
+                ps2.setInt(2, voucherId);
+                ps2.setString(3, voucherCode);
+                ps2.executeUpdate();
+            }
+
+            // Commit transaction
+            connection.commit();
+            return true;
+
+        } catch (SQLException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException rollbackEx) {
+                rollbackEx.printStackTrace();
+            }
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                connection.setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }

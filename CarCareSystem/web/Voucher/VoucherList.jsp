@@ -502,11 +502,11 @@
                                 <div class="date-range">
                                     <span>
                                         <i class="fas fa-calendar-alt"></i>
-                                        <fmt:formatDate value="${userVoucher.voucher.startDate}" pattern="dd/MM/yyyy"/>
+                                        <fmt:formatDate value="${userVoucher.voucher.startDate}" pattern="HH:mm dd/MM/yyyy"/>
                                     </span>
                                     <span>
                                         <i class="fas fa-calendar-times"></i>
-                                        <fmt:formatDate value="${userVoucher.voucher.endDate}" pattern="dd/MM/yyyy"/>
+                                        <fmt:formatDate value="${userVoucher.voucher.endDate}" pattern="HH:mm dd/MM/yyyy"/>
                                     </span>
                                 </div>
                                 
