@@ -196,9 +196,9 @@
                         <th>
                             <c:if test="${fn:toLowerCase(role) eq 'admin' || fn:toLowerCase(role) eq 'manager' || fn:toLowerCase(role) eq 'marketing'}">Sửa</c:if>
                         </th>
-                        <th>
+<!--                        <th>
                             <c:if test="${fn:toLowerCase(role) eq 'admin' || fn:toLowerCase(role) eq 'manager'}">Xóa</c:if>
-                        </th>
+                        </th>-->
                     </tr>
                 </thead>
                 <tbody>
@@ -228,7 +228,7 @@
                                     <a class="btn btn-warning" href="ServiceServlet_JSP?service=updateService&id=${se.id}">Sửa</a>
                                 </c:if>
                             </td>
-                            <td>
+<!--                            <td>
                                 <c:if test="${fn:toLowerCase(role) eq 'admin' || fn:toLowerCase(role) eq 'manager'}">
                                     <a class="btn btn-danger"
                                        href="ServiceServlet_JSP?service=deleteService&id=${se.id}"
@@ -236,7 +236,7 @@
                                         Xóa
                                     </a>
                                 </c:if>
-                            </td>
+                            </td>-->
                         </tr>
                     </c:forEach>
                     <c:if test="${empty data}">

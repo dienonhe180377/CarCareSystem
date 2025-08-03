@@ -3,6 +3,11 @@
 <%
     String message = (String) request.getAttribute("success");
     String error = (String) request.getAttribute("error");
+    User user = (User) session.getAttribute("user");
+    String headerFile = "/header.jsp";
+    if (user != null && !"customer".equalsIgnoreCase(user.getUserRole())) {
+        headerFile = "/header_emp.jsp";
+    }
 %>
 <!DOCTYPE html>
 <html>
@@ -11,6 +16,7 @@
     <title>Chỉnh sửa thông tin cá nhân</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
+        /* giữ nguyên CSS như bạn gửi */
         body { font-family: "Segoe UI", Arial, sans-serif; background: #f3f4f7; margin: 0; }
         .main-container { 
             display: flex; 
@@ -162,7 +168,7 @@
     </style>
 </head>
 <body>
-    <%@include file="/header.jsp" %>
+    <jsp:include page="<%= headerFile %>" />
 <div class="main-container">
     <div class="sidebar">
         <% if (user != null) { %>

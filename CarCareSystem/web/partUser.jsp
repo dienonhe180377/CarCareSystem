@@ -49,7 +49,7 @@
     </style>
 </head>
 <body>
-      <%@include file="/header.jsp" %>
+    <%@include file="/header.jsp" %>
 <div class="container">
     <div class="part-heading">MUA PHỤ TÙNG</div>
     <!-- Thanh tìm kiếm phụ tùng -->
@@ -85,7 +85,6 @@
                     </button>
                     <form class="d-flex align-items-center mt-3" action="order" method="post">
                         <input type="hidden" name="partId" value="${part.id}">
-                        <input type="number" name="quantity" min="1" value="1" style="width:90px;" class="form-control me-2"/>
                         <button type="submit" class="part-icon-btn" title="Mua ngay" data-bs-toggle="modal">
                             <i class="fas fa-cart-plus"></i>
                         </button>
@@ -115,45 +114,18 @@
                                     <div style="color:#e67e22; font-size:1.25rem; font-weight:bold;">
                                         <fmt:formatNumber value="${part.price}" type="number" groupingUsed="true" minFractionDigits="0" /> đ
                                     </div>
-                                        <form class="d-flex align-items-center mt-3" action="order" method="post">
-                                            <input type="hidden" name="partId" value="${part.id}">
-                                            <input type="number" name="quantity" min="1" value="1" style="width:90px;" class="form-control me-2"/>
-                                            <button type="submit" class="btn btn-danger">Mua ngay</button>
-                                        </form>
+                                    <form class="d-flex align-items-center mt-3" action="order" method="post">
+                                        <input type="hidden" name="partId" value="${part.id}">
+                                        <input type="number" name="quantity" min="1" value="1" style="width:90px;" class="form-control me-2"/>
+                                        <button type="submit" class="btn btn-danger">Mua ngay</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- Buy Modal -->
-            <div class="modal fade" id="buyModal${part.id}" tabindex="-1" aria-labelledby="buyModalLabel${part.id}" aria-hidden="true">
-                <div class="modal-dialog modal-lg modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header border-0">
-                            <h5 class="modal-title" style="color:#b9001f;" id="buyModalLabel${part.id}">${part.name}</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-md-6 text-center">
-                                    <img src="${pageContext.request.contextPath}/${part.image}" class="img-fluid rounded" alt="Ảnh phụ tùng" style="max-width:320px;max-height:220px;"/>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3" style="color:#e67e22; font-size:1.25rem; font-weight:bold;">
-                                        <fmt:formatNumber value="${part.price}" type="number" groupingUsed="true" minFractionDigits="0" /> đ
-                                    </div>
-                                        <form class="d-flex align-items-center mt-3" action="order" method="post">
-                                            <input type="hidden" name="partId" value="${part.id}">
-                                            <input type="number" name="quantity" min="1" value="1" style="width:90px;" class="form-control me-2"/>
-                                            <button type="submit" class="btn btn-danger">Mua ngay</button>
-                                        </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <!-- Buy Modal (không cần vì đã có xem nhanh) -->
         </c:forEach>
         <c:if test="${empty parts}">
             <div class="empty-message">Không có phụ tùng nào!</div>

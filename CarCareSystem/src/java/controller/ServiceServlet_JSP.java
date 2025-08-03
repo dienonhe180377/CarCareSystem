@@ -75,7 +75,7 @@ public class ServiceServlet_JSP extends HttpServlet {
     private boolean isValidPrice(String priceStr) {
         try {
             double price = Double.parseDouble(priceStr);
-            return price > 0 && price < 1_000_000_000 && price == Math.floor(price);
+            return price > 1 && price < 1_000_000_000 && price == Math.floor(price);
         } catch (NumberFormatException ex) {
             return false;
         }

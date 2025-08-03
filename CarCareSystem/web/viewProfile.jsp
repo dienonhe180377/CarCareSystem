@@ -2,6 +2,12 @@
 <%@ page import="entity.User" %>
 <%
     String success = (String) request.getAttribute("success");
+    User user = (User) session.getAttribute("user");
+    String headerFile = "/header.jsp";
+    // Nếu user có và không phải role "customer" thì dùng header_emp.jsp
+    if (user != null && !"customer".equalsIgnoreCase(user.getUserRole())) {
+        headerFile = "/header_emp.jsp";
+    }
 %>
 <!DOCTYPE html>
 <html>
@@ -125,7 +131,6 @@
         }
         .btn-action:hover { background: #911616; color: #fff; }
 
-        /* Giao diện nút quay lại */
         .back-link {
             display: inline-block;
             background: #ededed;
@@ -165,7 +170,7 @@
     </style>
 </head>
 <body> 
-    <%@include file="/header.jsp" %>
+    <jsp:include page="<%= headerFile %>" />
 <% if (user == null) { %>
     <div class="profile-content full-screen" style="margin: 80px auto; max-width: 500px;">
         <h2>THÔNG TIN TÀI KHOẢN</h2>
