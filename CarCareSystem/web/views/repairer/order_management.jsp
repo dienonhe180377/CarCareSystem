@@ -130,7 +130,7 @@
                     </a>
                 </div>
             </div>
-                       
+
             <div class="search-box">
                 <form action="${pageContext.request.contextPath}/order_repair" method="GET" class="d-flex">
                     <input type="text" name="search" class="form-control" placeholder="Search by name, email, phone or ID">
@@ -218,17 +218,32 @@
                                         <input type="hidden" name="action" value="updateStatus">
                                         <input type="hidden" name="orderId" value="${order.id}">
                                         <select name="newStatus" class="form-select status-select" onchange="this.form.submit()">
-                                            <option value="Đã Nhận Xe" ${order.orderStatus eq 'Đã Nhận Xe' ? 'selected' : ''}>Đã Nhận Xe</option>
-                                            <option value="Đang Sửa Chữa" ${order.orderStatus eq 'Đang Sửa Chữa' ? 'selected' : ''}>Đang Sửa Chữa</option>
-                                            <option value="Hoàn Thành Sửa Chữa" ${order.orderStatus eq 'Hoàn Thành Sửa Chữa' ? 'selected' : ''}>Hoàn Thành Sửa Chữa</option>
-                                            <option value="Đã Trả Xe" ${order.orderStatus eq 'Đã Trả Xe' ? 'selected' : ''}>Đã Trả Xe</option>
+                                            <option value="Đã Nhận Xe" 
+                                                    ${order.orderStatus eq 'Đã Nhận Xe' ? 'selected' : ''}
+                                                    ${order.orderStatus ne 'Đã Nhận Xe' ? 'disabled' : ''}>
+                                                Đã Nhận Xe
+                                            </option>
+                                            <option value="Đang Sửa Chữa" 
+                                                    ${order.orderStatus eq 'Đang Sửa Chữa' ? 'selected' : ''}
+                                                    ${order.orderStatus eq 'Hoàn Thành Sửa Chữa' or order.orderStatus eq 'Đã Trả Xe' ? 'disabled' : ''}>
+                                                Đang Sửa Chữa
+                                            </option>
+                                            <option value="Hoàn Thành Sửa Chữa" 
+                                                    ${order.orderStatus eq 'Hoàn Thành Sửa Chữa' ? 'selected' : ''}
+                                                    ${order.orderStatus eq 'Đã Trả Xe' ? 'disabled' : ''}>
+                                                Hoàn Thành Sửa Chữa
+                                            </option>
+                                            <option value="Đã Trả Xe" 
+                                                    ${order.orderStatus eq 'Đã Trả Xe' ? 'selected' : ''}>
+                                                Đã Trả Xe
+                                            </option>
                                         </select>
                                     </form>
                                 </td>
                                 <td>
                                     <div class="d-flex gap-2">
                                         <c:if test="${order.orderStatus ne 'Hoàn Thành Sửa Chữa' and order.orderStatus ne 'Đã Trả Xe'}">
-                                            
+
                                             <button class="btn btn-sm btn-outline-primary" 
                                                     data-bs-toggle="modal" data-bs-target="#editServicesModal${order.id}">
                                                 <i class="bi bi-pencil"></i> Sửa DV
@@ -380,13 +395,13 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-                                            // Tự động đóng thông báo sau 5 giây
-                                            setTimeout(() => {
-                                                const alerts = document.querySelectorAll('.alert');
-                                                alerts.forEach(alert => {
-                                                    new bootstrap.Alert(alert).close();
-                                                });
-                                            }, 5000);
+            // Tự động đóng thông báo sau 5 giây
+            setTimeout(() => {
+                const alerts = document.querySelectorAll('.alert');
+                alerts.forEach(alert => {
+                    new bootstrap.Alert(alert).close();
+                });
+            }, 5000);
         </script>
     </body>
 </html>

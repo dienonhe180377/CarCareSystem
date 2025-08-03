@@ -24,7 +24,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import util.SendMailService;
 
@@ -144,14 +148,6 @@ public class OrderRepairServlet extends HttpServlet {
                 for (int i = 0; i < users.size(); i++) {
                     String message = "Đơn hàng số" + orderId + "đã được cập nhật trạng thái";
                     if (users.get(i).getUserRole().equals("manager") || users.get(i).getUserRole().equals("repairer")) {
-                        NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(users.get(i).getId());
-                        if (notiSetting.isEmail() && notiSetting.isOrderChange()) {
-                            SendMailService.sendNotification(users.get(i).getEmail(), message);
-                        }
-                        int addNoti = notificationDAO.addNotification(users.get(i).getId(), message, "Order Change");
-                    }
-                    if (users.get(i).getId() == user.getId()) {
-                        message = message = "Đơn hàng số" + orderId + "đã được cập nhật trạng thái";
                         NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(users.get(i).getId());
                         if (notiSetting.isEmail() && notiSetting.isOrderChange()) {
                             SendMailService.sendNotification(users.get(i).getEmail(), message);
@@ -306,6 +302,21 @@ public class OrderRepairServlet extends HttpServlet {
 
     private void handleUpdateStatus(HttpServletRequest request, HttpServletResponse response, int orderId) throws Exception {
         String newStatus = request.getParameter("newStatus");
+        Order currentOrder = orderDAO.getOrderById(orderId);
+        String currentStatus = currentOrder.getOrderStatus();
+
+        // Define the allowed status progression
+        Map<String, List<String>> allowedTransitions = new HashMap<>();
+        allowedTransitions.put("Đã Nhận Xe", Arrays.asList("Đang Sửa Chữa"));
+        allowedTransitions.put("Đang Sửa Chữa", Arrays.asList("Hoàn Thành Sửa Chữa"));
+        allowedTransitions.put("Hoàn Thành Sửa Chữa", Arrays.asList("Đã Trả Xe"));
+        allowedTransitions.put("Đã Trả Xe", Collections.emptyList());
+
+        // Check if the transition is allowed
+        if (currentStatus == null || !allowedTransitions.containsKey(currentStatus)) {
+            request.getSession().setAttribute("error", "Trạng thái hiện tại không hợp lệ: " + currentStatus);
+            return;
+        }
 
         if (newStatus != null && !newStatus.trim().isEmpty()) {
             boolean success = orderDAO.updateOrderStatus(orderId, newStatus);

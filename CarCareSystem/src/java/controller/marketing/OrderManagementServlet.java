@@ -138,6 +138,14 @@ public class OrderManagementServlet extends HttpServlet {
                         User user = (User) session.getAttribute("user");
 
                         List<User> users = userDAO.getAllUser();
+
+                        //Check Customer
+                        for (int i = 0; i < users.size(); i++) {
+                            if (users.get(i).getEmail().equals(order.getEmail())) {
+                                orderDAO.updateOrderUser(orderId, users.get(i));
+                            }
+                        }
+
                         for (int i = 0; i < users.size(); i++) {
                             String message = "Đơn hàng số" + orderId + "đã được cập nhật trạng thái";
                             if (users.get(i).getUserRole().equals("manager") || users.get(i).getUserRole().equals("repairer")) {
@@ -147,15 +155,17 @@ public class OrderManagementServlet extends HttpServlet {
                                 }
                                 int addNoti = notificationDAO.addNotification(users.get(i).getId(), message, "Order Change");
                             }
-                            if (users.get(i).getId() == user.getId()) {
-                                message = message = "Đơn hàng số" + orderId + "đã được cập nhật trạng thái";
-                                NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(users.get(i).getId());
-                                if (notiSetting.isEmail() && notiSetting.isOrderChange()) {
-                                    SendMailService.sendNotification(users.get(i).getEmail(), message);
-                                }
-                                int addNoti = notificationDAO.addNotification(users.get(i).getId(), message, "Order Change");
-                            }
                         }
+
+                        if (orderDAO.getOrderById(orderId).getUser() != null) {
+                            String message = "Đơn hàng đã được thanh toán";
+                            NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(orderDAO.getOrderById(orderId).getUser().getId());
+                            if (notiSetting.isEmail() && notiSetting.isOrderChange()) {
+                                SendMailService.sendNotification(orderDAO.getOrderById(orderId).getUser().getEmail(), message);
+                            }
+                            int addNoti = notificationDAO.addNotification(orderDAO.getOrderById(orderId).getUser().getId(), message, "Order Change");
+                        }
+
                         ArrayList<Notification> notifications = notificationDAO.getAllNotificationById(user.getId());
                         NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(user.getId());
                         if (!notiSetting.isProfile()) {
@@ -229,20 +239,12 @@ public class OrderManagementServlet extends HttpServlet {
                     NotificationDAO notificationDAO = new NotificationDAO();
                     HttpSession session = request.getSession();
                     User user = (User) session.getAttribute("user");
-
-                    //                        NOTIFICATION
                     List<User> users = userDAO.getAllUser();
+                    //                        NOTIFICATION
+
                     for (int i = 0; i < users.size(); i++) {
                         String message = "Đơn hàng số" + orderId + "đã nhận được xe";
                         if (users.get(i).getUserRole().equals("manager") || users.get(i).getUserRole().equals("repairer")) {
-                            NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(users.get(i).getId());
-                            if (notiSetting.isEmail() && notiSetting.isOrderChange()) {
-                                SendMailService.sendNotification(users.get(i).getEmail(), message);
-                            }
-                            int addNoti = notificationDAO.addNotification(users.get(i).getId(), message, "Order Change");
-                        }
-                        if (users.get(i).getId() == user.getId()) {
-                            message = message = "Đơn hàng số" + orderId + "đã nhận được xe";
                             NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(users.get(i).getId());
                             if (notiSetting.isEmail() && notiSetting.isOrderChange()) {
                                 SendMailService.sendNotification(users.get(i).getEmail(), message);

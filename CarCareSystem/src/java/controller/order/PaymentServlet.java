@@ -74,9 +74,17 @@ public class PaymentServlet extends HttpServlet {
             //NOTIFICATION Da thanh toan
             UserDAO userDAO = new UserDAO();
             NotificationDAO notificationDAO = new NotificationDAO();
-
+            
             //                        NOTIFICATION
             List<User> users = userDAO.getAllUser();
+            
+            //Check Customer
+            for (int i = 0; i < users.size(); i++) {
+                if(users.get(i).getEmail().equals(order.getEmail())){
+                    dao.updateOrderUser(orderId, users.get(i));
+                }
+            }
+            
             for (int i = 0; i < users.size(); i++) {
                 String message = "Người dùng " + user.getUsername() + " đã thanh toán đơn hàng số" + orderId;
                 if (users.get(i).getUserRole().equals("manager") || users.get(i).getUserRole().equals("repairer")) {
@@ -86,7 +94,7 @@ public class PaymentServlet extends HttpServlet {
                     }
                     int addNoti = notificationDAO.addNotification(users.get(i).getId(), message, "Order Change");
                 }
-                if (users.get(i).getId() == user.getId()) {
+                if (dao.getOrderById(orderId).getUser() != null) {
                     message = "Bạn đã thanh toán đơn hàng " + orderId;
                     NotificationSetting notiSetting = notificationDAO.getNotificationSettingById(users.get(i).getId());
                     if (notiSetting.isEmail() && notiSetting.isOrderChange()) {
