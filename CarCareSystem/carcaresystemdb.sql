@@ -931,3 +931,17 @@ VALUES
 (4, 12, 0, 'VIP15', NULL, NULL);
 GO
 
+CREATE TABLE Message (
+    message_id INT IDENTITY(1,1) PRIMARY KEY,
+    sender_id INT NOT NULL,
+    receiver_id INT NOT NULL,
+    content NVARCHAR(500) NOT NULL,
+    timestamp DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (sender_id) REFERENCES [User](id),
+    FOREIGN KEY (receiver_id) REFERENCES [User](id)
+);
+GO
+
+ALTER TABLE Message
+ALTER COLUMN content NVARCHAR(MAX) COLLATE Vietnamese_CI_AS;
+GO

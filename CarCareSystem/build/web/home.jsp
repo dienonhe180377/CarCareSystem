@@ -127,6 +127,22 @@
             color: #fff;
         }
         .voucher-btn:hover { filter: brightness(1.07);}
+        .chat-icon {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
         @media (max-width: 1200px) {
             .part-card { width: 210px; flex: 0 0 19%; }
         }
@@ -424,7 +440,9 @@
             </div>
         </div>
     </div>
-
+    
+    <div class="chat-icon" onclick="window.location.href='chat'">💬</div>
+    
     <%@include file="footer.jsp" %>
 
     <!-- Back to Top Button -->

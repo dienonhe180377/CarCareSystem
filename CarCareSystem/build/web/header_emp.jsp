@@ -716,6 +716,7 @@
             <a href="${pageContext.request.contextPath}/campaign">Quản lý Campaign</a>
             <a href="${pageContext.request.contextPath}/blog">Quản lý Blog</a>
             <a href="${pageContext.request.contextPath}/voucher">Quản lý Voucher</a>
+            <a href="${pageContext.request.contextPath}/chat">Quản lý Hộp thư</a>
             <% } %>
         </div>
 
