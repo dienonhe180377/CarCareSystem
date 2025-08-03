@@ -393,10 +393,21 @@ INSERT INTO Parts (name, image, categoryId, price) VALUES
   (N'Tie Rod End',   'BDVOLK012-01-1.jpg'    ,                 9,  45.00),
 
   -- Tires & Wheels (categoryId = 10)
-  (N'Alloy Wheel 17\"',  'BDVOLK012-01-1.jpg'    ,            10, 120.00),
-  (N'Tire 225/45R17',   'BDVOLK012-01-1.jpg'    ,             10,  90.00),
-  (N'Valve Stem',    'BDVOLK012-01-1.jpg'    ,                10,   5.00);
+  (N'Alloy Wheel 17\"',  'BDVOLK012-01-1.jpg'    ,             10, 120.00),
+  (N'Tire 225/45R17',   'BDVOLK012-01-1.jpg'    ,              10,  90.00),
+  (N'Valve Stem',    'BDVOLK012-01-1.jpg'    ,                 10,   5.00);
+GO
 
+INSERT INTO CarType (name, status) VALUES (N'Toyota Vios', 1);
+INSERT INTO CarType (name, status) VALUES (N'Honda Civic', 1);
+INSERT INTO CarType (name, status) VALUES (N'Hyundai Accent', 1);
+INSERT INTO CarType (name, status) VALUES (N'Ford Ranger', 1);
+INSERT INTO CarType (name, status) VALUES (N'Kia Seltos', 1);
+INSERT INTO CarType (name, status) VALUES (N'Mazda CX-5', 1);
+INSERT INTO CarType (name, status) VALUES (N'VinFast Lux A2.0', 1);
+INSERT INTO CarType (name, status) VALUES (N'Toyota Camry', 1);
+INSERT INTO CarType (name, status) VALUES (N'Mercedes C-Class', 1);
+INSERT INTO CarType (name, status) VALUES (N'BMW X5', 1);
 GO
 
 INSERT INTO CarType (name, status, description, created_at, updated_at) VALUES 
@@ -438,7 +449,6 @@ INSERT INTO Supplier ([name], logo, [description], email, phone, [address]) VALU
 ('Express Wash', 'Auto_Care.jpg', N'Dịch vụ rửa xe nhanh – gọn – lẹ', 'service@expresswash.vn', '0977888999', N'90 Bạch Đằng, Quận Bình Thạnh, TP. HCM'),
 ('EliteParts', 'Auto_Care.jpg', N'Phụ tùng xe hơi cao cấp nhập khẩu', 'support@eliteparts.vn', '0933555777', N'101 Nguyễn Văn Trỗi, Quận Phú Nhuận, TP. HCM'),
 ('SafeDrive Supplies', 'Auto_Care.jpg', N'Phụ kiện an toàn và đồ bảo hộ lái xe', 'info@safedrive.vn', '0922666888', N'202 Hoàng Văn Thụ, Quận Tân Bình, TP. HCM');
-
 GO
 
 INSERT INTO PartsSupplier (partId, supplierId) VALUES
@@ -477,7 +487,6 @@ INSERT INTO PartsSupplier (partId, supplierId) VALUES
   (28,  8),
   (29,  9),
   (30, 10);
-
 GO
 
 INSERT INTO Size (name, partId, quantity) VALUES
@@ -515,7 +524,6 @@ INSERT INTO Size (name, partId, quantity) VALUES
   ('S', 28, 300), ('M', 28, 300), ('L', 28, 300),
   ('S', 29, 300), ('M', 29, 300), ('L', 29, 300),
   ('S', 30, 300), ('M', 30, 300), ('L', 30, 300);
-
 GO
 
 INSERT INTO [Notification] ([message], status, recieverId, notification_type)
@@ -525,7 +533,29 @@ VALUES
 (N'Tài khoản của bạn đã được cập nhật', 1, 5, N'Part'),
 (N'Có lỗi mới kết bạn mới', 0, 5, N'Profile'),
 (N'Sự kiện mới sắp diễn ra', 0, 5, N'Part');
+GO
 
+CREATE TABLE [NotificationSetting](
+    id int identity(1,1) primary key,
+    recieverId int not null UNIQUE,
+    [notification_time] bit,
+    [notification_status] bit,
+    [profile] bit,
+    [order_change] bit,
+    attendance bit,
+    email bit,
+    [service] bit,
+    insurance bit,
+    category bit,
+    supplier bit,
+    parts bit,
+    [setting_change] bit,
+    car_type bit,
+    campaign bit,
+    blog bit,
+    voucher bit,
+    CONSTRAINT FK_NotificationSetting_User FOREIGN KEY(recieverId) REFERENCES [User](id)
+)
 GO
 
 INSERT INTO [NotificationSetting] (
@@ -566,7 +596,6 @@ VALUES (
     0, -- blog
     0  -- voucher
 );
-
 GO
 
 INSERT INTO [NotificationSetting] (
@@ -607,7 +636,6 @@ VALUES (
     1, -- blog
     0  -- voucher
 );
-
 GO
 
 INSERT INTO [NotificationSetting] (
@@ -648,7 +676,6 @@ VALUES (
     0, -- blog
     0  -- voucher
 );
-
 GO
 
 INSERT INTO [NotificationSetting] (
@@ -689,7 +716,6 @@ VALUES (
     0, -- blog
     0  -- voucher
 );
-
 GO
 
 INSERT INTO [NotificationSetting] (
@@ -730,7 +756,6 @@ VALUES (
     0, -- blog
     0  -- voucher
 );
-
 GO
 
 INSERT INTO [NotificationSetting] (
@@ -811,6 +836,7 @@ INSERT INTO [dbo].[Feedback]
      VALUES
            (4, N'Dịch vụ rất tốt, nhân viên nhiệt tình.', '2025-07-25', 1, 5),
            (4, N'Thời gian chờ hơi lâu nhưng chất lượng ổn.', '2025-07-24', 2, 4);
+GO
 
 -- Feedback của userId 11
 INSERT INTO [dbo].[Feedback]
@@ -818,9 +844,6 @@ INSERT INTO [dbo].[Feedback]
      VALUES
            (11, N'Không hài lòng với thái độ phục vụ.', '2025-07-23', 3, 2),
            (11, N'Làm việc nhanh chóng, giá cả hợp lý.', '2025-07-22', 4, 5);
-GO
-
-USE [CarCareSystem]
 GO
 
 INSERT INTO [dbo].[Insurance]
@@ -840,6 +863,49 @@ GO
 
 INSERT INTO PartsService (serviceId, partId) VALUES
 (1,1),(2,2),(3,3),(4,4),(5,5),(6,6),(7,7),(8,8),(9,9),(10,10);
+GO
+
+-- Update lai bang Order--
+ALTER TABLE [Order]
+DROP CONSTRAINT FK_Order_CarType;
+GO
+
+ALTER TABLE [Order]
+DROP COLUMN carTypeId;
+GO
+
+ALTER TABLE [Order]
+ADD 
+    carType NVARCHAR(50) NOT NULL,
+    [description] NVARCHAR(MAX) NOT NULL;
+GO
+
+ALTER TABLE [Order] ALTER COLUMN appointmentDate DATE;
+ALTER TABLE [Order] ALTER COLUMN createDate DATE;
+GO
+
+-- Them bang moi ---
+CREATE TABLE Work(
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    order_id INT NOT NULL,
+    repairer_id INT NOT NULL,
+    [image] VARCHAR(255)  NULL,
+    received_date DATETIME  NULL,
+	return_date DATETIME  NULL,
+);
+GO
+
+ALTER TABLE Work
+ADD CONSTRAINT FK_Work_Order 
+FOREIGN KEY (order_id) REFERENCES [Order](id);
+
+ALTER TABLE Work
+ADD CONSTRAINT FK_Work_Repairer 
+FOREIGN KEY (repairer_id) REFERENCES [User](id);
+
+select * from [Order]
+
+select * from [Work]
 
 -- ===== INSERT DATA CHO BẢNG CAMPAIGN =====
 INSERT INTO [dbo].[Campaign] ([name], [status], [description], [startDate], [endDate], [img], [thumbnail], [createdDate])
@@ -945,3 +1011,13 @@ GO
 ALTER TABLE Message
 ALTER COLUMN content NVARCHAR(MAX) COLLATE Vietnamese_CI_AS;
 GO
+
+INSERT INTO [Order] (
+    userId, createDate, appointmentDate, price, name, email, phone, address,
+    paymentStatus, orderStatus, paymentMethod, carType, description
+) VALUES (
+    null, '2025-07-31 12:16:30.763', '2025-08-01', 0, 'Tran Thanh Hai', 
+    'tuanlinh3898@gmail.com', '0983644236', 'Vinh Phuc', 
+    'unpaid', 'missed', 'cash', 'Honda Civic', 'loi nay ,loi kia'
+);
+

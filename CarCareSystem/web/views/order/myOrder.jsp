@@ -8,9 +8,9 @@
         <title>Lịch sử đơn hàng</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
         <style>
-            body { 
-                font-family: "Segoe UI", Arial, sans-serif; 
-                background: #f3f4f7; 
+            body {
+                font-family: "Segoe UI", Arial, sans-serif;
+                background: #f3f4f7;
                 margin: 0;
                 padding-top: 80px;
             }
@@ -21,74 +21,76 @@
                 padding: 40px;
                 gap: 40px;
             }
-            .sidebar { 
+            .sidebar {
                 width: 300px;
-                background: #fff; 
-                border-radius: 22px; 
-                box-shadow: 0 6px 36px rgba(0,0,0,0.08); 
-                padding: 30px 0; 
+                background: #fff;
+                border-radius: 22px;
+                box-shadow: 0 6px 36px rgba(0,0,0,0.08);
+                padding: 30px 0;
                 height: fit-content;
             }
-            .sidebar .profile-pic { 
-                display: flex; 
-                flex-direction: column; 
-                align-items: center; 
-                margin-bottom: 30px; 
+            .sidebar .profile-pic {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin-bottom: 30px;
             }
-            .profile-initial { 
+            .profile-initial {
                 width: 80px;
                 height: 80px;
-                border-radius: 20px; 
-                background: #b5bdc8; 
-                color: #fff; 
+                border-radius: 20px;
+                background: #b5bdc8;
+                color: #fff;
                 font-size: 35px;
-                font-weight: 700; 
-                display: flex; 
-                align-items: center; 
-                justify-content: center; 
-                margin-bottom: 15px; 
-                position: relative; 
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 15px;
+                position: relative;
             }
-            .profile-pic .verified { 
-                position: absolute; 
-                bottom: 5px; 
-                right: 5px; 
-                background: #e53935; 
-                color: #fff; 
-                border-radius: 50%; 
+            .profile-pic .verified {
+                position: absolute;
+                bottom: 5px;
+                right: 5px;
+                background: #e53935;
+                color: #fff;
+                border-radius: 50%;
                 width: 24px;
                 height: 24px;
-                display: flex; 
-                align-items: center; 
-                justify-content: center; 
-                font-size: 14px; 
-                border: 2px solid #fff; 
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 14px;
+                border: 2px solid #fff;
             }
-            .profile-pic .display-name { 
+            .profile-pic .display-name {
                 font-size: 18px;
-                font-weight: 600; 
-                color: #222; 
-                margin-bottom: 4px; 
+                font-weight: 600;
+                color: #222;
+                margin-bottom: 4px;
             }
-            .sidebar-menu { margin-top: 15px; }
-            .sidebar-menu a { 
-                display: flex; 
-                align-items: center; 
-                color: #333; 
-                padding: 12px 30px; 
-                text-decoration: none; 
-                font-size: 16px; 
-                border-radius: 10px; 
-                margin-bottom: 8px; 
-                transition: background 0.15s; 
+            .sidebar-menu {
+                margin-top: 15px;
             }
-            .sidebar-menu .active, .sidebar-menu a:hover { 
-                background: #f5f7fa; 
-                color: #0077cc; 
+            .sidebar-menu a {
+                display: flex;
+                align-items: center;
+                color: #333;
+                padding: 12px 30px;
+                text-decoration: none;
+                font-size: 16px;
+                border-radius: 10px;
+                margin-bottom: 8px;
+                transition: background 0.15s;
             }
-            .sidebar-menu i { 
-                margin-right: 15px; 
-                font-size: 16px; 
+            .sidebar-menu .active, .sidebar-menu a:hover {
+                background: #f5f7fa;
+                color: #0077cc;
+            }
+            .sidebar-menu i {
+                margin-right: 15px;
+                font-size: 16px;
             }
             .content {
                 flex: 1;
@@ -123,18 +125,6 @@
             }
             .order-table tr:hover {
                 background-color: #f8f9fa;
-            }
-            .status-paid { 
-                color: #28a745;
-                font-weight: 600;
-            }
-            .status-pending { 
-                color: #ffc107;
-                font-weight: 600;
-            }
-            .status-cancelled {
-                color: #dc3545;
-                font-weight: 600;
             }
             .no-orders {
                 text-align: center;
@@ -171,11 +161,52 @@
                     overflow-x: auto;
                 }
             }
+            .badge {
+                padding: 5px 10px;
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: 600;
+            }
+            .badge-success {
+                background-color: #d4edda;
+                color: #155724;
+            }
+            .badge-warning {
+                background-color: #fff3cd;
+                color: #856404;
+            }
+            .badge-danger {
+                background-color: #f8d7da;
+                color: #721c24;
+            }
+            .badge-primary {
+                background-color: #cce5ff;
+                color: #004085;
+            }
+            .badge-info {
+                background-color: #d1ecf1;
+                color: #0c5460;
+            }
+
+            .payment-btn {
+                background-color: #28a745;
+                color: white;
+                border: none;
+                padding: 8px 12px;
+                border-radius: 4px;
+                cursor: pointer;
+                font-weight: 600;
+                transition: background-color 0.3s;
+            }
+
+            .payment-btn:hover {
+                background-color: #218838;
+            }
         </style>
     </head>
     <body>
         <%@include file="/header.jsp" %>
-        
+
         <div class="main-container">
             <!-- Sidebar -->
             <div class="sidebar">
@@ -197,7 +228,7 @@
             <!-- Main Content -->
             <div class="content">
                 <h1>Lịch sử đơn hàng của bạn</h1>
-                
+
                 <c:if test="${not empty orders}">
                     <table class="order-table">
                         <thead>
@@ -208,29 +239,62 @@
                                 <th>Tổng tiền</th>
                                 <th>Thanh toán</th>
                                 <th>Trạng thái</th>
-                                <th>Hình thức</th>
+                                <th>Trả tiền</th>
                             </tr>
                         </thead>
                         <tbody>
                             <c:forEach items="${orders}" var="order">
                                 <tr>
                                     <td class="order-id">${order.id}</td>
-                                    <td><fmt:formatDate value="${order.createdDate}" pattern="dd/MM/yyyy HH:mm"/></td>
-                                    <td><fmt:formatDate value="${order.appointmentDate}" pattern="dd/MM/yyyy HH:mm"/></td>
-                                    <td class="price"><fmt:formatNumber value="${order.price}" type="currency"/></td>
-                                    <td class="${order.paymentStatus == 'Đã thanh toán' ? 'status-paid' : 'status-pending'}">
-                                        ${order.paymentStatus}
+                                    <td><fmt:formatDate value="${order.createdDate}" pattern="dd/MM/yyyy"/></td>
+                                    <td><fmt:formatDate value="${order.appointmentDate}" pattern="dd/MM/yyyy"/></td>
+                                    <td class="price"><fmt:formatNumber value="${order.price}" type="currency" currencySymbol="₫"/></td>
+                                    <td>
+                                        <c:choose>
+                                            <c:when test="${order.paymentStatus == 'paid'}">
+                                                <span class="badge badge-success">Đã thanh toán</span>
+                                            </c:when>
+                                            <c:when test="${order.paymentStatus == 'unpaid'}">
+                                                <span class="badge badge-danger">Chưa thanh toán</span>
+                                            </c:when>
+                                        </c:choose>
                                     </td>
-                                    <td class="${order.orderStatus == 'Đã hủy' ? 'status-cancelled' : ''}">
-                                        ${order.orderStatus}
+                                    <td>
+                                        <c:choose>
+                                            <c:when test="${order.orderStatus == 'pending'}">
+                                                <span class="badge badge-warning">Chờ xác nhận</span>
+                                            </c:when>
+                                            <c:when test="${order.orderStatus == 'received'}">
+                                                <span class="badge badge-primary">Đã nhận xe</span>
+                                            </c:when>
+                                            <c:when test="${order.orderStatus == 'missed'}">
+                                                <span class="badge badge-success">Lỡ hẹn</span>
+                                            </c:when>
+                                            <c:when test="${order.orderStatus == 'fixing'}">
+                                                <span class="badge badge-danger">Đang sửa chữa</span>
+                                            </c:when>
+                                            <c:when test="${order.orderStatus == 'done'}">
+                                                <span class="badge badge-success">Sửa xong</span>
+                                            </c:when>
+                                            <c:when test="${order.orderStatus == 'returned'}">
+                                                <span class="badge badge-danger">Đã trả xe</span>
+                                            </c:when>
+                                        </c:choose>
                                     </td>
-                                    <td>${order.paymentMethod}</td>
+                                    <td>
+                                        <c:if test="${order.paymentStatus == 'unpaid' && order.orderStatus == 'done'}">
+                                            <button class="payment-btn" 
+                                                    onclick="window.location.href = 'GenerateQRCode?orderId=${order.id}&totalAmount=${order.price}'">
+                                                <i class="fas fa-credit-card"></i> Thanh toán
+                                            </button>
+                                        </c:if>
+                                    </td>
                                 </tr>
                             </c:forEach>
                         </tbody>
                     </table>
                 </c:if>
-                
+
                 <c:if test="${empty orders}">
                     <div class="no-orders">
                         <i class="far fa-folder-open" style="font-size: 24px; margin-bottom: 10px;"></i>

@@ -108,25 +108,17 @@
 
             <div class="mb-4">
                 <div class="btn-group" role="group">
-                    <a href="${pageContext.request.contextPath}/order_repair?status=Đã Nhận Xe" 
-                       class="btn ${param.status eq 'Đã Nhận Xe' or empty param.status ? 'btn-primary' : 'btn-outline-primary'}">
+                    <a href="${pageContext.request.contextPath}/order_repair?status=received" 
+                       class="btn ${param.status eq 'received' or empty param.status ? 'btn-primary' : 'btn-outline-primary'}">
                         Đã Nhận Xe
                     </a>
-                    <a href="${pageContext.request.contextPath}/order_repair?status=Đang Sửa Chữa" 
-                       class="btn ${param.status eq 'Đang Sửa Chữa' ? 'btn-primary' : 'btn-outline-primary'}">
+                    <a href="${pageContext.request.contextPath}/order_repair?status=fixing" 
+                       class="btn ${param.status eq 'fixing' ? 'btn-primary' : 'btn-outline-primary'}">
                         Đang Sửa Chữa
                     </a>
-                    <a href="${pageContext.request.contextPath}/order_repair?status=Hoàn Thành Sửa Chữa" 
-                       class="btn ${param.status eq 'Hoàn Thành Sửa Chữa' ? 'btn-primary' : 'btn-outline-primary'}">
+                    <a href="${pageContext.request.contextPath}/order_repair?status=done" 
+                       class="btn ${param.status eq 'done' ? 'btn-primary' : 'btn-outline-primary'}">
                         Hoàn Thành Sửa Chữa
-                    </a>
-                    <a href="${pageContext.request.contextPath}/order_repair?status=Đã Trả Xe" 
-                       class="btn ${param.status eq 'Đã Trả Xe' ? 'btn-primary' : 'btn-outline-primary'}">
-                        Đã Trả Xe
-                    </a>
-                    <a href="${pageContext.request.contextPath}/order_repair" 
-                       class="btn btn-outline-secondary">
-                        Tất Cả
                     </a>
                 </div>
             </div>
@@ -175,7 +167,7 @@
                                     <div>${order.phone}</div>
                                     <small class="text-muted">${order.email}</small>
                                 </td>
-                                <td>${order.carType.name}</td>
+                                <td>${order.carType}</td>
                                 <td class="fw-bold">
                                     <fmt:formatNumber value="${order.price}" type="currency" currencyCode="VND"/>
                                 </td>
@@ -218,31 +210,27 @@
                                         <input type="hidden" name="action" value="updateStatus">
                                         <input type="hidden" name="orderId" value="${order.id}">
                                         <select name="newStatus" class="form-select status-select" onchange="this.form.submit()">
-                                            <option value="Đã Nhận Xe" 
-                                                    ${order.orderStatus eq 'Đã Nhận Xe' ? 'selected' : ''}
-                                                    ${order.orderStatus ne 'Đã Nhận Xe' ? 'disabled' : ''}>
+                                            <option value="received" 
+                                                    ${order.orderStatus eq 'received' ? 'selected' : ''}
+                                                    ${order.orderStatus ne 'received' ? 'disabled' : ''}>
                                                 Đã Nhận Xe
                                             </option>
-                                            <option value="Đang Sửa Chữa" 
-                                                    ${order.orderStatus eq 'Đang Sửa Chữa' ? 'selected' : ''}
-                                                    ${order.orderStatus eq 'Hoàn Thành Sửa Chữa' or order.orderStatus eq 'Đã Trả Xe' ? 'disabled' : ''}>
+                                            <option value="fixing" 
+                                                    ${order.orderStatus eq 'fixing' ? 'selected' : ''}
+                                                    ${order.orderStatus eq 'done' or order.orderStatus eq 'returned' ? 'disabled' : ''}>
                                                 Đang Sửa Chữa
                                             </option>
-                                            <option value="Hoàn Thành Sửa Chữa" 
-                                                    ${order.orderStatus eq 'Hoàn Thành Sửa Chữa' ? 'selected' : ''}
-                                                    ${order.orderStatus eq 'Đã Trả Xe' ? 'disabled' : ''}>
+                                            <option value="done" 
+                                                    ${order.orderStatus eq 'done' ? 'selected' : ''}
+                                                    ${order.orderStatus eq 'returned' ? 'disabled' : ''}>
                                                 Hoàn Thành Sửa Chữa
-                                            </option>
-                                            <option value="Đã Trả Xe" 
-                                                    ${order.orderStatus eq 'Đã Trả Xe' ? 'selected' : ''}>
-                                                Đã Trả Xe
                                             </option>
                                         </select>
                                     </form>
                                 </td>
                                 <td>
                                     <div class="d-flex gap-2">
-                                        <c:if test="${order.orderStatus ne 'Hoàn Thành Sửa Chữa' and order.orderStatus ne 'Đã Trả Xe'}">
+                                        <c:if test="${order.orderStatus ne 'done' and order.orderStatus ne 'returned'}">
 
                                             <button class="btn btn-sm btn-outline-primary" 
                                                     data-bs-toggle="modal" data-bs-target="#editServicesModal${order.id}">
@@ -255,7 +243,7 @@
                                             </button>
                                         </c:if>
 
-                                        <c:if test="${order.orderStatus eq 'Hoàn Thành Sửa Chữa' or order.orderStatus eq 'Đã Trả Xe'}">
+                                        <c:if test="${order.orderStatus eq 'done' or order.orderStatus eq 'returned'}">
                                             <span class="text-muted">Không thể chỉnh sửa</span>
                                         </c:if>
                                     </div>
@@ -395,13 +383,13 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-            // Tự động đóng thông báo sau 5 giây
-            setTimeout(() => {
-                const alerts = document.querySelectorAll('.alert');
-                alerts.forEach(alert => {
-                    new bootstrap.Alert(alert).close();
-                });
-            }, 5000);
+                                            // Tự động đóng thông báo sau 5 giây
+                                            setTimeout(() => {
+                                                const alerts = document.querySelectorAll('.alert');
+                                                alerts.forEach(alert => {
+                                                    new bootstrap.Alert(alert).close();
+                                                });
+                                            }, 5000);
         </script>
     </body>
 </html>

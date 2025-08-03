@@ -2,30 +2,9 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ page import="java.util.*, entity.CarType, entity.Service, entity.Part" %>
-<%@ page import="dao.CarTypeDAO, dao.ServiceDAO, dao.PartDAO" %>
 <%@ page import="entity.User" %>
 <%
     User currentUser = (User) session.getAttribute("user");
-    CarTypeDAO carDAO = new CarTypeDAO();
-    ServiceDAO serviceDAO = new ServiceDAO();
-    PartDAO partDAO = new PartDAO();
-
-    List<CarType> carTypes = carDAO.getAllCarTypes();
-    List<Service> services = serviceDAO.getAllService();
-    List<Part> parts = partDAO.getAllPart();
-%>
-<% 
-Map<Integer, Double> serviceTotalPrices = new HashMap<>();
-for (Service s : services) {
-    double totalPrice = s.getPrice();
-    if (s.getParts() != null) {
-        for (Part p : s.getParts()) {
-            totalPrice += p.getPrice();
-        }
-    }
-    serviceTotalPrices.put(s.getId(), totalPrice);
-}
 %>
 <!DOCTYPE html>
 <html>
@@ -65,7 +44,7 @@ for (Service s : services) {
             input[type="text"],
             input[type="email"],
             input[type="date"],
-            select {
+            textarea {
                 width: 100%;
                 padding: 10px 12px;
                 margin-bottom: 20px;
@@ -74,23 +53,15 @@ for (Service s : services) {
                 transition: border-color 0.3s;
             }
 
+            textarea {
+                height: 100px;
+                resize: vertical;
+            }
+
             input:focus,
-            select:focus {
+            textarea:focus {
                 border-color: #40739e;
                 outline: none;
-            }
-
-            .checkbox-group,
-            .radio-group {
-                margin-bottom: 20px;
-            }
-
-            .checkbox-group label,
-            .radio-group label {
-                font-weight: normal;
-                display: block;
-                margin-bottom: 5px;
-                color: #555;
             }
 
             .submit-btn {
@@ -116,11 +87,6 @@ for (Service s : services) {
                 font-weight: bold;
                 margin-top: 20px;
             }
-            .form-check-input:checked + .form-check-label {
-                font-weight: bold;
-                color: #2980b9;
-            }
-
         </style>
     </head>
     <body>
@@ -149,114 +115,23 @@ for (Service s : services) {
                        <%= currentUser != null ? "readonly" : "" %>>
 
                 <label>Loại Xe:</label>
-                <% if (carTypes != null && !carTypes.isEmpty()) { %>
-                <select name="carTypeId" required>
-                    <% for(CarType c : carTypes) { %>
-                    <option value="<%= c.getId() %>"><%= c.getName() %></option>
-                    <% } %>
-                </select>
-                <% } else { %>
-                <p>Không có loại xe nào trong hệ thống.</p>
-                <% } %>
+                <input type="text" name="carType" required placeholder="Nhập loại xe (VD: Toyota Camry, Honda CR-V...)">
+
+                <label>Mô tả vấn đề:</label>
+                <textarea name="description" required placeholder="Mô tả chi tiết vấn đề của xe..."></textarea>
 
                 <label>Ngày hẹn:</label>
                 <input type="date" name="appointmentDate" required 
                        min="<fmt:formatDate value="<%= new java.util.Date() %>" pattern="yyyy-MM-dd"/>">
 
-                <div class="checkbox-group">
-                    <label>Dịch vụ muốn đặt:</label>
-                    <div class="scrollable-container" style="max-height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 10px;">
-                        <% if (services != null) { 
-                            for (Service s : services) { 
-                            double totalPrice = serviceTotalPrices.get(s.getId());
-                        %>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="serviceIds" value="<%= s.getId() %>" id="service_<%= s.getId() %>" data-price="<%= totalPrice %>">
-                            <label class="form-check-label" for="service_<%= s.getId() %>">
-                                <%= s.getName() %> - <%= String.format("%,.0f", totalPrice) %> VNĐ
-                            </label>
-                        </div>
-                        <% } 
-                        } %>
-                    </div>
-                </div>
-
-                <div class="checkbox-group">
-                    <label>Thêm phụ tùng (nếu cần):</label>
-                    <div class="scrollable-container" style="max-height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 10px;">
-                        <% 
-                            Set<Integer> servicePartIds = new HashSet<>();
-                            for (Service s : services) {
-                                if (s.getParts() != null) {
-                                    for (Part p : s.getParts()) {
-                                        servicePartIds.add(p.getId());
-                                    }
-                                }
-                            }
-        
-                            if (parts != null) { 
-                                for (Part p : parts) { 
-                                    if (!servicePartIds.contains(p.getId())) { 
-                        %>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="partIds" value="<%= p.getId() %>" id="part_<%= p.getId() %>" data-price="<%= p.getPrice() %>">
-                            <label class="form-check-label" for="part_<%= p.getId() %>">
-                                <%= p.getName() %> - <%= String.format("%,.0f", p.getPrice()) %> VNĐ
-                            </label>
-                        </div>
-                        <% } 
-                    } 
-                } %>
-                    </div>
-                </div>
-
-                <p style="text-align:center; font-weight: bold; font-size: 1.2em; margin-top: 20px;">
-                    TỔNG CỘNG: <span id="totalPrice" style="color: #e74c3c;">0</span> VNĐ
-                </p>
-
-                <div class="radio-group">
-                    <label>Hình thức thanh toán:</label>
-                    <label><input type="radio" name="paymentMethod" value="Thanh toán bằng tiền mặt"> Tiền mặt</label>
-                    <label><input type="radio" name="paymentMethod" value="Chuyển khoản ngân hàng"> Chuyển khoản</label>
-                </div>
-
                 <input type="submit" class="submit-btn" value="Đặt lịch">
             </form>
 
-            <% if (request.getAttribute("message") != null) { %>
-            <p class="message"><%= request.getAttribute("message") %></p>
-            <% } %>
+            <c:if test="${not empty message}">
+                <div class="alert alert-danger">
+                    ${message}
+                </div>
+            </c:if>
         </div>
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-               
-                const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-
-                
-                function calculateTotal() {
-                    let total = 0;
-
-                    
-                    checkboxes.forEach(checkbox => {
-                        if (checkbox.checked) {
-                            const price = parseFloat(checkbox.dataset.price);
-                            if (!isNaN(price)) {
-                                total += price;
-                            }
-                        }
-                    });
-
-                    
-                    document.getElementById('totalPrice').textContent = total.toLocaleString('vi-VN');
-                }
-
-                
-                checkboxes.forEach(checkbox => {
-                    checkbox.addEventListener('change', calculateTotal);
-                });
-
-                calculateTotal();
-            });
-        </script>
     </body>
 </html>

@@ -6,13 +6,9 @@ package controller.order;
 
 import dao.NotificationDAO;
 import dao.OrderDAO;
-import dao.PartDAO;
-import dao.ServiceDAO;
 import dao.UserDAO;
 import entity.Notification;
 import entity.NotificationSetting;
-import entity.Part;
-import entity.Service;
 import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -22,7 +18,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -92,80 +87,47 @@ public class OrderServlet extends HttpServlet {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
 
-        String fullName = user != null ? user.getUsername() : request.getParameter("fullName");
-        String email = user != null ? user.getEmail() : request.getParameter("email");
-        String phone = user != null ? user.getPhone() : request.getParameter("phone");
-        String address = user != null ? user.getAddress() : request.getParameter("address");
-
-        String carTypeIdStr = request.getParameter("carTypeId");
-        if (carTypeIdStr == null || carTypeIdStr.trim().isEmpty()) {
-            request.setAttribute("message", "Vui lòng chọn loại xe.");
-            request.getRequestDispatcher("/views/order/order.jsp").forward(request, response);
-            return;
-        }
-
-        int carTypeId = Integer.parseInt(carTypeIdStr);
-
-        String appointmentDateStr = request.getParameter("appointmentDate");
-        String paymentMethod = request.getParameter("paymentMethod");
-        String[] serviceIds = request.getParameterValues("serviceIds");
-        String[] partIds = request.getParameterValues("partIds");
-
         try {
+            String fullName = user != null ? user.getUsername() : request.getParameter("fullName");
+            String email = user != null ? user.getEmail() : request.getParameter("email");
+            String phone = user != null ? user.getPhone() : request.getParameter("phone");
+            String address = user != null ? user.getAddress() : request.getParameter("address");
+
+            String carType = request.getParameter("carType");
+            String description = request.getParameter("description");
+            String appointmentDateStr = request.getParameter("appointmentDate");
+
+            String paymentStatus = "unpaid";
+            String priceStr = "0";
+            String orderStatus = "pending";
+            String paymentMethod = "cash";
+
+            double price = 0.0;
+            try {
+                price = Double.parseDouble(priceStr);
+            } catch (NumberFormatException e) {
+                // Xử lý nếu không parse được (giữ giá trị mặc định là 0.0)
+            }
+
             java.sql.Date appointmentDate = java.sql.Date.valueOf(appointmentDateStr);
             java.sql.Date currentDate = new java.sql.Date(System.currentTimeMillis());
 
             LocalDate localAppointmentDate = appointmentDate.toLocalDate();
             LocalDate localCurrentDate = currentDate.toLocalDate();
             LocalDate oneDayBeforeCurrent = localCurrentDate.minusDays(1);
-            
+
             if (localAppointmentDate.isBefore(oneDayBeforeCurrent)) {
                 throw new IllegalArgumentException("Ngày hẹn không được trước ngày hiện tại.");
             }
 
-            double price = 0.0;
-            String paymentStatus = "Chưa thanh toán";
-            String orderStatus = "Chưa xác nhận";
-
             OrderDAO dao = new OrderDAO();
-            ServiceDAO serviceDAO = new ServiceDAO();
-            PartDAO partDAO = new PartDAO();
 
-            if (serviceIds != null) {
-                for (String sid : serviceIds) {
-                    if (sid != null && !sid.trim().isEmpty()) {
-                        int serviceId = Integer.parseInt(sid);
-
-                        Service service = serviceDAO.getServiceDetail(serviceId);
-
-                        if (service != null) {
-                            double totalServicePrice = service.getPrice();
-                            if (service.getParts() != null) {
-                                for (Part part : service.getParts()) {
-                                    totalServicePrice += part.getPrice();
-                                }
-                            }
-
-                            price += totalServicePrice;
-                        }
-                    }
-                }
-            }
-
-            if (partIds != null) {
-                for (String pid : partIds) {
-                    if (pid != null && !pid.trim().isEmpty()) {
-                        int partId = Integer.parseInt(pid);
-                        double partPrice = partDAO.getPriceById(partId);
-                        price += partPrice;
-                    }
-                }
-            }
-
-            int orderId = dao.createOrder(fullName, email, phone, address, carTypeId,
-                    appointmentDate, price, paymentStatus, orderStatus, paymentMethod);
+            int orderId = dao.createOrder(fullName, email, phone, address, appointmentDate,
+                    price, paymentStatus, orderStatus, paymentMethod, carType, description);
 
             if (user != null) {
+                dao.updateOrderUser(orderId, user);
+
                 //NOTIFICATION ORDER MOI
                 UserDAO userDAO = new UserDAO();
                 NotificationDAO notificationDAO = new NotificationDAO();
@@ -237,46 +199,16 @@ public class OrderServlet extends HttpServlet {
 //                        NOTIFICATION
             }
 
-            if (serviceIds != null) {
-                for (String sid : serviceIds) {
-                    if (sid != null && !sid.trim().isEmpty()) {
-                        dao.addServiceToOrder(orderId, Integer.parseInt(sid));
-                    }
-                }
-            }
-
-            if (partIds != null) {
-                for (String pid : partIds) {
-                    if (pid != null && !pid.trim().isEmpty()) {
-                        dao.addPartToOrder(orderId, Integer.parseInt(pid));
-                    }
-                }
-            }
-
-            if ("Chuyển khoản ngân hàng".equals(paymentMethod)) {
-                session.setAttribute("currentOrderId", orderId);
-                session.setAttribute("appointmentDate", appointmentDate);
-                session.setAttribute("totalPrice", price);
-                session.setAttribute("paymentStatus", paymentStatus);
-                DecimalFormat df = new DecimalFormat("#");
-                String priceFormatted = df.format(price);
-                response.sendRedirect("GenerateQRCode?orderId=" + orderId
-                        + "&totalAmount=" + price
-                        + "&bankAccount=1013367685"
-                        + "&bankName=Vietcombank"
-                        + "&accountName=TRAN THANH HAI");
-            } else {
-                request.setAttribute("currentOrderId", orderId);
-                request.setAttribute("appointmentDate", appointmentDate);
-                request.setAttribute("totalPrice", price);
-                request.setAttribute("paymentStatus", paymentStatus);
-                request.getRequestDispatcher("/views/order/success.jsp").forward(request, response);
-            }
+            request.setAttribute("currentOrderId", orderId);
+            request.setAttribute("appointmentDate", appointmentDate);
+            request.getRequestDispatcher("/views/order/success.jsp").forward(request, response);
             return;
         } catch (Exception e) {
-            request.setAttribute("message", "Lỗi: " + e.getMessage());
+            if (e.getMessage() != null && !e.getMessage().isEmpty()) {
+                request.setAttribute("message", "Lỗi: " + e.getMessage());
+            }
+            request.getRequestDispatcher("/views/order/order.jsp").forward(request, response);
         }
-        request.getRequestDispatcher("/views/order/order.jsp").forward(request, response);
     }
 
     /**

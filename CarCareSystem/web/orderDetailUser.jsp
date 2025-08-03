@@ -115,8 +115,7 @@
                     <tr>
                         <th>Loại xe</th>
                         <td>
-                            <c:out value="${order.carType != null ? order.carType.name : ''}"/>
-                            <c:if test="${order.carType == null}"><span style="color: #999;">(Chưa xác định)</span></c:if>
+                            ${order.carType}
                         </td>
                     </tr>
                     <tr>

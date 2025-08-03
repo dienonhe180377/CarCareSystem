@@ -97,7 +97,7 @@ public class UserDAO extends DBConnection {
         }
         return null;
     }
-    
+
     public User checkUserExistByEmail(String email) {
         String sql = "SELECT * FROM [User] WHERE email = ?";
         try {
@@ -137,7 +137,6 @@ public class UserDAO extends DBConnection {
         }
         return null;
     }
-
 
     public void registerUser(String username, String password, String email, String phone, String address) {
         String sql = "INSERT INTO [User](username, password, email, phone, address, role) VALUES (?, ?, ?, ?, ?, 'customer')";
@@ -276,7 +275,7 @@ public class UserDAO extends DBConnection {
         }
         return false;
     }
-    
+
     public List<User> searchUsersByName(String keyword) {
         List<User> list = new ArrayList<>();
         String sql = "SELECT * FROM [User] WHERE username LIKE ?";
@@ -299,7 +298,7 @@ public class UserDAO extends DBConnection {
         }
         return list;
     }
-    
+
     public boolean addUser(User user) {
         String sql = "INSERT INTO [User] (username, password, email, phone,"
                 + " address, createDate, role) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -328,7 +327,7 @@ public class UserDAO extends DBConnection {
             System.out.println("Error in deleteUser: " + e.getMessage());
         }
     }
-    
+
     public void registerUserFromGoogle(String email, String name) {
         String username = email.split("@")[0];
         String password = "google_temp_password"; // Nên tạo password ngẫu nhiên
@@ -342,5 +341,23 @@ public class UserDAO extends DBConnection {
         } catch (SQLException e) {
             System.out.println("Error registering Google user: " + e.getMessage());
         }
+    }
+
+    public List<User> getUsersByRole(String role) {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT * FROM [User] WHERE role = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, role);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                User user = new User();
+                user.setId(rs.getInt("id"));
+                user.setUsername(rs.getString("username"));
+                users.add(user);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return users;
     }
 }

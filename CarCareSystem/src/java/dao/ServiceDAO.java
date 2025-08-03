@@ -22,11 +22,9 @@ public class ServiceDAO extends DBConnection {
     public Order getOrderDetail(int orderId) throws SQLException {
         Order order = null;
         String sql = "SELECT o.id, o.name, o.email, o.phone, o.address, o.createDate, o.appointmentDate, o.price, "
-                + "o.paymentStatus, o.orderStatus, o.paymentMethod, "
-                + "ct.id AS car_type_id, ct.name AS car_type_name, "
+                + "o.paymentStatus, o.orderStatus, o.paymentMethod, o.carType, o.description, "
                 + "u.id AS user_id, u.username, u.email AS user_email, u.role AS user_role "
                 + "FROM [Order] o "
-                + "LEFT JOIN CarType ct ON o.carTypeId = ct.id "
                 + "LEFT JOIN [User] u ON o.userId = u.id "
                 + "WHERE o.id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -45,12 +43,8 @@ public class ServiceDAO extends DBConnection {
                     order.setPaymentStatus(rs.getString("paymentStatus"));
                     order.setOrderStatus(rs.getString("orderStatus"));
                     order.setPaymentMethod(rs.getString("paymentMethod"));
-
-                    // Set CarType
-                    CarType carType = new CarType();
-                    carType.setId(rs.getInt("car_type_id"));
-                    carType.setName(rs.getString("car_type_name"));
-                    order.setCarType(carType);
+                    order.setCarType(rs.getString("carType"));
+                    order.setDescription(rs.getString("description"));
 
                     // Set User
                     User user = new User();
