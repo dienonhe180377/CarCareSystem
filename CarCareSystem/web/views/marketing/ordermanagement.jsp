@@ -221,11 +221,77 @@
                                 <td>
                                     <div class="action-buttons">
                                         <c:if test="${order.paymentStatus eq 'unpaid' and order.orderStatus eq 'done'}">
-                                            <form class="status-form" action="${pageContext.request.contextPath}/ordermanagement" method="post">
-                                                <input type="hidden" name="action" value="confirmPayment">
-                                                <input type="hidden" name="orderId" value="${order.id}">
-                                                <button type="submit" class="btn btn-success btn-sm">Xác nhận thanh toán</button>
-                                            </form>
+                                            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" 
+                                                    data-bs-target="#paymentModal${order.id}">
+                                                Thanh toán
+                                            </button>
+                                            <div class="modal fade" id="paymentModal${order.id}" tabindex="-1" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Xác nhận thanh toán đơn hàng #${order.id}</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <form action="${pageContext.request.contextPath}/ordermanagement" method="post">
+                                                            <input type="hidden" name="action" value="confirmPayment">
+                                                            <input type="hidden" name="orderId" value="${order.id}">
+
+                                                            <div class="modal-body">
+                                                                <div class="mb-3">
+                                                                    <label class="form-label">Phương thức thanh toán</label>
+                                                                    <select class="form-select" name="paymentMethod" id="paymentMethod${order.id}" required>
+                                                                        <option value="">-- Chọn phương thức --</option>
+                                                                        <option value="cash">Tiền mặt</option>
+                                                                        <option value="transfer">Chuyển khoản</option>
+                                                                    </select>
+                                                                </div>
+
+                                                                <div id="qrCodeContainer${order.id}" style="display: none; text-align: center;">
+                                                                    <div class="mb-3">
+                                                                        <p>Vui lòng quét mã QR để thanh toán</p>
+                                                                        <img id="qrCodeImage${order.id}" src="" alt="Mã QR thanh toán" 
+                                                                             style="max-width: 300px; margin: 0 auto;">
+                                                                        <div class="mt-2">
+                                                                            <p class="text-muted">Hoặc chuyển khoản đến:</p>
+                                                                            <p><strong>Ngân hàng Vietcombank</strong></p>
+                                                                            <p>Số tài khoản: <strong>1013367685</strong></p>
+                                                                            <p>Tên tài khoản: <strong>TRAN THANH HAI</strong></p>
+                                                                            <p>Số tiền: <strong><fmt:formatNumber value="${order.price}" type="currency" currencyCode="VND" groupingUsed="false" maxFractionDigits="0"/></strong></p>
+                                                                            <p>Nội dung: <strong>DH${order.id}</strong></p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                                                <button type="submit" class="btn btn-primary">Xác nhận</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <script>
+                                                document.getElementById('paymentMethod${order.id}').addEventListener('change', function () {
+                                                    const qrContainer = document.getElementById('qrCodeContainer${order.id}');
+                                                    if (this.value === 'transfer') {
+                                                        qrContainer.style.display = 'block';
+
+                                                        // Lấy giá trị từ JSP EL trước
+                                                        const amount = ${order.price};
+                                                        const orderId = ${order.id};
+                                                        const accountName = 'TRAN THANH HAI';
+
+                                                        // Tạo URL
+                                                        const qrUrl = 'https://img.vietqr.io/image/VCB-1013367685-compact2.png?amount=' + amount +
+                                                                '&addInfo=DH' + orderId +
+                                                                '&accountName=' + encodeURIComponent(accountName);
+
+                                                        document.getElementById('qrCodeImage${order.id}').src = qrUrl;
+                                                    } else {
+                                                        qrContainer.style.display = 'none';
+                                                    }
+                                                });
+                                            </script>
                                         </c:if>
 
                                         <c:if test="${order.orderStatus == 'pending'}">

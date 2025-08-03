@@ -139,8 +139,10 @@ public class OrderManagementServlet extends HttpServlet {
             Order order = orderDAO.getOrderById(orderId);
             if ("confirmPayment".equals(action)) {
                 if ("unpaid".equals(order.getPaymentStatus())) {
-                    boolean success = orderDAO.updatePaymentStatus(orderId, "paid");
-                    if (success) {
+                    String paymentMethod = request.getParameter("paymentMethod");
+                    boolean paymentSuccess = orderDAO.updatePaymentStatus(orderId, "paid");
+                    boolean statusSuccess = orderDAO.updateOrderStatus(orderId, "returned");
+                    if (paymentSuccess && statusSuccess) {
 
                         //Notification xác nhận thanh toán
                         UserDAO userDAO = new UserDAO();
