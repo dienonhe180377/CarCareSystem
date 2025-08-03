@@ -90,16 +90,7 @@ public class CampaignListServlet extends HttpServlet {
         try {
             int voucherId = Integer.parseInt(request.getParameter("voucherId"));
             int campaignId = Integer.parseInt(request.getParameter("campaignId"));
-            // Map để lưu trạng thái đã claim voucher của user
-            Map<Integer, Boolean> userClaimedVouchers = new HashMap<>();
-            // Kiểm tra đã lấy voucher chưa
-
-            List<Voucher> vouchers = voucherDAO.getVoucherByCampaignId(campaignId);
-            for (Voucher voucher : vouchers) {
-                boolean hasClaimed = userVoucherDAO.hasUserClaimedVoucher(user.getId(), voucher.getId());
-                userClaimedVouchers.put(voucher.getId(), hasClaimed);
-            }
-            session.setAttribute("userClaimedVouchers", userClaimedVouchers);
+            
             // Kiểm tra voucher còn không
             Voucher voucher = voucherDAO.getVoucherById(voucherId);
             if (voucher == null) {
@@ -113,15 +104,12 @@ public class CampaignListServlet extends HttpServlet {
                 response.sendRedirect("campaignlist?service=detail&id=" + campaignId);
                 return;
             }
-
-            // Kiểm tra voucher còn hạn không
             // Thực hiện lấy voucher
             if (userVoucherDAO.claimVoucher(user.getId(), voucherId, voucher.getVoucherCode())) {
                 session.setAttribute("successMessage", "Lấy voucher thành công!");
             } else {
                 session.setAttribute("errorMessage", "Không thể lấy voucher. Vui lòng thử lại!");
             }
-
             response.sendRedirect("campaignlist?service=detail&id=" + campaignId);
 
         } catch (NumberFormatException e) {
