@@ -224,6 +224,20 @@
                     margin: 10px 0 0;
                 }
             }
+            .payment-btn {
+                background-color: #28a745;
+                color: white;
+                border: none;
+                padding: 8px 12px;
+                border-radius: 4px;
+                cursor: pointer;
+                font-weight: 600;
+                transition: background-color 0.3s;
+            }
+
+            .payment-btn:hover {
+                background-color: #218838;
+            }
         </style>
     </head>
     <body>
@@ -333,12 +347,11 @@
                                             </c:choose>
                                         </td>
                                         <td>
-                                            <c:if test="${order.paymentStatus eq 'unpaid' and order.orderStatus eq 'done'}">
-                                                <form class="status-form" action="GenerateQRCode" method="get">
-                                                    <input type="hidden" name="orderId" value="${order.id}">
-                                                    <input type="hidden" name="totalAmount" value="${order.totalPrice}">
-                                                    <button type="submit" class="payment-btn">Thanh toán</button>
-                                                </form>
+                                            <c:if test="${order.paymentStatus == 'unpaid' && order.orderStatus == 'done'}">
+                                                <button class="payment-btn" 
+                                                        onclick="window.location.href = 'GenerateQRCode?orderId=${order.id}&totalAmount=${order.price}'">
+                                                    <i class="fas fa-credit-card"></i> Thanh toán
+                                                </button>
                                             </c:if>
                                         </td>
                                     </tr>

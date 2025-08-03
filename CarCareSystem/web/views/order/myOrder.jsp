@@ -282,12 +282,12 @@
                                         </c:choose>
                                     </td>
                                     <td>
-                                        <div style="margin: 20px; padding: 10px; border: 1px solid #ccc;">
-                                            <button style="padding: 10px 20px; background: #ff9800; color: white; border: none; cursor: pointer;"
-                                                    onclick="window.location.href = 'GenerateQRCode?orderId=TEST123&totalAmount=100000'">
-                                                Test Thanh Toán
+                                        <c:if test="${order.paymentStatus == 'unpaid' && order.orderStatus == 'done'}">
+                                            <button class="payment-btn" 
+                                                    onclick="window.location.href = 'GenerateQRCode?orderId=${order.id}&totalAmount=${order.price}'">
+                                                <i class="fas fa-credit-card"></i> Thanh toán
                                             </button>
-                                        </div>
+                                        </c:if>
                                     </td>
                                 </tr>
                             </c:forEach>
