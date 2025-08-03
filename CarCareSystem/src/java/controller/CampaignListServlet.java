@@ -90,7 +90,7 @@ public class CampaignListServlet extends HttpServlet {
         try {
             int voucherId = Integer.parseInt(request.getParameter("voucherId"));
             int campaignId = Integer.parseInt(request.getParameter("campaignId"));
-            
+
             // Kiểm tra voucher còn không
             Voucher voucher = voucherDAO.getVoucherById(voucherId);
             if (voucher == null) {
@@ -131,8 +131,13 @@ public class CampaignListServlet extends HttpServlet {
             Campaign campaign = campaignDAO.getCampaignById(campaignId);
 
             if (campaign != null) {
-                List<Voucher> campaignVouchers = voucherDAO.getVoucherByCampaignId(campaignId);
+                List<Voucher> allCampaignVouchers = voucherDAO.getVoucherByCampaignId(campaignId);
 
+                Date currentDate = new Date(System.currentTimeMillis());
+                List<Voucher> campaignVouchers = allCampaignVouchers.stream()
+                        .filter(v -> !v.getStartDate().after(currentDate)) // Đã đến ngày bắt đầu
+                        .filter(v -> !v.getEndDate().before(currentDate)) // Chưa hết hạn
+                        .collect(Collectors.toList());
                 HttpSession session = request.getSession(false);
                 Map<Integer, Boolean> userClaimedVouchers = new HashMap<>();
 
