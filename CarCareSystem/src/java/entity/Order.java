@@ -28,8 +28,10 @@ public class Order {
     private String paymentMethod;
     private String carType;
     private String description;
+    private Voucher vouchers;
+    private double originalPrice;
 
-    public Order(int id, User user, ArrayList<Service> services, ArrayList<Part> parts, Date createdDate, Date appointmentDate, double price, String name, String email, String phone, String address, String paymentStatus, String orderStatus, String paymentMethod, String carType, String description) {
+    public Order(int id, User user, ArrayList<Service> services, ArrayList<Part> parts, Date createdDate, Date appointmentDate, double price, String name, String email, String phone, String address, String paymentStatus, String orderStatus, String paymentMethod, String carType, String description, Voucher vouchers, double originalPrice) {
         this.id = id;
         this.user = user;
         this.services = services;
@@ -46,6 +48,8 @@ public class Order {
         this.paymentMethod = paymentMethod;
         this.carType = carType;
         this.description = description;
+        this.vouchers = vouchers;
+        this.originalPrice = originalPrice;
     }
 
     public Order() {
@@ -178,6 +182,22 @@ public class Order {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Voucher getVouchers() {
+        return vouchers;
+    }
+
+    public void setVouchers(Voucher vouchers) {
+        this.vouchers = vouchers;
+    }
+
+    public double getOriginalPrice() {
+        return originalPrice;
+    }
+
+    public void setOriginalPrice(double originalPrice) {
+        this.originalPrice = originalPrice;
     }
     
 }
