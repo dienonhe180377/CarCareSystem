@@ -902,10 +902,8 @@ FOREIGN KEY (order_id) REFERENCES [Order](id);
 ALTER TABLE Work
 ADD CONSTRAINT FK_Work_Repairer 
 FOREIGN KEY (repairer_id) REFERENCES [User](id);
+GO
 
-select * from [Order]
-
-select * from [Work]
 
 -- ===== INSERT DATA CHO BẢNG CAMPAIGN =====
 INSERT INTO [dbo].[Campaign] ([name], [status], [description], [startDate], [endDate], [img], [thumbnail], [createdDate])
@@ -1012,6 +1010,21 @@ ALTER TABLE Message
 ALTER COLUMN content NVARCHAR(MAX) COLLATE Vietnamese_CI_AS;
 GO
 
+ALTER TABLE [Order]
+ADD originalPrice FLOAT NULL;
+GO
+
+-- them bang quan he order vs voucher---
+CREATE TABLE Order_Voucher (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    order_id INT NOT NULL,
+    voucher_id INT NOT NULL,
+    created_date DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (order_id) REFERENCES [Order](id),
+    FOREIGN KEY (voucher_id) REFERENCES Voucher(id)
+);
+GO
+
 INSERT INTO [Order] (
     userId, createDate, appointmentDate, price, name, email, phone, address,
     paymentStatus, orderStatus, paymentMethod, carType, description
@@ -1021,3 +1034,6 @@ INSERT INTO [Order] (
     'unpaid', 'missed', 'cash', 'Honda Civic', 'loi nay ,loi kia'
 );
 
+select * from [Order]
+select * from [Order_Voucher]
+select * from [Voucher]

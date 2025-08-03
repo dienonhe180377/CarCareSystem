@@ -7,11 +7,13 @@ package controller.marketing;
 import dao.NotificationDAO;
 import dao.OrderDAO;
 import dao.UserDAO;
+import dao.VoucherDAO;
 import dao.WorkDAO;
 import entity.Notification;
 import entity.NotificationSetting;
 import entity.Order;
 import entity.User;
+import entity.Voucher;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -106,7 +108,9 @@ public class OrderManagementServlet extends HttpServlet {
                     request.setAttribute("repairers", repairers);
                 }
             }
+            List<Voucher> availableVouchers = new VoucherDAO().getAvailableVouchers();
 
+            request.setAttribute("availableVouchers", availableVouchers);
             request.setAttribute("orders", orders);
             request.getRequestDispatcher("/views/marketing/ordermanagement.jsp").forward(request, response);
 
@@ -140,6 +144,24 @@ public class OrderManagementServlet extends HttpServlet {
             if ("confirmPayment".equals(action)) {
                 if ("unpaid".equals(order.getPaymentStatus())) {
                     String paymentMethod = request.getParameter("paymentMethod");
+                    String voucherCode = request.getParameter("voucherCode");
+                    double finalPrice = Double.parseDouble(request.getParameter("finalPrice"));
+
+//                    if (voucherCode != null && !voucherCode.isEmpty()) {
+//                        Voucher voucher = new VoucherDAO().getVoucherByCode(voucherCode);
+//                        if (voucher != null) {
+//                            double originalPrice = order.getPrice();
+//                            boolean voucherApplied = orderDAO.applyVoucherToOrder(orderId, voucher.getId());
+//
+//                            if (!voucherApplied) {
+//                                request.getSession().setAttribute("error", "Áp dụng voucher thất bại!");
+//                                response.sendRedirect(request.getContextPath() + "/ordermanagement");
+//                                return;
+//                            }
+//                        }
+//                    }
+                    boolean voucherApplied = orderDAO.updateOrderPrice(orderId, finalPrice);
+
                     boolean paymentSuccess = orderDAO.updatePaymentStatus(orderId, "paid");
                     boolean statusSuccess = orderDAO.updateOrderStatus(orderId, "returned");
                     if (paymentSuccess && statusSuccess) {

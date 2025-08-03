@@ -235,8 +235,55 @@
                                                         <form action="${pageContext.request.contextPath}/ordermanagement" method="post">
                                                             <input type="hidden" name="action" value="confirmPayment">
                                                             <input type="hidden" name="orderId" value="${order.id}">
+                                                            <input type="hidden" id="finalPrice${order.id}" name="finalPrice" value="${order.price}" 
+                                                                   data-original-price="${order.price}" defaultValue="${order.price}">
 
                                                             <div class="modal-body">
+                                                                <!-- Phần chọn voucher -->
+                                                                <div class="mb-3">
+                                                                    <label class="form-label">Voucher (nếu có)</label>
+                                                                    <select class="form-select" name="voucherCode" id="voucherSelect${order.id}" onchange="applyVoucher(${order.id})">
+                                                                        <option value="">-- Không sử dụng voucher --</option>
+                                                                        <c:forEach items="${availableVouchers}" var="voucher">
+                                                                            <option value="${voucher.voucherCode}" 
+                                                                                    data-discount="${voucher.discount}"
+                                                                                    data-type="${voucher.discountType}"
+                                                                                    data-max="${voucher.maxDiscountAmount}"
+                                                                                    data-min="${voucher.minOrderAmount}">
+                                                                                ${voucher.name} - 
+                                                                                <c:choose>
+                                                                                    <c:when test="${voucher.discountType == 'PERCENTAGE'}">
+                                                                                        Giảm ${voucher.discount}% (Tối đa <fmt:formatNumber value="${voucher.maxDiscountAmount}" currencyCode="VND" type="currency"/>)
+                                                                                    </c:when>
+                                                                                    <c:otherwise>
+                                                                                        Giảm <fmt:formatNumber value="${voucher.discount}" type="currency" currencyCode="VND"/>
+                                                                                    </c:otherwise>
+                                                                                </c:choose>
+                                                                            </option>
+                                                                        </c:forEach>
+                                                                    </select>
+                                                                </div>
+
+                                                                <!-- Hiển thị giá trị đơn hàng -->
+                                                                <div class="mb-3">
+                                                                    <label class="form-label">Tổng tiền ban đầu</label>
+                                                                    <input type="text" class="form-control" value="<fmt:formatNumber value="${order.price}" type="currency" currencyCode="VND"/>" readonly>
+                                                                </div>
+
+                                                                <!-- Hiển thị số tiền giảm giá -->
+                                                                <div class="mb-3">
+                                                                    <label class="form-label">Giảm giá</label>
+                                                                    <input type="text" class="form-control" id="discountAmount${order.id}" value="0 VND" readonly>
+                                                                </div>
+
+                                                                <!-- Hiển thị tổng tiền sau giảm giá -->
+                                                                <div class="mb-3">
+                                                                    <label class="form-label">Tổng tiền thanh toán</label>
+                                                                    <input type="text" class="form-control" id="totalAfterDiscount${order.id}" 
+                                                                           value="<fmt:formatNumber value="${order.price}" type="currency" currencyCode="VND"/>" readonly>
+                                                                </div>
+
+                                                                <!-- Phương thức thanh toán -->
                                                                 <div class="mb-3">
                                                                     <label class="form-label">Phương thức thanh toán</label>
                                                                     <select class="form-select" name="paymentMethod" id="paymentMethod${order.id}" required>
@@ -246,6 +293,7 @@
                                                                     </select>
                                                                 </div>
 
+                                                                <!-- Phần QR code và thông tin chuyển khoản -->
                                                                 <div id="qrCodeContainer${order.id}" style="display: none; text-align: center;">
                                                                     <div class="mb-3">
                                                                         <p>Vui lòng quét mã QR để thanh toán</p>
@@ -256,7 +304,7 @@
                                                                             <p><strong>Ngân hàng Vietcombank</strong></p>
                                                                             <p>Số tài khoản: <strong>1013367685</strong></p>
                                                                             <p>Tên tài khoản: <strong>TRAN THANH HAI</strong></p>
-                                                                            <p>Số tiền: <strong><fmt:formatNumber value="${order.price}" type="currency" currencyCode="VND" groupingUsed="false" maxFractionDigits="0"/></strong></p>
+                                                                            <p>Số tiền: <strong><span id="qrAmount${order.id}"><fmt:formatNumber value="${order.price}" type="currency" currencyCode="VND" groupingUsed="false" maxFractionDigits="0"/></span></strong></p>
                                                                             <p>Nội dung: <strong>DH${order.id}</strong></p>
                                                                         </div>
                                                                     </div>
@@ -270,25 +318,90 @@
                                                     </div>
                                                 </div>
                                             </div>
+
                                             <script>
-                                                document.getElementById('paymentMethod${order.id}').addEventListener('change', function () {
-                                                    const qrContainer = document.getElementById('qrCodeContainer${order.id}');
-                                                    if (this.value === 'transfer') {
-                                                        qrContainer.style.display = 'block';
+                                                function updateQRCode(orderId, amount) {
+                                                    const accountName = 'TRAN THANH HAI';
+                                                    const encodedAccountName = encodeURIComponent(accountName);
+                                                    const qrUrl = 'https://img.vietqr.io/image/VCB-1013367685-compact2.png?amount=' + amount +
+                                                            '&addInfo=DH' + orderId +
+                                                            '&accountName=' + encodedAccountName;
 
-                                                        // Lấy giá trị từ JSP EL trước
-                                                        const amount = ${order.price};
-                                                        const orderId = ${order.id};
-                                                        const accountName = 'TRAN THANH HAI';
+                                                    document.getElementById('qrCodeImage' + orderId).src = qrUrl;
+                                                    document.getElementById('qrAmount' + orderId).textContent = formatCurrency(amount) + ' VND';
+                                                }
+                                                function safeParseNumber(value, defaultValue = 0) {
+                                                    const num = parseFloat(value);
+                                                    return isNaN(num) ? defaultValue : num;
+                                                }
 
-                                                        // Tạo URL
-                                                        const qrUrl = 'https://img.vietqr.io/image/VCB-1013367685-compact2.png?amount=' + amount +
-                                                                '&addInfo=DH' + orderId +
-                                                                '&accountName=' + encodeURIComponent(accountName);
+                                                function formatCurrency(amount) {
+                                                    const num = safeParseNumber(amount);
+                                                    return new Intl.NumberFormat('vi-VN').format(num);
+                                                }
 
-                                                        document.getElementById('qrCodeImage${order.id}').src = qrUrl;
-                                                    } else {
-                                                        qrContainer.style.display = 'none';
+                                                function applyVoucher(orderId) {
+                                                    const voucherSelect = document.getElementById('voucherSelect' + orderId);
+                                                    const selectedOption = voucherSelect.options[voucherSelect.selectedIndex];
+                                                    const finalPriceInput = document.getElementById('finalPrice' + orderId);
+
+                                                    // Lấy giá gốc từ thuộc tính data-original-price
+                                                    const originalPrice = parseFloat(finalPriceInput.getAttribute('data-original-price')) || parseFloat(finalPriceInput.defaultValue);
+
+                                                    // Reset về giá gốc ban đầu
+                                                    let discountAmount = 0;
+                                                    let finalPrice = originalPrice;
+
+                                                    // Nếu có chọn voucher hợp lệ
+                                                    if (selectedOption.value && selectedOption.value !== "") {
+                                                        const discount = parseFloat(selectedOption.getAttribute('data-discount')) || 0;
+                                                        const discountType = selectedOption.getAttribute('data-type');
+                                                        const maxDiscount = parseFloat(selectedOption.getAttribute('data-max')) || Infinity;
+                                                        const minOrder = parseFloat(selectedOption.getAttribute('data-min')) || 0;
+
+                                                        // Kiểm tra điều kiện tối thiểu
+                                                        if (originalPrice < minOrder) {
+                                                            alert('Voucher yêu cầu đơn hàng tối thiểu ' + formatCurrency(minOrder) + ' VND');
+                                                            voucherSelect.value = '';
+                                                            applyVoucher(orderId); // Gọi lại hàm để reset
+                                                            return;
+                                                        }
+
+                                                        // Tính toán giảm giá
+                                                        if (discountType === 'PERCENTAGE') {
+                                                            discountAmount = Math.min(originalPrice * discount / 100, maxDiscount);
+                                                        } else {
+                                                            discountAmount = Math.min(discount, maxDiscount);
+                                                        }
+
+                                                        finalPrice = Math.max(originalPrice - discountAmount, 0);
+                                                    }
+
+                                                    // Cập nhật giá trị
+                                                    finalPriceInput.value = finalPrice;
+                                                    document.getElementById('discountAmount' + orderId).value = formatCurrency(discountAmount) + ' VND';
+                                                    document.getElementById('totalAfterDiscount' + orderId).value = formatCurrency(finalPrice) + ' VND';
+
+                                                    // Cập nhật QR code nếu cần
+                                                    const qrContainer = document.getElementById('qrCodeContainer' + orderId);
+                                                    if (qrContainer && qrContainer.style.display === 'block') {
+                                                        updateQRCode(orderId, finalPrice);
+                                                    }
+                                                }
+
+                                                document.addEventListener('DOMContentLoaded', function () {
+                                                    const paymentMethod = document.getElementById('paymentMethod' + ${order.id});
+                                                    if (paymentMethod) {
+                                                        paymentMethod.addEventListener('change', function () {
+                                                            const qrContainer = document.getElementById('qrCodeContainer' + ${order.id});
+                                                            if (this.value === 'transfer') {
+                                                                qrContainer.style.display = 'block';
+                                                                const finalPrice = document.getElementById('finalPrice' + ${order.id}).value;
+                                                                updateQRCode(${order.id}, finalPrice);
+                                                            } else {
+                                                                qrContainer.style.display = 'none';
+                                                            }
+                                                        });
                                                     }
                                                 });
                                             </script>
