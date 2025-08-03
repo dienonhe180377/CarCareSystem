@@ -49,7 +49,6 @@
         .alert { text-align: center; margin-bottom: 18px; font-size: 1.12rem;}
         .alert-error { color: #e74c3c; }
         .alert-success { color: #27ae60; }
-
         /* Custom dropdown multi-select */
         .multiselect-wrapper {
             position: relative;
@@ -130,7 +129,7 @@
     </style>
 </head>
 <body>
-     <%@include file="/header_emp.jsp" %>
+    <%@include file="/header_emp.jsp" %>
     <div class="form-container">
         <div class="form-title">${pageTitle}</div>
         <c:if test="${not empty error}">
@@ -172,16 +171,16 @@
                         </tr>
                         <tr>
                             <td class="form-label">Ảnh dịch vụ</td>
-                           <td>
-                                    <input class="form-input" type="file" name="img" accept="image/*">
-                                    <c:if test="${not empty service.img}">
-                                        <div>
-                                            <img src="${pageContext.request.contextPath}/img/${service.img}" class="service-img-preview" alt="Ảnh dịch vụ hiện tại">
-                                            <div style="font-size:13px;color:#888;margin-top:5px;">Ảnh hiện tại</div>
-                                        </div>
-                                    </c:if>
-                                    <input type="hidden" name="imgOld" value="${service.img}" />
-                                </td>
+                            <td>
+                                <input class="form-input" type="file" name="img" accept="image/*">
+                                <c:if test="${not empty service.img}">
+                                    <div>
+                                        <img src="${pageContext.request.contextPath}/img/${service.img}" class="service-img-preview" alt="Ảnh dịch vụ hiện tại" width="90">
+                                        <div style="font-size:13px;color:#888;margin-top:5px;">Ảnh hiện tại</div>
+                                    </div>
+                                </c:if>
+                                <input type="hidden" name="imgOld" value="${service.img}" />
+                            </td>
                         </tr>
                         <tr>
                             <td class="form-label" style="vertical-align:top;">Phụ tùng liên quan</td>
