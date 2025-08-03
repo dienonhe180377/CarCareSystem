@@ -256,6 +256,27 @@
                                     <div><i class="fas fa-calendar-times"></i> 
                                         <fmt:formatDate value="${campaign.endDate}" pattern="dd/MM/yyyy"/>
                                     </div>
+                                    <div>
+                                        <jsp:useBean id="now" class="java.util.Date" />
+                                        <c:set var="currentTime" value="${now.time}" />
+                                        <c:set var="endTime" value="${campaign.endDate.time}" />
+                                        <c:set var="timeDiff" value="${endTime - currentTime}" />
+                                        <c:set var="daysLeft" value="${timeDiff / (1000 * 60 * 60 * 24)}" />
+
+                                        <br>
+                                        <strong style="color: #28a745;">
+                                            <i class="fas fa-clock"></i> Còn lại: 
+                                            <c:choose>
+                                                <c:when test="${daysLeft >= 1}">
+                                                    <fmt:formatNumber value="${daysLeft}" maxFractionDigits="0"/> ngày
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <c:set var="hoursLeft" value="${timeDiff / (1000 * 60 * 60)}" />
+                                                    <fmt:formatNumber value="${hoursLeft}" maxFractionDigits="0"/> giờ
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </strong>
+                                    </div>
                                 </div>
                             </div>
 
