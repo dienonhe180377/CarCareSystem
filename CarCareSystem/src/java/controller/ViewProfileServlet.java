@@ -36,7 +36,7 @@ public class ViewProfileServlet extends HttpServlet {
     private boolean isValidPhone(String phone) {
         // Cho phép số Việt Nam hoặc quốc tế (+84...), độ dài 10-15 số, chỉ số hoặc dấu +
         if (phone == null || phone.trim().isEmpty()) {
-            return true; // Không bắt buộc nhập
+            return false; // Phải nhập số điện thoại
         }
         return phone.matches("^(\\+)?[0-9]{10,15}$");
     }
@@ -95,8 +95,12 @@ public class ViewProfileServlet extends HttpServlet {
                 errorMsg = "Email không được để trống!";
             } else if (!isValidEmail(email)) {
                 errorMsg = "Email không hợp lệ!";
+            } else if (phone == null || phone.trim().isEmpty()) {
+                errorMsg = "Số điện thoại không được để trống!";
             } else if (!isValidPhone(phone)) {
                 errorMsg = "Số điện thoại không hợp lệ. Nhập 10-15 số, có thể bắt đầu bằng dấu + (nếu là số quốc tế)!";
+            } else if (address == null || address.trim().isEmpty()) {
+                errorMsg = "Địa chỉ không được để trống!";
             } else {
                 // Nếu hợp lệ định dạng mới kiểm tra trùng trong DB
                 boolean usernameExists = userDAO.isUsernameExists(username, userId);
@@ -107,7 +111,7 @@ public class ViewProfileServlet extends HttpServlet {
                     errorMsg = "Tên đăng nhập đã tồn tại!";
                 } else if (emailExists) {
                     errorMsg = "Email đã tồn tại!";
-                } else if (phone != null && !phone.isEmpty() && phoneExists) {
+                } else if (phoneExists) {
                     errorMsg = "Số điện thoại đã tồn tại!";
                 }
             }

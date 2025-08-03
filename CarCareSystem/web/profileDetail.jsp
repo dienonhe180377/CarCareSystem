@@ -16,7 +16,6 @@
     <title>Chỉnh sửa thông tin cá nhân</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
-        /* giữ nguyên CSS như bạn gửi */
         body { font-family: "Segoe UI", Arial, sans-serif; background: #f3f4f7; margin: 0; }
         .main-container { 
             display: flex; 
@@ -209,11 +208,11 @@
                 </tr>
                 <tr>
                     <td class="form-label"><label for="phone">Số điện thoại</label></td>
-                    <td class="form-input"><input type="text" id="phone" name="phone" value="<%= user.getPhone() != null ? user.getPhone() : "" %>" /></td>
+                    <td class="form-input"><input type="text" id="phone" name="phone" value="<%= user.getPhone() != null ? user.getPhone() : "" %>" required /></td>
                 </tr>
                 <tr>
                     <td class="form-label"><label for="address">Địa chỉ</label></td>
-                    <td class="form-input"><input type="text" id="address" name="address" value="<%= user.getAddress() != null ? user.getAddress() : "" %>" /></td>
+                    <td class="form-input"><input type="text" id="address" name="address" value="<%= user.getAddress() != null ? user.getAddress() : "" %>" required /></td>
                 </tr>
             </table>
             <div class="btn-row">
