@@ -11,6 +11,14 @@
         <title>Chi tiết Campaign - ${campaign.name}</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
         <style>
+            :root {
+                --primary-blue: #add8e6;
+                --secondary-blue: #87ceeb;
+                --light-blue: #e6f3ff;
+                --dark-blue: #4682b4;
+                --accent-blue: #b0e0e6;
+            }
+
             * {
                 margin: 0;
                 padding: 0;
@@ -19,60 +27,65 @@
 
             body {
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
                 min-height: 100vh;
                 color: #333;
+                padding: 20px;
             }
 
             .container {
                 max-width: 1200px;
                 margin: 0 auto;
-                padding: 20px;
+                background: rgba(255, 255, 255, 0.95);
+                border-radius: 20px;
+                box-shadow: 0 20px 40px rgba(173, 216, 230, 0.2);
+                overflow: hidden;
+                backdrop-filter: blur(10px);
+                border: 2px solid var(--accent-blue);
             }
 
             .header {
-                background: white;
+                background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
                 padding: 30px;
-                border-radius: 15px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-                margin-bottom: 30px;
                 text-align: center;
+                color: white;
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
             }
 
             .header h1 {
-                color: #2c3e50;
                 font-size: 2.5rem;
+                font-weight: 600;
                 margin-bottom: 10px;
             }
 
             .header h1 i {
-                color: #e74c3c;
                 margin-right: 15px;
             }
 
             .content {
                 background: white;
-                border-radius: 15px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                border-radius: 0;
+                box-shadow: none;
                 overflow: hidden;
             }
 
             /* BREADCRUMB */
             .breadcrumb {
-                background: #f8f9fa;
+                background: var(--light-blue);
                 padding: 15px 30px;
-                border-bottom: 1px solid #e9ecef;
+                border-bottom: 1px solid var(--accent-blue);
                 font-size: 14px;
             }
 
             .breadcrumb a {
-                color: #007bff;
+                color: var(--dark-blue);
                 text-decoration: none;
                 transition: color 0.3s;
+                font-weight: 600;
             }
 
             .breadcrumb a:hover {
-                color: #0056b3;
+                color: var(--primary-blue);
                 text-decoration: underline;
             }
 
@@ -98,30 +111,31 @@
             }
 
             .alert-info {
-                background: linear-gradient(135deg, #d1ecf1, #bee5eb);
-                color: #0c5460;
+                background: linear-gradient(135deg, var(--light-blue), var(--accent-blue));
+                color: var(--dark-blue);
             }
 
             /* CAMPAIGN IMAGE */
             .campaign-image {
                 padding: 30px;
                 text-align: center;
-                background: #f8f9fa;
-                border-bottom: 1px solid #e9ecef;
+                background: var(--light-blue);
+                border-bottom: 1px solid var(--accent-blue);
             }
 
             .campaign-image img {
                 max-width: 100%;
                 max-height: 400px;
                 border-radius: 15px;
-                box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+                box-shadow: 0 10px 25px rgba(173, 216, 230, 0.3);
                 object-fit: cover;
+                border: 2px solid var(--accent-blue);
             }
 
             /* SECTION */
             .section {
                 padding: 30px;
-                border-bottom: 1px solid #e9ecef;
+                border-bottom: 1px solid var(--accent-blue);
             }
 
             .section:last-child {
@@ -129,7 +143,7 @@
             }
 
             .section h2 {
-                color: #2c3e50;
+                color: var(--dark-blue);
                 font-size: 1.8rem;
                 margin-bottom: 20px;
                 display: flex;
@@ -138,7 +152,7 @@
             }
 
             .section h2 i {
-                color: #e74c3c;
+                color: var(--primary-blue);
             }
 
             /* CAMPAIGN INFO */
@@ -149,22 +163,33 @@
             }
 
             .info-item {
-                background: #f8f9fa;
+                background: var(--light-blue);
                 padding: 20px;
-                border-radius: 10px;
-                border-left: 4px solid #007bff;
+                border-radius: 15px;
+                border: 2px solid var(--accent-blue);
+                transition: all 0.3s ease;
+            }
+
+            .info-item:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 25px rgba(173, 216, 230, 0.2);
             }
 
             .info-item h4 {
-                color: #2c3e50;
+                color: var(--dark-blue);
                 margin-bottom: 10px;
                 display: flex;
                 align-items: center;
                 gap: 8px;
+                font-weight: 600;
+            }
+
+            .info-item h4 i {
+                color: var(--primary-blue);
             }
 
             .info-item p {
-                color: #6c757d;
+                color: #666;
                 line-height: 1.6;
             }
 
@@ -200,18 +225,19 @@
 
             .voucher-card {
                 background: white;
-                border: 2px solid #e9ecef;
+                border: 2px solid var(--accent-blue);
                 border-radius: 15px;
                 padding: 25px;
                 transition: all 0.3s ease;
                 position: relative;
                 overflow: hidden;
+                box-shadow: 0 10px 25px rgba(173, 216, 230, 0.15);
             }
 
             .voucher-card:hover {
                 transform: translateY(-5px);
-                box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-                border-color: #007bff;
+                box-shadow: 0 20px 40px rgba(173, 216, 230, 0.25);
+                border-color: var(--primary-blue);
             }
 
             .voucher-card::before {
@@ -221,7 +247,7 @@
                 left: 0;
                 right: 0;
                 height: 4px;
-                background: linear-gradient(90deg, #007bff, #28a745);
+                background: linear-gradient(90deg, var(--primary-blue), var(--secondary-blue));
             }
 
             /* VOUCHER STATUS */
@@ -242,8 +268,8 @@
             }
 
             .status-claimed {
-                background: #cce7ff;
-                color: #004085;
+                background: var(--light-blue);
+                color: var(--dark-blue);
             }
 
             .status-expired {
@@ -263,15 +289,15 @@
             }
 
             .voucher-name {
-                color: #2c3e50;
+                color: var(--dark-blue);
                 font-size: 1.3rem;
                 margin-bottom: 8px;
                 font-weight: 600;
             }
 
             .voucher-code {
-                background: #f8f9fa;
-                color: #007bff;
+                background: var(--light-blue);
+                color: var(--dark-blue);
                 padding: 8px 12px;
                 border-radius: 8px;
                 font-family: 'Courier New', monospace;
@@ -279,11 +305,11 @@
                 cursor: pointer;
                 transition: all 0.3s;
                 display: inline-block;
-                border: 2px dashed #007bff;
+                border: 2px dashed var(--primary-blue);
             }
 
             .voucher-code:hover {
-                background: #007bff;
+                background: var(--primary-blue);
                 color: white;
                 transform: scale(1.05);
             }
@@ -293,7 +319,7 @@
                 text-align: center;
                 margin: 20px 0;
                 padding: 20px;
-                background: linear-gradient(135deg, #667eea, #764ba2);
+                background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
                 color: white;
                 border-radius: 10px;
                 font-size: 2rem;
@@ -308,14 +334,14 @@
 
             .voucher-details p {
                 margin: 8px 0;
-                color: #6c757d;
+                color: #666;
                 display: flex;
                 align-items: center;
                 gap: 10px;
             }
 
             .voucher-details i {
-                color: #007bff;
+                color: var(--primary-blue);
                 width: 16px;
                 text-align: center;
             }
@@ -331,7 +357,7 @@
                 flex: 1;
                 padding: 12px 20px;
                 border: none;
-                border-radius: 8px;
+                border-radius: 10px;
                 font-weight: 600;
                 text-decoration: none;
                 text-align: center;
@@ -360,13 +386,13 @@
             }
 
             .btn-detail {
-                background: linear-gradient(135deg, #007bff, #0056b3);
+                background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
                 color: white;
             }
 
             .btn-detail:hover {
                 transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+                box-shadow: 0 5px 15px rgba(173, 216, 230, 0.4);
                 text-decoration: none;
                 color: white;
             }
@@ -375,18 +401,18 @@
             .no-data {
                 text-align: center;
                 padding: 60px 30px;
-                color: #6c757d;
+                color: #888;
             }
 
             .no-data i {
                 font-size: 4rem;
                 margin-bottom: 20px;
-                color: #dee2e6;
+                color: var(--accent-blue);
             }
 
             .no-data h2 {
                 margin-bottom: 15px;
-                color: #495057;
+                color: var(--dark-blue);
             }
 
             .no-data p {
@@ -397,23 +423,24 @@
             .btn {
                 display: inline-block;
                 padding: 12px 24px;
-                background: #007bff;
+                background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
                 color: white;
                 text-decoration: none;
-                border-radius: 8px;
+                border-radius: 10px;
                 font-weight: 600;
                 transition: all 0.3s;
             }
 
             .btn:hover {
-                background: #0056b3;
+                background: linear-gradient(135deg, var(--secondary-blue), var(--dark-blue));
                 transform: translateY(-2px);
                 text-decoration: none;
                 color: white;
+                box-shadow: 0 5px 15px rgba(173, 216, 230, 0.4);
             }
 
             .btn-primary {
-                background: linear-gradient(135deg, #007bff, #0056b3);
+                background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
             }
 
             /* NOTIFICATION */
@@ -422,12 +449,13 @@
                 top: 20px;
                 right: 20px;
                 padding: 15px 20px;
-                border-radius: 8px;
+                border-radius: 10px;
                 color: white;
                 font-weight: 600;
                 z-index: 1000;
                 transform: translateX(400px);
                 transition: transform 0.3s ease;
+                border: 2px solid rgba(255,255,255,0.2);
             }
 
             .notification.show {
@@ -444,7 +472,7 @@
 
             /* RESPONSIVE */
             @media (max-width: 768px) {
-                .container {
+                body {
                     padding: 10px;
                 }
 
@@ -473,16 +501,17 @@
     <body>
         <jsp:include page="/header.jsp"></jsp:include>
 
-            <div class="container">
-                <div class="header">
-                    <h1><i class="fas fa-bullhorn"></i> Chi tiết Campaign</h1>
-                </div>
+        <div class="container">
+            <div class="header">
+                <h1><i class="fas fa-bullhorn"></i> Chi tiết Campaign</h1>
+                <p>Thông tin chi tiết và voucher của chiến dịch</p>
+            </div>
 
-                <div class="content">
-                    <!-- BREADCRUMB -->
-                    <div class="breadcrumb">
-                        <a href="campaignlist"><i class="fas fa-list"></i> Danh sách Campaign</a> > Chi tiết Campaign
-                    </div>
+            <div class="content">
+                <!-- BREADCRUMB -->
+                <div class="breadcrumb">
+                    <a href="campaignlist"><i class="fas fa-list"></i> Danh sách Campaign</a> > Chi tiết Campaign
+                </div>
 
                 <c:choose>
                     <c:when test="${empty campaign}">
@@ -671,7 +700,7 @@
         </div>
 
         <!-- NOTIFICATION -->
-        <!--<div id="notification" class="notification"></div>-->
+        <div id="notification" class="notification"></div>
 
         <script>
             // Copy voucher code to clipboard
