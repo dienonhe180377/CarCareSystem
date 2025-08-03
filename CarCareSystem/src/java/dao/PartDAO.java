@@ -22,6 +22,7 @@ public class PartDAO extends DBConnection {
 
     private CategoryDAO categoryDAO = new CategoryDAO();
     private SupplierDAO supplierDAO = new SupplierDAO();
+    
 
     //Get All Part
     public ArrayList<Part> getAllPart() throws Exception {

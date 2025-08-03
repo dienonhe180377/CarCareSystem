@@ -43,8 +43,8 @@ GO
 
 -- 5. Bảng Supplier
 CREATE TABLE Supplier (
-    id          INT           IDENTITY(1,1) PRIMARY KEY,
-    [name]      NVARCHAR(150) NOT NULL,
+    id     INT          IDENTITY(1,1) PRIMARY KEY,
+    [name]   NVARCHAR(50) NOT NULL,
     logo NVARCHAR(255),
     [description] NVARCHAR(255),
     email NVARCHAR(150) not null UNIQUE,
@@ -136,7 +136,7 @@ GO
 -- 12. Bảng Parts
 CREATE TABLE Parts (
     id         INT           IDENTITY(1,1) PRIMARY KEY,
-    name       NVARCHAR(150) NOT NULL UNIQUE,
+    name       NVARCHAR(25) NOT NULL UNIQUE,
     image      NVARCHAR(150),
     categoryId INT           NOT NULL,
     price      FLOAT NOT NULL,

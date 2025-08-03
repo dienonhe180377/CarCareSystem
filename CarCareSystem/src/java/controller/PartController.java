@@ -6,6 +6,7 @@ package controller;
 
 import dao.CategoryDAO;
 import dao.NotificationDAO;
+import dao.OrderDAO;
 import dao.PartDAO;
 import dao.SupplierDAO;
 import dao.UserDAO;
@@ -60,6 +61,7 @@ public class PartController extends HttpServlet {
             CategoryDAO categoryDAO = new CategoryDAO();
             SupplierDAO supplierDAO = new SupplierDAO();
             PartDAO partDAO = new PartDAO();
+            OrderDAO orderDAO = new OrderDAO();
 
 //NOTIFICATION
             UserDAO userDAO = new UserDAO();
@@ -68,7 +70,7 @@ public class PartController extends HttpServlet {
             NotificationDAO notificationDAO = new NotificationDAO();
 //NOTIFICATION
 
-            if(!user.getUserRole().equals("warehouse manager")){
+            if (!user.getUserRole().equals("warehouse manager")) {
                 response.sendRedirect("filterPage.jsp");
             }
 
@@ -76,6 +78,9 @@ public class PartController extends HttpServlet {
                 ArrayList<Category> categoryList = categoryDAO.getAllCategory();
                 ArrayList<Supplier> supplierList = supplierDAO.getAllSupplier();
                 ArrayList<Part> parts = partDAO.getAllPart();
+                for (int i = 0; i < parts.size(); i++) {
+                    parts.get(i).setOrderAmount(orderDAO.getOrderNumberByPart(parts.get(i).getId()));
+                }
                 request.setAttribute("filterList", parts);
                 request.setAttribute("categoryList", categoryList);
                 session.setAttribute("mainPartList", parts);
@@ -88,7 +93,21 @@ public class PartController extends HttpServlet {
                 String text = request.getParameter("search");
                 int categoryId = Integer.parseInt(request.getParameter("categoryId"));
                 int supplierId = Integer.parseInt(request.getParameter("supplierId"));
+                String orderBy = request.getParameter("orderBy");
                 String outOfStock = request.getParameter("outOfStock");
+                for (int i = 0; i < partList.size(); i++) {
+                    partList.get(i).setOrderAmount(orderDAO.getOrderNumberByPart(partList.get(i).getId()));
+                }
+
+                if (!orderBy.equals("")) {
+                    if (orderBy.equals("newest")) {
+                        Collections.reverse(partList);
+                    } else if (orderBy.equals("most_services")) {
+                        partList.sort((p1, p2) -> Integer.compare(p2.getServices().size(), p1.getServices().size()));
+                    } else {
+                        partList.sort((p1, p2) -> Integer.compare(p2.getOrderAmount(), p1.getOrderAmount()));
+                    }
+                }
 
                 if (!text.equals("")) {
                     partList = partDAO.getAllPartByText(text);
@@ -230,7 +249,6 @@ public class PartController extends HttpServlet {
                             }
                         }
 
-                        
                         if (!notiSetting.isCategory()) {
                             for (int i = notifications.size() - 1; i >= 0; i--) {
                                 if (notifications.get(i).getType().equals("Category")) {
@@ -389,8 +407,6 @@ public class PartController extends HttpServlet {
                             }
                         }
 
-
-
                         if (!notiSetting.isCategory()) {
                             for (int i = notifications.size() - 1; i >= 0; i--) {
                                 if (notifications.get(i).getType().equals("Category")) {
@@ -467,29 +483,29 @@ public class PartController extends HttpServlet {
                         }
                     }
 
-                        if (!notiSetting.isCategory()) {
-                            for (int i = notifications.size() - 1; i >= 0; i--) {
-                                if (notifications.get(i).getType().equals("Category")) {
-                                    notifications.remove(i);
-                                }
+                    if (!notiSetting.isCategory()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Category")) {
+                                notifications.remove(i);
                             }
                         }
+                    }
 
-                        if (!notiSetting.isSupplier()) {
-                            for (int i = notifications.size() - 1; i >= 0; i--) {
-                                if (notifications.get(i).getType().equals("Supplier")) {
-                                    notifications.remove(i);
-                                }
+                    if (!notiSetting.isSupplier()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Supplier")) {
+                                notifications.remove(i);
                             }
                         }
+                    }
 
-                        if (!notiSetting.isParts()) {
-                            for (int i = notifications.size() - 1; i >= 0; i--) {
-                                if (notifications.get(i).getType().equals("Part")) {
-                                    notifications.remove(i);
-                                }
+                    if (!notiSetting.isParts()) {
+                        for (int i = notifications.size() - 1; i >= 0; i--) {
+                            if (notifications.get(i).getType().equals("Part")) {
+                                notifications.remove(i);
                             }
                         }
+                    }
 
                     session.setAttribute("notification", notifications);
                     session.setAttribute("notiSetting", notiSetting);

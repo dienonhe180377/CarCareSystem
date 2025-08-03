@@ -19,6 +19,7 @@ public class Part {
     private ArrayList<Supplier> suppliers;
     private ArrayList<Size> sizes;
     private double price;
+    private int orderAmount;
 
     public Part(int id, String name, String image, ArrayList<Service> services, Category category, ArrayList<Supplier> suppliers, ArrayList<Size> sizes, double price) {
         this.id = id;
@@ -46,6 +47,14 @@ public class Part {
     
     public int getId() {
         return id;
+    }
+
+    public int getOrderAmount() {
+        return orderAmount;
+    }
+
+    public void setOrderAmount(int orderAmount) {
+        this.orderAmount = orderAmount;
     }
 
     public void setId(int id) {
@@ -114,5 +123,4 @@ public class Part {
     }
 
     
-
 }
