@@ -234,7 +234,6 @@ public class VoucherDAO extends DBConnection {
 
         return "Tất cả dịch vụ";
     }
-
     public String getCampaignNameById(Integer campaignId) {
         if (campaignId == null) {
             return null; // Áp dụng cho tất cả dịch vụ
@@ -258,7 +257,7 @@ public class VoucherDAO extends DBConnection {
 
         return "Không thuộc campaign nào";
     }
-
+    
 //    public boolean updateVoucher(Voucher voucher) {
 //        String sql = "UPDATE Voucher SET name=?, description=?, discount=?, discountType=?, "
 //                + "maxDiscountAmount=?, minOrderAmount=?, startDate=?, endDate=?, "
@@ -290,71 +289,4 @@ public class VoucherDAO extends DBConnection {
 //
 //        return false;
 //    }
-    public List<Voucher> getAvailableVouchers() {
-        List<Voucher> vouchers = new ArrayList<>();
-        String sql = "SELECT * FROM [Voucher] WHERE status = 'ACTIVE' AND startDate <= CURRENT_TIMESTAMP AND endDate >= CURRENT_TIMESTAMP";
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
-                Voucher voucher = new Voucher();
-                voucher.setId(rs.getInt("id"));
-                voucher.setName(rs.getString("name"));
-                voucher.setDescription(rs.getString("description"));
-                voucher.setVoucherCode(rs.getString("voucherCode"));
-                voucher.setDiscount(rs.getFloat("discount"));
-                voucher.setDiscountType(rs.getString("discountType"));
-                voucher.setMaxDiscountAmount(rs.getFloat("maxDiscountAmount"));
-                voucher.setMinOrderAmount(rs.getFloat("minOrderAmount"));
-                voucher.setStartDate(rs.getTimestamp("startDate"));
-                voucher.setEndDate(rs.getTimestamp("endDate"));
-                voucher.setServiceId(rs.getInt("serviceId"));
-                voucher.setCampaignId(rs.getInt("campaignId"));
-                voucher.setCreatedDate(rs.getTimestamp("createdDate"));
-                voucher.setTotalVoucherCount(rs.getInt("totalVoucherCount"));
-                voucher.setStatus(rs.getString("status"));
-
-                vouchers.add(voucher);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return vouchers;
-    }
-
-    public Voucher getVoucherByCode(String code) {
-        String sql = "SELECT * FROM [Voucher] WHERE voucher_code = ?";
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-
-            stmt.setString(1, code);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    Voucher voucher = new Voucher();
-                    voucher.setId(rs.getInt("id"));
-                    voucher.setName(rs.getString("name"));
-                    voucher.setDescription(rs.getString("description"));
-                    voucher.setVoucherCode(rs.getString("voucherCode"));
-                    voucher.setDiscount(rs.getFloat("discount"));
-                    voucher.setDiscountType(rs.getString("discountType"));
-                    voucher.setMaxDiscountAmount(rs.getFloat("maxDiscountAmount"));
-                    voucher.setMinOrderAmount(rs.getFloat("minOrderAmount"));
-                    voucher.setStartDate(rs.getTimestamp("startDate"));
-                    voucher.setEndDate(rs.getTimestamp("endDate"));
-                    voucher.setServiceId(rs.getInt("serviceId"));
-                    voucher.setCampaignId(rs.getInt("campaignId"));
-                    voucher.setCreatedDate(rs.getTimestamp("createdDate"));
-                    voucher.setTotalVoucherCount(rs.getInt("totalVoucherCount"));
-                    voucher.setStatus(rs.getString("status"));
-
-                    return voucher;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-    
-    
 }

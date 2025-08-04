@@ -17,17 +17,29 @@ public class RepairerRating {
     private Order order;
     private int rating;
     private String comment;
+    private boolean status;
     private Date createDate;
 
-    public RepairerRating(int id, User customerId, User repairerId, Order order, int rating, String comment, Date createDate) {
+    public RepairerRating(int id, User customerId, User repairerId, Order order, int rating, String comment, boolean status, Date createDate) {
         this.id = id;
         this.customerId = customerId;
         this.repairerId = repairerId;
         this.order = order;
         this.rating = rating;
         this.comment = comment;
+        this.status = status;
         this.createDate = createDate;
     }
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
+    
 
     public int getId() {
         return id;
@@ -83,6 +95,11 @@ public class RepairerRating {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
+    }
+
+    @Override
+    public String toString() {
+        return "RepairerRating{" + "id=" + id + ", customerId=" + customerId + ", repairerId=" + repairerId + ", order=" + order + ", rating=" + rating + ", comment=" + comment + ", status=" + status + ", createDate=" + createDate + '}';
     }
     
     

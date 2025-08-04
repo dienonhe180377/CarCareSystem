@@ -88,6 +88,8 @@ public class NotificationController extends HttpServlet {
                     request.getRequestDispatcher("/campaign").forward(request, response);
                 } else if (notification.getType().equals("Blog")) {
                     request.getRequestDispatcher("/blog").forward(request, response);
+                } else if (notification.getType().equals("Feedback")) {
+                    request.getRequestDispatcher("/EmployeeFeedbackController?service=customer_list").forward(request, response);
                 } else {
                     request.getRequestDispatcher("/voucher").forward(request, response);
                 }

@@ -20,6 +20,7 @@ public class User {
     private String address;
     private Date createdDate;
     private String userRole;
+    private int rating;
 
     public User() {
     }
@@ -118,6 +119,14 @@ public class User {
 
     public void setUserRole(String userRole) {
         this.userRole = userRole;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
     }
 
 }
