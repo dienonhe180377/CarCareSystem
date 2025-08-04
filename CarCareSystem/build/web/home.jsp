@@ -434,7 +434,7 @@
                 </form>
             </div>
             <div class="quick-action-col">
-                <a href="voucher.jsp" class="quick-action-btn voucher-btn">
+                <a href="voucher" class="quick-action-btn voucher-btn">
                     <i class="fas fa-gift me-3"></i> Mã giảm giá
                 </a>
             </div>

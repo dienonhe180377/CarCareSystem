@@ -323,7 +323,7 @@ public class VoucherDAO extends DBConnection {
     }
 
     public Voucher getVoucherByCode(String code) {
-        String sql = "SELECT * FROM [Voucher] WHERE voucher_code = ?";
+        String sql = "SELECT * FROM [Voucher] WHERE voucherCode = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 
