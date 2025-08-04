@@ -193,7 +193,7 @@
                 <div class="detail-item">
                     <span class="detail-label">Thời gian hẹn:</span>
                     <span class="detail-value">
-                        <fmt:formatDate value="${appointmentDate}" pattern="dd/MM/yyyy" />
+                        <fmt:formatDate value="${appointmentDate}" pattern="HH:mm 'ngày' dd/MM/yyyy" />
                     </span>
                 </div>
                 <div class="detail-item">

@@ -234,7 +234,6 @@ public class VoucherDAO extends DBConnection {
 
         return "Tất cả dịch vụ";
     }
-
     public String getCampaignNameById(Integer campaignId) {
         if (campaignId == null) {
             return null; // Áp dụng cho tất cả dịch vụ
@@ -258,7 +257,7 @@ public class VoucherDAO extends DBConnection {
 
         return "Không thuộc campaign nào";
     }
-
+    
 //    public boolean updateVoucher(Voucher voucher) {
 //        String sql = "UPDATE Voucher SET name=?, description=?, discount=?, discountType=?, "
 //                + "maxDiscountAmount=?, minOrderAmount=?, startDate=?, endDate=?, "

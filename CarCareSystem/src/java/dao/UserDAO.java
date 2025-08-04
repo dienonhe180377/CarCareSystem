@@ -212,6 +212,30 @@ public class UserDAO extends DBConnection {
         }
         return userList;
     }
+    
+    public List<User> getAllRepairer() {
+        List<User> userList = new ArrayList<>();
+        String sql = "SELECT * FROM [User] where role = 'repairer'";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String username = rs.getString("username");
+                String password = rs.getString("password");
+                String email = rs.getString("email");
+                String phone = rs.getString("phone");
+                String address = rs.getString("address");
+                java.util.Date createDate = rs.getDate("createDate");
+                String role = rs.getString("role");
+
+                userList.add(new User(id, username, password, email, phone, address, createDate, role));
+            }
+        } catch (Exception e) {
+            System.out.println("Error in getAllUser: " + e.getMessage());
+        }
+        return userList;
+    }
 
     public boolean isUsernameExists(String username, int excludeUserId) {
         String sql = "SELECT id FROM [User] WHERE username = ? AND id <> ?";
