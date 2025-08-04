@@ -698,6 +698,7 @@
             <a href="${pageContext.request.contextPath}/insurance">Quản lý bảo hiểm</a>
             <a href="${pageContext.request.contextPath}/ServiceServlet_JSP">Quản lý dịch vụ</a>
             <a href="${pageContext.request.contextPath}/manager/carTypeList">Quản lý loại xe</a>
+            <a href="${pageContext.request.contextPath}/EmployeeFeedbackController?service=repairer_list">Đánh giá nhân viên</a>
             <a href="${pageContext.request.contextPath}/dashboard">Dashboard</a>
             <% } else if ("repairer".equals(role)) { %>
             <h2>Repairer</h2>

@@ -1,5 +1,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-
+<%@taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html lang="vi">
     <head>
@@ -352,6 +355,138 @@
                 margin-bottom: 20px;
             }
 
+            /* Rating Popup */
+            .rating-popup {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 1000;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .rating-content {
+                background: white;
+                border-radius: 16px;
+                width: 90%;
+                max-width: 500px;
+                padding: 30px;
+                box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+                position: relative;
+                animation: popupFadeIn 0.3s ease;
+            }
+
+            @keyframes popupFadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .rating-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+
+            .rating-header h3 {
+                font-size: 22px;
+                font-weight: 600;
+                color: var(--dark-color);
+            }
+
+            .close-popup {
+                background: none;
+                border: none;
+                font-size: 24px;
+                cursor: pointer;
+                color: var(--gray-color);
+                transition: color 0.2s;
+            }
+
+            .close-popup:hover {
+                color: var(--dark-color);
+            }
+
+            .rating-stars {
+                position: relative;
+                display: flex;
+                justify-content: center;
+                width: 100%;
+                margin: 25px 0;
+            }
+
+            .star-select {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                opacity: 0;
+                cursor: pointer;
+                z-index: 10;
+            }
+
+            .star-display {
+                display: flex;
+                justify-content: center;
+                gap: 12px;
+                pointer-events: none;
+            }
+
+            .star-display i {
+                font-size: 36px;
+                color: #ddd;
+                transition: color 0.2s, transform 0.2s;
+            }
+
+            .star-display i.active {
+                color: #ffc107;
+            }
+
+            .rating-text {
+                text-align: center;
+                font-size: 16px;
+                color: var(--gray-color);
+                margin-bottom: 20px;
+                min-height: 24px;
+            }
+
+            .rating-comment {
+                width: 100%;
+                min-height: 120px;
+                padding: 15px;
+                border: 1px solid var(--border-color);
+                border-radius: 10px;
+                font-size: 15px;
+                resize: vertical;
+                margin-bottom: 20px;
+            }
+
+            .rating-comment:focus {
+                outline: none;
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+            }
+
+            .rating-actions {
+                display: flex;
+                gap: 15px;
+            }
+
+            .rating-actions .btn {
+                flex: 1;
+            }
+
             /* Responsive */
             @media (max-width: 768px) {
                 .filters {
@@ -378,65 +513,53 @@
                     flex: 1;
                     text-align: center;
                 }
+
+                .rating-content {
+                    padding: 20px;
+                }
+
+                .star-display i {
+                    font-size: 30px;
+                }
             }
         </style>
     </head>
     <body>
-        <div class="container">
-            <!-- Header -->
-            <header>
-                <div class="logo">
-                    <i class="fas fa-shopping-bag"></i>
-                    <h1>ShopMall</h1>
-                </div>
-                <div class="user-info">
-                    <div class="avatar">TN</div>
-                    <div class="name">Trần Nguyễn</div>
-                </div>
-            </header>
 
-            <!-- Stats -->
-            <div class="stats">
-                <div class="stat-card">
-                    <div class="stat-icon blue">
-                        <i class="fas fa-shopping-cart"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>12</h3>
-                        <p>Tổng đơn hàng</p>
+        <jsp:include page="header.jsp"></jsp:include>
+
+            <div class="container" style="margin-top: 4%;">
+                <!-- Stats -->
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-icon blue">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>${feedbackList.size()}</h3>
+                        <p>Tổng số feedback</p>
                     </div>
                 </div>
+
+                <c:set var="unrated" value="0"></c:set>
+                <c:forEach var="task" items="${feedbackList}">
+                    <c:if test="${task.status == false}">
+                        <c:set var="unrated" value="${unrated + 1}" />
+                    </c:if>
+                </c:forEach>
                 <div class="stat-card">
                     <div class="stat-icon green">
                         <i class="fas fa-star"></i>
                     </div>
                     <div class="stat-info">
-                        <h3>5</h3>
+                        <h3>${unrated}</h3>
                         <p>Đơn chưa đánh giá</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon blue">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>30+ ngày</h3>
-                        <p>Đơn hàng cũ nhất</p>
                     </div>
                 </div>
             </div>
 
             <!-- Filters -->
             <div class="filters">
-                <div class="filter-group">
-                    <label for="date-filter">Thời gian</label>
-                    <select id="date-filter">
-                        <option>Tất cả thời gian</option>
-                        <option>7 ngày qua</option>
-                        <option>30 ngày qua</option>
-                        <option>3 tháng qua</option>
-                    </select>
-                </div>
                 <div class="filter-group">
                     <label for="status-filter">Trạng thái</label>
                     <select id="status-filter">
@@ -445,214 +568,234 @@
                         <option>Đã đánh giá</option>
                     </select>
                 </div>
-                <div class="filter-group">
-                    <label for="search">Tìm kiếm đơn hàng</label>
-                    <input type="text" id="search" placeholder="Nhập mã đơn hàng...">
-                </div>
             </div>
 
             <!-- Orders List -->
             <div class="orders-container">
                 <div class="orders-header">
-                    <h2><i class="fas fa-list"></i> Danh sách đơn hàng chưa đánh giá</h2>
+                    <h2><i class="fas fa-list"></i> Danh sách đơn hàng</h2>
                 </div>
 
                 <div class="order-list" id="order-list">
-                    <!-- Orders will be inserted here by JavaScript -->
+
+                    <c:forEach var="feedbacks" items="${feedbackList}">
+                        <div class="order-card">
+                            <div class="order-header">
+                                <div>
+                                    <div class="order-date">${feedbacks.createDate}</div>
+                                </div>
+                                <c:if test="${feedbacks.status == false}">
+                                    <div class="order-status">Chưa đánh giá</div>
+                                </c:if>
+                            </div>
+                            <div class="order-products">
+
+                                <c:forEach var="service" items="${feedbacks.order.services}">
+                                    <div class="product-item">
+                                        <div class="product-image">
+                                            <i class="fas fa-cog"></i>
+                                        </div>
+                                        <div class="product-info">
+                                            <h4>${service.name}</h4>
+                                            <p>Dịch vụ</p>
+                                        </div>
+                                    </div>
+                                </c:forEach>
+
+                                <c:forEach var="part" items="${feedbacks.order.parts}">
+                                    <div class="product-item">
+                                        <div class="product-image">
+                                            <i class="fas fa-plug"></i>
+                                        </div>
+                                        <div class="product-info">
+                                            <h4>${part.name}</h4>
+                                            <p>Linh kiện</p>
+                                        </div>
+                                    </div>
+                                </c:forEach>
+
+                            </div>
+                            <div class="order-footer">
+                                <div class="order-total">Tổng tiền: ${feedbacks.order.price} ₫</div>
+                                <div class="order-actions">
+                                    <button class="btn btn-primary btn-rate" data-order-id="${feedbacks.id}" 
+                                            <c:if test="${feedbacks.status == true}">disabled</c:if>>
+                                        <c:if test="${feedbacks.status == false}">Đánh giá ngay</c:if>
+                                        <c:if test="${feedbacks.status == true}">Bạn đã đánh giá đơn hàng này</c:if>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                    </c:forEach>
                 </div>
             </div>
         </div>
+        <form action="${contextPath}/EmployeeFeedbackController" method="post">
+            <!-- Rating Popup -->
+            <div class="rating-popup" id="ratingPopup">
+                <input type="hidden" name="service" value="rate">
+                <div class="rating-content">
+                    <div class="rating-header">
+                        <h3 id="popupTitle">Đánh giá đơn hàng</h3>
+                        <button type="button" class="close-popup">&times;</button>
+                    </div>
+
+                    <!-- Input ẩn chứa ID đơn hàng -->
+                    <input type="hidden" id="orderIdInput" name="feedbackId">
+
+                    <div class="rating-stars">
+                        <select id="starSelect" class="star-select" name="rating">
+                            <option value="0">Vui lòng chọn sao</option>
+                            <option value="1">★☆☆☆☆ (1 sao)</option>
+                            <option value="2">★★☆☆☆ (2 sao)</option>
+                            <option value="3">★★★☆☆ (3 sao)</option>
+                            <option value="4">★★★★☆ (4 sao)</option>
+                            <option value="5">★★★★★ (5 sao)</option>
+                        </select>
+                        <div class="star-display">
+                            <i class="far fa-star"></i>
+                            <i class="far fa-star"></i>
+                            <i class="far fa-star"></i>
+                            <i class="far fa-star"></i>
+                            <i class="far fa-star"></i>
+                        </div>
+                    </div>
+                    <div class="rating-text" id="ratingText">Vui lòng chọn số sao</div>
+                    <textarea class="rating-comment" id="ratingComment" name="comment" placeholder="Chia sẻ cảm nhận của bạn về sản phẩm/dịch vụ..."></textarea>
+                    <div class="rating-actions">
+                        <button type="button" class="btn btn-outline" id="cancelRating">Hủy bỏ</button>
+                        <button type="submit" class="btn btn-primary" id="submitRating">Gửi đánh giá</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <c:if test="${not empty checkError}">
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    var checkError = `${checkError}`;
+                    if (checkError === 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Đánh giá Thành Công!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            window.location.href = '${contextPath}/EmployeeFeedbackController?service=customer_list';
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Có lỗi xảy ra!',
+                            showConfirmButton: true
+                        }).then(() => {
+                            window.location.href = '${contextPath}/EmployeeFeedbackController?service=customer_list';
+                        });
+                    }
+                });
+            </script>
+        </c:if>
 
         <script>
-            // Sample order data
-            const orders = [
-                {
-                    id: "DH-20230815-001",
-                    date: "15/08/2023",
-                    products: [
-                        {
-                            name: "Điện thoại Samsung Galaxy S23",
-                            category: "Điện thoại",
-                            quantity: 1,
-                            price: "21.990.000 ₫"
-                        },
-                        {
-                            name: "Ốp lưng chống sốc",
-                            category: "Phụ kiện",
-                            quantity: 2,
-                            price: "350.000 ₫"
-                        }
-                    ],
-                    total: "22.690.000 ₫",
-                    status: "Chưa đánh giá"
-                },
-                {
-                    id: "DH-20230810-045",
-                    date: "10/08/2023",
-                    products: [
-                        {
-                            name: "Máy tính xách tay Dell XPS 15",
-                            category: "Laptop",
-                            quantity: 1,
-                            price: "34.500.000 ₫"
-                        }
-                    ],
-                    total: "34.500.000 ₫",
-                    status: "Chưa đánh giá"
-                },
-                {
-                    id: "DH-20230728-102",
-                    date: "28/07/2023",
-                    products: [
-                        {
-                            name: "Tai nghe Bluetooth Sony WH-1000XM5",
-                            category: "Phụ kiện",
-                            quantity: 1,
-                            price: "7.990.000 ₫"
-                        },
-                        {
-                            name: "Adapter chuyển đổi USB-C",
-                            category: "Phụ kiện",
-                            quantity: 1,
-                            price: "450.000 ₫"
-                        }
-                    ],
-                    total: "8.440.000 ₫",
-                    status: "Chưa đánh giá"
-                },
-                {
-                    id: "DH-20230720-078",
-                    date: "20/07/2023",
-                    products: [
-                        {
-                            name: "Máy ảnh Canon EOS R6 Mark II",
-                            category: "Máy ảnh",
-                            quantity: 1,
-                            price: "48.990.000 ₫"
-                        },
-                        {
-                            name: "Thẻ nhớ 128GB",
-                            category: "Phụ kiện",
-                            quantity: 1,
-                            price: "1.250.000 ₫"
-                        }
-                    ],
-                    total: "50.240.000 ₫",
-                    status: "Chưa đánh giá"
-                },
-                {
-                    id: "DH-20230715-033",
-                    date: "15/07/2023",
-                    products: [
-                        {
-                            name: "Loa Bluetooth Marshall Emberton",
-                            category: "Âm thanh",
-                            quantity: 2,
-                            price: "3.490.000 ₫"
-                        }
-                    ],
-                    total: "6.980.000 ₫",
-                    status: "Chưa đánh giá"
-                }
-            ];
-
-            // Function to render orders
-            function renderOrders() {
-                const orderList = document.getElementById('order-list');
-                orderList.innerHTML = '';
-
-                if (orders.length === 0) {
-                    orderList.innerHTML = `
-                        <div class="empty-state">
-                            <i class="fas fa-smile"></i>
-                            <h3>Không có đơn hàng nào cần đánh giá</h3>
-                            <p>Bạn đã đánh giá tất cả các đơn hàng của mình.</p>
-                            <button class="btn btn-outline">Quay lại cửa hàng</button>
-                        </div>
-                    `;
+            
+            //Filter 
+            function filterRedirect(selectedValue) {
+                if (!selectedValue)
                     return;
-                }
-
-                orders.forEach(order => {
-                    const orderElement = document.createElement('div');
-                    orderElement.className = 'order-card';
-
-                    // Product items HTML
-                    let productsHTML = '';
-                    order.products.forEach(product => {
-                        productsHTML += `
-                        <div class="product-item">
-                            <div class="product-image">
-                                <i class="fas fa-box"></i>
-                            </div>
-                            <div class="product-info">
-                                <h4>${product.name}</h4>
-                                <p>${product.category} • Số lượng: ${product.quantity} • ${product.price}</p>
-                            </div>
-                        </div>
-                        `;
-                    });
-
-                    orderElement.innerHTML = `
-                        <div class="order-header">
-                            <div>
-                                <div class="order-id">${order.id}</div>
-                                <div class="order-date">Ngày đặt hàng: ${order.date}</div>
-                            </div>
-                            <div class="order-status">${order.status}</div>
-                        </div>
-                        <div class="order-products">
-            ${productsHTML}
-                        </div>
-                        <div class="order-footer">
-                            <div class="order-total">Tổng tiền: ${order.total}</div>
-                            <div class="order-actions">
-                                <button class="btn btn-outline">Xem chi tiết</button>
-                                <button class="btn btn-primary">Đánh giá ngay</button>
-                            </div>
-                        </div>
-                    `;
-
-                    orderList.appendChild(orderElement);
-                });
+                window.location.href = '${contextPath}/EmployeeFeedbackController?service=filter&filterValue=' + selectedValue;
             }
-
-            // Filter and search functionality
-            function filterOrders() {
-                const searchTerm = document.getElementById('search').value.toLowerCase();
-                const statusFilter = document.getElementById('status-filter').value;
-                const dateFilter = document.getElementById('date-filter').value;
-
-                // In a real application, you would fetch from server or filter locally
-                // For this example, we'll just re-render all orders
-                renderOrders();
-
-                // Add event listeners to newly created buttons
-                document.querySelectorAll('.btn-primary').forEach(button => {
-                    button.addEventListener('click', function () {
-                        const orderId = this.closest('.order-card').querySelector('.order-id').textContent;
-                        alert(`Bắt đầu đánh giá cho đơn hàng: ${orderId}`);
-                        // In a real application, this would navigate to the rating page
-                    });
-                });
-            }
-
-            // Initialize the page
+            
             document.addEventListener('DOMContentLoaded', () => {
-                renderOrders();
+                // Get popup elements
+                const ratingPopup = document.getElementById('ratingPopup');
+                const closePopup = document.querySelector('.close-popup');
+                const cancelRating = document.getElementById('cancelRating');
+                const submitRating = document.getElementById('submitRating');
+                const popupTitle = document.getElementById('popupTitle');
+                const orderIdInput = document.getElementById('orderIdInput');
+                const starSelect = document.getElementById('starSelect');
+                const starIcons = document.querySelectorAll('.star-display i');
+                const ratingText = document.getElementById('ratingText');
 
-                // Add event listeners to buttons
-                document.querySelectorAll('.btn-primary').forEach(button => {
+                let selectedRating = 0;
+
+                // Rating texts based on number of stars
+                const ratingMessages = {
+                    0: "Vui lòng chọn số sao",
+                    1: "Rất không hài lòng",
+                    2: "Không hài lòng",
+                    3: "Bình thường",
+                    4: "Hài lòng",
+                    5: "Rất hài lòng"
+                };
+
+                // Add event listeners to rating buttons
+                document.querySelectorAll('.btn-rate').forEach(button => {
                     button.addEventListener('click', function () {
-                        const orderId = this.closest('.order-card').querySelector('.order-id').textContent;
-                        alert(`Bắt đầu đánh giá cho đơn hàng: ${orderId}`);
+                        // Lấy ID đơn hàng từ thuộc tính data-order-id
+                        const orderId = this.getAttribute('data-order-id');
+
+                        // Gán ID đơn hàng vào input ẩn
+                        orderIdInput.value = orderId;
+
+                        // Cập nhật tiêu đề popup
+                        popupTitle.textContent = `Đánh giá đơn hàng ${orderId}`;
+
+                        // Đặt lại trạng thái popup
+                        resetRatingPopup();
+
+                        // Hiển thị popup
+                        ratingPopup.style.display = 'flex';
                     });
                 });
 
-                // Add event listeners to filters
-                document.getElementById('search').addEventListener('input', filterOrders);
-                document.getElementById('status-filter').addEventListener('change', filterOrders);
-                document.getElementById('date-filter').addEventListener('change', filterOrders);
+                // Close popup when clicking close button
+                closePopup.addEventListener('click', () => {
+                    ratingPopup.style.display = 'none';
+                });
+
+                // Close popup when clicking cancel button
+                cancelRating.addEventListener('click', () => {
+                    ratingPopup.style.display = 'none';
+                });
+
+                // Close popup when clicking outside the content
+                ratingPopup.addEventListener('click', (e) => {
+                    if (e.target === ratingPopup) {
+                        ratingPopup.style.display = 'none';
+                    }
+                });
+
+                // Star rating functionality using select
+                starSelect.addEventListener('change', function () {
+                    const value = parseInt(this.value);
+                    selectedRating = value;
+
+                    // Update stars appearance
+                    starIcons.forEach((star, index) => {
+                        if (index < value) {
+                            star.classList.remove('far');
+                            star.classList.add('fas', 'active');
+                        } else {
+                            star.classList.remove('fas', 'active');
+                            star.classList.add('far');
+                        }
+                    });
+
+                    // Update rating text
+                    ratingText.textContent = ratingMessages[value];
+                });
+
+                // Reset the rating popup to initial state
+                function resetRatingPopup() {
+                    starSelect.value = '0';
+                    selectedRating = 0;
+                    starIcons.forEach(star => {
+                        star.classList.remove('fas', 'active');
+                        star.classList.add('far');
+                    });
+                    ratingText.textContent = ratingMessages[0];
+                    document.getElementById('ratingComment').value = '';
+                }
             });
         </script>
     </body>

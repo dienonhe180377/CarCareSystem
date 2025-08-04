@@ -8,7 +8,6 @@ import entity.Order;
 import entity.Part;
 import entity.Service;
 import entity.User;
-import entity.Voucher;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -19,8 +18,8 @@ import java.util.ArrayList;
 public class OrderDAO extends DBConnection {
 
     private UserDAO userDAO = new UserDAO();
-    private VoucherDAO voucherDAO = new VoucherDAO();
-
+    
+    
     //Get Order Number By Part
     public int getOrderNumberByPart(int partId) throws Exception {
         Connection conn = null;
@@ -45,6 +44,7 @@ public class OrderDAO extends DBConnection {
             closeConnection(conn);
         }
     }
+    
 
     public int createOrder(String fullName, String email, String phone, String address, Date appointmentDate,
             double price, String paymentStatus, String orderStatus, String paymentMethod, String carType, String description) throws SQLException {
@@ -569,72 +569,6 @@ public class OrderDAO extends DBConnection {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
-        }
-    }
-
-    public boolean applyVoucherToOrder(int orderId, int voucherId) throws SQLException {
-        // Kiểm tra đơn hàng tồn tại
-        Order order = getOrderById(orderId);
-        if (order == null) {
-            throw new SQLException("Order not found");
-        }
-
-        // Lấy thông tin voucher
-        Voucher voucher = voucherDAO.getVoucherById(voucherId);
-        if (voucher == null || !"ACTIVE".equals(voucher.getStatus())) {
-            throw new SQLException("Voucher is invalid or expired");
-        }
-
-        // Kiểm tra điều kiện tối thiểu
-        if (order.getPrice() < voucher.getMinOrderAmount()) {
-            throw new SQLException("Order amount does not meet voucher requirement");
-        }
-
-        // Tính toán giá mới
-        double discountAmount = calculateDiscount(order.getPrice(), voucher);
-        double finalPrice = order.getPrice() - discountAmount;
-
-        // Bắt transaction
-        try {
-            connection.setAutoCommit(false);
-
-            // Cập nhật giá đơn hàng
-            String updateOrderSql = "UPDATE [Order] SET originalPrice = ?, price = ? WHERE id = ?";
-            try (PreparedStatement stmt = connection.prepareStatement(updateOrderSql)) {
-                stmt.setDouble(1, order.getPrice());
-                stmt.setDouble(2, finalPrice);
-                stmt.setInt(3, orderId);
-                stmt.executeUpdate();
-            }
-
-            // Ghi nhận sử dụng voucher
-            String insertVoucherSql = "INSERT INTO Order_Voucher (order_id, voucher_id) VALUES (?, ?)";
-            try (PreparedStatement stmt = connection.prepareStatement(insertVoucherSql)) {
-                stmt.setInt(1, orderId);
-                stmt.setInt(2, voucherId);
-                stmt.executeUpdate();
-            }
-
-            connection.commit();
-            return true;
-        } catch (SQLException e) {
-            connection.rollback();
-            throw e;
-        } finally {
-            connection.setAutoCommit(true);
-        }
-    }
-
-    private double calculateDiscount(double originalPrice, Voucher voucher) {
-        if (voucher.getDiscountType().equals("PERCENTAGE")) {
-            double discountAmount = originalPrice * voucher.getDiscount() / 100;
-            // Áp dụng giới hạn tối đa nếu có
-            return voucher.getMaxDiscountAmount() > 0
-                    ? Math.min(discountAmount, voucher.getMaxDiscountAmount())
-                    : discountAmount;
-        } else {
-            // Giảm giá cố định
-            return voucher.getDiscount();
         }
     }
 

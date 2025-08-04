@@ -40,6 +40,10 @@
         <servlet-name>VoucherServlet</servlet-name>
         <servlet-class>controller.VoucherServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>EmployeeFeedbackController</servlet-name>
+        <servlet-class>controller.EmployeeFeedbackController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>CategoryServlet</servlet-name>
         <url-pattern>/CategoryController</url-pattern>
@@ -79,6 +83,10 @@
     <servlet-mapping>
         <servlet-name>VoucherServlet</servlet-name>
         <url-pattern>/voucher</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EmployeeFeedbackController</servlet-name>
+        <url-pattern>/EmployeeFeedbackController</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>home</welcome-file>
